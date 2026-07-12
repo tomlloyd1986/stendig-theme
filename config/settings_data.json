@@ -1,1 +1,243 @@
-{"current":{"colors_solid_button_labels":"#FFFFFF","colors_accent_1":"#121212","colors_accent_2":"#334FB4","colors_text":"#121212","colors_outline_button_labels":"#121212","colors_background_1":"#FFFFFF","colors_background_2":"#F3F3F3","type_header_font":"assistant_n4","type_body_font":"assistant_n4","favicon":"shopify:\/\/shop_images\/Favicon.png","delivery_dates":"<p>ASAP<\/p>","delivery_date_domain_exclusions":"domain: stendigcalendars.com\nexclude: 24 Nov\n\ndomain: us.myweb.com\nexclude: 1 Dec, 4 Nov","checkout_logo_image":"shopify:\/\/shop_images\/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png","checkout_logo_size":"small","checkout_heading_font":"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'","checkout_body_font":"-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'","sections":{"announcement-bar":{"type":"announcement-bar","blocks":{"announcement-bar-0":{"type":"announcement","disabled":true,"settings":{"text":"Black Friday Sale Now On","color_scheme":"inverse","link":"#blackfriday"}},"announcement_j9PRHd":{"type":"announcement","disabled":true,"settings":{"text":"Sign-up for 10% discount on pre-orders","color_scheme":"accent-1","link":"#preorder"}}},"block_order":["announcement-bar-0","announcement_j9PRHd"],"settings":{}},"header":{"type":"header","custom_css":["@media screen and (min-width: 750px) {.header {padding-top: 8px !important; padding-bottom: 8px !important; } .header__heading-logo img {max-height: 36px !important; }}",".header {padding-left: 20px !important; padding-right: 20px !important; max-width: 100% !important;}"],"settings":{"color_scheme":"background-1","logo":"shopify:\/\/shop_images\/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png","altlogo":"shopify:\/\/shop_images\/Logo_white.png","logo_width":180,"logo_position":"middle-left","menu":"main-menu","show_line_separator":false,"enable_sticky_header":true,"transparent-header":false,"transparent-color":"#ffffff"}},"footer":{"type":"footer","blocks":{"footer-0":{"type":"link_list","settings":{"heading":"Quick links","menu":"footer"}},"96c3fad1-effd-47b9-8fb5-68395a8596b0":{"type":"link_list","settings":{"heading":"Policies","menu":"footer-menu-3"}},"881d584c-0534-44bf-999c-a8e57a5add25":{"type":"link_list","settings":{"heading":"Social Media","menu":"footer-menu-2"}},"footer-1":{"type":"text","settings":{"heading":"","subtext":""}}},"block_order":["footer-0","96c3fad1-effd-47b9-8fb5-68395a8596b0","881d584c-0534-44bf-999c-a8e57a5add25","footer-1"],"settings":{"color_scheme":"background-1","newsletter_enable":true,"newsletter_heading":"Subscribe to our emails","show_social":true,"enable_country_selector":false,"enable_language_selector":true,"payment_enable":true}}},"content_for_index":[],"blocks":{"7878088468538493966":{"type":"shopify:\/\/apps\/wisepops-smart-popups-bars\/blocks\/app-embed\/e7d7a4f7-0df4-4073-9375-5f36db513952","disabled":false,"settings":{}},"pagefly-page-builder":{"type":"shopify:\/\/apps\/pagefly-page-builder\/blocks\/app-embed\/83e179f7-59a0-4589-8c66-c0dddf959200","disabled":false,"settings":{}},"15119538188275799212":{"type":"shopify:\/\/apps\/fontify\/blocks\/app-embed\/334490e2-2153-4a2e-a452-e90bdeffa3cc","disabled":false,"settings":{}},"12793297677437526120":{"type":"shopify:\/\/apps\/t-lab-ai-language-translate\/blocks\/custom_translations\/b5b83690-efd4-434d-8c6a-a5cef4019faf","disabled":false,"settings":{}},"15557474716127144420":{"type":"shopify:\/\/apps\/kaching-bundles\/blocks\/app-embed-block\/6c637362-a106-4a32-94ac-94dcfd68cdb8","disabled":true,"settings":{}},"17595556821664008138":{"type":"shopify:\/\/apps\/zoorix-cross-sell\/blocks\/zoorix-head\/51fffd07-f9df-4d6a-b901-6d14b243dcad","disabled":false,"settings":{}}}},"presets":{"Default":{"colors_solid_button_labels":"#FFFFFF","colors_accent_1":"#121212","colors_accent_2":"#334FB4","colors_text":"#121212","colors_outline_button_labels":"#121212","colors_background_1":"#FFFFFF","colors_background_2":"#F3F3F3","type_header_font":"assistant_n4","type_body_font":"assistant_n4","sections":{"announcement-bar":{"type":"announcement-bar","blocks":{"announcement-bar-0":{"type":"announcement","settings":{"color_scheme":"background-1"}}},"block_order":["announcement-bar-0"],"settings":{}}}},"Craft":{"colors_solid_button_labels":"#EFECEC","colors_accent_1":"#2A332F","colors_accent_2":"#476154","colors_text":"#1C1A1A","colors_outline_button_labels":"#7B8382","colors_background_1":"#EFECEC","colors_background_2":"#C1BCAE","type_header_font":"americana_n4","type_body_font":"quattrocento_sans_n4","sections":{"footer":{"type":"footer","blocks":{"menu":{"type":"link_list","settings":{}},"text":{"type":"text","settings":{}}},"block_order":["menu","text"],"settings":{"color_scheme":"accent-1"}}}}},"platform_customizations":{"custom_css":[".page-width {max-width: none !important;}",".wisepops-wisepop-scrollable {box-shadow: unset !important;}",".product__description {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-size: 14px; \/* adjust to taste *\/ line-height: 1.5; \/* adjust spacing *\/ letter-spacing: 0; \/* tracking *\/}",".product__description p {margin-bottom: 1.2em; \/* paragraph spacing *\/}"," \/* Header navigation font *\/.header__inline-menu .list-menu__item,.header__inline-menu .list-menu__item a {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-weight: 400; \/* adjust if you want bold *\/ font-size: 14px; \/* tweak size *\/ letter-spacing: 0; \/* tracking *\/}"]}}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "colors_solid_button_labels": "#FFFFFF",
+    "colors_accent_1": "#121212",
+    "colors_accent_2": "#334FB4",
+    "colors_text": "#121212",
+    "colors_outline_button_labels": "#121212",
+    "colors_background_1": "#FFFFFF",
+    "colors_background_2": "#F3F3F3",
+    "type_header_font": "assistant_n4",
+    "type_body_font": "assistant_n4",
+    "favicon": "shopify://shop_images/Favicon.png",
+    "warehouses": [
+      "uk-3-pl-consumer",
+      "us-3-pl",
+      "hk-3-pl-consumer",
+      "jp-3-pl-consumer",
+      "kr-3-pl-consumer",
+      "nz-3-pl-consumer",
+      "sg-3-pl-consumer",
+      "tw-3-pl-consumer",
+      "au-3-pl-consumer",
+      "eu"
+    ],
+    "delivery_dates": "<p>ASAP</p>",
+    "delivery_date_domain_exclusions": "domain: stendigcalendars.com\nexclude: 24 Nov\n\ndomain: us.myweb.com\nexclude: 1 Dec, 4 Nov",
+    "checkout_logo_image": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
+    "checkout_logo_size": "small",
+    "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+    "sections": {
+      "announcement-bar": {
+        "type": "announcement-bar",
+        "blocks": {
+          "announcement-bar-0": {
+            "type": "announcement",
+            "disabled": true,
+            "settings": {
+              "text": "Black Friday Sale Now On",
+              "color_scheme": "inverse",
+              "link": "#blackfriday"
+            }
+          },
+          "announcement_j9PRHd": {
+            "type": "announcement",
+            "disabled": true,
+            "settings": {
+              "text": "Sign-up for 10% discount on pre-orders",
+              "color_scheme": "accent-1",
+              "link": "#preorder"
+            }
+          }
+        },
+        "block_order": [
+          "announcement-bar-0",
+          "announcement_j9PRHd"
+        ],
+        "settings": {}
+      },
+      "header": {
+        "type": "header",
+        "custom_css": [
+          "@media screen and (min-width: 750px) {.header {padding-top: 8px !important; padding-bottom: 8px !important; } .header__heading-logo img {max-height: 36px !important; }}",
+          ".header {padding-left: 20px !important; padding-right: 20px !important; max-width: 100% !important;}"
+        ],
+        "settings": {
+          "color_scheme": "background-1",
+          "logo": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
+          "altlogo": "shopify://shop_images/Logo_white.png",
+          "logo_width": 180,
+          "logo_position": "middle-left",
+          "menu": "main-menu",
+          "show_line_separator": false,
+          "enable_sticky_header": true,
+          "transparent-header": false,
+          "transparent-color": "#ffffff"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Quick links",
+              "menu": "footer"
+            }
+          },
+          "96c3fad1-effd-47b9-8fb5-68395a8596b0": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Policies",
+              "menu": "footer-menu-3"
+            }
+          },
+          "881d584c-0534-44bf-999c-a8e57a5add25": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Social Media",
+              "menu": "footer-menu-2"
+            }
+          },
+          "footer-1": {
+            "type": "text",
+            "settings": {
+              "heading": "",
+              "subtext": ""
+            }
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "96c3fad1-effd-47b9-8fb5-68395a8596b0",
+          "881d584c-0534-44bf-999c-a8e57a5add25",
+          "footer-1"
+        ],
+        "settings": {
+          "color_scheme": "background-1",
+          "newsletter_enable": true,
+          "newsletter_heading": "Subscribe to our emails",
+          "show_social": true,
+          "enable_country_selector": false,
+          "enable_language_selector": true,
+          "payment_enable": true
+        }
+      }
+    },
+    "content_for_index": [],
+    "blocks": {
+      "7878088468538493966": {
+        "type": "shopify://apps/wisepops-smart-popups-bars/blocks/app-embed/e7d7a4f7-0df4-4073-9375-5f36db513952",
+        "disabled": false,
+        "settings": {}
+      },
+      "pagefly-page-builder": {
+        "type": "shopify://apps/pagefly-page-builder/blocks/app-embed/83e179f7-59a0-4589-8c66-c0dddf959200",
+        "disabled": false,
+        "settings": {}
+      },
+      "15119538188275799212": {
+        "type": "shopify://apps/fontify/blocks/app-embed/334490e2-2153-4a2e-a452-e90bdeffa3cc",
+        "disabled": false,
+        "settings": {}
+      },
+      "12793297677437526120": {
+        "type": "shopify://apps/t-lab-ai-language-translate/blocks/custom_translations/b5b83690-efd4-434d-8c6a-a5cef4019faf",
+        "disabled": false,
+        "settings": {}
+      },
+      "15557474716127144420": {
+        "type": "shopify://apps/kaching-bundles/blocks/app-embed-block/6c637362-a106-4a32-94ac-94dcfd68cdb8",
+        "disabled": true,
+        "settings": {}
+      },
+      "17595556821664008138": {
+        "type": "shopify://apps/zoorix-cross-sell/blocks/zoorix-head/51fffd07-f9df-4d6a-b901-6d14b243dcad",
+        "disabled": false,
+        "settings": {}
+      }
+    }
+  },
+  "presets": {
+    "Default": {
+      "colors_solid_button_labels": "#FFFFFF",
+      "colors_accent_1": "#121212",
+      "colors_accent_2": "#334FB4",
+      "colors_text": "#121212",
+      "colors_outline_button_labels": "#121212",
+      "colors_background_1": "#FFFFFF",
+      "colors_background_2": "#F3F3F3",
+      "type_header_font": "assistant_n4",
+      "type_body_font": "assistant_n4",
+      "sections": {
+        "announcement-bar": {
+          "type": "announcement-bar",
+          "blocks": {
+            "announcement-bar-0": {
+              "type": "announcement",
+              "settings": {
+                "color_scheme": "background-1"
+              }
+            }
+          },
+          "block_order": [
+            "announcement-bar-0"
+          ],
+          "settings": {}
+        }
+      }
+    },
+    "Craft": {
+      "colors_solid_button_labels": "#EFECEC",
+      "colors_accent_1": "#2A332F",
+      "colors_accent_2": "#476154",
+      "colors_text": "#1C1A1A",
+      "colors_outline_button_labels": "#7B8382",
+      "colors_background_1": "#EFECEC",
+      "colors_background_2": "#C1BCAE",
+      "type_header_font": "americana_n4",
+      "type_body_font": "quattrocento_sans_n4",
+      "sections": {
+        "footer": {
+          "type": "footer",
+          "blocks": {
+            "menu": {
+              "type": "link_list",
+              "settings": {}
+            },
+            "text": {
+              "type": "text",
+              "settings": {}
+            }
+          },
+          "block_order": [
+            "menu",
+            "text"
+          ],
+          "settings": {
+            "color_scheme": "accent-1"
+          }
+        }
+      }
+    }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      ".page-width {max-width: none !important;}",
+      ".wisepops-wisepop-scrollable {box-shadow: unset !important;}",
+      ".product__description {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-size: 14px; /* adjust to taste */ line-height: 1.5; /* adjust spacing */ letter-spacing: 0; /* tracking */}",
+      ".product__description p {margin-bottom: 1.2em; /* paragraph spacing */}",
+      " /* Header navigation font */.header__inline-menu .list-menu__item,.header__inline-menu .list-menu__item a {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-weight: 400; /* adjust if you want bold */ font-size: 14px; /* tweak size */ letter-spacing: 0; /* tracking */}"
+    ]
+  }
+}
