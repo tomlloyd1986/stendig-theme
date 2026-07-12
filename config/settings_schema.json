@@ -333,10 +333,17 @@
     "name": "Delivery Dates",
     "settings": [
       {
+        "type": "metaobject_list",
+        "id": "delivery_date_entries",
+        "label": "Delivery date options",
+        "metaobject_type": "delivery_date_option",
+        "info": "Pick and order the delivery dates to offer. Manage entries under Content > Metaobjects > Delivery date option: pick a real date (auto-hides once passed, translated automatically) or set Special to ASAP / By Xmas, and optionally hide per domain. When any are selected here, the legacy text list below is ignored."
+      },
+      {
         "type": "richtext",
         "id": "delivery_dates",
-        "label": "Global Delivery Date Options",
-        "info": "Comma-separated list. Example: ASAP, 1 dec, 10 dec, 24 nov, By Xmas",
+        "label": "Global Delivery Date Options (legacy)",
+        "info": "Comma-separated list, used only when no metaobject dates are selected above. Example: ASAP, 1 dec, 10 dec, 24 nov, By Xmas",
         "default": "<p>ASAP</p>"
       }
     ]

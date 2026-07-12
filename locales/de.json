@@ -1619,6 +1619,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }}. {{ month }}",
     "choose_date": "Lieferdatum auswählen",
     "join_waitlist": "Zur Warteliste",
     "required_message": "Wähle ein Lieferdatum",

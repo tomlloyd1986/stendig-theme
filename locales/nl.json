@@ -1610,6 +1610,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }} {{ month }}",
     "choose_date": "Kies leverdatum",
     "join_waitlist": "Aanmelden wachtlijst",
     "required_message": "Kies een leverdatum",

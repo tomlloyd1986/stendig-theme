@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }} {{ month }}",
     "choose_date": "Escolha a data de entrega",
     "join_waitlist": "Entrar na lista de espera",
     "required_message": "Escolha uma data de entrega",

@@ -481,6 +481,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }}. {{ month }}",
     "choose_date": "Vyberte datum doručení",
     "join_waitlist": "Připojit se na čekací listinu",
     "required_message": "Zvolte datum doručení",

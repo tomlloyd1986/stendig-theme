@@ -446,6 +446,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ month }}. {{ day }}.",
     "choose_date": "Válasszon szállítási dátumot",
     "join_waitlist": "Csatlakozás a várólistához",
     "required_message": "Válasszon szállítási dátumot",

@@ -39,26 +39,30 @@
 
 {% assign current_domain = request.host | downcase | remove: 'www.' %}
 
-{% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
-{% assign global_dates = cleaned_text | split: ',' %}
+{% comment %}
+  Rules can target a full hostname (e.g. "de.stendigcalendars.com") or just the
+  subdomain code (e.g. "de"). Use "main" for the bare domain (stendigcalendars.com).
+{% endcomment %}
+{% assign host_parts = current_domain | split: '.' %}
+{% if host_parts.size == 2 %}
+  {% assign current_subdomain = 'main' %}
+{% else %}
+  {% assign current_subdomain = host_parts | first %}
+{% endif %}
 
-{% assign global_dates_clean = '' %}
-{% for d in global_dates %}
-  {% assign dd = d | strip %}
-  {% if dd != '' %}
-    {% assign global_dates_clean = global_dates_clean | append: dd | append: '||' %}
-  {% endif %}
-{% endfor %}
-{% assign global_dates_final = global_dates_clean | split: '||' %}
-
+{% comment %}
+  Per-product exclusions (custom.delivery_domain_rule metafield):
+  entries of { domain, exclude_date } hide the named dates on that domain
+  for this product only. Applies to both data sources below.
+{% endcomment %}
 {% assign rule_list = product.metafields.custom.delivery_domain_rule.value %}
 {% assign excluded_raw = '' %}
 
 {% if rule_list %}
   {% for entry in rule_list %}
-    {% assign entry_domain = entry.domain | downcase | remove: 'www.' %}
+    {% assign entry_domain = entry.domain | downcase | remove: 'www.' | strip %}
 
-    {% if entry_domain == current_domain %}
+    {% if entry_domain == current_domain or entry_domain == current_subdomain %}
       {% assign exclude_string = entry.exclude_date | strip %}
 
       {% if exclude_string != '' %}
@@ -75,13 +79,100 @@
 {% assign excluded = excluded_raw | split: '||' | uniq %}
 
 {% assign final_list = '' %}
-{% for d in global_dates_final %}
-  {% assign dd = d | strip %}
-  {% unless excluded contains dd %}
-    {% assign final_list = final_list | append: dd | append: '||' %}
-  {% endunless %}
-{% endfor %}
+{% assign label_list = '' %}
+
+{% if settings.delivery_date_entries.count > 0 %}
+  {% comment %}
+    Primary source: "Delivery date option" metaobjects picked in theme settings.
+    Field keys:
+      date    - real date field (picker); auto-hides once the date has passed
+      special - non-date options: "ASAP" or "By Xmas" (used when date is empty)
+      label   - optional display override, translatable via T Lab
+      hide_on - list of subdomain codes / hostnames, "main" = bare domain
+      expires - optional date; entry hidden after this day (mainly for specials)
+    The value stored on the order (data-date) is always English: "10 Dec",
+    "ASAP" or "By Xmas". The displayed label is localized via the theme
+    locale keys delivery.date_label / delivery.months.* / delivery.date_options.*.
+  {% endcomment %}
+  {% assign month_keys = 'jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec' | split: ',' %}
+  {% assign months_en = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec' | split: ',' %}
+  {% assign today_num = 'now' | date: '%Y%m%d' | plus: 0 %}
+  {% assign today_mmdd = 'now' | date: '%m%d' | plus: 0 %}
+
+  {% for entry in settings.delivery_date_entries %}
+    {% assign special = entry.special.value | strip %}
+    {% assign date_string = '' %}
+    {% assign generated_label = '' %}
+
+    {% if special != blank %}
+      {% assign date_string = special %}
+      {% assign special_down = special | downcase %}
+      {% if special_down == 'asap' %}
+        {% assign generated_label = 'delivery.date_options.asap' | t %}
+      {% elsif special_down == 'by xmas' or special_down == 'by christmas' %}
+        {% if today_mmdd > 1225 %}{% continue %}{% endif %}
+        {% assign generated_label = 'delivery.date_options.by_xmas' | t %}
+      {% else %}
+        {% assign generated_label = special %}
+      {% endif %}
+    {% elsif entry.date.value %}
+      {% assign date_num = entry.date.value | date: '%Y%m%d' | plus: 0 %}
+      {% if today_num > date_num %}{% continue %}{% endif %}
+
+      {% assign day_num = entry.date.value | date: '%d' | plus: 0 %}
+      {% assign month_index = entry.date.value | date: '%m' | plus: 0 | minus: 1 %}
+      {% assign date_string = day_num | append: ' ' | append: months_en[month_index] %}
+
+      {% assign month_key = 'delivery.months.' | append: month_keys[month_index] %}
+      {% assign month_translated = month_key | t %}
+      {% assign generated_label = 'delivery.date_label' | t: day: day_num, month: month_translated %}
+    {% else %}
+      {% continue %}
+    {% endif %}
+
+    {% if excluded contains date_string %}{% continue %}{% endif %}
+
+    {% assign hidden_here = false %}
+    {% if entry.hide_on.value %}
+      {% for h in entry.hide_on.value %}
+        {% assign h_clean = h | downcase | remove: 'www.' | strip %}
+        {% if h_clean == current_domain or h_clean == current_subdomain %}
+          {% assign hidden_here = true %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if hidden_here %}{% continue %}{% endif %}
+
+    {% if entry.expires.value %}
+      {% assign expires_num = entry.expires.value | date: '%Y%m%d' | plus: 0 %}
+      {% if today_num > expires_num %}{% continue %}{% endif %}
+    {% endif %}
+
+    {% assign custom_label = entry.label.value | default: '' | strip %}
+    {% if custom_label != blank %}
+      {% assign generated_label = custom_label %}
+    {% endif %}
+
+    {% assign final_list = final_list | append: date_string | append: '||' %}
+    {% assign label_list = label_list | append: generated_label | append: '||' %}
+  {% endfor %}
+{% else %}
+  {% comment %} Legacy fallback: comma-separated list from theme settings. {% endcomment %}
+  {% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
+  {% assign global_dates = cleaned_text | split: ',' %}
+
+  {% for d in global_dates %}
+    {% assign dd = d | strip %}
+    {% if dd != '' %}
+      {% unless excluded contains dd %}
+        {% assign final_list = final_list | append: dd | append: '||' %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
 {% assign final_dates = final_list | split: '||' %}
+{% assign final_labels = label_list | split: '||' %}
 
 <div class="delivery-date-wrapper-custom">
   <label class="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
@@ -93,10 +184,16 @@
         {% assign normalized_date = raw_date | downcase %}
         {% assign button_label = raw_date %}
         {% assign is_asap = false %}
+        {% assign custom_label = final_labels[forloop.index0] %}
 
         {% if normalized_date == 'asap' %}
-          {% assign button_label = 'delivery.date_options.asap' | t %}
           {% assign is_asap = true %}
+        {% endif %}
+
+        {% if custom_label != blank %}
+          {% assign button_label = custom_label %}
+        {% elsif normalized_date == 'asap' %}
+          {% assign button_label = 'delivery.date_options.asap' | t %}
         {% elsif normalized_date == 'by xmas' or normalized_date == 'by christmas' %}
           {% assign button_label = 'delivery.date_options.by_xmas' | t %}
         {% else %}

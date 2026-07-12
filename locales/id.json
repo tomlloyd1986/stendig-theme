@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }} {{ month }}",
     "choose_date": "Pilih tanggal pengiriman",
     "join_waitlist": "Gabung daftar tunggu",
     "required_message": "Pilih tanggal pengiriman",

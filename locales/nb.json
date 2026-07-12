@@ -446,6 +446,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }}. {{ month }}",
     "choose_date": "Velg leveringsdato",
     "join_waitlist": "Bli med på ventelisten",
     "required_message": "Velg en leveringsdato",
