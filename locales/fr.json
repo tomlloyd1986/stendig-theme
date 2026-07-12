@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "shopify": {
     "sentence": {
@@ -69,8 +78,8 @@
         "address2_label": "Appartement, suite, etc.",
         "optional_address2_label": "Appartement, suite, etc. (optionnel)",
         "city_label": "Ville",
-        "country_label": "Pays\/région",
-        "country_code": "Code de pays\/région",
+        "country_label": "Pays/région",
+        "country_code": "Code de pays/région",
         "province_label": "Province",
         "province_placeholder": "Province",
         "county_label": "Comté",
@@ -86,8 +95,8 @@
         "governorate_placeholder": "Gouvernorat",
         "emirate_label": "Émirat",
         "emirate_placeholder": "Émirat",
-        "state_and_territory_label": "État\/territoire",
-        "state_and_territory_placeholder": "État\/territoire",
+        "state_and_territory_label": "État/territoire",
+        "state_and_territory_placeholder": "État/territoire",
         "phone_label": "Téléphone",
         "optional_phone_label": "Téléphone (optionnel)",
         "phone_placeholder": "Téléphone",
@@ -160,18 +169,18 @@
         "free_shipping_discount_label": "Expédition gratuite",
         "applied_free_shipping_discount_label": "Appliqué",
         "apply_discount_button_label": "Valider",
-        "applied_discount_message": "%{amount} a\/ont été déduit(s) du prix total",
+        "applied_discount_message": "%{amount} a/ont été déduit(s) du prix total",
         "discount_has_been_applied": "La réduction a été appliquée",
         "discount_has_been_removed": "La réduction a été retirée",
         "gift_card_has_been_applied": "La carte-cadeau a été appliquée",
         "gift_card_has_been_removed": "La carte-cadeau a été retirée",
         "gift_card_subscriptions_notice": "Les cartes-cadeaux ne s'appliqueront qu'à votre premier paiement",
         "discount_already_applied": "Une réduction a déjà été appliquée à cette commande. Vous ne pouvez pas appliquer d'autre réduction.",
-        "cart_does_not_meet_discount_requirements_notice": "Le code de réduction <strong style=\"text-transform:uppercase\">%{code}<\/strong> n'est pas valide pour les articles de votre panier",
-        "discount_requires_customer_notice": "Saisissez vos informations d'expédition pour appliquer le code de réduction <strong style=\"text-transform:uppercase\">%{code}<\/strong>",
-        "customer_does_not_meet_discount_requirements_notice": "Le code de réduction <strong style=\"text-transform:uppercase\">%{code}<\/strong> n'est pas disponible pour vous pour le moment",
-        "shipping_information_does_not_meet_discount_requirements_notice": "Le code de réduction<strong style=\"text-transform:uppercase\"> %{code}<\/strong> n'est pas disponible pour votre adresse d'expédition",
-        "customer_already_used_once_per_customer_discount_notice": "Le code promo <strong style=\"text-transform:uppercase\">%{code}<\/strong> a déjà été utilisé",
+        "cart_does_not_meet_discount_requirements_notice": "Le code de réduction <strong style=\"text-transform:uppercase\">%{code}</strong> n'est pas valide pour les articles de votre panier",
+        "discount_requires_customer_notice": "Saisissez vos informations d'expédition pour appliquer le code de réduction <strong style=\"text-transform:uppercase\">%{code}</strong>",
+        "customer_does_not_meet_discount_requirements_notice": "Le code de réduction <strong style=\"text-transform:uppercase\">%{code}</strong> n'est pas disponible pour vous pour le moment",
+        "shipping_information_does_not_meet_discount_requirements_notice": "Le code de réduction<strong style=\"text-transform:uppercase\"> %{code}</strong> n'est pas disponible pour votre adresse d'expédition",
+        "customer_already_used_once_per_customer_discount_notice": "Le code promo <strong style=\"text-transform:uppercase\">%{code}</strong> a déjà été utilisé",
         "subtotal_label": "Sous-total",
         "shipping_label": "Livraison",
         "pickup_label": "Récupérer",
@@ -329,8 +338,8 @@
         "name_on_card_label": "Nom sur la carte",
         "name_on_card_placeholder": "Nom sur la carte",
         "card_expired": "Expiré",
-        "card_expiry_label": "Date d'expiration (MM\/ AA)",
-        "card_expiry_placeholder": "Date d'expiration (MM\/AA)",
+        "card_expiry_label": "Date d'expiration (MM/ AA)",
+        "card_expiry_placeholder": "Date d'expiration (MM/AA)",
         "credit_card_start_month": "Mois d'émission",
         "credit_card_start_year": "Année d'émission",
         "delete_customer_mandate_modal_title": "Supprimer cette carte ?",
@@ -346,8 +355,8 @@
         "card_verification_value_explanation": "Code de sécurité à 3 chiffres généralement situé à l'endos de votre carte. Le code de sécurité pour les cartes American Express se compose de 4 chiffre et est situé à l'avant de votre carte.",
         "card_verification_value_explanation_amex": "Le code de sécurité à 4 chiffres à l'avant de votre carte",
         "card_verification_value_explanation_other": "Le code de sécurité à 3 chiffres à l'arrière de votre carte",
-        "card_start_label": "Émission (MM \/ AA)",
-        "card_start_placeholder": "Émission (MM \/ AA)",
+        "card_start_label": "Émission (MM / AA)",
+        "card_start_placeholder": "Émission (MM / AA)",
         "card_issue_number_label": "Numéro d'émission",
         "card_issue_number_placeholder": "Numéro d'émission",
         "card_change_label": "Modifier",
@@ -359,7 +368,7 @@
         "different_credit_card_label": "Essayer une autre carte de crédit",
         "same_billing_address_label": "Identique à l'adresse de livraison",
         "different_billing_address_label": "Utiliser une adresse de facturation différente",
-        "free_order_notice_html": "Votre commande est <strong>gratuite<\/strong>. Aucun paiement n'est requis.",
+        "free_order_notice_html": "Votre commande est <strong>gratuite</strong>. Aucun paiement n'est requis.",
         "express_checkout_free_order": "Vous ne serez pas facturé pour une commande gratuite",
         "order_covered_by_gift_cards_notice": {
           "one": "Votre commande est couverte par votre carte-cadeau.",
@@ -373,8 +382,8 @@
         "no_js_credit_card_fields_redirect_hint": "Vous serez redirigé(e) pour ajouter vos informations de paiement.",
         "card_fields_container_prefix": "Cadre pour le champ :",
         "card_fields_unavailable_html": {
-          "one": "Les paiements par carte de crédit et de débit ne sont pas disponibles pour le moment.<br><a href=\"%{current_url}\">Actualisez cette page<\/a> ou réessayez plus tard.",
-          "other": "Les paiements par carte de crédit et de débit ne sont pas disponibles pour le moment.<br><a href=\"%{current_url}\">Actualisez cette page<\/a> ou essayez un autre moyen de paiement."
+          "one": "Les paiements par carte de crédit et de débit ne sont pas disponibles pour le moment.<br><a href=\"%{current_url}\">Actualisez cette page</a> ou réessayez plus tard.",
+          "other": "Les paiements par carte de crédit et de débit ne sont pas disponibles pour le moment.<br><a href=\"%{current_url}\">Actualisez cette page</a> ou essayez un autre moyen de paiement."
         },
         "card_fields_processing_error": "Un problème est survenu lors du traitement du paiement. Essayez de rafraîchir cette page ou de vérifier votre connexion Internet.",
         "technical_error": "Les paiements ne peuvent pas être traités pour le moment en raison d'un problème technique. Réessayez dans quelques minutes.",
@@ -394,7 +403,7 @@
         "subscription_card_update_agreement_label": "Le changement du moyen de paiement mettra à jour votre abonnement et vos futurs paiements récurrents.",
         "subscription_agreement_label": "Je comprends que je suis en train d'accepter un abonnement. Celui-ci se renouvellera au prix et à la fréquence indiqués et ce, jusqu'à ce qu'il prenne fin ou soit %{cancelled}.",
         "subscription_agreement_cancelled": "annulé",
-        "subscription_agreement_label_html": "Je comprends que je suis en train d'accepter un abonnement. Celui-ci se renouvellera au prix et à la fréquence indiqués, et ce, jusqu'à ce qu'il prenne fin ou soit\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">annulé<\/a>.\n",
+        "subscription_agreement_label_html": "Je comprends que je suis en train d'accepter un abonnement. Celui-ci se renouvellera au prix et à la fréquence indiqués, et ce, jusqu'à ce qu'il prenne fin ou soit\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">annulé</a>.\n",
         "change_currency_section_description": "Sélectionnez une option de devise",
         "no_real_orders_dev_store": "Cette boutique ne peut accepter ni les commandes réelles ni les paiements réels.",
         "waiting_on_payment_methods": "Moyens de paiement disponibles en cours d'obtention...",
@@ -422,7 +431,7 @@
       },
       "payment_summary": {
         "gift_card_current_balance_notice": "Solde actuel %{amount}",
-        "credit_card_expires_on_notice": "Expire le %{month}\/%{year}",
+        "credit_card_expires_on_notice": "Expire le %{month}/%{year}",
         "express_payment_gateway_label": "Express",
         "manual_payment_gateway_label": "Manuel",
         "billing_address_title": "Adresse de facturation",
@@ -439,9 +448,9 @@
         "address_address1_blank": "Entrez une adresse",
         "address_address2_blank": "Entrez dans un appartement, une suite, etc.",
         "address_city_blank": "Saisissez une ville",
-        "address_country_blank": "Sélectionner un pays\/une région",
-        "address_country_not_supported": "Nous ne livrons pas actuellement à ce pays\/cette région. Veuillez saisir une nouvelle adresse d'expédition et réessayer.",
-        "address_province_blank": "Sélectionnez un État\/une province",
+        "address_country_blank": "Sélectionner un pays/une région",
+        "address_country_not_supported": "Nous ne livrons pas actuellement à ce pays/cette région. Veuillez saisir une nouvelle adresse d'expédition et réessayer.",
+        "address_province_blank": "Sélectionnez un État/une province",
         "address_company_blank": "Entrez un nom d'entreprise",
         "address_phone_blank": "Entrez un numéro de téléphone valide",
         "address_zip_blank": "Entrez un code postal",
@@ -925,7 +934,7 @@
       "prefecture": "Préfecture",
       "province": "Province",
       "state": "État",
-      "state_and_territory": "État\/territoire",
+      "state_and_territory": "État/territoire",
       "county": "Comté",
       "emirate": "Émirat",
       "governorate": "Gouvernorat",
@@ -983,7 +992,7 @@
       "expired": "La carte de crédit a expiré",
       "invalid_start_date_or_issue_number_for_debit": "Une date valide de début ou d'émission est requise",
       "invalid_expiry_year": "n'est pas une année d'expiration valide",
-      "reset_password_html": "Cette adresse e-mail est déjà associée à un compte. Si ce compte vous appartient, vous pouvez <a href=\"\/account\/login#recover\">reconfigurer votre mot de passe<\/a>",
+      "reset_password_html": "Cette adresse e-mail est déjà associée à un compte. Si ce compte vous appartient, vous pouvez <a href=\"/account/login#recover\">reconfigurer votre mot de passe</a>",
       "verify_email": "Un e-mail a été envoyé à %{customer_email} veuillez cliquer sur le lien contenu dans le e-mail pour confirmer votre adresse."
     },
     "notices": {
@@ -1030,7 +1039,7 @@
           "declined": "Paiement refusé",
           "inventory": "Produits indisponibles",
           "fraud": "Commande frauduleuse",
-          "customer": "Le client a modifié\/annulé la commande",
+          "customer": "Le client a modifié/annulé la commande",
           "other": "Autre"
         },
         "cash_on_delivery": "Paiement à la livraison"
@@ -1045,7 +1054,7 @@
         "too_many_line_items_error": "Votre panier ne peux pas contenir plus de %{max} articles.",
         "link_expired": "Le lien a expiré",
         "link_no_longer_exists": "Le lien n'existe plus.",
-        "stock_problems_html": "Un ou plusieurs articles ne sont plus disponibles. Voici votre <a href='%{link}'>panier mis à jour<\/a>.",
+        "stock_problems_html": "Un ou plusieurs articles ne sont plus disponibles. Voici votre <a href='%{link}'>panier mis à jour</a>.",
         "changed": "Le panier a été modifié",
         "items_changed": "Un ou plusieurs articles ont été modifiés.",
         "product_sold_out": "Le produit « %{name} » n'est déjà plus en stock.",
@@ -1078,29 +1087,29 @@
       },
       "open_tracking": {
         "opt_in": {
-          "opted_in_html": "<b>Vous avez accepté le suivi des ouvertures d'e-mails.<\/b>",
+          "opted_in_html": "<b>Vous avez accepté le suivi des ouvertures d'e-mails.</b>",
           "visibility": "Les taux d'ouverture d'e-mails seront signalés anonymement dans un rapport. Nous verrons si vous avez ouvert un e-mail uniquement sous la forme d'un taux agrégé d'ouverture d'e-mail.",
-          "opt_out_html": "Vous pouvez <a style='text-decoration:underline;' href='%{link}'>désactiver<\/a> le suivi des ouvertures d'e-mails si vous ne souhaitez pas communiquer cette information.",
+          "opt_out_html": "Vous pouvez <a style='text-decoration:underline;' href='%{link}'>désactiver</a> le suivi des ouvertures d'e-mails si vous ne souhaitez pas communiquer cette information.",
           "preview_bar": "Vous êtes en train de consulter un aperçu de ce que les clients verront lorsqu'ils s'abonneront au suivi des ouvertures d'e-mails."
         },
         "opt_out": {
-          "opted_out_html": "<b>Vous avez désactivé le suivi des ouvertures d'e-mails.<\/b>",
+          "opted_out_html": "<b>Vous avez désactivé le suivi des ouvertures d'e-mails.</b>",
           "visibility": "Nous ne verrons pas si vous avez ouvert nos e-mails.",
-          "opt_in_html": "<a style='text-decoration:underline;' href='%{link}'>Activez<\/a> le suivi des ouvertures d'e-mails.",
+          "opt_in_html": "<a style='text-decoration:underline;' href='%{link}'>Activez</a> le suivi des ouvertures d'e-mails.",
           "preview_bar": "Vous êtes en train de consulter un aperçu de ce que les clients verront lorsqu'ils se désabonneront le suivi des ouvertures d'e-mails."
         },
         "no_longer_track": {
-          "status_html": "<b>Nous ne suivons plus aucune ouverture d'e-mail.<\/b>",
+          "status_html": "<b>Nous ne suivons plus aucune ouverture d'e-mail.</b>",
           "privacy_policy": "Après l'envoi de cet e-mail, nous avons mis à jour notre politique de confidentialité et nous ne suivons plus les ouvertures."
         },
         "track": {
-          "status_html": "<b>Le suivi des ouvertures d'e-mails fait l'objet d'un rapport.<\/b>",
+          "status_html": "<b>Le suivi des ouvertures d'e-mails fait l'objet d'un rapport.</b>",
           "visibility": "Nous verrons si vous avez ouvert l'e-mail uniquement sous la forme de son taux d'ouverture global."
         },
         "updated_policy": {
-          "status_html": "<b>Le suivi des ouvertures d'e-mails fait l'objet d'un rapport.<\/b>",
+          "status_html": "<b>Le suivi des ouvertures d'e-mails fait l'objet d'un rapport.</b>",
           "visibility": "Nous avons mis à jour notre politique, et nous suivons désormais les ouvertures d'e-mails. Les taux d'ouverture d'e-mails seront signalés anonymement dans un rapport. Nous verrons si vous avez ouvert un e-mail uniquement sous la forme de son taux d'ouverture global.",
-          "opt_out_html": "Si vous ne souhaitez pas communiquer cette information, vous pouvez vous <a style='text-decoration:underline;' href='%{link}'>désabonner<\/a>."
+          "opt_out_html": "Si vous ne souhaitez pas communiquer cette information, vous pouvez vous <a style='text-decoration:underline;' href='%{link}'>désabonner</a>."
         }
       }
     },
@@ -1186,9 +1195,9 @@
       "empty": "Votre panier est vide",
       "cart_error": "Une erreur est survenue lors de l’actualisation de votre panier. Veuillez réessayer.",
       "cart_quantity_error_html": "Vous ne pouvez ajouter que [quantité] de cet article à votre panier.",
-      "taxes_and_shipping_policy_at_checkout_html": "Taxes et <a href=\"{{ link }}\">frais d'expédition<\/a> calculés lors du paiement",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxes et <a href=\"{{ link }}\">frais d'expédition</a> calculés lors du paiement",
       "taxes_included_but_shipping_at_checkout": "Taxes incluses et frais d'expédition calculés lors du paiement",
-      "taxes_included_and_shipping_policy_html": "Taxes incluses. <a href=\"{{ link }}\">Frais d'expédition<\/a> calculés à l'étape de paiement.",
+      "taxes_included_and_shipping_policy_html": "Taxes incluses. <a href=\"{{ link }}\">Frais d'expédition</a> calculés à l'étape de paiement.",
       "taxes_and_shipping_at_checkout": "Taxes et frais d'expédition calculés lors du paiement",
       "headings": {
         "product": "Produit",
@@ -1199,7 +1208,7 @@
       "update": "Mettre à jour",
       "login": {
         "title": "Vous possédez un compte ?",
-        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Connectez-vous<\/a> pour payer plus vite."
+        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">Connectez-vous</a> pour payer plus vite."
       }
     },
     "footer": {
@@ -1220,7 +1229,7 @@
     "collection_template": {
       "empty": "Aucun produit trouvé",
       "title": "Collection",
-      "use_fewer_filters_html": "Utiliser moins de filtres ou <a class=\"{{ class }}\" href=\"{{ link }}\">tout effacer<\/a>"
+      "use_fewer_filters_html": "Utiliser moins de filtres ou <a class=\"{{ class }}\" href=\"{{ link }}\">tout effacer</a>"
     },
     "video": {
       "load_video": "Charger la vidéo : {{ description }}"
@@ -1235,7 +1244,7 @@
       "login_form_error": "Mot de passe incorrect !",
       "login_form_submit": "Saisir",
       "modal": "Mot de passe modal",
-      "admin_link_html": "La boutique vous appartient-elle ? <a href=\"\/admin\" class=\"link underlined-link\">Se connecter ici<\/a>",
+      "admin_link_html": "La boutique vous appartient-elle ? <a href=\"/admin\" class=\"link underlined-link\">Se connecter ici</a>",
       "powered_by_shopify_html": "Cette boutique sera propulsée par {{ shopify }}"
     },
     "social": {
@@ -1347,8 +1356,8 @@
         "view_store_info": "Afficher les informations de la boutique",
         "check_other_stores": "Vérifier la disponibilité dans d'autres boutiques",
         "pick_up_available": "Service de retrait disponible",
-        "pick_up_available_at_html": "Service de retrait disponible à <span class=\"color-foreground\">{{ location_name }}<\/span>",
-        "pick_up_unavailable_at_html": "Service de retrait non disponible actuellement à <span class=\"color-foreground\">{{ location_name }}<\/span>",
+        "pick_up_available_at_html": "Service de retrait disponible à <span class=\"color-foreground\">{{ location_name }}</span>",
+        "pick_up_unavailable_at_html": "Service de retrait non disponible actuellement à <span class=\"color-foreground\">{{ location_name }}</span>",
         "unavailable": "Impossible de charger la disponibilité du service de retrait",
         "refresh": "Actualiser"
       },
@@ -1367,7 +1376,7 @@
       "xr_button": "Afficher dans son espace",
       "xr_button_label": "Affichage dans votre espace, charge l'article dans une fenêtre de réalité augmentée",
       "include_taxes": "Taxes incluses.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frais d'expédition<\/a> calculés à l'étape de paiement."
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frais d'expédition</a> calculés à l'étape de paiement."
     },
     "modal": {
       "label": "Galerie de supports multimédias"
@@ -1436,10 +1445,10 @@
     }
   },
   "localization": {
-    "country_label": "Pays\/région",
+    "country_label": "Pays/région",
     "language_label": "Langue",
     "update_language": "Mettre à jour la langue",
-    "update_country": "Mettre à jour le pays\/la région"
+    "update_country": "Mettre à jour le pays/la région"
   },
   "customer": {
     "account": {
@@ -1468,7 +1477,7 @@
       "address1": "Adresse 1",
       "address2": "Adresse 2",
       "city": "Ville",
-      "country": "Pays\/région",
+      "country": "Pays/région",
       "province": "Province",
       "zip": "Code postal",
       "phone": "Téléphone",
