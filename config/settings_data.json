@@ -29,7 +29,8 @@
       "sg-3-pl-consumer",
       "tw-3-pl-consumer",
       "au-3-pl-consumer",
-      "eu"
+      "eu",
+      "go-bolt-yyz-5"
     ],
     "delivery_dates": "<p>ASAP</p>",
     "delivery_date_domain_exclusions": "domain: stendigcalendars.com\nexclude: 24 Nov\n\ndomain: us.myweb.com\nexclude: 1 Dec, 4 Nov",
