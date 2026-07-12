@@ -1,8 +1,40 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "pf-66d52e28": {
       "type": "pf-66d52e28",
-      "settings": {}
+      "settings": {
+        "pf_e36f441a_value": "Although we’re sure you’ll be delighted with your calendar, we are happy to accept returns for whatever reason for up to 14 days after it’s been delivered to you, for a full refund of the cost of the calendar (not including the cost of the outbound shipping). The cost of returning the item to us must be paid by you, and the item must be unused and in the same condition as sold. If you’d like to return the item, please email us at help@stendigcalendars.com. For our full refund T&amp;Cs, click here.",
+        "pf_d5413fa1_value": "If you are shipping outside of these countries, then there may be import duties that will need to be paid. These are not included in the price displayed at checkout, and are the responsibility of the customer.",
+        "pf_4581c1a1_value": "In most countries, we ship locally, meaning there are no import duties to pay. This applies to the following shipping destinations:",
+        "pf_eceaf3c7_value": "If you’d like to return the item, please email us at help@stendigcalendars.com, quoting your order number.",
+        "pf_b8edd164_value": "Shipping depends on the exact shipping address, and is calculated at checkout.",
+        "pf_1a1b86ec_value": "How do I return my calendar?",
+        "pf_5b47ebb8_value": "How much does delivery cost?",
+        "pf_5f17b1e3_value": "What is your returns policy?",
+        "pf_02248345_value": "Will I need to pay duties?",
+        "pf_06448910_value": "United Kingdom",
+        "pf_8de70f2f_value": "European Union",
+        "pf_3a715c66_value": "United States",
+        "pf_951b4529_value": "South Korea",
+        "pf_f9a20f10_value": "New Zealand",
+        "pf_0eaf6264_value": "Singapore",
+        "pf_0f2fae20_value": "Hong Kong",
+        "pf_bc3ebebf_value": "Australia",
+        "pf_d975a85b_value": "Delivery",
+        "pf_18e5775f_value": "Returns",
+        "pf_7e951ec2_value": "Taiwan",
+        "pf_bebf8de7_value": "Canada",
+        "pf_56e13597_value": "Japan"
+      }
     }
   },
   "order": [
