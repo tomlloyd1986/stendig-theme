@@ -330,6 +330,18 @@
     ]
   },
   {
+    "name": "Warehouse Availability",
+    "settings": [
+      {
+        "type": "metaobject_list",
+        "id": "warehouses",
+        "label": "Warehouses",
+        "metaobject_type": "warehouse",
+        "info": "Select every Warehouse entry (create them under Content > Metaobjects > Warehouse). Each entry maps a Shopify location name to the storefront domains it serves; products/variants list out-of-stock location names in their custom.oos_warehouses metafield. When no entries are selected, the legacy market_availability JSON drives the waitlist buttons."
+      }
+    ]
+  },
+  {
     "name": "Delivery Dates",
     "settings": [
       {

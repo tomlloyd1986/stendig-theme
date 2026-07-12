@@ -2479,6 +2479,87 @@ document.addEventListener('DOMContentLoaded', () => {
 {% comment %} ---------------------- Delivery Dates and market based Join waitlist logic ---------------------- {% endcomment %}
   window.marketAvailability = {{ product.metafields.custom.market_availability.value | json }};
 
+  {% comment %}
+    Warehouse-based availability. "Warehouse" metaobject entries (picked in
+    Theme settings > Warehouse Availability) map a Shopify location to the
+    storefront domains it serves: location (exact Shopify location name),
+    domains (list of subdomain codes, "main" = bare domain), is_default
+    (serves any domain not listed elsewhere). The custom.oos_warehouses
+    metafield on the product and/or variant lists the location names
+    currently out of stock (maintained by Shopify Flow). When either
+    metafield is set it takes priority over the legacy market_availability
+    JSON; when neither is set the legacy logic below still applies.
+  {% endcomment %}
+  window.warehouseByDomain = {
+    {%- for wh in settings.warehouses -%}
+      {%- assign wh_location = wh.location.value | strip | downcase -%}
+      {%- if wh_location != blank and wh.domains.value -%}
+        {%- for d in wh.domains.value %}
+    {{ d | strip | downcase | json }}: {{ wh_location | json }},
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor %}
+  };
+
+  {%- assign default_warehouse = '' -%}
+  {%- for wh in settings.warehouses -%}
+    {%- if wh.is_default.value and default_warehouse == '' -%}
+      {%- assign default_warehouse = wh.location.value | strip | downcase -%}
+    {%- endif -%}
+  {%- endfor %}
+  window.defaultWarehouse = {{ default_warehouse | json }} || null;
+
+  window.currentWarehouse = (function() {
+    const parts = window.location.host.toLowerCase().replace(/^www\./, '').split('.');
+    const code = parts.length === 2 ? 'main' : parts[0];
+    return window.warehouseByDomain[code] || window.defaultWarehouse;
+  })();
+
+  {% comment %}
+    custom.oos_warehouses is rewritten by Shopify Flow from live inventory;
+    custom.oos_warehouses_manual is human-edited and never touched by Flow
+    (use it to stop sales while stock exists). Both exist on product and
+    variant and all set lists are merged. The manual list also accepts the
+    special value "all" to stop sales on every domain.
+  {% endcomment %}
+  window.productOOSWarehouses = {{ product.metafields.custom.oos_warehouses.value | json }};
+  window.productOOSManual = {{ product.metafields.custom.oos_warehouses_manual.value | json }};
+  window.variantOOSWarehouses = {
+    {% for variant in product.variants %}
+      {{ variant.id }}: {{ variant.metafields.custom.oos_warehouses.value | json }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+  window.variantOOSManual = {
+    {% for variant in product.variants %}
+      {{ variant.id }}: {{ variant.metafields.custom.oos_warehouses_manual.value | json }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+
+  // Returns true/false when the warehouse metafields decide availability,
+  // or null when they can't (no warehouse mapping configured, or no
+  // metafield set) so the caller falls back to legacy logic.
+  window.warehouseAvailability = function(variantId) {
+    const norm = function(list) {
+      return Array.isArray(list)
+        ? list.map(function(w) { return String(w).toLowerCase().trim(); })
+        : null;
+    };
+
+    const autoProduct = norm(window.productOOSWarehouses);
+    const autoVariant = norm(window.variantOOSWarehouses[variantId]);
+    const manualProduct = norm(window.productOOSManual);
+    const manualVariant = norm(window.variantOOSManual[variantId]);
+
+    const manual = (manualProduct || []).concat(manualVariant || []);
+    if (manual.includes('all')) return false;
+
+    if (!window.currentWarehouse) return null;
+    if (autoProduct === null && autoVariant === null && manualProduct === null && manualVariant === null) return null;
+
+    const oos = (autoProduct || []).concat(autoVariant || []).concat(manual);
+    return !oos.includes(window.currentWarehouse);
+  };
+
 const waitlistBtn = document.querySelector('.custom-join-waitlist-btns');
 const buyBtn = document.querySelector('.ctm-buy-btn');
 const paymentBtn = document.querySelector('.custom-payment-btn');
@@ -2543,23 +2624,29 @@ function updateButtonVisibilityAndState() {
 
 
   let isAvailable = false;
-  
-  // 1. Check for Market Availability
+
+  // 1. Check availability: warehouse metafields first, legacy market JSON otherwise
   if (selectedVariant) {
-    const matchedVariant = metaList.find(m => {
-      const sameVariant = String(m.variant_id) === String(selectedVariant);
-      let metaDomain = m.domain ? m.domain.toLowerCase() : "";
+    const warehouseDecision = window.warehouseAvailability(selectedVariant);
 
-      if (m.market && m.market.toLowerCase() === "gb") {
-        metaDomain = "stendigcalendars.com";
+    if (warehouseDecision !== null) {
+      isAvailable = warehouseDecision;
+    } else {
+      const matchedVariant = metaList.find(m => {
+        const sameVariant = String(m.variant_id) === String(selectedVariant);
+        let metaDomain = m.domain ? m.domain.toLowerCase() : "";
+
+        if (m.market && m.market.toLowerCase() === "gb") {
+          metaDomain = "stendigcalendars.com";
+        }
+
+        const sameDomain = metaDomain === currentDomain;
+        return sameVariant && sameDomain;
+      });
+
+      if (matchedVariant) {
+        isAvailable = matchedVariant.qty > 0;
       }
-
-      const sameDomain = metaDomain === currentDomain;
-      return sameVariant && sameDomain;
-    });
-
-    if (matchedVariant) {
-      isAvailable = matchedVariant.qty > 0;
     }
   }
   
@@ -4031,6 +4118,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isVariantAvailableForCurrentMarket(variant) {
       if (!variant) return false;
+
+      const warehouseDecision = window.warehouseAvailability ? window.warehouseAvailability(variant.id) : null;
+      if (warehouseDecision !== null) return warehouseDecision;
+
       if (!marketList.length) return Boolean(variant.available);
 
       const matchedVariant = marketList.find((marketVariant) => {
