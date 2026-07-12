@@ -43,27 +43,7 @@
 
             <tbody>
               {%- for item in cart.items -%}
-                {% assign relative = all_products[item.product.handle].metafields.relation.relative_product.value %}
-                {% assign replace_with = all_products[relative.handle].metafields.relation.replace_with.value.selected_or_first_available_variant %}
-                {% assign orignal_product = all_products[item.product.handle].metafields.relation.orignal_product.value %}
-
-                {% if relative == blank %}
-                  {% assign relative = all_products[orignal_product.product.handle].metafields.relation.relative_product.value %}
-                {% endif %}
-                
-                {% comment %} {{ relative.id }}
-                {{ replace_with.id }} {% endcomment %}
-                
-                <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}" 
-                    data-id="{{ item.id }}" 
-                    data-relative="{{ relative.variants | map: 'id' | join: ', ' }}"
-                    data-this-item-replace="{{ item.product.metafields.relation.replace_with.value.variants[0].id }}" 
-                    data-replace="{{ replace_with.id }}" 
-                    data-orignal-product="{{ orignal_product.id }}"
-                    data-item-handle="{{ item.product.handle }}"
-                    data-original-handle="{{ orignal_product.product.handle }}"
-                    data-item-title="{{ item.variant.title }}"
-                >
+                <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
                   <td class="cart-item__media">
                     {% if item.image %}
                       {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
@@ -209,7 +189,7 @@
                       </button>
                     </quantity-input>
 
-                    <cart-remove-button id="Remove-{{ item.index | plus: 1 }}" data-index="{{ item.index | plus: 1 }}" data-relative="{{ relative.selected_or_first_available_variant.id }}" data-replace="{{ replace_with.id }}">
+                    <cart-remove-button id="Remove-{{ item.index | plus: 1 }}" data-index="{{ item.index | plus: 1 }}">
                       <a href="{{ item.url_to_remove }}" class="button button--tertiary" aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}">
                         {% render 'icon-remove' %}
                       </a>
