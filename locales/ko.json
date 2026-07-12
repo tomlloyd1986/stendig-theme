@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "shopify": {
     "sentence": {
@@ -36,7 +45,7 @@
         "autocomplete_title": "제안 사항",
         "autocomplete_single_item": "1개 항목 사용 가능",
         "autocomplete_multi_item": "{{number}}에 항목 사용 가능",
-        "autocomplete_selection": "{{number}}\/{{total}}",
+        "autocomplete_selection": "{{number}}/{{total}}",
         "autocomplete_close": "제안 사항 닫기",
         "forwarding_indicator": {
           "new_window": "새 창에서 열기.",
@@ -66,17 +75,17 @@
         "company_label": "회사",
         "optional_company_label": "회사 (선택 사항)",
         "address1_label": "주소",
-        "address2_label": "아파트, 동\/호수 등",
-        "optional_address2_label": "아파트, 동\/호수 등(선택 사항)",
-        "city_label": "구\/군\/시",
-        "country_label": "국가\/지역",
-        "country_code": "국가\/지역 코드",
-        "province_label": "시\/도",
-        "province_placeholder": "시\/도",
+        "address2_label": "아파트, 동/호수 등",
+        "optional_address2_label": "아파트, 동/호수 등(선택 사항)",
+        "city_label": "구/군/시",
+        "country_label": "국가/지역",
+        "country_code": "국가/지역 코드",
+        "province_label": "시/도",
+        "province_placeholder": "시/도",
         "county_label": "군",
         "county_placeholder": "군",
-        "state_label": "시\/도",
-        "state_placeholder": "시\/도",
+        "state_label": "시/도",
+        "state_placeholder": "시/도",
         "region_label": "지역",
         "region_placeholder": "지역",
         "region_none": "선택 항목 없음",
@@ -86,8 +95,8 @@
         "governorate_placeholder": "행정 기관",
         "emirate_label": "영토",
         "emirate_placeholder": "영토",
-        "state_and_territory_label": "시\/도\/지역",
-        "state_and_territory_placeholder": "시\/도\/지역",
+        "state_and_territory_label": "시/도/지역",
+        "state_and_territory_placeholder": "시/도/지역",
         "phone_label": "전화",
         "optional_phone_label": "전화 (선택 사항)",
         "phone_placeholder": "전화",
@@ -167,11 +176,11 @@
         "gift_card_has_been_removed": "기프트 카드가 제거되었습니다.",
         "gift_card_subscriptions_notice": "기프트 카드는 첫 번째 결제에만 적용됩니다.",
         "discount_already_applied": "이 주문에 할인이 적용되었습니다. 다른 할인을 추가할 수 없습니다.",
-        "cart_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 카트에 있는 품목에 유효하지 않습니다.",
-        "discount_requires_customer_notice": "배송 정보를 입력하여 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드를 적용하십시오.",
-        "customer_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 지금 사용할 수 없습니다.",
-        "shipping_information_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 배송 주소에 사용할 수 없습니다.",
-        "customer_already_used_once_per_customer_discount_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 이미 사용되었습니다.",
+        "cart_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}</strong> 할인 코드는 카트에 있는 품목에 유효하지 않습니다.",
+        "discount_requires_customer_notice": "배송 정보를 입력하여 <strong style=\"text-transform:uppercase\">%{code}</strong> 할인 코드를 적용하십시오.",
+        "customer_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}</strong> 할인 코드는 지금 사용할 수 없습니다.",
+        "shipping_information_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}</strong> 할인 코드는 배송 주소에 사용할 수 없습니다.",
+        "customer_already_used_once_per_customer_discount_notice": "<strong style=\"text-transform:uppercase\">%{code}</strong> 할인 코드는 이미 사용되었습니다.",
         "subtotal_label": "소계",
         "shipping_label": "배송",
         "pickup_label": "픽업",
@@ -329,8 +338,8 @@
         "name_on_card_label": "카드 이름",
         "name_on_card_placeholder": "카드 이름",
         "card_expired": "만료됨",
-        "card_expiry_label": "만료일 (MM \/ YY)",
-        "card_expiry_placeholder": "만료일 (MM \/ YY)",
+        "card_expiry_label": "만료일 (MM / YY)",
+        "card_expiry_placeholder": "만료일 (MM / YY)",
         "credit_card_start_month": "시작 달",
         "credit_card_start_year": "시작 년도",
         "delete_customer_mandate_modal_title": "카드를 제거하시겠습니까?",
@@ -346,8 +355,8 @@
         "card_verification_value_explanation": "대개 카드 뒷면에 있는 3자리 보안 코드입니다. American Express의 경우 앞면의 4자리 코드입니다.",
         "card_verification_value_explanation_amex": "카드 앞면에 4자리 보안 코드가 있습니다.",
         "card_verification_value_explanation_other": "카드 뒷면에 4자리 보안 코드가 있습니다.",
-        "card_start_label": "발행일 (MM \/ YY)",
-        "card_start_placeholder": "발행일 (MM \/ YY)",
+        "card_start_label": "발행일 (MM / YY)",
+        "card_start_placeholder": "발행일 (MM / YY)",
         "card_issue_number_label": "발행 번호",
         "card_issue_number_placeholder": "발행 번호",
         "card_change_label": "변경",
@@ -359,7 +368,7 @@
         "different_credit_card_label": "다른 신용 카드 사용",
         "same_billing_address_label": "배송 주소와 같음",
         "different_billing_address_label": "다른 청구 주소 사용",
-        "free_order_notice_html": "주문은 <strong>무료<\/strong> 입니다. 지불 할 필요가 없습니다.",
+        "free_order_notice_html": "주문은 <strong>무료</strong> 입니다. 지불 할 필요가 없습니다.",
         "express_checkout_free_order": "무료 주문에는 청구하지 않습니다.",
         "order_covered_by_gift_cards_notice": {
           "one": "주문은 기프트 카드로 처리됩니다.",
@@ -373,8 +382,8 @@
         "no_js_credit_card_fields_redirect_hint": "결제 정보를 추가할 수 있도록 리디렉션 됩니다.",
         "card_fields_container_prefix": "필드 컨테이너 :",
         "card_fields_unavailable_html": {
-          "one": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침<\/a> 하거나 나중에 다시 시도하십시오.",
-          "other": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침<\/a> 하거나 다른 결제 방식으로 다시 시도하십시오."
+          "one": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침</a> 하거나 나중에 다시 시도하십시오.",
+          "other": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침</a> 하거나 다른 결제 방식으로 다시 시도하십시오."
         },
         "card_fields_processing_error": "결제 처리 중 문제가 발생했습니다. 이 페이지를 새로 고침하거나 인터넷 연결을 확인하십시오.",
         "technical_error": "기술 문제로 인해 지금 결제를 처리할 수 없습니다. 몇 분 후에 다시 시도하십시오.",
@@ -394,7 +403,7 @@
         "subscription_card_update_agreement_label": "결제 방법을 변경하면 구독 및 향후 정기결제가 업데이트됩니다.",
         "subscription_agreement_label": "구독에 동의합니다. 구독은 종료되거나 %{cancelled} 시까지 나열된 가격과 빈도로 갱신됩니다.",
         "subscription_agreement_cancelled": "취소됨",
-        "subscription_agreement_label_html": "구독에 동의합니다. 종료되거나\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">취소<\/a>될 때까지 나열된 가격과 빈도로 갱신됩니다.\n",
+        "subscription_agreement_label_html": "구독에 동의합니다. 종료되거나\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">취소</a>될 때까지 나열된 가격과 빈도로 갱신됩니다.\n",
         "change_currency_section_description": "통화 옵션 선택",
         "no_real_orders_dev_store": "이 스토어는 실제 주문이나 결제를 수락할 수 없습니다.",
         "waiting_on_payment_methods": "사용 가능한 결제 방법 가져오는 중...",
@@ -422,7 +431,7 @@
       },
       "payment_summary": {
         "gift_card_current_balance_notice": "현재 잔액 %{amount}",
-        "credit_card_expires_on_notice": "만료일 : %{month}\/%{year}",
+        "credit_card_expires_on_notice": "만료일 : %{month}/%{year}",
         "express_payment_gateway_label": "Express",
         "manual_payment_gateway_label": "수동",
         "billing_address_title": "청구 주소",
@@ -437,11 +446,11 @@
         "address_first_name_blank": "이름 입력",
         "address_last_name_blank": "성 입력",
         "address_address1_blank": "주소 입력",
-        "address_address2_blank": "아파트, 동\/호수 등 입력",
-        "address_city_blank": "구\/군\/시 입력",
-        "address_country_blank": "국가\/지역 선택",
-        "address_country_not_supported": "현재이 국가\/지역으로 배송되지 않습니다. 새로운 배송 주소를 선택하고 다시 시도하십시오.",
-        "address_province_blank": "시\/도 입력",
+        "address_address2_blank": "아파트, 동/호수 등 입력",
+        "address_city_blank": "구/군/시 입력",
+        "address_country_blank": "국가/지역 선택",
+        "address_country_not_supported": "현재이 국가/지역으로 배송되지 않습니다. 새로운 배송 주소를 선택하고 다시 시도하십시오.",
+        "address_province_blank": "시/도 입력",
         "address_company_blank": "회사명 입력",
         "address_phone_blank": "유효한 전화 번호 입력",
         "address_zip_blank": "우편 번호 입력",
@@ -923,9 +932,9 @@
       "pincode": "PIN 코드",
       "region": "지역",
       "prefecture": "현",
-      "province": "시\/도",
-      "state": "시\/도",
-      "state_and_territory": "시\/도\/지역",
+      "province": "시/도",
+      "state": "시/도",
+      "state_and_territory": "시/도/지역",
       "county": "군",
       "emirate": "영토",
       "governorate": "행정 기관",
@@ -971,7 +980,7 @@
       "email_domain_invalid": "공급업체가 지원되지 않습니다.",
       "invalid_for_country": "은(는) %{country}에 사용할 수 없습니다.",
       "invalid_for_country_and_province": "은(는) %{province} 및 %{country}에 사용할 수 없습니다.",
-      "invalid_province_in_country": "은(는) %{country}의 유효한 시\/도가 아닙니다.",
+      "invalid_province_in_country": "은(는) %{country}의 유효한 시/도가 아닙니다.",
       "invalid_state_in_country": "은(는) %{country}의 유효한 주가 아닙니다.",
       "invalid_region_in_country": "은(는) %{country}의 유효한 지역이 아닙니다.",
       "less_than_or_equal_to": "은(는) %{count} 이하여야 합니다.",
@@ -983,7 +992,7 @@
       "expired": "만료되었습니다.",
       "invalid_start_date_or_issue_number_for_debit": "유효한 시작 날짜 혹은 발행 번호가 필요합니다.",
       "invalid_expiry_year": "유효한 만료 연도가 아닙니다.",
-      "reset_password_html": "이메일 주소가 이미 계정과 연결되었습니다. 이 계정이 귀하의 것이면 <a href=\"\/account\/login#recover\">비밀번호를 재설정<\/a> 할 수 있습니다.",
+      "reset_password_html": "이메일 주소가 이미 계정과 연결되었습니다. 이 계정이 귀하의 것이면 <a href=\"/account/login#recover\">비밀번호를 재설정</a> 할 수 있습니다.",
       "verify_email": "%{customer_email}에 이메일을 송신하여 이메일 주소를 확인하기 위해 포함된 링크를 클릭합니다."
     },
     "notices": {
@@ -1030,7 +1039,7 @@
           "declined": "결제 거절됨",
           "inventory": "품목을 사용할 수 없음",
           "fraud": "사기 주문",
-          "customer": "고객이 주문을 변경\/취소했습니다.",
+          "customer": "고객이 주문을 변경/취소했습니다.",
           "other": "기타"
         },
         "cash_on_delivery": "COD(대금 상환 인도)"
@@ -1045,7 +1054,7 @@
         "too_many_line_items_error": "%{max}개이상의 항목을 담을 수 없습니다.",
         "link_expired": "만료된 링크",
         "link_no_longer_exists": "링크가 더 이상 존재하지 않습니다.",
-        "stock_problems_html": "하나 혹은 이상의 항목을 더 이상 사용할 수 없습니다. <a href='%{link}'>업데이트된 장바구니<\/a> 를 제공되었습니다.",
+        "stock_problems_html": "하나 혹은 이상의 항목을 더 이상 사용할 수 없습니다. <a href='%{link}'>업데이트된 장바구니</a> 를 제공되었습니다.",
         "changed": "변경된 카드",
         "items_changed": "하나 이상의 항목을 변경되었습니다.",
         "product_sold_out": "'%{name}' 의 제품이 이미 매진되었습니다.",
@@ -1078,29 +1087,29 @@
       },
       "open_tracking": {
         "opt_in": {
-          "opted_in_html": "<b>이메일 확인 추적을 옵트인했습니다.<\/b>",
+          "opted_in_html": "<b>이메일 확인 추적을 옵트인했습니다.</b>",
           "visibility": "이메일 확인율은 익명으로 보고됩니다. 집계된 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다.",
-          "opt_out_html": "이 정보를 공유하지 않으려면 이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트아웃<\/a>할 수 있습니다.",
+          "opt_out_html": "이 정보를 공유하지 않으려면 이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트아웃</a>할 수 있습니다.",
           "preview_bar": "고객이 이메일 확인 추적을 옵트인할 때 표시되는 화면을 미리 보는 중입니다."
         },
         "opt_out": {
-          "opted_out_html": "<b>이메일 확인 추적을 옵트아웃했습니다.<\/b>",
+          "opted_out_html": "<b>이메일 확인 추적을 옵트아웃했습니다.</b>",
           "visibility": "이메일을 열었는지 표시하지 않습니다.",
-          "opt_in_html": "이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트인<\/a>합니다.",
+          "opt_in_html": "이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트인</a>합니다.",
           "preview_bar": "고객이 이메일 확인 추적을 옵트아웃할 때 표시되는 화면을 미리 보는 중입니다."
         },
         "no_longer_track": {
-          "status_html": "<b>더 이상 이메일 확인을 추적하지 않습니다.<\/b>",
+          "status_html": "<b>더 이상 이메일 확인을 추적하지 않습니다.</b>",
           "privacy_policy": "이 이메일을 보낸 후 개인정보처리방침을 업데이트했으며 더 이상 확인을 추적하지 않습니다."
         },
         "track": {
-          "status_html": "<b>이메일 확인 추적이 보고됩니다.<\/b>",
+          "status_html": "<b>이메일 확인 추적이 보고됩니다.</b>",
           "visibility": "총 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다."
         },
         "updated_policy": {
-          "status_html": "<b>이메일 확인 추적이 보고됩니다.<\/b>",
+          "status_html": "<b>이메일 확인 추적이 보고됩니다.</b>",
           "visibility": "방침을 업데이트했으며 이제 이메일 확인을 추적합니다. 이메일 확인율은 익명으로 보고됩니다. 총 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다.",
-          "opt_out_html": "이 정보를 공유하지 않으려면 <a style='text-decoration:underline;' href='%{link}'>구독을 취소<\/a>할 수 있습니다."
+          "opt_out_html": "이 정보를 공유하지 않으려면 <a style='text-decoration:underline;' href='%{link}'>구독을 취소</a>할 수 있습니다."
         }
       }
     },
@@ -1186,9 +1195,9 @@
       "empty": "카트가 비어 있습니다",
       "cart_error": "카트를 업데이트하는 중 오류가 발생했습니다. 다시 시도하십시오.",
       "cart_quantity_error_html": "카트에는 이 품목을 [quantity]개만 추가할 수 있습니다.",
-      "taxes_and_shipping_policy_at_checkout_html": "결제 시 세금 및<a href=\"{{ link }}\"> 배송료<\/a>가 계산됨",
+      "taxes_and_shipping_policy_at_checkout_html": "결제 시 세금 및<a href=\"{{ link }}\"> 배송료</a>가 계산됨",
       "taxes_included_but_shipping_at_checkout": "세금 포함 가격이며 결제 시 배송료가 계산됨",
-      "taxes_included_and_shipping_policy_html": "세금이 포함된 가격입니다. 결제 시 <a href=\"{{ link }}\">배송료<\/a> 가 계산됨",
+      "taxes_included_and_shipping_policy_html": "세금이 포함된 가격입니다. 결제 시 <a href=\"{{ link }}\">배송료</a> 가 계산됨",
       "taxes_and_shipping_at_checkout": "결제 시 세금 및 배송료가 계산됨",
       "headings": {
         "product": "제품",
@@ -1199,7 +1208,7 @@
       "update": "업데이트",
       "login": {
         "title": "계정이 있습니까?",
-        "paragraph_html": "더 빠르게 결제하려면 <a href=\"{{ link }}\" class=\"link underlined-link\">로그인<\/a>하십시오."
+        "paragraph_html": "더 빠르게 결제하려면 <a href=\"{{ link }}\" class=\"link underlined-link\">로그인</a>하십시오."
       }
     },
     "footer": {
@@ -1220,7 +1229,7 @@
     "collection_template": {
       "empty": "제품을 찾을 수 없음",
       "title": "컬렉션",
-      "use_fewer_filters_html": "더 적은 수의 필터를 사용하거나 <a class=\"{{ class }}\" href=\"{{ link }}\">모두 지우기<\/a>"
+      "use_fewer_filters_html": "더 적은 수의 필터를 사용하거나 <a class=\"{{ class }}\" href=\"{{ link }}\">모두 지우기</a>"
     },
     "video": {
       "load_video": "동영상 로드: {{ description }}"
@@ -1235,7 +1244,7 @@
       "login_form_error": "잘못된 비밀번호입니다!",
       "login_form_submit": "입력",
       "modal": "비밀번호 모달",
-      "admin_link_html": "스토어 소유자입니까? <a href=\"\/admin\" class=\"link underlined-link\">여기에서 로그인<\/a>",
+      "admin_link_html": "스토어 소유자입니까? <a href=\"/admin\" class=\"link underlined-link\">여기에서 로그인</a>",
       "powered_by_shopify_html": "이 상점은 {{ shopify }}에서 제공합니다."
     },
     "social": {
@@ -1299,7 +1308,7 @@
     "previous_slide": "왼쪽으로 슬라이드",
     "loading": "로드하는 중...",
     "total_reviews": "총 리뷰",
-    "star_reviews_info": "별점: {{ rating_value }}\/{{ rating_max }}"
+    "star_reviews_info": "별점: {{ rating_value }}/{{ rating_max }}"
   },
   "blogs": {
     "article": {
@@ -1347,8 +1356,8 @@
         "view_store_info": "스토어 정보 보기",
         "check_other_stores": "다른 스토어의 사용 가능 여부 확인",
         "pick_up_available": "픽업 사용 가능",
-        "pick_up_available_at_html": "<span class=\"color-foreground\">{{ location_name }}<\/span>에서 픽업 사용 가능",
-        "pick_up_unavailable_at_html": "<span class=\"color-foreground\">{{ location_name }}<\/span>에서 현재 픽업 사용 불가",
+        "pick_up_available_at_html": "<span class=\"color-foreground\">{{ location_name }}</span>에서 픽업 사용 가능",
+        "pick_up_unavailable_at_html": "<span class=\"color-foreground\">{{ location_name }}</span>에서 현재 픽업 사용 불가",
         "unavailable": "픽업 사용 가능 여부를 로드할 수 없습니다.",
         "refresh": "새로 고침"
       },
@@ -1367,7 +1376,7 @@
       "xr_button": "사용자 공간에서 보기",
       "xr_button_label": "사용자 공간에서 보기, 증강 현실 창에서 품목 로드",
       "include_taxes": "세금이 포함됩니다.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">배송료<\/a>는 결제 시 계산됩니다."
+      "shipping_policy_html": "<a href=\"{{ link }}\">배송료</a>는 결제 시 계산됩니다."
     },
     "modal": {
       "label": "미디어 갤러리"
@@ -1386,8 +1395,8 @@
       },
       "max_price": "최고가는 {{ price }}입니다.",
       "product_count": {
-        "one": "{{ product_count }}\/{{ count }}개 제품",
-        "other": "{{ product_count }}\/{{ count }}개 제품"
+        "one": "{{ product_count }}/{{ count }}개 제품",
+        "other": "{{ product_count }}/{{ count }}개 제품"
       },
       "product_count_simple": {
         "one": "{{ count }}개 제품",
@@ -1406,7 +1415,7 @@
       "subtext": "404"
     },
     "search": {
-      "no_results": "\"{{ terms }}\"에 대한 검색 결과가 없습니다. 철자를 확인하거나 다른 단어\/문구를 사용해 보십시오.",
+      "no_results": "\"{{ terms }}\"에 대한 검색 결과가 없습니다. 철자를 확인하거나 다른 단어/문구를 사용해 보십시오.",
       "page": "페이지",
       "products": "제품",
       "results_with_count": {
@@ -1436,10 +1445,10 @@
     }
   },
   "localization": {
-    "country_label": "국가\/지역",
+    "country_label": "국가/지역",
     "language_label": "언어",
     "update_language": "언어 업데이트",
-    "update_country": "국가\/지역 업데이트"
+    "update_country": "국가/지역 업데이트"
   },
   "customer": {
     "account": {
@@ -1467,9 +1476,9 @@
       "company": "회사",
       "address1": "주소 1",
       "address2": "주소 2",
-      "city": "구\/군\/시",
-      "country": "국가\/지역",
-      "province": "시\/도",
+      "city": "구/군/시",
+      "country": "국가/지역",
+      "province": "시/도",
       "zip": "우편 번호",
       "phone": "전화",
       "set_default": "기본 주소로 설정",
