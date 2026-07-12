@@ -39,6 +39,17 @@
 
 {% assign current_domain = request.host | downcase | remove: 'www.' %}
 
+{% comment %}
+  Rules can target a full hostname (e.g. "de.stendigcalendars.com") or just the
+  subdomain code (e.g. "de"). Use "main" for the bare domain (stendigcalendars.com).
+{% endcomment %}
+{% assign host_parts = current_domain | split: '.' %}
+{% if host_parts.size == 2 %}
+  {% assign current_subdomain = 'main' %}
+{% else %}
+  {% assign current_subdomain = host_parts | first %}
+{% endif %}
+
 {% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
 {% assign global_dates = cleaned_text | split: ',' %}
 
@@ -56,9 +67,9 @@
 
 {% if rule_list %}
   {% for entry in rule_list %}
-    {% assign entry_domain = entry.domain | downcase | remove: 'www.' %}
+    {% assign entry_domain = entry.domain | downcase | remove: 'www.' | strip %}
 
-    {% if entry_domain == current_domain %}
+    {% if entry_domain == current_domain or entry_domain == current_subdomain %}
       {% assign exclude_string = entry.exclude_date | strip %}
 
       {% if exclude_string != '' %}
