@@ -50,18 +50,11 @@
   {% assign current_subdomain = host_parts | first %}
 {% endif %}
 
-{% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
-{% assign global_dates = cleaned_text | split: ',' %}
-
-{% assign global_dates_clean = '' %}
-{% for d in global_dates %}
-  {% assign dd = d | strip %}
-  {% if dd != '' %}
-    {% assign global_dates_clean = global_dates_clean | append: dd | append: '||' %}
-  {% endif %}
-{% endfor %}
-{% assign global_dates_final = global_dates_clean | split: '||' %}
-
+{% comment %}
+  Per-product exclusions (custom.delivery_domain_rule metafield):
+  entries of { domain, exclude_date } hide the named dates on that domain
+  for this product only. Applies to both data sources below.
+{% endcomment %}
 {% assign rule_list = product.metafields.custom.delivery_domain_rule.value %}
 {% assign excluded_raw = '' %}
 
@@ -86,13 +79,60 @@
 {% assign excluded = excluded_raw | split: '||' | uniq %}
 
 {% assign final_list = '' %}
-{% for d in global_dates_final %}
-  {% assign dd = d | strip %}
-  {% unless excluded contains dd %}
-    {% assign final_list = final_list | append: dd | append: '||' %}
-  {% endunless %}
-{% endfor %}
+{% assign label_list = '' %}
+
+{% if settings.delivery_date_entries.count > 0 %}
+  {% comment %}
+    Primary source: "Delivery date option" metaobjects picked in theme settings.
+    Field keys: date (canonical English value, do not translate),
+    label (optional display override, translatable via T Lab),
+    hide_on (list of subdomain codes / hostnames, "main" = bare domain),
+    expires (optional date; entry hidden after this day).
+  {% endcomment %}
+  {% assign today_num = 'now' | date: '%Y%m%d' | plus: 0 %}
+
+  {% for entry in settings.delivery_date_entries %}
+    {% assign date_value = entry.date.value | strip %}
+    {% if date_value == blank %}{% continue %}{% endif %}
+    {% if excluded contains date_value %}{% continue %}{% endif %}
+
+    {% assign hidden_here = false %}
+    {% if entry.hide_on.value %}
+      {% for h in entry.hide_on.value %}
+        {% assign h_clean = h | downcase | remove: 'www.' | strip %}
+        {% if h_clean == current_domain or h_clean == current_subdomain %}
+          {% assign hidden_here = true %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if hidden_here %}{% continue %}{% endif %}
+
+    {% if entry.expires.value %}
+      {% assign expires_num = entry.expires.value | date: '%Y%m%d' | plus: 0 %}
+      {% if today_num > expires_num %}{% continue %}{% endif %}
+    {% endif %}
+
+    {% assign final_list = final_list | append: date_value | append: '||' %}
+    {% assign custom_label = entry.label.value | default: '' | strip %}
+    {% assign label_list = label_list | append: custom_label | append: '||' %}
+  {% endfor %}
+{% else %}
+  {% comment %} Legacy fallback: comma-separated list from theme settings. {% endcomment %}
+  {% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
+  {% assign global_dates = cleaned_text | split: ',' %}
+
+  {% for d in global_dates %}
+    {% assign dd = d | strip %}
+    {% if dd != '' %}
+      {% unless excluded contains dd %}
+        {% assign final_list = final_list | append: dd | append: '||' %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
 {% assign final_dates = final_list | split: '||' %}
+{% assign final_labels = label_list | split: '||' %}
 
 <div class="delivery-date-wrapper-custom">
   <label class="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
@@ -104,10 +144,16 @@
         {% assign normalized_date = raw_date | downcase %}
         {% assign button_label = raw_date %}
         {% assign is_asap = false %}
+        {% assign custom_label = final_labels[forloop.index0] %}
 
         {% if normalized_date == 'asap' %}
-          {% assign button_label = 'delivery.date_options.asap' | t %}
           {% assign is_asap = true %}
+        {% endif %}
+
+        {% if custom_label != blank %}
+          {% assign button_label = custom_label %}
+        {% elsif normalized_date == 'asap' %}
+          {% assign button_label = 'delivery.date_options.asap' | t %}
         {% elsif normalized_date == 'by xmas' or normalized_date == 'by christmas' %}
           {% assign button_label = 'delivery.date_options.by_xmas' | t %}
         {% else %}
