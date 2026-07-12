@@ -472,6 +472,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }}. {{ month }}",
     "choose_date": "Izberite datum dostave",
     "join_waitlist": "Pridruži se čakalni listi",
     "required_message": "Izberite datum dostave",

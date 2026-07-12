@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }} {{ month }}",
     "choose_date": "Επιλέξτε ημερομηνία παράδοσης",
     "join_waitlist": "Εγγραφή στη λίστα αναμονής",
     "required_message": "Επιλέξτε ημερομηνία παράδοσης",

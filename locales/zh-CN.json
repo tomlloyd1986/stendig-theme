@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ month }}{{ day }}日",
     "choose_date": "选择送货日期",
     "join_waitlist": "加入等候名单",
     "required_message": "请选择送货日期",

@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }}. {{ month }}",
     "choose_date": "Valitse toimituspäivä",
     "join_waitlist": "Liity odotuslistalle",
     "required_message": "Valitse toimituspäivä",

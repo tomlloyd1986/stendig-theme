@@ -455,6 +455,7 @@
     }
   },
   "delivery": {
+    "date_label": "{{ day }} {{ month }}",
     "choose_date": "Teslimat tarihi seçin",
     "join_waitlist": "Bekleme listesine katıl",
     "required_message": "Bir teslimat tarihi seçin",

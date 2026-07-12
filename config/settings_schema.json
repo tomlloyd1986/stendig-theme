@@ -337,7 +337,7 @@
         "id": "delivery_date_entries",
         "label": "Delivery date options",
         "metaobject_type": "delivery_date_option",
-        "info": "Pick and order the delivery dates to offer. Manage entries (incl. per-domain hiding and expiry) under Content > Metaobjects > Delivery date option. When any are selected here, the legacy text list below is ignored."
+        "info": "Pick and order the delivery dates to offer. Manage entries under Content > Metaobjects > Delivery date option: pick a real date (auto-hides once passed, translated automatically) or set Special to ASAP / By Xmas, and optionally hide per domain. When any are selected here, the legacy text list below is ignored."
       },
       {
         "type": "richtext",
