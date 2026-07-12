@@ -2615,7 +2615,13 @@ function setSelectedDate(button, value) {
 
 function updateButtonVisibilityAndState() {
   const url = new URL(window.location.href);
-  const selectedVariant = url.searchParams.get("variant") || {{ product.selected_or_first_available_variant.id }};
+  let selectedVariant = url.searchParams.get("variant") || {{ product.selected_or_first_available_variant.id }};
+  // The ?variant= parameter can carry an id from a different product (old
+  // links, cross-domain language links). Shopify itself ignores foreign ids,
+  // so judge availability by this product's variant instead.
+  if (!(selectedVariant in window.variantOOSWarehouses)) {
+    selectedVariant = {{ product.selected_or_first_available_variant.id }};
+  }
   const metaList = window.marketAvailability || [];
   const currentDomain = window.location.host.toLowerCase();
   
