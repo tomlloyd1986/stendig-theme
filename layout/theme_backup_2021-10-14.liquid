@@ -1,0 +1,412 @@
+{% comment %}ly_liquid_scripts_begin{% endcomment %}{% capture ly_liquid_content %}{% comment %}ly_liquid_scripts_end{% endcomment %}<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" fontify-lang="{{ shop.locale }}{% comment %}ly_dir_replace_for_[]_begin{% endcomment %}{%- assign language_code = '_' | append: request.locale.iso_code -%}{%- if '_ar_he_fa_ur' contains language_code -%} dir="rtl" {%- endif -%}{% comment %}ly_dir_replace_end{% endcomment %}>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+{% comment %}Hide Range Buy Now{% endcomment %}
+
+    {% if request.host == 'us.stendigcalendars.com' or request.host == 'kr.stendigcalendars.com' or request.host == 'tw.stendigcalendars.com' or request.host == 'sg.stendigcalendars.com' or request.host == 'hk.stendigcalendars.com' or request.host == 'ca.stendigcalendars.com' or request.host == 'mx.stendigcalendars.com' or request.host == 'in.stendigcalendars.com' or request.host == 'mx.stendigcalendars.com' %}
+		<style>                                                         
+ 			.header__inline-menu > ul > li:nth-child(2) {
+					display: none !important;
+									} 
+            .menu-drawer__navigation > ul > li:nth-child(2) {
+					display: none !important;                                            
+									}
+             .button-v-yes {
+					display: none !important;                                            
+									}                                                         
+		</style>
+     {% else %}
+		<style>                                                         
+ 			.header__inline-menu > ul > li:nth-child(1) {
+					display: none !important;
+									} 
+            .menu-drawer__navigation > ul > li:nth-child(1) {
+					display: none !important;                                            
+									}
+             .button-v-no {
+					display: none !important;                                            
+									}                                                         
+		</style>
+    {% endif %}
+
+{% comment %}Hide various classes in certain countries{% endcomment %}
+  
+    {% if request.host == 'us.stendigcalendars.com'%}
+		<style>                                                         
+ 			.shopify-section.product-section {
+						display:none !important;
+					}                                                         
+		</style>
+    {% endif %}
+                                                                                                                  
+{% comment %}CLUSTER 1 V YES HS YES{% endcomment %}
+                                                         
+    {% if request.host != 'stendigcalendars.com' and request.host != 'eu.stendigcalendars.com' and request.host != 'no.stendigcalendars.com'% and request.host != 'dk.stendigcalendars.com' and request.host != 'se.stendigcalendars.com'% and request.host != 'ch.stendigcalendars.com' and request.host != 'uk.stendigcalendars.com' and request.host != 'fr.stendigcalendars.com' and request.host != 'de.stendigcalendars.com' and request.host != 'nl.stendigcalendars.com' and request.host != 'es.stendigcalendars.com' and request.host != 'it.stendigcalendars.com' %}
+		<style>
+			.v-yes-hs-yes {
+						display:none !important;
+					}                                                      
+		</style>
+    {% endif %}
+                                                         
+{% comment %}CLUSTER 2 V YES HS NO{% endcomment %}
+                                                         
+    {% if request.host != 'au.stendigcalendars.com' and request.host != 'nz.stendigcalendars.com' %}
+		<style>
+			.v-yes-hs-no {
+						display:none !important;
+					}                                                      
+		</style>
+    {% endif %}
+                                                                                                                  
+{% comment %}CLUSTER 3 V NO{% endcomment %}
+                                                         
+    {% if request.host != 'tw.stendigcalendars.com' and request.host != 'kr.stendigcalendars.com' and request.host != 'ca.stendigcalendars.com' and request.host != 'us.stendigcalendars.com' and request.host != 'mx.stendigcalendars.com' and request.host != 'sg.stendigcalendars.com' and request.host != 'hk.stendigcalendars.com' and request.host != 'in.stendigcalendars.com' %}
+		<style>
+			.v-no-hs-no {
+						display:none !important;
+					}                                                      
+		</style>                                                         
+    {% else %}
+		<style>
+			.v-yes {
+						display:none !important;
+					}
+            #shopify-section-template--15258677313774__main {
+						display:none !important;
+					}                                            
+		</style>                                                     
+    {% endif %}
+                                                         
+    {% if page.url == '/products/v-calendar'%}
+		<style>                                                         
+ 			.shopify-section.product-section {
+						display:none !important;
+					}                                                         
+		</style>
+    {% endif %}                                                              
+                                                       
+{% comment %}US ONLY RULES{% endcomment %}
+                                                         
+    {% if request.host != 'us.stendigcalendars.com' %}
+		<style>
+			.us-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %} 
+    {% if request.host == 'us.stendigcalendars.com' %}
+		<style>
+			.not-us {
+						display:none !important;
+					}                                                      
+		</style>
+    {% endif %}                                                          
+{% comment %}Hide various classes in certain countries ends{% endcomment %}
+
+{% comment %}START OF SHIPPING PAGE HIDING{% endcomment %}
+
+    {% if request.host != 'eu.stendigcalendars.com' and request.host != 'no.stendigcalendars.com' and request.host != 'se.stendigcalendars.com' %}
+		<style>
+			.eu-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}
+    {% if request.host != 'fr.stendigcalendars.com' %}
+		<style>
+			.fr-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}
+    {% if request.host != 'dk.stendigcalendars.com' %}
+		<style>
+			.dk-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}     
+    {% if request.host != 'nl.stendigcalendars.com' %}
+		<style>
+			.nl-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}
+    {% if request.host != 'de.stendigcalendars.com' and request.host != 'ch.stendigcalendars.com' %}
+		<style>
+			.de-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}
+    {% if request.host != 'it.stendigcalendars.com' %}
+		<style>
+			.it-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %} 
+    {% if request.host != 'es.stendigcalendars.com' %}
+		<style>
+			.es-only {
+						display:none !important;
+					}                                                        
+		</style>
+    {% endif %}                                                         
+    {% if request.host != 'stendigcalendars.com' and request.host != 'uk.stendigcalendars.com' %}
+		<style>
+			.uk-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}                                                         
+    {% if request.host != 'ca.stendigcalendars.com' %}
+		<style>
+			.ca-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}
+    {% if request.host != 'au.stendigcalendars.com' %}
+		<style>
+			.au-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %} 
+    {% if request.host != 'nz.stendigcalendars.com' %}
+		<style>
+			.nz-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}
+    {% if request.host != 'tw.stendigcalendars.com' %}
+		<style>
+			.tw-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}   
+    {% if request.host != 'kr.stendigcalendars.com' %}
+		<style>
+			.kr-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}  
+    {% if request.host != 'sg.stendigcalendars.com' %}
+		<style>
+			.sg-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}   
+    {% if request.host != 'hk.stendigcalendars.com' %}
+		<style>
+			.hk-only {
+						display:none !important;
+					}                                                           
+		</style>  
+    {% endif %}
+    {% if request.host != 'in.stendigcalendars.com' %}
+		<style>
+			.in-only {
+						display:none !important;
+					}                                                           
+		</style>
+    {% endif %}                                                                
+{% comment %}END OF SHIPPING PAGE HIDING{% endcomment %}
+                                                         
+{% comment %}START OF CONTACT PAGE HIDING{% endcomment %}                                                             
+    {% if request.host != 'us.stendigcalendars.com' and page.url == '/pages/contact' %}
+		<style>
+			.rich-text {
+						display:none !important;
+					}                                                           
+		</style>
+    {% elsif page.url == '/pages/contact' %}
+		<style>
+			.contact {
+						display:none !important;
+					}  
+            .page-width.page-width--narrow {
+                        display:none !important;
+					}
+		</style>                                                         
+    {% endif %}                                                                
+{% comment %}END OF CONTACT PAGE HIDING{% endcomment %}                                                            
+                                                      
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    {{ content_for_header }} 
+ {{ shop.metafields.fontify.stylesheets }}
+
+    {%- liquid
+      assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+      assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+    %}
+
+    {% style %}
+      {{ settings.type_body_font | font_face: font_display: 'swap' }}
+      {{ body_font_bold | font_face: font_display: 'swap' }}
+      {{ body_font_italic | font_face: font_display: 'swap' }}
+      {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+      {{ settings.type_header_font | font_face: font_display: 'swap' }}
+
+      :root {
+        --font-body-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+        --font-body-style: {{ settings.type_body_font.style }};
+        --font-body-weight: {{ settings.type_body_font.weight }};
+
+        --font-heading-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+        --font-heading-style: {{ settings.type_header_font.style }};
+        --font-heading-weight: {{ settings.type_header_font.weight }};
+
+        --color-base-text: {{ settings.colors_text.red }}, {{ settings.colors_text.green }}, {{ settings.colors_text.blue }};
+        --color-base-background-1: {{ settings.colors_background_1.red }}, {{ settings.colors_background_1.green }}, {{ settings.colors_background_1.blue }};
+        --color-base-background-2: {{ settings.colors_background_2.red }}, {{ settings.colors_background_2.green }}, {{ settings.colors_background_2.blue }};
+        --color-base-solid-button-labels: {{ settings.colors_solid_button_labels.red }}, {{ settings.colors_solid_button_labels.green }}, {{ settings.colors_solid_button_labels.blue }};
+        --color-base-outline-button-labels: {{ settings.colors_outline_button_labels.red }}, {{ settings.colors_outline_button_labels.green }}, {{ settings.colors_outline_button_labels.blue }};
+        --color-base-accent-1: {{ settings.colors_accent_1.red }}, {{ settings.colors_accent_1.green }}, {{ settings.colors_accent_1.blue }};
+        --color-base-accent-2: {{ settings.colors_accent_2.red }}, {{ settings.colors_accent_2.green }}, {{ settings.colors_accent_2.blue }};
+        --payment-terms-background-color: {{ settings.colors_background_1 }};
+
+        --gradient-base-background-1: {% if settings.gradient_background_1 != blank %}{{ settings.gradient_background_1 }}{% else %}{{ settings.colors_background_1 }}{% endif %};
+        --gradient-base-background-2: {% if settings.gradient_background_2 != blank %}{{ settings.gradient_background_2 }}{% else %}{{ settings.colors_background_2 }}{% endif %};
+        --gradient-base-accent-1: {% if settings.gradient_accent_1 != blank %}{{ settings.gradient_accent_1 }}{% else %}{{ settings.colors_accent_1 }}{% endif %};
+        --gradient-base-accent-2: {% if settings.gradient_accent_2 != blank %}{{ settings.gradient_accent_2 }}{% else %}{{ settings.colors_accent_2 }}{% endif %};
+
+        --page-width: {{ settings.page_width | divided_by: 10 }}rem;
+        --page-width-margin: {% if settings.page_width == '1600' %}2{% else %}0{% endif %}rem;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+
+      html {
+        box-sizing: border-box;
+        font-size: 62.5%;
+        height: 100%;
+      }
+
+      body {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-columns: 100%;
+        min-height: 100%;
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: 0.06rem;
+        line-height: 1.8;
+        font-family: var(--font-body-family);
+        font-style: var(--font-body-style);
+        font-weight: var(--font-body-weight);
+      }
+
+      @media screen and (min-width: 750px) {
+        body {
+          font-size: 1.6rem;
+        }
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- if settings.predictive_search_enabled -%}
+      <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
+    {%- endif -%}
+
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+  
+
+
+{% comment %}ly_dir_styles_begin{% endcomment %}{%- assign language_code = '_' | append: request.locale.iso_code -%}{%- if '_ar_he_fa_ur' contains language_code -%}{{- 'ly-rtl.css' | asset_url | stylesheet_tag -}}{%- endif -%}{% comment %}ly_dir_styles_end{% endcomment %}</head>
+
+  <body class="gradient">
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ "accessibility.skip_to_text" | t }}
+    </a>
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+    </ul>
+
+    <script>
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t }}`
+      }
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+      }
+
+      window.accessibilityStrings = {
+        shareSuccess: `{{ 'general.share.success_message' | t }}`,
+      }
+    </script>
+
+    {%- if settings.predictive_search_enabled -%}
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+  <!-- langify-v2-scripts-begin -->{% comment %}ly_liquid_scripts_begin{% endcomment %}{% endcapture %}{% render 'ly-liquid-scripts' content: ly_liquid_content %}{% comment %}ly_liquid_scripts_end{% endcomment %}{% comment %}ly_core_scripts_begin{% endcomment %}{% render 'ly-core-scripts' %}{% comment %}ly_core_scripts_end{% endcomment %}{% comment %}ly_switcher_factory_begin{% endcomment %}{% render 'ly-switcher-factory' %}{% comment %}ly_switcher_factory_end{% endcomment %}<!-- langify-v2-scripts-end --></body>
+  
+</html>

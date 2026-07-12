@@ -1,0 +1,3 @@
+.product .product-form__submit.disable{
+    pointer-events: none;
+}

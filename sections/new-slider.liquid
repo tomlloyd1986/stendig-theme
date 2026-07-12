@@ -1,0 +1,137 @@
+{% assign host = request.host | split: "." | first %}
+{% assign slideCount = 0 %}
+{% for block in section.blocks %}
+  {% if block.settings.host == host %}{% assign slideCount = slideCount | plus: 1 %}{% endif %}
+{% endfor %}
+<div id="newSliderContainer">
+  {% if slideCount > 0 %}
+    {% for block in section.blocks %}
+      {% if block.settings.host == host %}
+        <div class="newSliderImageContainer">
+          {% if block.settings.link != blank %}<a href="{{ block.settings.link }}">{% endif %}
+            <img class="newSliderImage newSliderImageDesk" src="{{ block.settings.image | img_url: 'master' }}">
+            <img class="newSliderImage newSliderImageTab" src="{{ block.settings.tabImage | img_url: 'master' }}">
+            <img class="newSliderImage newSliderImageMob" src="{{ block.settings.mobImage | img_url: 'master' }}">
+            {% if block.settings.link != blank %}</a>{% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    {% for block in section.blocks %}
+      {% if block.settings.host == 'uk' %}
+        <div class="newSliderImageContainer">
+          {% if block.settings.link != blank %}<a href="{{ block.settings.link }}">{% endif %}
+            <img class="newSliderImage newSliderImageDesk" src="{{ block.settings.image | img_url: 'master' }}">
+            <img class="newSliderImage newSliderImageTab" src="{{ block.settings.tabImage | img_url: 'master' }}">
+            <img class="newSliderImage newSliderImageMob" src="{{ block.settings.mobImage | img_url: 'master' }}">
+            {% if block.settings.link != blank %}</a>{% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "blocks": [
+    {
+      "name": "slide",
+      "settings": [
+        {
+          "id": "host",
+          "label": "Host",
+          "options": [
+            {
+              "label": "uk",
+              "value": "uk"
+            },
+            {
+              "label": "in",
+              "value": "in"
+            },
+            {
+              "label": "us",
+              "value": "us"
+            },
+            {
+              "label": "eu",
+              "value": "eu"
+            },
+            {
+              "label": "fr",
+              "value": "fr"
+            },
+            {
+              "label": "de",
+              "value": "de"
+            },
+            {
+              "label": "nl",
+              "value": "nl"
+            },
+            {
+              "label": "dk",
+              "value": "dk"
+            },
+            {
+              "label": "it",
+              "value": "it"
+            },
+            {
+              "label": "es",
+              "value": "es"
+            },
+            {
+              "label": "au",
+              "value": "au"
+            },
+            {
+              "label": "nz",
+              "value": "nz"
+            }
+          ],
+          "type": "select"
+        },
+        {
+          "id": "link",
+          "label": "Link",
+          "type": "url"
+        },
+        {
+          "id": "image",
+          "label": "Image (Desktop)",
+          "type": "image_picker"
+        },
+        {
+          "id": "tabImage",
+          "label": "Image (Tablet)",
+          "type": "image_picker"
+        },
+        {
+          "id": "mobImage",
+          "label": "Image (Mobile)",
+          "type": "image_picker"
+        }
+      ],
+      "type": "slide"
+    }
+  ],
+  "name": "New Slider",
+  "presets": [
+    {
+      "name": "New Slider"
+    }
+  ]
+}
+{% endschema %}
+{% style %}
+.newSliderImageContainer{
+  height: 100vh;
+  object-fit: cover;
+  width: 100%;
+}
+#shopify-section-{{ section.id }} .slick-slide:not(.slick-active) {
+  /* transition-delay: 0s !important;
+  transition-duration: 0s !important; */
+}
+{% endstyle %}

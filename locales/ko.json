@@ -1,0 +1,1635 @@
+{
+  "shopify": {
+    "sentence": {
+      "words_connector": ", ",
+      "two_words_connector": " 및 ",
+      "last_word_connector": ", 그리고 "
+    },
+    "checkout": {
+      "general": {
+        "page_title": "결제",
+        "error_page_title": "오류",
+        "skip_to_content": "콘텐츠로 건너뛰기",
+        "breadcrumb": "사이트 이동 경로",
+        "continue_button_label": "계속",
+        "complete_purchase_button_label": "주문 완료",
+        "pay_now_button_label": "지금 결제",
+        "authenticate_purchase_button_label": "지불 인증",
+        "edit_link_label": "편집",
+        "all_rights_reserved": "모든 권리는 %{shop_name} 가 보유합니다",
+        "print_policies_link_label": "인쇄",
+        "cart": "카트",
+        "close_modal_label": "닫기",
+        "close_notice_label": "닫기",
+        "expand_notice_label": "자세히 보기",
+        "continue_to_shipping_method": "배송 계속하기",
+        "continue_to_payment_method": "지불 계속하기",
+        "continue_to_review": "주문 검토",
+        "back_to_cart": "장바구니로 돌아가기",
+        "back_to_contact_information": "정보로 돌아가기",
+        "back_to_shipping_method": "배송으로 돌아가기",
+        "back_to_payment_method": "결제 화면으로 돌아가기",
+        "choose_shipping_method": "배송 방법 선택하기",
+        "choose_payment_method": "결제 방법 선택하기",
+        "choose_billing_address": "청구 주소 선택하기",
+        "contact_us_html": "자세한 내용은 문의 부탁드립니다",
+        "autocomplete_title": "제안 사항",
+        "autocomplete_single_item": "1개 항목 사용 가능",
+        "autocomplete_multi_item": "{{number}}에 항목 사용 가능",
+        "autocomplete_selection": "{{number}}\/{{total}}",
+        "autocomplete_close": "제안 사항 닫기",
+        "forwarding_indicator": {
+          "new_window": "새 창에서 열기.",
+          "external": "외부 웹사이트 열기.",
+          "external_and_new_window": "새 창에서 외부 웹사이트 열기."
+        },
+        "checkout_context": {
+          "step_one": "%{shop_name} - 결제"
+        },
+        "tooltip_accessibility_label": "추가 정보"
+      },
+      "contact": {
+        "title": "정보",
+        "address_title": "주소",
+        "shipping_address_title": "배송 주소",
+        "delivery_option_title": "배송 방법",
+        "contact_method_title": "연락처 정보",
+        "email_label": "이메일",
+        "email_placeholder": "이메일",
+        "email_or_phone_label": "이메일 혹은 휴대폰 번호",
+        "email_or_phone_placeholder": "이메일 혹은 휴대폰 번호",
+        "stored_addresses_label": "저장된 주소",
+        "new_address_label": "새 주소",
+        "first_name_label": "이름",
+        "optional_first_name_label": "이름 (선택 사항)",
+        "last_name_label": "성",
+        "company_label": "회사",
+        "optional_company_label": "회사 (선택 사항)",
+        "address1_label": "주소",
+        "address2_label": "아파트, 동\/호수 등",
+        "optional_address2_label": "아파트, 동\/호수 등(선택 사항)",
+        "city_label": "구\/군\/시",
+        "country_label": "국가\/지역",
+        "country_code": "국가\/지역 코드",
+        "province_label": "시\/도",
+        "province_placeholder": "시\/도",
+        "county_label": "군",
+        "county_placeholder": "군",
+        "state_label": "시\/도",
+        "state_placeholder": "시\/도",
+        "region_label": "지역",
+        "region_placeholder": "지역",
+        "region_none": "선택 항목 없음",
+        "prefecture_label": "현",
+        "prefecture_placeholder": "현",
+        "governorate_label": "행정 기관",
+        "governorate_placeholder": "행정 기관",
+        "emirate_label": "영토",
+        "emirate_placeholder": "영토",
+        "state_and_territory_label": "시\/도\/지역",
+        "state_and_territory_placeholder": "시\/도\/지역",
+        "phone_label": "전화",
+        "optional_phone_label": "전화 (선택 사항)",
+        "phone_placeholder": "전화",
+        "phone_tooltip": "주문에 대해 문의 해야 할 경우",
+        "zip_code_label": "우편 번호",
+        "zip_code_placeholder": "우편 번호",
+        "postal_code_label": "우편 번호",
+        "postal_code_placeholder": "우편 번호",
+        "postcode_label": "우편 번호",
+        "postcode_placeholder": "우편 번호",
+        "pincode_label": "PIN 코드",
+        "pincode_placeholder": "PIN 코드",
+        "civic_number_warning": "번지수 추가(해당되는 경우)"
+      },
+      "delivery_options": {
+        "free_total_label": "무료",
+        "ship": "배송하기",
+        "shipping_address": "배송 주소",
+        "pick_up": "픽업",
+        "pick_up_locations": "픽업 위치",
+        "pick_up_in_one_hour": "일반적으로 1시간 후 준비 완료",
+        "pick_up_in_two_hours": "일반적으로 2시간 후 준비 완료",
+        "pick_up_in_four_hours": "일반적으로 4시간 후 준비 완료",
+        "pick_up_in_twenty_four_hours": "일반적으로 24시간 후 준비 완료",
+        "pick_up_in_two_to_four_days": "일반적으로 2~4일 후 준비 완료",
+        "pick_up_in_five_or_more_days": "일반적으로 5일 이상 후 준비 완료",
+        "pick_up_in_zero_to_two_hours": "2시간 후 픽업 준비 완료",
+        "pick_up_in_two_to_four_hours": "4시간 후 픽업 준비 완료",
+        "pick_up_immediately": "픽업 준비 완료",
+        "pick_up_next_day": "다음 날 픽업 준비 완료"
+      },
+      "customer_account": {
+        "not_user_label": "%{first_name}님이 아니십니까?",
+        "have_an_account_label": "계정을 이미 가지고 계십니까?",
+        "sign_in_link_label": "로그인",
+        "sign_out_link_label": "로그아웃",
+        "save_my_information_label": "다음을 위해 이 정보를 저장"
+      },
+      "stock": {
+        "page_title": "재고 문제",
+        "title": "품절",
+        "items_unavailable_notice": "일부 항목을 더 이상 사용할 수 없습니다. 장바구니가 업데이트되었습니다.",
+        "product_column_header": "제품",
+        "quantity_column_header": "수량",
+        "price_column_header": "가격",
+        "status_column_header": "상태",
+        "removed_from_cart_notice": "장바구니에서 제거되었습니다",
+        "sold_out_label": "품절",
+        "reduced_label": "인하",
+        "reduced_with_quantity_label": "%{quantity_available} 개밖에 남아 있지 않습니다.",
+        "remove_from_cart_button_label": "장바구니에서 제거",
+        "continue_shopping_button_label": "계속",
+        "go_back_to_cart_button_label": "장바구니로 돌아가기"
+      },
+      "order_summary": {
+        "title": "주문 요약",
+        "order_name_label": "%{name} 주문",
+        "shopping_cart_label": "쇼핑 카트",
+        "discount_title": "할인",
+        "discount_label": "할인 코드",
+        "discount_placeholder": "할인 코드",
+        "gift_card_title": "기프트 카드",
+        "gift_card_label": "기프트 카드",
+        "gift_card_placeholder": "기프트 카드",
+        "gift_card_and_discount_title": "기프트 카드 또는 할인 코드",
+        "gift_card_and_discount_label": "기프트 카드 또는 할인 코드",
+        "gift_card_and_discount_placeholder": "기프트 카드 또는 할인 코드",
+        "remove_gift_card_label": "기프트 카드 삭제",
+        "remove_discount_label": "할인 제거",
+        "free_shipping_discount_label": "무료 배송",
+        "applied_free_shipping_discount_label": "적용됨",
+        "apply_discount_button_label": "적용",
+        "applied_discount_message": "전체 주문 금액에서 %{amount} 할인",
+        "discount_has_been_applied": "할인이 적용되었습니다.",
+        "discount_has_been_removed": "할인이 제거되었습니다.",
+        "gift_card_has_been_applied": "기프트 카드가 적용되었습니다.",
+        "gift_card_has_been_removed": "기프트 카드가 제거되었습니다.",
+        "gift_card_subscriptions_notice": "기프트 카드는 첫 번째 결제에만 적용됩니다.",
+        "discount_already_applied": "이 주문에 할인이 적용되었습니다. 다른 할인을 추가할 수 없습니다.",
+        "cart_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 카트에 있는 품목에 유효하지 않습니다.",
+        "discount_requires_customer_notice": "배송 정보를 입력하여 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드를 적용하십시오.",
+        "customer_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 지금 사용할 수 없습니다.",
+        "shipping_information_does_not_meet_discount_requirements_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 배송 주소에 사용할 수 없습니다.",
+        "customer_already_used_once_per_customer_discount_notice": "<strong style=\"text-transform:uppercase\">%{code}<\/strong> 할인 코드는 이미 사용되었습니다.",
+        "subtotal_label": "소계",
+        "shipping_label": "배송",
+        "pickup_label": "픽업",
+        "no_pickup_location": "해당 주문은 픽업할 수 없습니다. 배송 주소를 입력하십시오.",
+        "tip_label": "팁",
+        "calculating_shipping": "계산 중...",
+        "shipping_default_value": "다음 단계에서 계산됨",
+        "shipping_pending_value": "—",
+        "shipping_pending_message": "아직 사용할 수 없습니다.",
+        "shipping_policy_link": "배송비",
+        "taxes_label": "세금",
+        "estimated_taxes_label": "세금(예상)",
+        "total_label": "총계",
+        "total_outstanding_label": "지불할 금액",
+        "partial_total_label": "총계",
+        "free_total_label": "무료",
+        "paid_label": "결제됨",
+        "payment_due_label": "지급 기한",
+        "vat_label_html": "세금 포함 %{amount}",
+        "discount_and_gift_card_savings_notice": "할인 금액 %{discount_amount} 과 기프트 카드 금액 %{gift_card_amount}",
+        "discount_savings_notice": "할인 금액 %{discount_amount}",
+        "gift_card_savings_notice": "기프트 카드 금액 %{gift_card_amount}",
+        "cost_table_title": "비용 요약",
+        "description_label": "설명",
+        "price_label": "가격",
+        "quantity_label": "수량",
+        "product_change_label": "변경",
+        "product_image_label": "제품 이미지",
+        "scroll_order_summary": "더 많은 항목 스크롤 하기",
+        "expand_order_summary": "주문 요약 표시",
+        "collapse_order_summary": "주문 요약 숨기기",
+        "original_price": "정가",
+        "sale_price": "할인가",
+        "total_updated_label": "업데이트된 총 가격:",
+        "order_total_updated_label": "업데이트된 총계",
+        "total_already_paid_label": "지불 완료",
+        "unit_price": {
+          "accessible_separator": "당",
+          "content_html": "%{price} %{accessible_separator} %{per_unit}"
+        },
+        "gift_card_ending": "%{last_characters}(으)로 끝나는 기프트 카드",
+        "estimated_tax_label": "예상 세금",
+        "multiple_shipping_lines_label": "총 배송",
+        "recurring_total_label": "정기요금 합계",
+        "recurring_total_tooltip": "배송, 세금, 관세, 기타 적용 가능한 할인은 포함되지 않습니다.",
+        "confirmation_number_label": "확인 #%{confirmation_number}"
+      },
+      "shipping": {
+        "title": "배송",
+        "shipping_method_title": "배송 방법",
+        "shipping_method_one_time_purchase_group_title": "1회성 구매",
+        "shipping_method_subscription_group_title": "가입",
+        "subscription_shipping": "정기 배송",
+        "waiting_on_rate_notice": "가능한 배송료를 받는 중 ...",
+        "waiting_on_pickup_location_notice": "픽업 가능한 위치를 가져오는 중 ...",
+        "no_rates_for_cart_or_destination_notice": "카트 또는 주소로 사용할 수 있는 배송 방법이 없습니다.",
+        "no_pickup_location_notice": "최소 제품 중 하나를 픽업할 수 없습니다.",
+        "no_rates_for_country_notice": "이 주소의 배송료를 찾을 수 없습니다.",
+        "no_rates_contact_notice": "자세한 내용은 문의 부탁드립니다.",
+        "free_rate_label": "무료",
+        "cheapest_rate_label": "최저가",
+        "please_enter_your_shipping_information_notice": "배송 정보를 입력하시오.",
+        "estimated_delivery_date": {
+          "one": "1",
+          "other": "%{count}영업일"
+        },
+        "estimated_delivery_date_range": "%{minimum}~%{maximum}",
+        "estimated_delivery_time": "예상 배송 시간: %{time}",
+        "estimated_delivery_time_range": "예상 배송 시간: %{min_time}–%{max_time}",
+        "shipping_line_phone_label": "휴대폰 번호 (필수 사항)",
+        "shipping_line_phone": "택배 기사가 해당 번호로 연락하게 됩니다.",
+        "shipping_line_delivery_phone_label": "휴대 전화 번호",
+        "shipping_line_delivery_phone": "이 번호로 배송 정보에 관한 전화 또는 문자를 받게 됩니다.",
+        "optional_shipping_line_delivery_instructions_label": "배송 지침(선택 사항)",
+        "shipping_line_delivery_instructions": "도어 코드 또는 방문 접수 지침과 같은 중요한 정보를 입력합니다.",
+        "other_method": {
+          "zero": "다른 방법은 사용할 수 없습니다.",
+          "one": "다른 1개의 방법 사용 ",
+          "other": "다른 %{count}에  방법을 사용하여 시작 "
+        },
+        "shipping_rate_discounted_amount": "과거 : %{original_amount}. 현재 : %{amount}",
+        "local_delivery": "지역 배송",
+        "subscription_delivery_description": {
+          "prepaid_delivery_frequency": {
+            "one": "%{count}건의 배송의 경우",
+            "other": "%{count}건의 배송용"
+          },
+          "subscription_delivery_frequency": {
+            "day": {
+              "one": "매일",
+              "other": "%{count}일마다"
+            },
+            "week": {
+              "one": "매주",
+              "other": "%{count}주마다"
+            },
+            "month": {
+              "one": "매달",
+              "other": "%{count}달마다"
+            },
+            "year": {
+              "one": "매년",
+              "other": "%{count}년마다"
+            }
+          },
+          "multiple_subscriptions_shipping_price_label": "배송당 %{shipping_price}",
+          "prepaid_shipping_price_label": "배송 x %{delivery_interval_count}당 %{shipping_price}",
+          "initial_order_discounted": "처음 배송비 %{discounted_shipping_cost}, 이후 %{frequency_description}",
+          "prepaid_initial_order_discounted": "처음 배송비 %{discounted_shipping_price} %{prepaid_delivery_frequency}",
+          "prepaid_initial_order_discounted_with_per_delivery_price": "처음 배송비 %{discounted_shipping_price} %{prepaid_delivery_frequency}(%{discounted_cost_per_delivery})",
+          "prepaid_initial_order_discounted_with_renewal": "처음 배송비 %{discounted_shipping_price} %{prepaid_delivery_frequency}, 이후 %{shipping_price} %{billing_cycle}",
+          "prepaid_initial_order_discounted_with_per_delivery_price_and_renewal": "처음 배송비 %{discounted_shipping_price} %{prepaid_delivery_frequency}(%{discounted_cost_per_delivery}), 이후 %{shipping_price} %{billing_cycle}",
+          "shipping_price_included": "포함됨",
+          "recurring_order_shipping_price": "%{recurring_order_shipping_price} 이어짐",
+          "first_order_shipping_price_included": "첫 번째 주문 포함, 이후 %{recurring_order_shipping_price}",
+          "first_order_different_shipping_price": "%{first_order_shipping_price}(배송별%{per_delivery_price}), 이후 %{recurring_order_shipping_price}",
+          "first_n_order_free": {
+            "one": "첫 주문 시 무료",
+            "other": "처음 %{count}회 주문까지 무료"
+          },
+          "free_for_first_n_order": {
+            "one": "첫 주문 시",
+            "other": "처음 %{count}회 주문까지"
+          }
+        },
+        "one_time_purchase_shipping": "1회 배송"
+      },
+      "localized_fields": {
+        "additional_information": {
+          "title": "추가 정보"
+        }
+      },
+      "payment": {
+        "amazon_payments_label": "Amazon Pay",
+        "amazon_payments_login_hint": "Amazon으로 로그인하라는 메시지가 표시됩니다.",
+        "amazon_payments_logout": "Amazon Pay에서 로그아웃하기",
+        "amazon_payments_failed_mfa_challenge": "선택한 결제 수단을 사용할 수 없습니다. 다른 방법을 선택하거나 은행 또는 카드 발급 기관에 문의하십시오.",
+        "amazon_payments_abandoned_mfa_challenge": "결제를 완료할 수 없습니다. 다른 결제 수단을 사용하거나 은행 또는 카드 발급 기관에 문의하십시오.",
+        "amazon_payments_could_not_enqueue_authorize": "결제를 처리하는 중 문제가 발생했습니다. 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "title": "지급",
+        "amount_left_to_pay_label": "지급 기한",
+        "discount_button_action_label": "할인 코드 적용",
+        "gift_card_code_label": "기프트 카드 코드",
+        "apply_gift_card_button_label": "적용",
+        "gift_card_balance_label": "잔액 :",
+        "supported_card_brands_more_label": "추가...",
+        "detected_card_brand": "카드 브랜드 감지: {브랜드}",
+        "ftd_vault_credit_card_label": "빠른 결제를 위해 신용 카드 저장",
+        "card_number_label": "카드 번호",
+        "card_number_placeholder": "카드 번호",
+        "card_pay_with": "지불 방법 :",
+        "card_security_notice": "모든 거래는 안전하고 암호화되어 있습니다.",
+        "card_security_vault_notice": "향후 결제에 대한 세부 정보가 필요합니다. 모든 거래는 안전하고 암호화되어 있습니다.",
+        "card_information_notice": "모든 거래는 안전하며 암호화되어 있습니다. 신용 카드 정보는 절대로 저장되지 않습니다.",
+        "name_on_card_label": "카드 이름",
+        "name_on_card_placeholder": "카드 이름",
+        "card_expired": "만료됨",
+        "card_expiry_label": "만료일 (MM \/ YY)",
+        "card_expiry_placeholder": "만료일 (MM \/ YY)",
+        "credit_card_start_month": "시작 달",
+        "credit_card_start_year": "시작 년도",
+        "delete_customer_mandate_modal_title": "카드를 제거하시겠습니까?",
+        "delete_customer_mandate_modal_body": "이 작업은 취소할 수 없습니다.",
+        "delete_customer_mandate_modal_confirm": "제거",
+        "delete_customer_mandate_modal_cancel": "취소",
+        "card_verification_value_label": "보안 코드",
+        "card_verification_value_placeholder": "보안 코드",
+        "card_verification_confirm": "확인을 위해 카드의 보안 코드를 입력하십시오.",
+        "card_expiry_date_explanation": "카드 유효 기간 형식 : 달, 달, 년, 년",
+        "card_expiration_month_label": "만료 달",
+        "card_expiration_year_label": "만료 년도",
+        "card_verification_value_explanation": "대개 카드 뒷면에 있는 3자리 보안 코드입니다. American Express의 경우 앞면의 4자리 코드입니다.",
+        "card_verification_value_explanation_amex": "카드 앞면에 4자리 보안 코드가 있습니다.",
+        "card_verification_value_explanation_other": "카드 뒷면에 4자리 보안 코드가 있습니다.",
+        "card_start_label": "발행일 (MM \/ YY)",
+        "card_start_placeholder": "발행일 (MM \/ YY)",
+        "card_issue_number_label": "발행 번호",
+        "card_issue_number_placeholder": "발행 번호",
+        "card_change_label": "변경",
+        "card_update_label": "카드 업데이트",
+        "ends_with_label": "끝자리 번호: %{last_digits}",
+        "masked_digits_label": "•••• %{last_digits}",
+        "saved_by_payment_method": "%{payment_method} 로 저장 완료",
+        "pay_with_payment_method": "%{payment_method} 로 지불",
+        "different_credit_card_label": "다른 신용 카드 사용",
+        "same_billing_address_label": "배송 주소와 같음",
+        "different_billing_address_label": "다른 청구 주소 사용",
+        "free_order_notice_html": "주문은 <strong>무료<\/strong> 입니다. 지불 할 필요가 없습니다.",
+        "express_checkout_free_order": "무료 주문에는 청구하지 않습니다.",
+        "order_covered_by_gift_cards_notice": {
+          "one": "주문은 기프트 카드로 처리됩니다.",
+          "other": "주문은 기프트 카드로 처리됩니다."
+        },
+        "offsite_gateway_redirect_hint": "\"%{button_label}\" 을 클릭한 후, 주문을 안전하게 완료하기 위해 %{gateway_label} 로 다시 연결됩니다.",
+        "offsite_gateway_redirect_hint_multi_currency_html": "%{gateway_label} 총 %{total_shop_price}",
+        "billing_address_title": "청구 주소",
+        "billing_address_description": "카드 또는 결제 방식에 일치하는 주소를 선택하십시오.",
+        "billing_address_description_no_shipping_address": "카드 또는 결제 방식에 일치하는 주소를 입력하십시오.",
+        "no_js_credit_card_fields_redirect_hint": "결제 정보를 추가할 수 있도록 리디렉션 됩니다.",
+        "card_fields_container_prefix": "필드 컨테이너 :",
+        "card_fields_unavailable_html": {
+          "one": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침<\/a> 하거나 나중에 다시 시도하십시오.",
+          "other": "지금 신용 카드 및 직불 카드 결제를 사용할 수 없습니다. <br><a href=\"%{current_url}\">이 페이지를 새로 고침<\/a> 하거나 다른 결제 방식으로 다시 시도하십시오."
+        },
+        "card_fields_processing_error": "결제 처리 중 문제가 발생했습니다. 이 페이지를 새로 고침하거나 인터넷 연결을 확인하십시오.",
+        "technical_error": "기술 문제로 인해 지금 결제를 처리할 수 없습니다. 몇 분 후에 다시 시도하십시오.",
+        "no_method_error": "이 스토어에서는 현재 결제를 받을 수 없습니다.",
+        "not_configured_error": "이 스토어에서는 현재 결제를 받을 수 없습니다.",
+        "missing_credit_card_error": "결제를 완료하려면 카드 세부 정보를 입력하십시오.",
+        "billing_address_not_supported_for_payment_method_error": "해당 청구 주소 및 통화에는 이 결제 방법을 사용할 수 없습니다. 다른 결제 방법으로 시도해 보십시오.",
+        "generic_incorrect_card_info": "지불 세부 정보를 확인할 수 없습니다. 카드 세부 정보를 확인하고 다시 시도하십시오.",
+        "sofort_label": "Sofort Bank 송금",
+        "klarna_pay_later_label": "Klarna 후불 결제",
+        "klarna_pay_now_label": "지금 Klarna로 결",
+        "bancontact_label": "Bancontact",
+        "eps_label": "eps-Überweisung",
+        "klarna_slice_it_label": "Klarna로 자금조달",
+        "ideal_label": "iDEAL",
+        "bank_picker_label": "은행",
+        "subscription_card_update_agreement_label": "결제 방법을 변경하면 구독 및 향후 정기결제가 업데이트됩니다.",
+        "subscription_agreement_label": "구독에 동의합니다. 구독은 종료되거나 %{cancelled} 시까지 나열된 가격과 빈도로 갱신됩니다.",
+        "subscription_agreement_cancelled": "취소됨",
+        "subscription_agreement_label_html": "구독에 동의합니다. 종료되거나\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">취소<\/a>될 때까지 나열된 가격과 빈도로 갱신됩니다.\n",
+        "change_currency_section_description": "통화 옵션 선택",
+        "no_real_orders_dev_store": "이 스토어는 실제 주문이나 결제를 수락할 수 없습니다.",
+        "waiting_on_payment_methods": "사용 가능한 결제 방법 가져오는 중...",
+        "apple_pay_payment_error": "결제를 완료할 수 없습니다. 다시 시도하거나 다른 결제 방법을 사용하십시오.",
+        "taxes_not_included": "세금 미포함",
+        "no_taxes_banner_content": "이 주문에는 세금이 부과되지 않습니다. 결제 금액을 수령한 후에는 더 이상 세금을 추가할 수 없습니다.",
+        "paypal": {
+          "connect": "클릭하면 PayPal 계정이 연결됩니다."
+        },
+        "apple": {
+          "connect": "Apple Pay 계정을 연결하려면 클릭하세요",
+          "not_available": "이 브라우저에서는 Apple Pay를 사용할 수 없습니다. Apple Pay 계정을 연결하려면 Apple 기기에서 Safari를 사용해야 합니다.",
+          "email_connected": "연결된 계정 "
+        },
+        "account_connected": "연결된 계정",
+        "maximum_vaulted_card_info": {
+          "one": "계정에 최대 %{count}개의 신용 카드를 저장할 수 있습니다.",
+          "other": "계정에 최대 %{count}개의 신용 카드를 저장할 수 있습니다."
+        },
+        "billing_address_associated_with_mandate": "결제 방법과 연결된 주소 사용",
+        "billing_address_associated_with_mandate_info": "청구 주소를 변경하려면 신용 카드 세부 정보를 제거한 다음 새로 입력하십시오.",
+        "credit_card_vaulting_sign_in_banner_title": "신용 카드 저장",
+        "credit_card_vaulting_sign_in_banner_info": "향후 구매에 사용하도록 신용 카드를 저장하려면 계정에 로그인하거나 계정을 생성하십시오.",
+        "credit_card_vaulting_sign_in_banner_button_label": "로그인"
+      },
+      "payment_summary": {
+        "gift_card_current_balance_notice": "현재 잔액 %{amount}",
+        "credit_card_expires_on_notice": "만료일 : %{month}\/%{year}",
+        "express_payment_gateway_label": "Express",
+        "manual_payment_gateway_label": "수동",
+        "billing_address_title": "청구 주소",
+        "free_label": "무료"
+      },
+      "field_errors": {
+        "handle_phone_invalid": "유효한 전화 번호 입력",
+        "handle_email_invalid": "유효한 이메일 입력",
+        "email_invalid": "유효한 이메일 입력",
+        "email_or_phone_blank": "이메일 또는 휴대폰 번호 입력",
+        "email_or_phone_invalid": "유효한 이메일 또는 휴대폰 번호 입력",
+        "address_first_name_blank": "이름 입력",
+        "address_last_name_blank": "성 입력",
+        "address_address1_blank": "주소 입력",
+        "address_address2_blank": "아파트, 동\/호수 등 입력",
+        "address_city_blank": "구\/군\/시 입력",
+        "address_country_blank": "국가\/지역 선택",
+        "address_country_not_supported": "현재이 국가\/지역으로 배송되지 않습니다. 새로운 배송 주소를 선택하고 다시 시도하십시오.",
+        "address_province_blank": "시\/도 입력",
+        "address_company_blank": "회사명 입력",
+        "address_phone_blank": "유효한 전화 번호 입력",
+        "address_zip_blank": "우편 번호 입력",
+        "address_zip_invalid_for_country": "%{country}의 유효한 우편 번호 입력",
+        "address_zip_invalid_for_country_and_province": "%{country} %{province}의 유효한 우편 번호 입력",
+        "credit_card_name_blank": "카드에 쓰여있는대로 정확하게 이름을 입력하십시오.",
+        "credit_card_name_invalid": "카드에 쓰여있는대로 정확하게 이름을 입력하십시오.",
+        "credit_card_number_invalid": "유효한 카드 번호 입력하십시오.",
+        "credit_card_expiry_invalid": "유효한 카드 만료 일을 입력하십시오.",
+        "credit_card_month_invalid": "유효한 카드 만료 월을 입력하십시오.",
+        "credit_card_year_invalid": "유효한 카드 만료 연도를 입력하십시오.",
+        "credit_card_start_invalid": "유효한 카드 시작 일을 입력하십시오.",
+        "credit_card_start_month_invalid": "유효한 카드 시작월을 입력하십시오.",
+        "credit_card_start_year_invalid": "유효한 카드 시작 연도을 입력하십시오.",
+        "credit_card_verification_value_blank": "카드의 CVV 또는 보안 코드를 입력하십시오.",
+        "reduction_code_code_not_found": "유효한 할인 코드 또는 기프트 카드를 입력하십시오.",
+        "reduction_code_discount_not_found": "유효한 할인 코드를 입력하십시오.",
+        "reduction_code_gift_card_code_invalid": "유효한 기프트 카드를 입력하십시오.",
+        "reduction_code_gift_card_unusable": "기프트 카드를 구매하기 위해 다른 키프트 카드를 사용할 수 없습니다.",
+        "shipping_line_phone_blank": "이 배송 방법을 사용하려면 전화 번호를 입력하십시오.",
+        "shipping_line_phone_invalid": "이 배송 방법을 사용하려면 유효한 전화 번호를 입력하십시오.",
+        "tips_invalid_tip_amount": "%{amount} 이하로 팁 입력",
+        "gift_card_already_applied": "이 기프트 카드가 이미 주문에 적용되었습니다.",
+        "gift_card_disabled": "이 기프트 카드를 더 이상 사용할 수 없습니다.",
+        "gift_card_expired": "기프트 카드가 만료되었습니다.",
+        "gift_card_depleted": "이 기프트 카드에는 잔액이 없습니다.",
+        "gift_card_currency_mismatch": "%{checkout_currency} 의 기프트 카드만 이 주문에 사용될 수 있습니다.",
+        "payment_gateway_needs_paid_plan_error": "이 결제 방식은 스토어에서 지금 사용할 수 없습니다.",
+        "payment_gateway_not_in_test_mode": "은(는) 주문을 테스트하도록 설정되지 않았습니다. 이 스토어는 실제 주문이나 결제를 수락할 수 없습니다.",
+        "payment_gateway_incompatible_with_multi_currency": "현지 통화로 이 결제를 완료하려면 신용카드로 지불해야 합니다.",
+        "payment_gateway_unsupported_for_subscriptions": "이 결제 방법은 가입 주문에 사용할 수 없습니다.",
+        "subscription_agreement_blank": "구매를 계속하려면 가입 약관에 동의하십시오.",
+        "physical_gift_card_invalid_quantity": "실물 기프트 카드 항목에는 기프트 카드 코드 수와 일치하는 수량이 있어야 합니다.",
+        "physical_gift_card_duplicate_code": "실제 기프트 카드 품목에 중복된 코드가 있습니다.",
+        "physical_gift_card_invalid_code": "실제 기프트 카드 코드가 잘못되었습니다.",
+        "sms_marketing_phone_invalid": "유효한 전화 번호 입력",
+        "address_first_name_too_long": "이름이 너무 깁니다(최대 255자).",
+        "address_first_name_contains_html_tags": "이름에 HTML 태그를 포함할 수 없습니다.",
+        "address_last_name_too_long": "성이 너무 깁니다(최대 255자).",
+        "address_last_name_contains_html_tags": "성에 HTML 태그를 포함할 수 없습니다.",
+        "address_address1_too_long": "첫 번째 주소 줄이 너무 깁니다(최대 255자).",
+        "address_address1_contains_html_tags": "주소1에 HTML 태그를 포함할 수 없습니다.",
+        "address_address2_too_long": "두 번째 주소 줄이 너무 깁니다(최대 255자).",
+        "address_address2_contains_html_tags": "주소2에 HTML 태그를 포함할 수 없습니다.",
+        "address_city_too_long": "시 이름이 너무 깁니다(최대 255자).",
+        "address_city_contains_html_tags": "시에 HTML 태그를 포함할 수 없습니다.",
+        "address_company_too_long": "회사명이 너무 깁니다(최대 255자).",
+        "address_company_contains_html_tags": "회사에 HTML 태그를 포함할 수 없습니다."
+      },
+      "payment_errors": {
+        "generic_error": "결제를 처리하는 중 문제가 발생했습니다. 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "rejected_transaction": "결제가 거부되었습니다. 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "credit_card_processing": "기술적 문제가 발생하여 지불을 처리할 수 없습니다. 몇 분 후에 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "order_total_changed": "주문 총액이 변경되었습니다. 카트를 새로 고침하고 다시 시도하십시오.",
+        "payment_processing": "기술적 문제가 발생하여 지불을 처리할 수 없습니다. 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "payment_processing_no_retry": "기술적 문제가 발생하여 결제를 처리할 수 없습니다. 다른 결제 방법으로 시도해 보십시오.",
+        "paypal_zero_amount": "%{amount} 주문에 PayPal을 사용할 수 없습니다. 주문이 정확한지 확인한 후 Paypal 외의 다른 방식으로 결제하십시오.",
+        "paypal_invalid_token": "PayPal을 사용할 수 없습니다. 다시 시도하거나 다른 결제 옵션을 사용하십시오.",
+        "pay_later_failed": "Pay later로 지불을 처리하는 중 오류가 발생했습니다. 다른 결제 방법을 선택하고 다시 시도하십시오.",
+        "three_d_secure_failed": "결제를 확인할 수 없습니다. 다시 시도하거나 다른 지불 방식을 사용하십시오.",
+        "three_d_secure_failed_duplicate": "다른 인증이 이미 진행 중이기 때문에 신용 카드의 3D Secure 인증에 실패했습니다.",
+        "three_d_secure_throttled": "암호 입력을 너무 많이 시도했습니다. 잠시 기다렸다가 다시 시도하십시오.",
+        "subscription_agreement_blank": "가입하려면 결제 정보를 저장해야합니다. 계속하려면 주문에서 가입 항목에 동의하거나 제거했는지 확인하십시오.",
+        "insufficient_funds": "자금이 부족하여 결제가 거부되었습니다. 다시 시도하거나 다른 결제 방법을 사용하십시오.",
+        "fraud_payment_errors": {
+          "transaction_declined": "이 거래가 거절되었습니다.",
+          "address_mismatch": "주소와 우편 번호가 일치하지 않습니다.",
+          "cannot_process": "이 거래를 처리할 수 없습니다.",
+          "no_match": "일치하지 않음",
+          "card_declined": "카드가 거부되었습니다."
+        }
+      },
+      "shipping_errors": {
+        "shipping_method": "카트가 업데이트되어, 이전 배송 요금이 유효하지 않습니다. 새로운 요금 선택하기",
+        "shipping_method_not_available": "카트가 업데이트되었으나 추가한 품목은 등록된 주소로 배송될 수 없습니다. 주문을 완료하려면 해당 품목을 삭제하십시오.",
+        "shipping_method_not_available_generic": {
+          "one": "입력하신 주소로 주문을 배송할 수 없습니다. 모든 필드가 정확하게 입력되었는지 확인한 후 다시 시도해 주십시오.",
+          "other": "카트의 일부 품목을 입력하신 주소로 배송할 수 없습니다. 모든 필드가 정확하게 입력되었는지 확인한 후 다시 시도해 주십시오."
+        },
+        "shipping_method_not_available_updated": {
+          "one": "추가한 품목을 귀하의 위치로 발송할 수 없습니다. 결제를 위해 제거하거나 스토어로 문의하십시오.",
+          "other": "추가한 하나 이상의 품목을 귀하의 위치로 발송할 수 없습니다. 결제를 위해 제거하거나 스토어로 문의하십시오."
+        }
+      },
+      "alternative_payment_method_banner": {
+        "express_checkout": "Express 결제를 선택하십시오.",
+        "or": "또는"
+      },
+      "alternative_payment_method": {
+        "button_html": "결제 방법 : %{method}",
+        "button_label": "결제 방법 : %{method}"
+      },
+      "paypal": {
+        "button_html": "결제 방법 : %{logo}"
+      },
+      "apple_pay": {
+        "button_html": "%{logo}(으)로 구매"
+      },
+      "post_purchase": {
+        "page_title": "구매 후",
+        "title": "구매 후",
+        "escape_confirmation": "주문에 대한 결제를 완료하였습니다.",
+        "escape_action": "주문 확인 보기 ›",
+        "components": {
+          "close": "닫기",
+          "expand": "자세히 보기",
+          "processing": "처리 중",
+          "submit": "제출"
+        }
+      },
+      "processing": {
+        "redirecting_page_title": "리디렉션 중 ...",
+        "redirecting_title": "리디렉션 중 ...",
+        "redirecting_notice": "리디렉션하는 동안 기다려 주십시오.",
+        "complete_your_purchase_title": "구매 완료",
+        "continue_to_payment_gateway_notice": "결제를 계속하려면 결제 정보를 추가하십시오.",
+        "continue_to_payment_gateway_button_label": "지불 계속하기",
+        "complete_your_purchase_title_error": "결제 정보 수정하기",
+        "continue_to_payment_gateway_notice_error": "지불 정보를 확인할 수 없습니다.",
+        "continue_to_payment_gateway_button_label_error": "결제 정보 업데이트하기",
+        "page_title": "주문 처리 중",
+        "title": "주문 처리 중",
+        "your_order_has_been_received_title": "주문해 주셔서 감사합니다.",
+        "you_will_receive_confirmation": "지금 주문이 많습니다. 조속히 이메일이나 문자로 확인을 받아야 합니다. 1시간 후 못하면 저희에게 알려주십시오.",
+        "you_will_not_be_charged": "아직 요금이 청구되지 않습니다",
+        "wait": {
+          "short": "주문이 처리 중입니다.",
+          "medium": {
+            "one": "주문이 처리 중입니다. 예상 대기 시간은 1분입니다.",
+            "other": "주문이 처리 중입니다. 예상 대기 시간은 %{count} 분입니다."
+          },
+          "long": "주문이 처리되는 즉시 이메일을 받게됩니다. 현재 주문량이 많습니다.",
+          "no_auto_refresh_html": "자동으로 리디렉션되지 않는 경우, %{link}.",
+          "refresh_this_page": "이 페이지 새로 고침"
+        }
+      },
+      "failed_payment": {
+        "page_title": "결제를 처리할 수 없습니다.",
+        "title": "결제를 처리할 수 없습니다.",
+        "payment_not_processed_title": "결제를 처리할 수 없습니다.",
+        "payment_not_processed_text": "청구되지 않았습니다. 카트로 돌아가서 구매를 완료하십시오.",
+        "return_to_cart_button_label": "장바구니로 돌아가기"
+      },
+      "payment_gateway": {
+        "credit_card_label": "신용 카드",
+        "bank_deposit_label": "은행 예금",
+        "cash_on_delivery_label": "COD(대금 상환 인도)",
+        "money_order_label": "우편환"
+      },
+      "thank_you": {
+        "title": "구매해 주셔서 감사합니다!",
+        "confirmation_email_sent_text": "확인 이메일이 %{email} 로 전송되었습니다.",
+        "return_to_store_link_label": "쇼핑 계속하기",
+        "print_link_label": "영수증 인쇄",
+        "payment_information_title": "결제 정보",
+        "shipping_information_title": "배송 정보",
+        "page_title": "감사합니다 %{display_name}!",
+        "page_title_no_name": "감사합니다!",
+        "cancelled_page_title": "주문 취소됨",
+        "customer_information_title": "고객 정보",
+        "contact_information_title": "연락처 정보",
+        "billing_address_title": "청구 주소",
+        "shipping_address_title": "배송 주소",
+        "shipping_address_map_title": "배송 주소의 핀포인트를 표시하는 Google 지도: %{address}",
+        "payment_method_title": "결제 방법",
+        "shipping_method_title": "배송 방법",
+        "tracking_number": "추적 번호:",
+        "company_tracking_number": "%{company} 추적 번호:",
+        "estimated_arrival": "예상 배송 날짜: ",
+        "re-order": "동일한 항목 재주문",
+        "confirmed": "확인됨",
+        "gift_card_confirmation_by_text": "기프트 카드가 문자로 전송되었습니다. 아직 받지 못한 경우에는 다시 전송하거나 Shopify에 문의하십시오.",
+        "gift_card_confirmation_by_email": "기프트 카드가 이메일로 전송되었습니다. 아직 받지 못한 경우에는 다시 전송하거나 Shopify에 문의하십시오.",
+        "gift_card_title": "기프트 카드",
+        "resend_gift_cards": "기프트 카드 다시 보내기",
+        "thank_you_title": "주문이 확인되었습니다",
+        "thank_you_title_payment": "결제가 확인되었습니다.",
+        "thank_you_confirmed_order_with_email": "조만간 주문 번호와 담긴 확인 이메일이 발송됩니다.",
+        "thank_you_confirmed_order_with_phone": "조만간 주문 번호와 담긴 확인 문자가 발송됩니다.",
+        "thank_you_confirmed_order_with_email_and_phone": "조만간 주문 번호와 담긴 확인 이메일과 문자가 발송됩니다.",
+        "thank_you_confirmed_order_with_email_payment": "주문을 %{date}에 결제했습니다.",
+        "thank_you_confirmed_order_with_phone_payment": "주문(%{date})을 결제했습니다.",
+        "thank_you_confirmed_order_with_email_and_phone_payment": "주문(%{date})을 결제했습니다.",
+        "thank_you_confirmed_order_with_email_pick_up": "주문의 픽업 준비가 완료되면 이메일이 전송됩니다.",
+        "thank_you_confirmed_order_with_phone_pick_up": "주문이 픽업 준비가 되면 문자가 전송됩니다.",
+        "thank_you_confirmed_order_with_email_and_phone_pick_up": "주문의 픽업 준비가 완료되면 이메일이 전송됩니다.",
+        "thank_you_confirmed_order_with_missing": "이메일 또는 전화로 문의하여 주문 확인을 받으십시오.",
+        "order_status_confirmed_order_with_email": "주문이 완료되면 이메일이 전송됩니다.",
+        "order_status_confirmed_order_with_phone": "주문이 완료되면 문자가 전송됩니다.",
+        "order_status_confirmed_order_with_email_and_phone": "주문이 완료되면 이메일과 문자를 받게됩니다.",
+        "order_status_confirmed_order_with_email_payment": "주문을 %{date}에 결제했습니다.",
+        "order_status_confirmed_order_with_phone_payment": "주문(%{date})을 결제했습니다.",
+        "order_status_confirmed_order_with_email_and_phone_payment": "주문(%{date})을 결제했습니다.",
+        "order_status_confirmed_order_with_email_pick_up": "주문의 픽업 준비가 완료되면 이메일이 전송됩니다.",
+        "order_status_confirmed_order_with_phone_pick_up": "주문의 픽업 준비가 완료되면 문자가 전송됩니다.",
+        "order_status_confirmed_order_with_email_and_phone_pick_up": "주문의 픽업 준비가 완료되면 이메일과 문자가 전송됩니다.",
+        "order_status_confirmed_order_local": "주문하신 제품의 배송을 준비 중입니다.",
+        "order_status_updates_with_email": "이메일로 배송 및 배달 소식을 받게됩니다.",
+        "order_status_updates_with_phone": "문자로 배송 및 배달 소식을 받게됩니다.",
+        "order_status_updates_with_email_and_phone": "이메일과 문자로 이메일로 배송 및 배달 소식을 받게됩니다.",
+        "order_status_updates_with_missing": "배송 업데이트 방법을 선택하십시오.",
+        "confirmed_title": "주문이 확인되었습니다",
+        "confirmed_description": "주문을 받았으며 이미 준비 중입니다. 배송 상태에 대한 최신 정보를 확인하려면 이 페이지를 방문하십시오.",
+        "ready_for_pickup_title": "주문의 픽업 준비 완료",
+        "ready_for_pickup_description": "주문을 픽업할 준비가 되었습니다. 주문을 픽업할 때 주문 확인을 가져오십시오.",
+        "ready_for_delivery_title": "주문하신 제품의 배송이 준비되었습니다.",
+        "ready_for_delivery_description": "주문하신 제품이 준비되었습니다.",
+        "order_updates_title": "주문 업데이트",
+        "shop_phone_description": "주문을 추적할 수 있는 상점 앱 링크가 문자로 전송됩니다.",
+        "order_updates_description_html": "업데이트가 %{customer_contact} 에 전송됩니다.",
+        "order_updates_current_step_prefix": "현재 단계: ",
+        "order_updates_past_step_prefix": "지난 단계: ",
+        "order_updates_upcoming_step_prefix": "예정 단계: ",
+        "in_transit": "배송중",
+        "in_transit_title": "주문이 배송 중입니다.",
+        "in_transit_description": "배송 과정의 업데이트를 보내드릴 예정입니다.",
+        "in_transit_description_days": "다음 %{number}일 후에 주문 품목을 받아야 합니다.",
+        "in_transit_description_today": "오늘 주문 품목을 받아야 합니다.",
+        "in_transit_description_tomorrow": "내일 주문 품목을 받아야 합니다.",
+        "no_tracking_number": "이 주문에 추적 번호가 없습니다.",
+        "out_for_delivery": "배송 출발",
+        "out_for_delivery_title": "주문하신 제품의 배송이 시작되었습니다.",
+        "out_for_delivery_description_html": "주문이 오늘 도착할 예정입니다. 2일 이내에 수령하지 못한 경우 %{contact_us}.",
+        "out_for_delivery_local_title": "주문한 제품의 배송이 시작되었습니다.",
+        "out_for_delivery_local_description_html": "주문한 제품이 곧 도착할 예정입니다.",
+        "attempted_delivery": "배송 시도함",
+        "attempted_delivery_title": "주문 배송 시도",
+        "attempted_delivery_description_html": "주문의 배송을 시도했으나 실패했습니다. 배송 시도를 다시 조율하려면 %{contact_us}.",
+        "attempted_delivery_local_title": "누락된 배송",
+        "attempted_delivery_local_description_html": "주문을 배송할 수 없었습니다. %{contact_us}(으)로 문의하여 다른 배송을 예약하십시오.",
+        "delivered": "배송됨",
+        "delivered_title": "주문한 제품의 배송이 완료되었습니다.",
+        "delivered_description_html": "제공해주신 주소로 배송이 완료되었습니다. 받지 못했거나 다른 문제가 있는 경우, %{contact_us}.",
+        "delivered_local_title": "주문한 제품의 배송이 완료되었습니다.",
+        "delivered_local_description_html": "주문을 받지 못하셨습니까? %{let_us_know}.",
+        "picked_up_title": "귀하의 주문이 픽업되었습니다.",
+        "picked_up_description_html": "주문이 %{date}에 %{location_name}에서 픽업되었습니다.",
+        "contact_us": "문의처",
+        "contact_us_lowercase": "문의처",
+        "contact_us_html": "도움이 필요하십니까? %{contact_us}",
+        "updated_time": "%{time_ago} 전 업데이트 완료",
+        "failure": "배송되지 않음",
+        "failed_title": "주문을 배달하지 못했습니다.",
+        "failed_contact_merchant": "배달을 준비하려면 %{company} 에 문의하십시오.",
+        "failed_contact_merchant_no_company": "배달을 준비하려면 저희에게 문의하십시오.",
+        "non_shippable_title": "주문이 완료되었습니다.",
+        "let_us_know": "피드백 보내기",
+        "login_title": "로그인하여 주문 세부 정보 검토",
+        "login_description": "이메일을 통해 받은 영수증에서 주문 번호를 확인할 수 있습니다.",
+        "login_description_phone": "문자 메시지를 통해 받은 영수증에서 주문 번호를 확인할 수 있습니다.",
+        "login_not_customer_html": "%{name} 이 아닙니까? %{link} 에 접속할 수 있습니다.",
+        "login_reorder_link_text": {
+          "one": "이 제품도 구매",
+          "other": "이 제품들도 구매"
+        },
+        "customer_information_hidden_fields_message": "로그인하여 모든 고객 정보 검토",
+        "cancelled_title": "주문이 취소되었습니다.",
+        "cancelled_description": "%{date} 일에 주문을 취소했습니다. 문의 사항이 있으면 저희에게 문의하십시오.",
+        "order_number_label": "주문 번호",
+        "customer_validation_error": "유효한 이메일 또는 주문 번호 입력",
+        "customer_validation_error_phone": "유효한 전화 또는 주문 번호 입력",
+        "login": "로그인",
+        "unfulfilled_items_title": "배송 준비 중",
+        "unfulfilled_items_description": "현재 해당 품목의 배송을 준비 중입니다.",
+        "marker": {
+          "current": "현재 배송 위치",
+          "shipping": "배송 주소"
+        },
+        "pick_up_in_store_marker": {
+          "current": "현재 배송 위치",
+          "shipping": "픽업 위치"
+        },
+        "fulfillment": {
+          "fulfilled_table_title": "이 배송에 포함된 품목",
+          "unfulfilled_table_title": "배송 준비 중인 품목",
+          "product_image_label": "제품 이미지",
+          "description_label": "설명",
+          "quantity_label": "수량"
+        },
+        "opt_in_message_html": "정보가 %{shopify_pay} 에 저장되었습니다.",
+        "order_updates_description_missing": "배송 업데이트를 받고 있습니다.",
+        "order_updates_subscribe_to_email_notifications": "이메일로 배송 업데이트 받기",
+        "order_updates_subscribe_to_email_or_phone_notifications": "이메일 또는 문자로 배송 업데이트 받기",
+        "order_updates_subscribe_to_phone_notifications": "문자로 배송 업데이트 받기",
+        "order_updates_submit_subscription": "제출",
+        "track_shipment": "배송 추적",
+        "shopify_pay": {
+          "order_completed_html": "%{shopify_pay} 로 완료된 주문",
+          "learn_more_label": "Shop Pay에 대해 자세히 알아보기"
+        },
+        "other_options": "기타 옵션",
+        "delivery_information_label": "배송 정보:",
+        "gift_card_sent_confirmation": "기프트 카드 전송",
+        "qr_code": {
+          "send_link_to_phone": "또는 링크를 휴대폰으로 전송합니다.",
+          "title": "휴대폰에서 추적",
+          "subtitle": "휴대폰의 카메라로 코드를 스캔하여 Shop에서 추적합니다."
+        }
+      },
+      "review": {
+        "title": "리뷰",
+        "review_title": "주문 검토",
+        "checkout_as_guest": "게스트로 결제",
+        "blocks": {
+          "contact_method_title": "연락처",
+          "billing_address_title": "청구",
+          "shipping_address_title": "배송 도착지",
+          "shipping_method_title": "방법",
+          "payment_method_title": "지급",
+          "change_link_label": "변경",
+          "change_contact_method_link_label": "연락처 정보 변경",
+          "change_billing_address_link_label": "청구서 주소 변경",
+          "change_shipping_address_link_label": "배송지 주소 변경",
+          "change_shipping_method_link_label": "배송 방법 변경",
+          "change_payment_method_link_label": "지불 방법 변경",
+          "pick_up_in_store_shipping_method_html": "스토어에서 픽업 · %{location_name}"
+        }
+      },
+      "marketing": {
+        "accept_marketing_checkbox_label": "뉴스 및 제안을 이메일로 받기",
+        "accept_sms_checkbox_label": "뉴스 및 제안을 문자 메시지로 받기",
+        "sms": {
+          "disclaimer": {
+            "privacy_policy": "개인정보처리방침",
+            "terms_of_service": "서비스 약관"
+          }
+        },
+        "unsubscribe": {
+          "title": "구독 취소했습니다.",
+          "description": "더 이상 카트 알림을 수신하지 않습니다."
+        }
+      },
+      "shop_policies": {
+        "refund_policy": "환불 정책",
+        "privacy_policy": "개인정보처리방침",
+        "terms_of_service": "서비스 약관",
+        "legal_notice": "법적 고지 사항",
+        "shipping_policy": "배송 정책",
+        "terms_of_sale": "판매 약관",
+        "subscription_policy": "가입 정책"
+      },
+      "remember_me": {
+        "shopify_pay_label": "Shop Pay",
+        "save": "저장",
+        "title": "나를 기억하기",
+        "label": "보다 빠른 결제를 위해 내 정보 저장",
+        "description_html": "다음 번에 여기 또는 Shopify가 제공하는 다른 스토어에서 결제 시 Shop Pay로 안전하게 구매하기 위한 코드가 문자 메세지로 전송됩니다.",
+        "mobile_phone_icon_alt": "휴대 전화",
+        "mobile_phone_number": "휴대 전화 번호",
+        "terms_and_privacy_html": "계속하면 Shop Pay의 %{privacy_href} 및 %{terms_href}에 동의하는 것입니다.",
+        "privacy_policy": "개인정보처리방침",
+        "terms_of_service": "서비스 약관",
+        "errors": {
+          "optin": "Shop Pay를 사용할 수 없습니다"
+        },
+        "installments": {
+          "paid_in_installments": "Shop Pay를 통해 할부로 결제합니다.",
+          "view_schedule": "예약 보기"
+        }
+      },
+      "notifications": {
+        "title": "알림"
+      },
+      "order_payment_collection": {
+        "custom_line_item_description": "%{order_name} 주문에 대한 지불 금액",
+        "changes_summary": {
+          "added": {
+            "one": "추가됨",
+            "other": "%{count} 추가됨"
+          },
+          "removed": "제거됨",
+          "subtracted": "%{count} 제거됨"
+        },
+        "additional_payment_requested": "%{total_outstanding}을(를) 결제해야 합니다.",
+        "checkout_review_and_pay": "%{order_name} 주문이 업데이트되었습니다. 이 변경 사항을 검토한 후 지불하여 주문을 확인하십시오.",
+        "order_updated_on": "주문이 %{last_edited_at} 에서 업데이트 되었습니다.",
+        "order_review_and_pay": "주문이 업데이트되었습니다. 검토하고 지불하여 주문을 확인하십시오.",
+        "pay_now": "지금 결제"
+      },
+      "change_currency": {
+        "currency_button_label": "%{currency}(%{currency_symbol})",
+        "credit_card_will_be_charged_html": "귀하의 신용 카드에 %{amount}이(가) 청구됩니다.",
+        "payment_total_label": "총 결제",
+        "conversion_rate": "1%{from_currency_code} = %{rate}%{to_currency_code}",
+        "change_currency_link": "%{currency_name}(으)로 변경",
+        "card_provider_fx_charges_warning": "%{currency_code} 거래에 카드 공급업체의 수수료가 청구될 수 있습니다.",
+        "currency_not_supported_by_shop": "선택한 통화는 더 이상 사용할 수 없습니다. 모든 가격은 이제 %{currency_code}(으)로 표시됩니다."
+      },
+      "change_country": {
+        "cart_updated_based_on_country": "카트가 배송 국가에 따라 업데이트되었습니다."
+      },
+      "tips": {
+        "title": "팁 추가",
+        "description": "%{shop_name}에서 팀에게 지지를 보내주세요",
+        "presets_description": "팁 백분율 선택",
+        "custom_label": "사용자 지정 봉사료",
+        "add_tip": "팁 추가",
+        "update_tip": "팁 업데이트",
+        "message": "감사합니다.",
+        "preset_label": "%{tip_percent}%",
+        "no_tip_label": "없음"
+      },
+      "open_graph_meta_tag": {
+        "title_with_products": {
+          "zero": "%{product_name} 구매",
+          "one": "%{product_name} 및 기타 품목 %{count}개 구매",
+          "other": "%{product_name} 및 기타 품목 %{count}개 구매"
+        }
+      },
+      "subscriptions": {
+        "recurring_total_intervals": {
+          "day": {
+            "one": "일",
+            "other": "%{count}일"
+          },
+          "week": {
+            "one": "주",
+            "other": "%{count}주"
+          },
+          "month": {
+            "one": "월",
+            "other": "%{count}개월"
+          },
+          "year": {
+            "one": "연도",
+            "other": "%{count}년"
+          }
+        },
+        "recurring_totals": "%{total_price}(매 %{interval})",
+        "recurring_totals_with_initial_order_shipping_discount": "처음 결제 %{total_price_with_discount}, 이후 %{recurring_total}",
+        "recurring_totals_with_policies": {
+          "first_cycles": {
+            "one": "처음 결제: %{total_price}",
+            "other": "처음 %{count}개 결제: 각 %{total_price}"
+          },
+          "following_cycles": ", 이후 %{total_price}(매 %{interval})"
+        },
+        "recurring_totals_with_initial_order_shipping_discount_with_policies": {
+          "first_cycles": {
+            "one": ", 이후 %{count}개 결제(%{total_price})",
+            "other": ", 이후 %{count}개 결제(각 %{total_price})"
+          }
+        }
+      },
+      "customer_payment_methods": {
+        "page_title": "결제 방법",
+        "title": "결제 방법",
+        "update_card_button_label": "카드 업데이트",
+        "delete_customer_mandate": {
+          "generic_error": "귀하의 요청을 처리하는 중에 문제가 발생했습니다.",
+          "success_message": "결제 방법이 삭제되었습니다."
+        }
+      }
+    },
+    "pagination": {
+      "previous": "이전",
+      "next": "다음"
+    },
+    "links": {
+      "powered_by_shopify": "Powered by Shopify",
+      "learn_more": "자세히 알아보기"
+    },
+    "feed": {
+      "more": "자세히"
+    },
+    "attributes": {
+      "email": "이메일",
+      "password": "비밀번호",
+      "password_confirmation": "비밀번호 확인",
+      "first_name": "이름",
+      "last_name": "성",
+      "body": "본문",
+      "signature": "주소"
+    },
+    "addresses": {
+      "zip_code": "우편 번호",
+      "postal_code": "우편 번호",
+      "postcode": "우편 번호",
+      "pincode": "PIN 코드",
+      "region": "지역",
+      "prefecture": "현",
+      "province": "시\/도",
+      "state": "시\/도",
+      "state_and_territory": "시\/도\/지역",
+      "county": "군",
+      "emirate": "영토",
+      "governorate": "행정 기관",
+      "confirm": "이 주소를 삭제하시겠습니까?"
+    },
+    "collections": {
+      "sorting": {
+        "manual": "추천",
+        "best_selling": "베스트셀러",
+        "az": "알파벳순, A-Z",
+        "za": "알파벳순, Z-A",
+        "price_ascending": "가격(낮은 가격부터)",
+        "price_descending": "가격(높은 가격부터)",
+        "date_ascending": "날짜(오래된 날짜부터)",
+        "date_descending": "날짜(최신 날짜부터)"
+      }
+    },
+    "errors": {
+      "blank": "은(는) 비워 둘 수 없습니다.",
+      "blocked_address": "해당 위치는 지원되지 않습니다.",
+      "credit_card_session_expired": "신용 카드 승인이 만료되었습니다, 지불 정보를 다시 입력하십시오. 카드 요금이 청구되지 않았습니다.",
+      "empty": "은(는) 비워 둘 수 없습니다.",
+      "invalid_email": "유효한 형식이어야 합니다",
+      "discount_disabled": "할인이 불가능합니다.",
+      "discount_expired": "할인이 더 이상 유효하지 않습니다.",
+      "discount_limit_reached": "할인이 사용 한도에 도찰했습니다.",
+      "discount_not_found": "입력한 코드에 맞는 유효한 할인을 찾을 수 없습니다.",
+      "customer_already_used_once_per_customer_discount_notice": "할인이 사용 한도에 도달했습니다.",
+      "gift_card_already_applied": "코드가 이미 귀하의 결제에 적용되었습니다.",
+      "gift_card_code_invalid": "코드가 유효하지 않습니다.",
+      "gift_card_currency_mismatch": "%{checkout_currency} 주문에 %{gift_card_currency} 기프트 카드를 적용할 수는 없습니다.",
+      "gift_card_depleted": "키프트 카드에 남은 금액이 없습니다.",
+      "gift_card_disabled": "기프트 카드 사용이 비활성화되었습니다.",
+      "gift_card_expired": "기프트 카드가 만료되었습니다.",
+      "invalid": "은(는) 잘못되었습니다.",
+      "bad_domain": "잘못된 도메인 이름이 포함되어 있습니다.",
+      "taken": "은(는) 이미 사용되었습니다.",
+      "contains_html_tags": "HTML 태그는 포함할 수 없습니다",
+      "too_short": "은(는) 너무 짧습니다(최소값: %{count}자)",
+      "too_long": "은(는) 너무 깁니다(최대값: %{count}자)",
+      "password_mismatch": "제공된 비밀번호와 일치해야합니다.",
+      "contains_spaces": "은(는) 공백으로 시작되거나 끝납니다.",
+      "email_domain_invalid": "공급업체가 지원되지 않습니다.",
+      "invalid_for_country": "은(는) %{country}에 사용할 수 없습니다.",
+      "invalid_for_country_and_province": "은(는) %{province} 및 %{country}에 사용할 수 없습니다.",
+      "invalid_province_in_country": "은(는) %{country}의 유효한 시\/도가 아닙니다.",
+      "invalid_state_in_country": "은(는) %{country}의 유효한 주가 아닙니다.",
+      "invalid_region_in_country": "은(는) %{country}의 유효한 지역이 아닙니다.",
+      "less_than_or_equal_to": "은(는) %{count} 이하여야 합니다.",
+      "not_supported": "은(는) 지원되지 습니다.",
+      "full_name_required": "이름과 성을 입력하십시오.",
+      "invalid_for_card_type": "은(는) 유효하지 않습니다.",
+      "invalid_type": "죄송합니다, 승인될 수 없는 카드입니다.",
+      "invalid_format": "유효하지 않은 형식입니다.",
+      "expired": "만료되었습니다.",
+      "invalid_start_date_or_issue_number_for_debit": "유효한 시작 날짜 혹은 발행 번호가 필요합니다.",
+      "invalid_expiry_year": "유효한 만료 연도가 아닙니다.",
+      "reset_password_html": "이메일 주소가 이미 계정과 연결되었습니다. 이 계정이 귀하의 것이면 <a href=\"\/account\/login#recover\">비밀번호를 재설정<\/a> 할 수 있습니다.",
+      "verify_email": "%{customer_email}에 이메일을 송신하여 이메일 주소를 확인하기 위해 포함된 링크를 클릭합니다."
+    },
+    "notices": {
+      "customer": {
+        "password_reset_error": "비밀번호 설정 오류",
+        "no_account_found": "이메일에 발견된 계정이 없습니다.",
+        "invalid_credentials": "이메일 또는 비밀번호가 잘못되었습니다."
+      },
+      "address": {
+        "updated": "주소가 성공적으로 업데이트되었습니다.",
+        "error_updating": "주소 업데이트 오류",
+        "created": "주소가 성공적으로 생성되었습니다.",
+        "error_creating": "주소 생성 오류",
+        "deleted": "주소가 성공적으로 제거되었습니다.",
+        "error_deleting": "주소 제거 오류"
+      },
+      "order": {
+        "not_available": "해당 주문을 진행할 수 없습니다.",
+        "financial_status": {
+          "authorized": "권한 부여됨",
+          "pending": "보류 중",
+          "paid": "결제됨",
+          "unpaid": "결제되지 않음",
+          "voided": "무효 처리됨",
+          "partially_paid": "일부 결제됨",
+          "partially_refunded": "일부 환불됨",
+          "refunded": "환불됨",
+          "expired": "만료됨"
+        },
+        "fulfillment_status": {
+          "fulfilled": "주문 처리됨",
+          "complete": "완료",
+          "partial": "부분",
+          "unfulfilled": "주문 미처리",
+          "restocked": "재입고됨"
+        },
+        "transaction_status": {
+          "success": "성공",
+          "pending": "보류 중",
+          "failure": "실패",
+          "error": "오류"
+        },
+        "cancel_reason": {
+          "declined": "결제 거절됨",
+          "inventory": "품목을 사용할 수 없음",
+          "fraud": "사기 주문",
+          "customer": "고객이 주문을 변경\/취소했습니다.",
+          "other": "기타"
+        },
+        "cash_on_delivery": "COD(대금 상환 인도)"
+      },
+      "cart": {
+        "only_n_items_available": "장바구니에 %{count} %{name} 만 추가할 수 있습니다.",
+        "too_many_items_in_cart": "카트에 %{name}를 추가할 수 없습니다.",
+        "all_items_in_cart": "모든 %{count} %{name} 가 장바구니 안에 있습니다.",
+        "empty_update": "빈 장바구니를 업데이트할 수 없습니다.",
+        "missing_parameters": "id 혹은 기준 파라미터가 유효하지 않습니다.",
+        "generic_error": "장바구니 오류",
+        "too_many_line_items_error": "%{max}개이상의 항목을 담을 수 없습니다.",
+        "link_expired": "만료된 링크",
+        "link_no_longer_exists": "링크가 더 이상 존재하지 않습니다.",
+        "stock_problems_html": "하나 혹은 이상의 항목을 더 이상 사용할 수 없습니다. <a href='%{link}'>업데이트된 장바구니<\/a> 를 제공되었습니다.",
+        "changed": "변경된 카드",
+        "items_changed": "하나 이상의 항목을 변경되었습니다.",
+        "product_sold_out": "'%{name}' 의 제품이 이미 매진되었습니다.",
+        "variant_not_found": "이형 상품을 찾을 수 없습니다.",
+        "variant_requires_selling_plan": "이형 상품은 판매 플랜을 통해서만 구매 가능합니다.",
+        "selling_plan_not_applicable": "이형 상품에 판매 플랜을 적용할 수 없음",
+        "shipping_address_not_required": "이 장바구니는 배송이 불필요합니다.",
+        "shipping_address_invalid": "배송료를 계산하는 중에 문제가 발생했습니다. 주문을 완료하기 전에 배송료 선택을 확인하십시오."
+      },
+      "storefront": {
+        "invalid_password": "비밀번호가 정확하지 않습니다. 다시 시도하십시오."
+      },
+      "tags": {
+        "add_articles": "%{tag} 태그도 포함하는 문서로 검색 범위 축소",
+        "add_products": "%{tag} 태그와 일치하는 제품으로 선택 범위 축소",
+        "remove_articles": "%{tag} 태그가 포함되지 않은 문서로 검색 범위 확대",
+        "remove_products": "%{tag} 태그 제거"
+      }
+    },
+    "email_marketing": {
+      "subscribed": {
+        "confirmation": "메일링 리스트에 가입해 주셔서 감사합니다.",
+        "disclaimer": "언제든지 탈퇴할 수 있습니다.",
+        "unsubscribe": "탈퇴"
+      },
+      "unsubscribed": {
+        "confirmation": "메일링 리스트에서 탈퇴하셨습니다.",
+        "disclaimer": "더 이상 마케팅 업데이트를 받지 않습니다. 언제든지 다시 가입할 수 있습니다.",
+        "preview": "고객이 가입을 해지할 때 표시되는 화면을 미리 보는 중입니다."
+      },
+      "open_tracking": {
+        "opt_in": {
+          "opted_in_html": "<b>이메일 확인 추적을 옵트인했습니다.<\/b>",
+          "visibility": "이메일 확인율은 익명으로 보고됩니다. 집계된 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다.",
+          "opt_out_html": "이 정보를 공유하지 않으려면 이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트아웃<\/a>할 수 있습니다.",
+          "preview_bar": "고객이 이메일 확인 추적을 옵트인할 때 표시되는 화면을 미리 보는 중입니다."
+        },
+        "opt_out": {
+          "opted_out_html": "<b>이메일 확인 추적을 옵트아웃했습니다.<\/b>",
+          "visibility": "이메일을 열었는지 표시하지 않습니다.",
+          "opt_in_html": "이메일 확인 추적을 <a style='text-decoration:underline;' href='%{link}'>옵트인<\/a>합니다.",
+          "preview_bar": "고객이 이메일 확인 추적을 옵트아웃할 때 표시되는 화면을 미리 보는 중입니다."
+        },
+        "no_longer_track": {
+          "status_html": "<b>더 이상 이메일 확인을 추적하지 않습니다.<\/b>",
+          "privacy_policy": "이 이메일을 보낸 후 개인정보처리방침을 업데이트했으며 더 이상 확인을 추적하지 않습니다."
+        },
+        "track": {
+          "status_html": "<b>이메일 확인 추적이 보고됩니다.<\/b>",
+          "visibility": "총 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다."
+        },
+        "updated_policy": {
+          "status_html": "<b>이메일 확인 추적이 보고됩니다.<\/b>",
+          "visibility": "방침을 업데이트했으며 이제 이메일 확인을 추적합니다. 이메일 확인율은 익명으로 보고됩니다. 총 이메일 확인율의 일부로 이메일을 연 경우에만 표시됩니다.",
+          "opt_out_html": "이 정보를 공유하지 않으려면 <a style='text-decoration:underline;' href='%{link}'>구독을 취소<\/a>할 수 있습니다."
+        }
+      }
+    },
+    "filters": {
+      "availability": {
+        "value": {
+          "in_stock": "재고 있음",
+          "out_of_stock": "품절"
+        }
+      }
+    },
+    "search": {
+      "sorting": {
+        "relevance": "관련성",
+        "price_ascending": "가격(낮은 가격부터)",
+        "price_descending": "가격(높은 가격부터)"
+      }
+    },
+    "page_titles": {
+      "blog_or_article_with_error": "오류 - %{title}",
+      "products": "제품",
+      "shopping_cart": "쇼핑 카드",
+      "account": "계정",
+      "create_account": "계정 생성",
+      "reset_account": "계정 재설정",
+      "addresses": "주소",
+      "order": "%{name} 주문",
+      "search": "검색",
+      "search_results": {
+        "one": "검색: \"%{terms}\"의 검색 결과 %{count}개",
+        "other": "검색: \"%{terms}\"의 검색 결과 %{count}개"
+      },
+      "collections": "컬렉션",
+      "not_found": "404를 찾을 수 없음",
+      "challenge": "문제",
+      "checkpoint": "검사점"
+    },
+    "cart": {
+      "discounts_with_count": "%{count} 할인이 적용되었습니다."
+    },
+    "challenge": {
+      "message": "계속 진행하려면, 로봇이 아님을 증명하십시오.",
+      "error": "귀하의 답변이 정확하지 않았습니다. 다시 시도하십시오.",
+      "submit_button_text": "제출"
+    },
+    "checkpoint": {
+      "message": "보안 문자를 해결하여 계속",
+      "error": "보안 문자 유효성 검사 실패",
+      "submit_button_text": "제출"
+    },
+    "store_availability": {
+      "pick_up_time": {
+        "one_hour": "일반적으로 1시간 후 준비 완료",
+        "two_hours": "일반적으로 2시간 후 준비 완료",
+        "four_hours": "일반적으로 4시간 후 준비 완료",
+        "twenty_four_hours": "일반적으로 24시간 후 준비 완료",
+        "two_to_four_days": "일반적으로 2~4일 후 준비 완료",
+        "five_or_more_days": "일반적으로 5일 이상 후 준비 완료",
+        "zero_to_two_hours": "일반적으로 2시간 후 준비 완료",
+        "two_to_four_hours": "일반적으로 4시간 후 준비 완료",
+        "immediately": "픽업 준비 완료",
+        "next_day": "다음 날 픽업 준비 완료"
+      }
+    }
+  },
+  "sections": {
+    "header": {
+      "announcement": "공지",
+      "menu": "메뉴",
+      "cart_count": {
+        "one": "{{ count }}개 품목",
+        "other": "{{ count }}개 품목"
+      }
+    },
+    "cart": {
+      "title": "카트",
+      "caption": "카트 품목",
+      "remove_title": "{{ title }} 제거",
+      "subtotal": "소계",
+      "new_subtotal": "새로 계산된 소계",
+      "note": "주문 특별 지침",
+      "checkout": "결제",
+      "empty": "카트가 비어 있습니다",
+      "cart_error": "카트를 업데이트하는 중 오류가 발생했습니다. 다시 시도하십시오.",
+      "cart_quantity_error_html": "카트에는 이 품목을 [quantity]개만 추가할 수 있습니다.",
+      "taxes_and_shipping_policy_at_checkout_html": "결제 시 세금 및<a href=\"{{ link }}\"> 배송료<\/a>가 계산됨",
+      "taxes_included_but_shipping_at_checkout": "세금 포함 가격이며 결제 시 배송료가 계산됨",
+      "taxes_included_and_shipping_policy_html": "세금이 포함된 가격입니다. 결제 시 <a href=\"{{ link }}\">배송료<\/a> 가 계산됨",
+      "taxes_and_shipping_at_checkout": "결제 시 세금 및 배송료가 계산됨",
+      "headings": {
+        "product": "제품",
+        "price": "가격",
+        "total": "총계",
+        "quantity": "수량"
+      },
+      "update": "업데이트",
+      "login": {
+        "title": "계정이 있습니까?",
+        "paragraph_html": "더 빠르게 결제하려면 <a href=\"{{ link }}\" class=\"link underlined-link\">로그인<\/a>하십시오."
+      }
+    },
+    "footer": {
+      "payment": "결제 방법"
+    },
+    "featured_blog": {
+      "view_all": "모두 보기",
+      "onboarding_title": "블로그 게시물",
+      "onboarding_content": "고객에게 블로그 게시물의 요약 제공"
+    },
+    "featured_collection": {
+      "view_all": "모두 보기",
+      "view_all_label": "{{ collection_name }} 컬렉션의 모든 제품 보기"
+    },
+    "collection_list": {
+      "view_all": "모두 보기"
+    },
+    "collection_template": {
+      "empty": "제품을 찾을 수 없음",
+      "title": "컬렉션",
+      "use_fewer_filters_html": "더 적은 수의 필터를 사용하거나 <a class=\"{{ class }}\" href=\"{{ link }}\">모두 지우기<\/a>"
+    },
+    "video": {
+      "load_video": "동영상 로드: {{ description }}"
+    }
+  },
+  "general": {
+    "password_page": {
+      "login_form_heading": "비밀번호를 사용하여 스토어 입장:",
+      "login_password_button": "비밀번호를 사용하여 입장하십시오.",
+      "login_form_password_label": "비밀번호",
+      "login_form_password_placeholder": "귀하의 비밀번호",
+      "login_form_error": "잘못된 비밀번호입니다!",
+      "login_form_submit": "입력",
+      "modal": "비밀번호 모달",
+      "admin_link_html": "스토어 소유자입니까? <a href=\"\/admin\" class=\"link underlined-link\">여기에서 로그인<\/a>",
+      "powered_by_shopify_html": "이 상점은 {{ shopify }}에서 제공합니다."
+    },
+    "social": {
+      "alt_text": {
+        "share_on_facebook": "Facebook에서 공유",
+        "share_on_twitter": "Twitter에서 트윗 작성",
+        "share_on_pinterest": "Pinterest에 고정하기"
+      },
+      "links": {
+        "twitter": "Twitter",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "instagram": "Instagram",
+        "tumblr": "Tumblr",
+        "snapchat": "Snapchat",
+        "youtube": "YouTube",
+        "vimeo": "Vimeo",
+        "tiktok": "TikTok"
+      }
+    },
+    "continue_shopping": "쇼핑 계속하기",
+    "pagination": {
+      "label": "페이지 매김",
+      "page": "{{ number }}페이지",
+      "next": "다음 페이지",
+      "previous": "이전 페이지"
+    },
+    "search": {
+      "search": "검색"
+    },
+    "cart": {
+      "view": "내 카트 보기({{ count }}개)",
+      "item_added": "카트에 추가된 품목"
+    },
+    "share": {
+      "close": "공유 닫기",
+      "copy_to_clipboard": "링크 복사",
+      "share_url": "링크",
+      "success_message": "링크가 클립보드에 복사됨"
+    }
+  },
+  "newsletter": {
+    "label": "이메일",
+    "success": "가입해주셔서 감사합니다.",
+    "button_label": "가입하기"
+  },
+  "accessibility": {
+    "skip_to_text": "콘텐츠로 건너뛰기",
+    "skip_to_product_info": "제품 정보로 건너뛰기",
+    "close": "닫기",
+    "unit_price_separator": "단위",
+    "vendor": "공급업체:",
+    "error": "오류",
+    "refresh_page": "선택을 누르면 전체 페이지가 새로 고쳐집니다.",
+    "link_messages": {
+      "new_window": "새 창에서 열립니다.",
+      "external": "외부 웹사이트를 엽니다."
+    },
+    "of": "중",
+    "next_slide": "오른쪽으로 슬라이드",
+    "previous_slide": "왼쪽으로 슬라이드",
+    "loading": "로드하는 중...",
+    "total_reviews": "총 리뷰",
+    "star_reviews_info": "별점: {{ rating_value }}\/{{ rating_max }}"
+  },
+  "blogs": {
+    "article": {
+      "blog": "블로그",
+      "read_more_title": "자세히 읽기 : {{ title }}",
+      "comments": {
+        "one": "댓글 {{ count }}개",
+        "other": "댓글 {{ count }}개"
+      },
+      "moderated": "댓글 게시 전에는 반드시 승인이 필요합니다.",
+      "comment_form_title": "댓글 남기기",
+      "name": "이름",
+      "email": "이메일",
+      "message": "댓글",
+      "post": "댓글 달기",
+      "back_to_blog": "블로그로 돌아가기",
+      "share": "이 문서 공유하기",
+      "success": "댓글이 성공적으로 게시되었습니다. 감사합니다!",
+      "success_moderated": "댓글이 성공적으로 게시되었습니다. 블로그를 조정 중이므로 잠시 후에 게시됩니다."
+    }
+  },
+  "onboarding": {
+    "product_title": "제품명 예",
+    "collection_title": "컬렉션 이름"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "카트에 추가",
+      "description": "설명",
+      "on_sale": "할인",
+      "product_variants": "제품 이형 상품",
+      "media": {
+        "open_featured_media": "갤러리 보기에서 추천 미디어 열기",
+        "open_media": "갤러리 보기에서 미디어 {{ index }} 열기",
+        "play_model": "3D 뷰어 재생",
+        "play_video": "동영상 재생"
+      },
+      "quantity": {
+        "label": "수량",
+        "input_label": "{{ product }} 수량",
+        "increase": "{{ product }} 수량 늘림",
+        "decrease": "{{ product }} 수량 줄임"
+      },
+      "pickup_availability": {
+        "view_store_info": "스토어 정보 보기",
+        "check_other_stores": "다른 스토어의 사용 가능 여부 확인",
+        "pick_up_available": "픽업 사용 가능",
+        "pick_up_available_at_html": "<span class=\"color-foreground\">{{ location_name }}<\/span>에서 픽업 사용 가능",
+        "pick_up_unavailable_at_html": "<span class=\"color-foreground\">{{ location_name }}<\/span>에서 현재 픽업 사용 불가",
+        "unavailable": "픽업 사용 가능 여부를 로드할 수 없습니다.",
+        "refresh": "새로 고침"
+      },
+      "price": {
+        "from_price_html": "{{ price }}에서",
+        "regular_price": "정가",
+        "sale_price": "할인가",
+        "unit_price": "단가"
+      },
+      "share": "이 제품 공유",
+      "sold_out": "품절",
+      "unavailable": "사용할 수 없음",
+      "vendor": "공급업체",
+      "video_exit_message": "{{ title }}이(가) 동일한 창에서 전체 화면으로 열립니다.",
+      "view_full_details": "전체 세부 정보 보기",
+      "xr_button": "사용자 공간에서 보기",
+      "xr_button_label": "사용자 공간에서 보기, 증강 현실 창에서 품목 로드",
+      "include_taxes": "세금이 포함됩니다.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">배송료<\/a>는 결제 시 계산됩니다."
+    },
+    "modal": {
+      "label": "미디어 갤러리"
+    },
+    "facets": {
+      "apply": "적용",
+      "clear": "지우기",
+      "clear_all": "모두 지우기",
+      "from": "최저가",
+      "filter_and_sort": "필터 및 정렬",
+      "filter_by_label": "필터:",
+      "filter_button": "필터",
+      "filters_selected": {
+        "one": "{{ count }}개 선택됨",
+        "other": "{{ count }}개 선택됨"
+      },
+      "max_price": "최고가는 {{ price }}입니다.",
+      "product_count": {
+        "one": "{{ product_count }}\/{{ count }}개 제품",
+        "other": "{{ product_count }}\/{{ count }}개 제품"
+      },
+      "product_count_simple": {
+        "one": "{{ count }}개 제품",
+        "other": "{{ count }}개 제품"
+      },
+      "reset": "재설정",
+      "sort_button": "정렬",
+      "sort_by_label": "정렬 기준:",
+      "to": "최고가",
+      "clear_filter": "필터 지우기"
+    }
+  },
+  "templates": {
+    "404": {
+      "title": "페이지를 찾을 수 없음",
+      "subtext": "404"
+    },
+    "search": {
+      "no_results": "\"{{ terms }}\"에 대한 검색 결과가 없습니다. 철자를 확인하거나 다른 단어\/문구를 사용해 보십시오.",
+      "page": "페이지",
+      "products": "제품",
+      "results_with_count": {
+        "one": "{{ count }}개 결과",
+        "other": "{{ count }}개 결과"
+      },
+      "results_with_count_and_term": {
+        "one": "\"{{ terms }}\"의 검색 결과 {{ count }}건",
+        "other": "\"{{ terms }}\"의 검색 결과 {{ count }}건"
+      },
+      "title": "검색 결과",
+      "search_for": "\"{{ terms }}\" 검색"
+    },
+    "cart": {
+      "cart": "카트"
+    },
+    "contact": {
+      "form": {
+        "name": "이름",
+        "email": "이메일",
+        "phone": "전화 번호",
+        "comment": "댓글",
+        "send": "보내기",
+        "post_success": "문의해 주셔서 감사드립니다. 최대한 빨리 답변드리겠습니다.",
+        "error_heading": "다음을 조정하십시오."
+      }
+    }
+  },
+  "localization": {
+    "country_label": "국가\/지역",
+    "language_label": "언어",
+    "update_language": "언어 업데이트",
+    "update_country": "국가\/지역 업데이트"
+  },
+  "customer": {
+    "account": {
+      "title": "계정",
+      "details": "계정 세부 정보",
+      "view_addresses": "주소 보기",
+      "return": "계정 세부 정보로 돌아가기"
+    },
+    "account_fallback": "계정",
+    "activate_account": {
+      "title": "계정 활성화",
+      "subtext": "계정을 활성화하려면 비밀번호를 생성하십시오.",
+      "password": "비밀번호",
+      "password_confirm": "비밀번호 확인",
+      "submit": "계정 활성화",
+      "cancel": "초대 거절"
+    },
+    "addresses": {
+      "title": "주소",
+      "default": "기본값",
+      "add_new": "새 주소 추가",
+      "edit_address": "주소 편집",
+      "first_name": "이름",
+      "last_name": "성",
+      "company": "회사",
+      "address1": "주소 1",
+      "address2": "주소 2",
+      "city": "구\/군\/시",
+      "country": "국가\/지역",
+      "province": "시\/도",
+      "zip": "우편 번호",
+      "phone": "전화",
+      "set_default": "기본 주소로 설정",
+      "add": "주소 추가",
+      "update": "주소 업데이트",
+      "cancel": "취소",
+      "edit": "수정",
+      "delete": "삭제",
+      "delete_confirm": "이 주소를 삭제하시겠습니까?"
+    },
+    "log_in": "로그인",
+    "log_out": "로그아웃",
+    "login_page": {
+      "cancel": "취소",
+      "create_account": "계정 생성",
+      "email": "이메일",
+      "forgot_password": "비밀번호를 잊으셨나요?",
+      "guest_continue": "계속",
+      "guest_title": "게스트로 계속하기",
+      "password": "비밀번호",
+      "title": "로그인",
+      "sign_in": "로그인",
+      "submit": "제출"
+    },
+    "order": {
+      "title": "{{ name }} 주문",
+      "date_html": "주문 일자: {{ date }}",
+      "cancelled_html": "주문 취소 일자: {{ date }}",
+      "cancelled_reason": "이유: {{ reason }}",
+      "billing_address": "청구 주소",
+      "payment_status": "결제 상태",
+      "shipping_address": "배송 주소",
+      "fulfillment_status": "주문 처리 상태",
+      "discount": "할인",
+      "shipping": "배송",
+      "tax": "세금",
+      "product": "제품",
+      "sku": "SKU(재고 관리 코드)",
+      "price": "가격",
+      "quantity": "수량",
+      "total": "총계",
+      "fulfilled_at_html": "주문 처리 : {{ date }}",
+      "track_shipment": "배송 추적",
+      "tracking_url": "추적 링크",
+      "tracking_company": "배송업체",
+      "tracking_number": "추적 번호",
+      "subtotal": "소계"
+    },
+    "orders": {
+      "title": "주문 기록",
+      "order_number": "주문",
+      "order_number_link": "주문 번호: {{ number }}",
+      "date": "날짜",
+      "payment_status": "결제 상태",
+      "fulfillment_status": "주문 처리 상태",
+      "total": "총계",
+      "none": "아직 주문이 없습니다."
+    },
+    "recover_password": {
+      "title": "비밀번호 재설정",
+      "subtext": "비밀번호 재설정을 위해 이메일을 보내드리겠습니다.",
+      "success": "비밀번호를 업데이트할 링크가 포함된 이메일을 보내드렸습니다."
+    },
+    "register": {
+      "title": "계정 생성",
+      "first_name": "이름",
+      "last_name": "성",
+      "email": "이메일",
+      "password": "비밀번호",
+      "submit": "생성"
+    },
+    "reset_password": {
+      "title": "계정 비밀번호 재설정",
+      "subtext": "{{ email }}의 새 비밀번호 입력",
+      "password": "비밀번호",
+      "password_confirm": "비밀번호 확인",
+      "submit": "비밀번호 재설정"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "다음은 {{ shop }}의 {{ value }} 기프트 카드입니다.",
+      "subtext": "기프트 카드",
+      "gift_card_code": "기프트 카드 코드",
+      "shop_link": "쇼핑 계속하기",
+      "remaining_html": "남은 금액: {{ balance }}",
+      "add_to_apple_wallet": "Apple Wallet에 추가",
+      "qr_image_alt": "QR 코드 — 스캔하여 기프트 카드 사용",
+      "copy_code": "코드 복사",
+      "expired": "만료됨",
+      "copy_code_success": "코드 복사 완료",
+      "print_gift_card": "인쇄"
+    }
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
+    }
+  },
+  "delivery": {
+    "choose_date": "배송 날짜 선택",
+    "join_waitlist": "대기자 명단 참여",
+    "required_message": "배송 날짜를 선택하세요",
+    "date_options": {
+      "asap": "가능한 한 빨리",
+      "by_xmas": "크리스마스 전"
+    },
+    "months": {
+      "jan": "1월",
+      "feb": "2월",
+      "mar": "3월",
+      "apr": "4월",
+      "may": "5월",
+      "jun": "6월",
+      "jul": "7월",
+      "aug": "8월",
+      "sep": "9월",
+      "oct": "10월",
+      "nov": "11월",
+      "dec": "12월"
+    }
+  }
+}

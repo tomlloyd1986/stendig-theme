@@ -1,0 +1,186 @@
+<style>
+  .delivery-date-options-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .delivery-date-label-custom {
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .delivery-date-button-custom {
+    padding: 1rem 2rem;
+    border: 1px solid #d3d3d3;
+    border-radius: 25px;
+    background: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: 0.12s ease;
+  }
+
+  .delivery-date-button-custom:hover {
+    border-color: #000;
+  }
+
+  .delivery-date-button-custom.active-custom {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .delivery-date-wrapper-custom {
+    margin-top: 12px;
+  }
+</style>
+
+{% assign current_domain = request.host | downcase | remove: 'www.' %}
+
+{% assign cleaned_text = settings.delivery_dates | strip_html | strip %}
+{% assign global_dates = cleaned_text | split: ',' %}
+
+{% assign global_dates_clean = '' %}
+{% for d in global_dates %}
+  {% assign dd = d | strip %}
+  {% if dd != '' %}
+    {% assign global_dates_clean = global_dates_clean | append: dd | append: '||' %}
+  {% endif %}
+{% endfor %}
+{% assign global_dates_final = global_dates_clean | split: '||' %}
+
+{% assign rule_list = product.metafields.custom.delivery_domain_rule.value %}
+{% assign excluded_raw = '' %}
+
+{% if rule_list %}
+  {% for entry in rule_list %}
+    {% assign entry_domain = entry.domain | downcase | remove: 'www.' %}
+
+    {% if entry_domain == current_domain %}
+      {% assign exclude_string = entry.exclude_date | strip %}
+
+      {% if exclude_string != '' %}
+        {% assign exclude_array = exclude_string | split: ',' %}
+        {% for ex in exclude_array %}
+          {% assign ex_clean = ex | strip %}
+          {% assign excluded_raw = excluded_raw | append: ex_clean | append: '||' %}
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign excluded = excluded_raw | split: '||' | uniq %}
+
+{% assign final_list = '' %}
+{% for d in global_dates_final %}
+  {% assign dd = d | strip %}
+  {% unless excluded contains dd %}
+    {% assign final_list = final_list | append: dd | append: '||' %}
+  {% endunless %}
+{% endfor %}
+{% assign final_dates = final_list | split: '||' %}
+
+<div class="delivery-date-wrapper-custom">
+  <label class="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
+
+  <div class="delivery-date-options-custom">
+    {% for d in final_dates %}
+      {% if d != '' %}
+        {% assign raw_date = d | strip %}
+        {% assign normalized_date = raw_date | downcase %}
+        {% assign button_label = raw_date %}
+        {% assign is_asap = false %}
+
+        {% if normalized_date == 'asap' %}
+          {% assign button_label = 'delivery.date_options.asap' | t %}
+          {% assign is_asap = true %}
+        {% elsif normalized_date == 'by xmas' or normalized_date == 'by christmas' %}
+          {% assign button_label = 'delivery.date_options.by_xmas' | t %}
+        {% else %}
+          {% assign date_parts = raw_date | split: ' ' %}
+          {% if date_parts.size == 2 %}
+            {% assign day_part = date_parts[0] | remove: ',' %}
+            {% assign month_part = date_parts[1] | remove: ',' | downcase %}
+            {% assign month_translation = '' %}
+
+            {% case month_part %}
+              {% when 'jan' %}
+                {% assign month_translation = 'delivery.months.jan' | t %}
+              {% when 'january' %}
+                {% assign month_translation = 'delivery.months.jan' | t %}
+              {% when 'feb' %}
+                {% assign month_translation = 'delivery.months.feb' | t %}
+              {% when 'february' %}
+                {% assign month_translation = 'delivery.months.feb' | t %}
+              {% when 'mar' %}
+                {% assign month_translation = 'delivery.months.mar' | t %}
+              {% when 'march' %}
+                {% assign month_translation = 'delivery.months.mar' | t %}
+              {% when 'apr' %}
+                {% assign month_translation = 'delivery.months.apr' | t %}
+              {% when 'april' %}
+                {% assign month_translation = 'delivery.months.apr' | t %}
+              {% when 'may' %}
+                {% assign month_translation = 'delivery.months.may' | t %}
+              {% when 'jun' %}
+                {% assign month_translation = 'delivery.months.jun' | t %}
+              {% when 'june' %}
+                {% assign month_translation = 'delivery.months.jun' | t %}
+              {% when 'jul' %}
+                {% assign month_translation = 'delivery.months.jul' | t %}
+              {% when 'july' %}
+                {% assign month_translation = 'delivery.months.jul' | t %}
+              {% when 'aug' %}
+                {% assign month_translation = 'delivery.months.aug' | t %}
+              {% when 'august' %}
+                {% assign month_translation = 'delivery.months.aug' | t %}
+              {% when 'Sep' %}
+                {% assign month_translation = 'delivery.months.sep' | t %}
+              {% when 'sept' %}
+                {% assign month_translation = 'delivery.months.sep' | t %}
+              {% when 'september' %}
+                {% assign month_translation = 'delivery.months.sep' | t %}
+              {% when 'oct' %}
+                {% assign month_translation = 'delivery.months.oct' | t %}
+              {% when 'october' %}
+                {% assign month_translation = 'delivery.months.oct' | t %}
+              {% when 'nov' %}
+                {% assign month_translation = 'delivery.months.nov' | t %}
+              {% when 'november' %}
+                {% assign month_translation = 'delivery.months.nov' | t %}
+              {% when 'dec' %}
+                {% assign month_translation = 'delivery.months.dec' | t %}
+              {% when 'december' %}
+                {% assign month_translation = 'delivery.months.dec' | t %}
+            {% endcase %}
+
+            {% if month_translation != '' %}
+              {% assign button_label = day_part | append: ' ' | append: month_translation %}
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        <button
+          type="button"
+          class="delivery-date-button-custom"
+          data-date="{{ raw_date }}"
+          {% if is_asap %}
+            data-is-asap="true"
+          {% endif %}
+        >
+          {{ button_label }}
+        </button>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <input
+    type="hidden"
+    name="properties[Delivery Date]"
+    id="delivery-date-input-custom"
+    required
+  >
+</div>

@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "pagefly-home": {
+      "type": "pagefly-home",
+      "settings": {}
+    }
+  },
+  "order": [
+    "pagefly-home"
+  ]
+}

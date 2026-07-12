@@ -1,0 +1,25 @@
+<div style="width:{{section.settings.width}}%; margin:auto;" id="af_insta_product_slider"></div>
+
+{%schema%}
+ {
+   "name": "Product Page Slider",
+   "settings":[
+        {
+            "type":"range",
+            "id":"width",
+            "min":50,
+            "max":100,
+            "step":5,
+            "unit":"%",
+            "label":"Product Page Slider Width",
+            "default":50
+        }
+   ],
+   "presets":[
+       {
+           "name":"Product Page Slider",
+           "category":"AllFetch Instagram"
+       }
+   ]
+ }
+{%endschema%}

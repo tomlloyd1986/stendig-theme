@@ -1,0 +1,160 @@
+:root {
+  --header-bg: #ffffff;
+}
+/*   discount-addon */
+/* .productOfferBoxeTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+} */
+.productOfferBoxeTitle span {
+  font-size: 12px;
+  padding: 3px 4px;
+  font-family: "Neue Haas Grotesk Text", sans-serif;
+  line-height: 1.5;
+  position: relative;
+  top: -1px;
+}
+#stamped-sort-select, #stamped-sort-select2 {
+  background-image: url('https://cdn.shopify.com/s/files/1/0500/8297/1804/files/icons8-down-24.png?v=1652363665')!important;
+  background-size: 16px !important;
+}
+.productOfferBoxesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 30px;
+  border-top: 0.1rem solid rgba(var(--color-base-text),.2);
+  padding-top: .5em;
+}
+.productOfferBoxe {
+  flex-basis: 150px;
+}
+.productOfferBoxe a {
+  font-family: "Neue Haas Grotesk Text", sans-serif;
+  font-size: 12px;
+  text-decoration: none;
+}
+.productOfferBoxe * {
+  line-height: 1.3;
+  margin: 0;
+}
+.productOfferBoxeHeading {
+  color: #000;
+}
+.productOfferBoxeHeading {
+ font-family: "Neue Haas Grotesk Text", sans-serif;
+  font-size: 16px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  width: 100%;
+}
+.productOfferBoxeTitle {
+  color: #000;
+ font-family: "Neue Haas Grotesk Text", sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.02rem!important;
+  margin: 0.5em 0 0.2em;
+}
+.productOfferBoxeTitle s {
+  color: rgba(0, 0, 0, .5);
+}
+.productOfferBoxeContent {
+  /* color: #505050; */
+  color: rgba(0, 0, 0, .5);
+  font-family: "Neue Haas Grotesk Text", sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+#newSliderContainer .slick-slide {
+  height: auto;
+  /* opacity: 1 !important; */
+  transition: opacity 300ms linear 0s;
+}
+.newSliderImageContainer img {
+  height: 100vh;
+  max-width: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+.newSliderImageContainer .newSliderImage {
+  display: none;
+}
+
+.template-index .header__heading-logo.altlogo + .header__heading-logo,
+.template-index .scrolled .header__heading-logo.altlogo,
+.header__heading-logo.altlogo {
+  display: none;
+}
+
+.template-index .scrolled .header__heading-logo.altlogo + .header__heading-logo,
+.template-index .header__heading-logo.altlogo {
+  display: block;
+}
+ 
+
+  @media only screen and  (min-width: 1500px){
+
+    .list-menu--inline li:nth-child(2) > a {
+  padding-left: 0;
+}
+  }
+  
+ @media only screen and (min-width:991px) and  (max-width: 1500px){
+  header.header.header--top-center.page-width.header--has-menu {
+    max-width: 100%;
+    padding-right: 5rem;
+    padding-left: 5rem;
+
+}
+  }
+  @media only screen and (max-width: 1024px) {
+        svg.icon.icon-close {
+        color: #000;
+        z-index: 999;
+    }
+        div#menu-drawer {
+        top: 0;
+    }
+      .menu-drawer__navigation {
+        padding: 6.6rem 0 !important;
+    }
+        #shopify-section-header.scrolled sticky-header .header {
+        background-color: #fff;
+    }
+        #Details-menu-drawer-container span {
+        justify-content: center;
+    }
+        .header__icon:not(.header__icon--summary), .header__icon span {
+        justify-content: right;
+    }
+   .template-index #shopify-section-header sticky-header  .header {
+    padding-left: 1.25rem;
+    padding-right: 1.27rem;
+}
+    .header__heading-link {
+    padding: unset;
+    }
+  }
+  
+@media only screen and (min-width: 991px) {
+  .newSliderImageContainer .newSliderImageDesk {display: block;}
+  .header:not(.header--middle-left) .header__inline-menu {margin-top: 0;}
+
+}
+@media only screen and (max-width: 990px) and (min-width: 768px) {
+  .newSliderImageContainer .newSliderImageTab {display: block;}
+}
+@media only screen and (max-width: 990px) {
+  .template-index #shopify-section-header [data-sticky="true"] > header {position: absolute;padding-bottom: 10px !important;width: 100%;}
+  /* .template-index .shopify-section-header-sticky#shopify-section-header [data-sticky="true"] > header {position: sticky;} */
+}
+@media only screen and (max-width: 767px) {
+  .newSliderImageContainer .newSliderImageMob {display: block;}
+  .newSliderImageContainer img {height: auto;}
+  svg.icon.icon-close {
+    color: #000;
+    z-index: 999;
+}
+
+}
