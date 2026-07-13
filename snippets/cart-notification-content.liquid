@@ -136,10 +136,22 @@
   {%- endfor -%}
 {%- endif -%}
 
+<!-- cross-sell: rules={{ settings.cross_sell_rules | size }} matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
+
+
 <div class="cart-drawer__scroll">
+  {%- if cart == empty -%}
+    <div class="cart-drawer__empty">
+      <p class="cart-drawer__empty-text">{{ 'sections.cart.empty' | t }}</p>
+      <button type="button" class="button button--primary" data-drawer-close>
+        {{ 'general.continue_shopping' | t }}
+      </button>
+    </div>
+  {%- endif -%}
+
   <div class="cart-drawer__items">
     {%- for item in cart.items -%}
-      <div class="cart-drawer__item">
+      <div class="cart-drawer__item" data-line-key="{{ item.key }}" data-quantity="{{ item.quantity }}">
         {%- if item.image -%}
           <img
             class="cart-drawer__item-image"
@@ -159,9 +171,11 @@
           {%- if dd_prop != blank -%}
             <p class="cart-drawer__item-meta">{{ 'delivery.choose_date' | t }}: {{ dd_prop | escape }}</p>
           {%- endif -%}
-          <p class="cart-drawer__item-meta">
-            {{ item.quantity }} &times; {{ item.final_price | money }}
-          </p>
+          <div class="cart-drawer__item-qty">
+            <button type="button" class="cart-drawer__qty-btn" data-qty-change="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}">&minus;</button>
+            <span class="cart-drawer__qty-value" aria-live="polite">{{ item.quantity }}</span>
+            <button type="button" class="cart-drawer__qty-btn" data-qty-change="1" aria-label="{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}">+</button>
+          </div>
         </div>
         <p class="cart-drawer__item-price">{{ item.final_line_price | money }}</p>
       </div>
@@ -240,31 +254,37 @@
   {%- endif -%}
 </div>
 
-<div class="cart-drawer__footer">
-  {%- if cs_product -%}
-    <button type="button" class="button button--primary button--full-width" data-cross-sell-add>
-      <span>{{ 'general.cart.add_both_checkout' | t }}</span>
-      <div class="loading-overlay__spinner hidden">
-        <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-        </svg>
-      </div>
-    </button>
-    <form action="{{ routes.cart_url }}" method="post">
-      <button class="button button--secondary button--full-width" name="checkout">
-        {{ 'general.cart.checkout_without' | t }}
-      </button>
-    </form>
-  {%- else -%}
-    <form action="{{ routes.cart_url }}" method="post">
-      <button class="button button--primary button--full-width" name="checkout">
-        {{ 'sections.cart.checkout' | t }}
-      </button>
-    </form>
-  {%- endif -%}
+{%- if cart != empty -%}
+  <div class="cart-drawer__footer">
+    <div class="cart-drawer__subtotal">
+      <span>{{ 'sections.cart.subtotal' | t }}</span>
+      <span>{{ cart.total_price | money_with_currency }}</span>
+    </div>
 
-  <div class="cart-drawer__links">
-    <a href="{{ routes.cart_url }}" class="link">{{ 'general.cart.view' | t: count: cart.item_count }}</a>
-    <button type="button" class="link" data-drawer-close>{{ 'general.continue_shopping' | t }}</button>
+    {%- if cs_product -%}
+      <button type="button" class="button button--primary button--full-width" data-cross-sell-add>
+        <span>{{ 'general.cart.add_both_checkout' | t }}</span>
+        <div class="loading-overlay__spinner hidden">
+          <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+          </svg>
+        </div>
+      </button>
+      <form action="{{ routes.cart_url }}" method="post">
+        <button class="button button--secondary button--full-width" name="checkout">
+          {{ 'general.cart.checkout_without' | t }}
+        </button>
+      </form>
+    {%- else -%}
+      <form action="{{ routes.cart_url }}" method="post">
+        <button class="button button--primary button--full-width" name="checkout">
+          {{ 'sections.cart.checkout' | t }}
+        </button>
+      </form>
+    {%- endif -%}
+
+    <div class="cart-drawer__links">
+      <button type="button" class="link" data-drawer-close>{{ 'general.continue_shopping' | t }}</button>
+    </div>
   </div>
-</div>
+{%- endif -%}

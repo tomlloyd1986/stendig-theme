@@ -3,17 +3,32 @@ class CartNotification extends HTMLElement {
     super();
 
     this.notification = document.getElementById('cart-notification');
-    this.overlay = this.querySelector('.cart-drawer__overlay');
     this.header = document.querySelector('sticky-header');
+    this.overlay = this.querySelector('.cart-drawer__overlay');
     this.onBodyClick = this.handleBodyClick.bind(this);
 
     this.notification.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
     if (this.overlay) this.overlay.addEventListener('click', () => this.close());
 
-    // Content is re-rendered on every add-to-cart, so use delegation.
+    // The header cart icon opens the drawer instead of the cart page.
+    const cartIcon = document.getElementById('cart-icon-bubble');
+    if (cartIcon) {
+      cartIcon.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        this.refreshAndOpen();
+      });
+    }
+
+    // Content is re-rendered on every cart change, so use delegation.
     this.addEventListener('click', (evt) => {
       if (evt.target.closest('.cart-drawer__close') || evt.target.closest('[data-drawer-close]')) {
         this.close();
+        return;
+      }
+
+      const qtyButton = evt.target.closest('[data-qty-change]');
+      if (qtyButton) {
+        this.changeLineQuantity(qtyButton);
         return;
       }
 
@@ -26,6 +41,48 @@ class CartNotification extends HTMLElement {
       const priceElement = this.querySelector('[data-cross-sell-price]');
       if (priceElement && evt.target.dataset.price) priceElement.textContent = evt.target.dataset.price;
     });
+  }
+
+  async refreshAndOpen() {
+    try {
+      const sectionIds = this.getSectionsToRender().map((section) => section.id);
+      const response = await fetch(`${window.location.pathname}?sections=${sectionIds.join(',')}`);
+      const sections = await response.json();
+      this.updateSections(sections);
+    } catch (error) {
+      console.error('Cart drawer refresh failed:', error);
+    }
+    this.open();
+  }
+
+  async changeLineQuantity(button) {
+    const row = button.closest('[data-line-key]');
+    if (!row || row.classList.contains('is-updating')) return;
+
+    const newQuantity = Math.max(0, Number(row.dataset.quantity) + Number(button.dataset.qtyChange));
+    row.classList.add('is-updating');
+
+    try {
+      const changeUrl = window.routes && window.routes.cart_change_url ? window.routes.cart_change_url : '/cart/change';
+      const response = await fetch(`${changeUrl}.js`, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: row.dataset.lineKey,
+          quantity: newQuantity,
+          sections: this.getSectionsToRender().map((section) => section.id),
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Cart change failed (${response.status})`);
+
+      const state = await response.json();
+      if (state.sections) this.updateSections(state.sections);
+    } catch (error) {
+      console.error('Cart quantity change failed:', error);
+      row.classList.remove('is-updating');
+    }
   }
 
   async addCrossSellAndCheckout(button) {
@@ -91,13 +148,17 @@ class CartNotification extends HTMLElement {
     removeTrapFocus(this.activeElement);
   }
 
-  renderContents(parsedState) {
-    this.productId = parsedState.id;
+  updateSections(sections) {
     this.getSectionsToRender().forEach((section) => {
       const target = document.getElementById(section.targetId || section.id);
-      if (!target) return;
-      target.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
+      if (!target || !sections[section.id]) return;
+      target.innerHTML = this.getSectionInnerHTML(sections[section.id], section.selector);
     });
+  }
+
+  renderContents(parsedState) {
+    this.productId = parsedState.id;
+    this.updateSections(parsedState.sections);
 
     if (this.header) this.header.reveal();
     this.open();
