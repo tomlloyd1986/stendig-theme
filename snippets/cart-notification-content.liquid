@@ -209,17 +209,17 @@
     -%}
 
     <aside
-      class="cart-upsell"
+      class="drawer-upsell"
       data-cross-sell
       {% if inherit_date != blank %}data-delivery-date="{{ inherit_date | escape }}"{% endif %}
     >
-      <p class="cart-upsell__headline">{{ cs_rule.headline.value | default: cs_product.title }}</p>
+      <p class="drawer-upsell__headline">{{ cs_rule.headline.value | default: cs_product.title }}</p>
 
       {%- if cs_rule.benefit.value != blank -%}
-        <p class="cart-upsell__benefit">{{ cs_rule.benefit.value }}</p>
+        <p class="drawer-upsell__benefit">{{ cs_rule.benefit.value }}</p>
       {%- endif -%}
 
-      <div class="cart-drawer__item cart-upsell__row">
+      <div class="cart-drawer__item drawer-upsell__row">
         {%- assign cs_image = default_variant.featured_image | default: cs_product.featured_image -%}
         {%- if cs_image -%}
           <img
@@ -235,7 +235,7 @@
 
         <div class="cart-drawer__item-info">
           <p class="cart-drawer__item-title">{{ cs_product.title | escape }}</p>
-          <p class="cart-upsell__price">
+          <p class="drawer-upsell__price">
             <span data-cross-sell-price>{{ default_disc | money }}</span>
             {%- if pct > 0 -%}
               <s data-cross-sell-compare>{{ default_variant.price | money }}</s>
@@ -246,7 +246,7 @@
             <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
           {%- else -%}
             <select
-              class="cart-upsell__variant-select"
+              class="drawer-upsell__variant-select"
               name="cross-sell-variant"
               aria-label="{{ cs_product.options_with_values.first.name | escape }}"
             >
@@ -270,7 +270,7 @@
         </div>
 
         <div class="cart-drawer__item-side">
-          <button type="button" class="cart-upsell__add" data-cross-sell-add>
+          <button type="button" class="drawer-upsell__add" data-cross-sell-add>
             {{ 'products.product.add_to_cart' | t }}
           </button>
         </div>
