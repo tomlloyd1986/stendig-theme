@@ -35,3 +35,23 @@
     </div>
   </div>
 </cart-notification>
+
+{% comment %}
+  Critical inline styles: the component stylesheet loads async, so without
+  these the drawer flashes unstyled (in page flow, giant checkmark icon)
+  on every navigation until the CSS arrives.
+{% endcomment %}
+{% style %}
+  cart-notification .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+  }
+  cart-notification .cart-drawer__overlay {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
+  }
+{% endstyle %}
