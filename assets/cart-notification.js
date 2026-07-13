@@ -32,6 +32,12 @@ class CartNotification extends HTMLElement {
         return;
       }
 
+      const removeButton = evt.target.closest('[data-qty-remove]');
+      if (removeButton) {
+        this.changeLineQuantity(removeButton, 0);
+        return;
+      }
+
       const addButton = evt.target.closest('[data-cross-sell-add]');
       if (addButton) this.addCrossSell(addButton);
     });
@@ -62,11 +68,14 @@ class CartNotification extends HTMLElement {
     this.open();
   }
 
-  async changeLineQuantity(button) {
+  async changeLineQuantity(button, forcedQuantity) {
     const row = button.closest('[data-line-key]');
     if (!row || row.classList.contains('is-updating')) return;
 
-    const newQuantity = Math.max(0, Number(row.dataset.quantity) + Number(button.dataset.qtyChange));
+    const newQuantity =
+      typeof forcedQuantity === 'number'
+        ? forcedQuantity
+        : Math.max(0, Number(row.dataset.quantity) + Number(button.dataset.qtyChange));
     row.classList.add('is-updating');
 
     try {

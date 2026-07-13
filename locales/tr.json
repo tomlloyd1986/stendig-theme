@@ -51,6 +51,10 @@
     "cart": {
       "view": "Sepeti göster ({{ count }})",
       "add": "Ekle",
+      "remove": "Kaldır",
+      "shipping": "Kargo",
+      "calculated_at_checkout": "Ödeme sırasında hesaplanır",
+      "total": "Toplam değer",
       "add_both_checkout": "İkisini de ekle ve öde",
       "checkout_without": "Eklemeden öde",
       "item_added": "Ürün sepetinize eklendi"

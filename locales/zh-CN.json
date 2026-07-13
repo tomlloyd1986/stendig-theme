@@ -51,6 +51,10 @@
     "cart": {
       "view": "查看我的购物车 ({{ count }})",
       "add": "加入",
+      "remove": "移除",
+      "shipping": "运费",
+      "calculated_at_checkout": "结账时计算",
+      "total": "总价值",
       "add_both_checkout": "一起加入并结账",
       "checkout_without": "不添加直接结账",
       "item_added": "商品已加入购物车"

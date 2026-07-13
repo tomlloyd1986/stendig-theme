@@ -51,6 +51,10 @@
     "cart": {
       "view": "Näytä ostoskori ({{ count }})",
       "add": "Lisää",
+      "remove": "Poista",
+      "shipping": "Toimitus",
+      "calculated_at_checkout": "Lasketaan kassalla",
+      "total": "Kokonaisarvo",
       "add_both_checkout": "Lisää molemmat ja siirry kassalle",
       "checkout_without": "Kassalle ilman tuotetta",
       "item_added": "Tuote lisätty ostoskoriisi"

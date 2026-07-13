@@ -51,6 +51,10 @@
     "cart": {
       "view": "View my cart ({{ count }})",
       "add": "Add",
+      "remove": "Remove",
+      "shipping": "Shipping",
+      "calculated_at_checkout": "Calculated in checkout",
+      "total": "Total value",
       "add_both_checkout": "Add both & check out",
       "checkout_without": "Check out without it",
       "item_added": "Item added to your cart"

@@ -1278,6 +1278,10 @@
     "cart": {
       "view": "檢視我的購物車 ({{ count }})",
       "add": "加入",
+      "remove": "移除",
+      "shipping": "運費",
+      "calculated_at_checkout": "結帳時計算",
+      "total": "總價值",
       "add_both_checkout": "一起加入並結帳",
       "checkout_without": "不加入直接結帳",
       "item_added": "商品已加入購物車"

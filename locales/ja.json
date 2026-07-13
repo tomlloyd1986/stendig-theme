@@ -51,6 +51,10 @@
     "cart": {
       "view": "カートを見る ({{ count }})",
       "add": "追加",
+      "remove": "削除",
+      "shipping": "配送料",
+      "calculated_at_checkout": "チェックアウト時に計算",
+      "total": "合計金額",
       "add_both_checkout": "両方追加して購入手続きへ",
       "checkout_without": "追加せずに購入手続きへ",
       "item_added": "カートにアイテムが追加されました"

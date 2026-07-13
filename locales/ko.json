@@ -1278,6 +1278,10 @@
     "cart": {
       "view": "내 카트 보기({{ count }}개)",
       "add": "담기",
+      "remove": "삭제",
+      "shipping": "배송비",
+      "calculated_at_checkout": "결제 시 계산",
+      "total": "총 금액",
       "add_both_checkout": "함께 담고 결제하기",
       "checkout_without": "이 상품 없이 결제하기",
       "item_added": "카트에 추가된 품목"

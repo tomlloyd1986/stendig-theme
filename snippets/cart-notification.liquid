@@ -22,11 +22,9 @@
     tabindex="-1"
   >
     <div class="cart-drawer__header">
-      <h2 class="cart-drawer__heading caption-with-letter-spacing">
-        {%- render 'icon-checkmark' -%}
-        {{ 'general.cart.item_added' | t }}
-      </h2>
-      <button type="button" class="cart-drawer__close modal__close-button link link--text focus-inset" aria-label="{{ 'accessibility.close' | t }}">
+      <h2 class="cart-drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+      <button type="button" class="cart-drawer__close focus-inset" aria-label="{{ 'accessibility.close' | t }}">
+        {{ 'accessibility.close' | t }}
         <svg class="icon icon-close" aria-hidden="true" focusable="false"><use href="#icon-close"></svg>
       </button>
     </div>

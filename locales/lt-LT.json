@@ -51,6 +51,10 @@
     "cart": {
       "view": "Peržiūrėti mano krepšelį ({{ count }})",
       "add": "Pridėti",
+      "remove": "Pašalinti",
+      "shipping": "Pristatymas",
+      "calculated_at_checkout": "Apskaičiuojama atsiskaitant",
+      "total": "Bendra vertė",
       "add_both_checkout": "Pridėti abu ir apmokėti",
       "checkout_without": "Apmokėti be jo",
       "item_added": "Prekė įdėta į jūsų krepšelį"

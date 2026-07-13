@@ -51,6 +51,10 @@
     "cart": {
       "view": "Vizualizare coș ({{ count }})",
       "add": "Adaugă",
+      "remove": "Elimină",
+      "shipping": "Livrare",
+      "calculated_at_checkout": "Calculată la finalizare",
+      "total": "Valoare totală",
       "add_both_checkout": "Adaugă ambele și plătește",
       "checkout_without": "Plătește fără acesta",
       "item_added": "Articolul a fost adăugat în coș"

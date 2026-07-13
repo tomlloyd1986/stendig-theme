@@ -51,6 +51,10 @@
     "cart": {
       "view": "Prikaži moju košaricu ({{ count }})",
       "add": "Dodaj",
+      "remove": "Ukloni",
+      "shipping": "Dostava",
+      "calculated_at_checkout": "Izračunava se pri plaćanju",
+      "total": "Ukupna vrijednost",
       "add_both_checkout": "Dodaj oba i plati",
       "checkout_without": "Plati bez toga",
       "item_added": "Artikl je dodan u vašu košaricu"

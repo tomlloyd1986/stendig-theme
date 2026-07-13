@@ -51,6 +51,10 @@
     "cart": {
       "view": "Zobrazit košík ({{ count }})",
       "add": "Přidat",
+      "remove": "Odebrat",
+      "shipping": "Doprava",
+      "calculated_at_checkout": "Vypočítá se u pokladny",
+      "total": "Celková hodnota",
       "add_both_checkout": "Přidat obojí a k pokladně",
       "checkout_without": "K pokladně bez této položky",
       "item_added": "Položka byla přidána do košíku"

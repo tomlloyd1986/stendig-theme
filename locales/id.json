@@ -51,6 +51,10 @@
     "cart": {
       "view": "Lihat keranjang saya ({{ count }})",
       "add": "Tambah",
+      "remove": "Hapus",
+      "shipping": "Pengiriman",
+      "calculated_at_checkout": "Dihitung saat checkout",
+      "total": "Total nilai",
       "add_both_checkout": "Tambahkan keduanya & bayar",
       "checkout_without": "Bayar tanpa produk ini",
       "item_added": "Item ditambahkan ke keranjang Anda"

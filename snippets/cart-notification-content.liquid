@@ -165,7 +165,9 @@
         <div class="cart-drawer__item-info">
           <p class="cart-drawer__item-title">{{ item.product.title | escape }}</p>
           {%- unless item.product.has_only_default_variant -%}
-            <p class="cart-drawer__item-meta">{{ item.variant.title | escape }}</p>
+            {%- for option in item.options_with_values -%}
+              <p class="cart-drawer__item-meta">{{ option.value | escape }}</p>
+            {%- endfor -%}
           {%- endunless -%}
           {%- assign dd_prop = item.properties['Delivery Date'] -%}
           {%- if dd_prop != blank -%}
@@ -177,7 +179,15 @@
             <button type="button" class="cart-drawer__qty-btn" data-qty-change="1" aria-label="{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}">+</button>
           </div>
         </div>
-        <p class="cart-drawer__item-price">{{ item.final_line_price | money }}</p>
+        <div class="cart-drawer__item-side">
+          <p class="cart-drawer__item-price">
+            <span>{{ item.final_line_price | money }}</span>
+            {%- if item.original_line_price > item.final_line_price -%}
+              <s>{{ item.original_line_price | money }}</s>
+            {%- endif -%}
+          </p>
+          <button type="button" class="cart-drawer__remove" data-qty-remove>{{ 'general.cart.remove' | t }}</button>
+        </div>
       </div>
     {%- endfor -%}
   </div>
@@ -209,11 +219,11 @@
         <p class="cart-upsell__benefit">{{ cs_rule.benefit.value }}</p>
       {%- endif -%}
 
-      <div class="cart-upsell__product">
+      <div class="cart-drawer__item cart-upsell__row">
         {%- assign cs_image = default_variant.featured_image | default: cs_product.featured_image -%}
         {%- if cs_image -%}
           <img
-            class="cart-upsell__image"
+            class="cart-drawer__item-image"
             data-cross-sell-image
             src="{{ cs_image | img_url: '200x' }}"
             alt="{{ cs_image.alt | escape }}"
@@ -223,45 +233,47 @@
           >
         {%- endif -%}
 
-        <div class="cart-upsell__info">
-          <p class="cart-upsell__title">{{ cs_product.title | escape }}</p>
-          <div class="cart-upsell__price">
+        <div class="cart-drawer__item-info">
+          <p class="cart-drawer__item-title">{{ cs_product.title | escape }}</p>
+
+          {%- if cs_product.has_only_default_variant -%}
+            <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
+          {%- else -%}
+            <select
+              class="cart-upsell__variant-select"
+              name="cross-sell-variant"
+              aria-label="{{ cs_product.options_with_values.first.name | escape }}"
+            >
+              {%- for variant in cs_product.variants -%}
+                {%- assign id_needle = variant.id | append: ',' -%}
+                {%- if cs_available_ids contains id_needle -%}
+                  {%- assign v_disc = variant.price | times: price_factor | divided_by: 100 -%}
+                  <option
+                    value="{{ variant.id }}"
+                    data-price="{{ v_disc | money }}"
+                    {% if pct > 0 %}data-compare="{{ variant.price | money }}"{% endif %}
+                    {% if variant.featured_image %}data-image="{{ variant.featured_image | img_url: '200x' }}"{% endif %}
+                    {% if variant.id == default_variant.id %}selected{% endif %}
+                  >
+                    {{- variant.title | escape -}}
+                  </option>
+                {%- endif -%}
+              {%- endfor -%}
+            </select>
+          {%- endif -%}
+        </div>
+
+        <div class="cart-drawer__item-side">
+          <p class="cart-drawer__item-price">
             <span data-cross-sell-price>{{ default_disc | money }}</span>
             {%- if pct > 0 -%}
               <s data-cross-sell-compare>{{ default_variant.price | money }}</s>
             {%- endif -%}
-
-            {%- if cs_product.has_only_default_variant -%}
-              <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
-            {%- else -%}
-              <select
-                class="cart-upsell__variant-select"
-                name="cross-sell-variant"
-                aria-label="{{ cs_product.options_with_values.first.name | escape }}"
-              >
-                {%- for variant in cs_product.variants -%}
-                  {%- assign id_needle = variant.id | append: ',' -%}
-                  {%- if cs_available_ids contains id_needle -%}
-                    {%- assign v_disc = variant.price | times: price_factor | divided_by: 100 -%}
-                    <option
-                      value="{{ variant.id }}"
-                      data-price="{{ v_disc | money }}"
-                      {% if pct > 0 %}data-compare="{{ variant.price | money }}"{% endif %}
-                      {% if variant.featured_image %}data-image="{{ variant.featured_image | img_url: '200x' }}"{% endif %}
-                      {% if variant.id == default_variant.id %}selected{% endif %}
-                    >
-                      {{- variant.title | escape -}}
-                    </option>
-                  {%- endif -%}
-                {%- endfor -%}
-              </select>
-            {%- endif -%}
-          </div>
+          </p>
+          <button type="button" class="cart-upsell__add" data-cross-sell-add>
+            {{ 'products.product.add_to_cart' | t }}
+          </button>
         </div>
-
-        <button type="button" class="cart-upsell__add" data-cross-sell-add>
-          {{ 'general.cart.add' | t }}
-        </button>
       </div>
     </aside>
   {%- endif -%}
@@ -269,9 +281,15 @@
 
 {%- if cart != empty -%}
   <div class="cart-drawer__footer">
-    <div class="cart-drawer__subtotal">
-      <span>{{ 'sections.cart.subtotal' | t }}</span>
-      <span>{{ cart.total_price | money_with_currency }}</span>
+    <div class="cart-drawer__totals">
+      <div class="cart-drawer__totals-row">
+        <span>{{ 'general.cart.shipping' | t }}</span>
+        <span class="cart-drawer__totals-muted">{{ 'general.cart.calculated_at_checkout' | t }}</span>
+      </div>
+      <div class="cart-drawer__totals-row">
+        <span>{{ 'general.cart.total' | t }}</span>
+        <span>{{ cart.total_price | money_with_currency }}</span>
+      </div>
     </div>
 
     <form action="{{ routes.cart_url }}" method="post">
@@ -280,8 +298,12 @@
       </button>
     </form>
 
-    <div class="cart-drawer__links">
-      <button type="button" class="link" data-drawer-close>{{ 'general.continue_shopping' | t }}</button>
-    </div>
+    {%- if shop.enabled_payment_types.size > 0 -%}
+      <div class="cart-drawer__payments">
+        {%- for type in shop.enabled_payment_types -%}
+          {{ type | payment_type_svg_tag: class: 'cart-drawer__payment-icon' }}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 {%- endif -%}

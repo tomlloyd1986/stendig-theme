@@ -51,6 +51,10 @@
     "cart": {
       "view": "Xem giỏ hàng của tôi ({{ count }})",
       "add": "Thêm",
+      "remove": "Xóa",
+      "shipping": "Vận chuyển",
+      "calculated_at_checkout": "Tính khi thanh toán",
+      "total": "Tổng giá trị",
       "add_both_checkout": "Thêm cả hai & thanh toán",
       "checkout_without": "Thanh toán không thêm",
       "item_added": "Mặt hàng đã thêm vào giỏ hàng"

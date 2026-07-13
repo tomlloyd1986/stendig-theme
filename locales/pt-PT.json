@@ -51,6 +51,10 @@
     "cart": {
       "view": "Ver o meu carrinho ({{ count }})",
       "add": "Adicionar",
+      "remove": "Remover",
+      "shipping": "Envio",
+      "calculated_at_checkout": "Calculado no checkout",
+      "total": "Valor total",
       "add_both_checkout": "Adicionar ambos e pagar",
       "checkout_without": "Pagar sem este artigo",
       "item_added": "Item adicionado ao seu carrinho"

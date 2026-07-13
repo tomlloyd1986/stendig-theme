@@ -1278,6 +1278,10 @@
     "cart": {
       "view": "Meinen Warenkorb ({{ count }}) anzeigen",
       "add": "Hinzufügen",
+      "remove": "Entfernen",
+      "shipping": "Versand",
+      "calculated_at_checkout": "Wird an der Kasse berechnet",
+      "total": "Gesamtwert",
       "add_both_checkout": "Beides hinzufügen & zur Kasse",
       "checkout_without": "Zur Kasse ohne diesen Artikel",
       "item_added": "Artikel wurde in den Warenkorb gelegt"

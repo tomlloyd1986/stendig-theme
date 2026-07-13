@@ -1278,6 +1278,10 @@
     "cart": {
       "view": "Visualizza carrello ({{ count }})",
       "add": "Aggiungi",
+      "remove": "Rimuovi",
+      "shipping": "Spedizione",
+      "calculated_at_checkout": "Calcolata al pagamento",
+      "total": "Valore totale",
       "add_both_checkout": "Aggiungi entrambi e paga",
       "checkout_without": "Paga senza questo articolo",
       "item_added": "Articolo aggiunto al carrello"

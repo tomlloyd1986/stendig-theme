@@ -51,6 +51,10 @@
     "cart": {
       "view": "Kosár megtekintése ({{ count }})",
       "add": "Hozzáadás",
+      "remove": "Eltávolítás",
+      "shipping": "Szállítás",
+      "calculated_at_checkout": "Fizetéskor számítjuk",
+      "total": "Teljes érték",
       "add_both_checkout": "Mindkettő hozzáadása és fizetés",
       "checkout_without": "Fizetés e nélkül",
       "item_added": "Betettük a terméket a kosárba"

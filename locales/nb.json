@@ -51,6 +51,10 @@
     "cart": {
       "view": "Vis handlekurven ({{ count }})",
       "add": "Legg til",
+      "remove": "Fjern",
+      "shipping": "Frakt",
+      "calculated_at_checkout": "Beregnes i kassen",
+      "total": "Total verdi",
       "add_both_checkout": "Legg til begge & gå til kassen",
       "checkout_without": "Gå til kassen uten",
       "item_added": "Vare lagt i handlekurven"

@@ -51,6 +51,10 @@
     "cart": {
       "view": "Покажи количката ми ({{ count }})",
       "add": "Добави",
+      "remove": "Премахни",
+      "shipping": "Доставка",
+      "calculated_at_checkout": "Изчислява се при плащане",
+      "total": "Обща стойност",
       "add_both_checkout": "Добави двете и плати",
       "checkout_without": "Плати без него",
       "item_added": "Артикулът е добавен в количката"

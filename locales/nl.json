@@ -1278,6 +1278,10 @@
     "cart": {
       "view": "Winkelwagen bekijken ({{ count }})",
       "add": "Toevoegen",
+      "remove": "Verwijderen",
+      "shipping": "Verzending",
+      "calculated_at_checkout": "Berekend bij het afrekenen",
+      "total": "Totale waarde",
       "add_both_checkout": "Voeg beide toe & reken af",
       "checkout_without": "Afrekenen zonder dit artikel",
       "item_added": "Artikel toegevoegd aan winkelwagen"
