@@ -484,6 +484,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Дата доставки",
     "choose_date": "Выберите дату доставки",
     "join_waitlist": "Присоединиться к листу ожидания",
     "required_message": "Выберите дату доставки",

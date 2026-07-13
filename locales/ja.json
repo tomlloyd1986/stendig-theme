@@ -458,6 +458,7 @@
   },
   "delivery": {
     "date_label": "{{ month }}{{ day }}日",
+    "date_title": "配送日",
     "choose_date": "配送日を選択",
     "join_waitlist": "ウェイトリストに参加",
     "required_message": "配送日を選択してください",

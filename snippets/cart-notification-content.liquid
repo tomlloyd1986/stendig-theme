@@ -155,10 +155,10 @@
         {%- if item.image -%}
           <img
             class="cart-drawer__item-image"
-            src="{{ item.image | img_url: '160x' }}"
+            src="{{ item.image | img_url: '200x' }}"
             alt="{{ item.image.alt | escape }}"
-            width="80"
-            height="{{ 80 | divided_by: item.image.aspect_ratio | ceil }}"
+            width="100"
+            height="{{ 100 | divided_by: item.image.aspect_ratio | ceil }}"
             loading="lazy"
           >
         {%- endif -%}
@@ -169,7 +169,7 @@
           {%- endunless -%}
           {%- assign dd_prop = item.properties['Delivery Date'] -%}
           {%- if dd_prop != blank -%}
-            <p class="cart-drawer__item-meta">{{ 'delivery.choose_date' | t }}: {{ dd_prop | escape }}</p>
+            <p class="cart-drawer__item-meta">{{ 'delivery.date_title' | t }}: {{ dd_prop | escape }}</p>
           {%- endif -%}
           <div class="cart-drawer__item-qty">
             <button type="button" class="cart-drawer__qty-btn" data-qty-change="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}">&minus;</button>

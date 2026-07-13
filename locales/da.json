@@ -1622,6 +1622,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Leveringsdato",
     "choose_date": "Vælg leveringsdato",
     "join_waitlist": "Tilmeld venteliste",
     "required_message": "Vælg en leveringsdato",

@@ -460,6 +460,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Delivery Date",
     "choose_date": "Choose Delivery Date",
     "join_waitlist": "Join waitlist",
     "required_message": "Choose a delivery date",

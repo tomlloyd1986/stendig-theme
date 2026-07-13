@@ -1622,6 +1622,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Date de livraison",
     "choose_date": "Choisir une date de livraison",
     "join_waitlist": "Rejoindre la liste d'attente",
     "required_message": "Choisissez une date de livraison",

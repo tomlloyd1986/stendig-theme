@@ -458,6 +458,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Leveransdatum",
     "choose_date": "Välj leveransdatum",
     "join_waitlist": "Gå med i väntelistan",
     "required_message": "Välj ett leveransdatum",

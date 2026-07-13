@@ -474,6 +474,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Datum dostave",
     "choose_date": "Odaberite datum dostave",
     "join_waitlist": "Pridruži se listi čekanja",
     "required_message": "Odaberite datum dostave",

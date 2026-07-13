@@ -484,6 +484,7 @@
   },
   "delivery": {
     "date_label": "{{ month }} {{ day }} d.",
+    "date_title": "Pristatymo data",
     "choose_date": "Pasirinkite pristatymo datą",
     "join_waitlist": "Prisijungti prie laukiančiųjų sąrašo",
     "required_message": "Pasirinkite pristatymo datą",
