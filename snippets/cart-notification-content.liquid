@@ -235,6 +235,12 @@
 
         <div class="cart-drawer__item-info">
           <p class="cart-drawer__item-title">{{ cs_product.title | escape }}</p>
+          <p class="cart-upsell__price">
+            <span data-cross-sell-price>{{ default_disc | money }}</span>
+            {%- if pct > 0 -%}
+              <s data-cross-sell-compare>{{ default_variant.price | money }}</s>
+            {%- endif -%}
+          </p>
 
           {%- if cs_product.has_only_default_variant -%}
             <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
@@ -264,12 +270,6 @@
         </div>
 
         <div class="cart-drawer__item-side">
-          <p class="cart-drawer__item-price">
-            <span data-cross-sell-price>{{ default_disc | money }}</span>
-            {%- if pct > 0 -%}
-              <s data-cross-sell-compare>{{ default_variant.price | money }}</s>
-            {%- endif -%}
-          </p>
           <button type="button" class="cart-upsell__add" data-cross-sell-add>
             {{ 'products.product.add_to_cart' | t }}
           </button>
