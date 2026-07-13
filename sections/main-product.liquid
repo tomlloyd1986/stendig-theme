@@ -560,69 +560,6 @@
                           </div>
                         </button>
 
-                        {% comment %}
-                          {% assign meta_list = product.metafields.custom.market_availability.value %}
-
-                          {% if meta_list and meta_list.size > 0 %}
-                            {% assign current_host = request.host | strip | downcase %}
-                            {% assign matched_meta = null %}
-
-                            {%- for meta in meta_list -%}
-                              {% assign meta_domain = meta.domain | strip | downcase %}
-
-                              {% if meta_domain == current_host %}
-                                {% assign matched_meta = meta %}
-                                {% break %}
-                              {% endif %}
-                            {%- endfor -%}
-
-                            {% if matched_meta %}
-                              {% if matched_meta.qty <= 0 %}
-                                <button class="button button--full-width button--primary" disabled>Join Waitlist</button>
-                              {% else %}
-                                <span>else</span>
-                              {% endif %}
-                            {% endif %}
-                          {% endif %}
-                        {% endcomment %}
-
-                        {% comment %}
-                          {{ product.selected_or_first_available_variant.id }} --test
-                          {{ product.selected_or_first_available_variant.inventory_quantity }} --test
-
-                          {{ request.host }} -- tst
-
-                          {% if product.metafields.custom.market_availability %}
-                            {{ product.metafields.custom.market_availability.value }} --test
-                          {% endif %}
-                        {% endcomment %}
-
-                        {% comment %}
-                          {% assign meta_list = product.metafields.custom.market_availability.value %}
-
-                          {% if meta_list and meta_list.size > 0 and meta_list != blank %}
-                            {%- assign meta = meta_list[0] -%}
-
-                            {% assign meta_domain = meta.domain | strip | downcase %}
-                            {% assign current_host = request.host | strip | downcase %}
-
-                            {% comment %} meta: {{ meta | json }} {% endcomment %}
-                            {% comment %} host: {{ request.host | json }} {% endcomment %}
-
-                            {% if meta_domain == current_host %}
-                              {% if meta.qty <= 0 %}
-                                <button class="button button--full-width button--primary" disabled>Join Waitlist</button>
-                              {% else %}
-                                {%- if block.settings.show_dynamic_checkout -%}
-                                  <button class="product-form__submit ctm_buy_it_now button button--full-width button--primary">
-                                    Buy it now
-                                  </button>
-                                  {{ form | payment_button }}
-                                {%- endif -%}
-                              {% endif %}
-                            {% endif %}
-                          {% endif %}
-                        {% endcomment %}
 
                       {%- if block.settings.show_dynamic_checkout -%}
                           <button class="product-form__submit ctm-buy-btn button button--full-width button--primary">
@@ -2352,132 +2289,13 @@
 
   {% comment %} VariantAvailability(true).then(res => is_var_disabled = res === true ) {% endcomment %}
    
-  {% comment %} window.marketAvailability = {{ product.metafields.custom.market_availability.value | json }};
-
-  const vr = document.querySelectorAll('variant-radios input');
-
-  vr.forEach(v => {
-    v.addEventListener('change', () => {
-
-      setTimeout(() => {
-        const url = new URL(window.location.href);
-        const selectedVariant = url.searchParams.get("variant");
-
-        console.log("Selected Variant:", selectedVariant);
-
-        const metaList = window.marketAvailability || [];
-        const currentDomain = window.location.host.toLowerCase();
-
-        const matchedVariant = metaList.find(m => {
-          const sameVariant = String(m.variant_id) === String(selectedVariant);
-
-          // Normalize domain
-          let metaDomain = m.domain ? m.domain.toLowerCase() : "";
-
-          // ✔ If market = gb → use stendigcalendars.com
-          if (m.market && m.market.toLowerCase() === "gb") {
-            metaDomain = "stendigcalendars.com";
-          }
-
-          const sameDomain = metaDomain === currentDomain;
-
-          return sameVariant && sameDomain;
-        });
-
-        console.log("Matched Meta:", matchedVariant.qty);
-
-        const waitlistBtn = document.querySelector('.custom-join-waitlist-btns');
-        const buyBtn = document.querySelector('.ctm-buy-btn');
-        const paymentBtn = document.querySelector('.custom-payment-btn');
-        const atcBtn = document.querySelector('.product-form__submit');
-        const qty = matchedVariant.qty;
-
-        if (matchedVariant) {
-          if (qty <= 0) {
-            console.log('hello')
-            waitlistBtn.style.display = 'flex';
-            buyBtn.style.display = 'none';
-            paymentBtn.style.display = 'none';
-            atcBtn.style.display = 'none';
-          } else {
-            console.log('hi', buyBtn)
-            waitlistBtn.style.display = 'none';
-            buyBtn.style.display = 'block';
-            paymentBtn.style.display = 'block';
-            atcBtn.style.display = 'block';
-          }
-        }
-      }, 200);
-
-    });
-  }); {% endcomment %}
-
-{% comment %} window.marketAvailability = {{ product.metafields.custom.market_availability.value | json }};
-
-function updateButtons() {
-  const url = new URL(window.location.href);
-  const selectedVariant = url.searchParams.get("variant");
-
-  console.log("Selected Variant:", selectedVariant);
-
-  const metaList = window.marketAvailability || [];
-  const currentDomain = window.location.host.toLowerCase();
-
-  const matchedVariant = metaList.find(m => {
-    const sameVariant = String(m.variant_id) === String(selectedVariant);
-
-    let metaDomain = m.domain ? m.domain.toLowerCase() : "";
-
-    // If market = gb → force stendigcalendars.com
-    if (m.market && m.market.toLowerCase() === "gb") {
-      metaDomain = "stendigcalendars.com";
-    }
-
-    const sameDomain = metaDomain === currentDomain;
-
-    return sameVariant && sameDomain;
-  });
-
-  if (!matchedVariant) {
-    console.log("Matched Meta: none");
-    return;
-  }
-
-  console.log("Matched Meta qty:", matchedVariant.qty);
-
-  const waitlistBtn = document.querySelector('.custom-join-waitlist-btns');
-  const buyBtn = document.querySelector('.ctm-buy-btn');
-  const paymentBtn = document.querySelector('.custom-payment-btn');
-  const atcBtn = document.querySelector('.product-form__submit');
- 
-  const qty = matchedVariant.qty;
-
-  if (qty <= 0) {
-    waitlistBtn.style.display = 'flex';
-    buyBtn.style.display = 'none';
-    paymentBtn.style.display = 'none';
-    atcBtn.style.display = 'none';
-  } else {
-    waitlistBtn.style.display = 'none';
-    buyBtn.style.display = 'block';
-    paymentBtn.style.display = 'block';
-    atcBtn.style.display = 'block';
-  }
-}
-const vr = document.querySelectorAll('variant-radios input');
-
-vr.forEach(v => {
-  v.addEventListener('change', () => {
-    setTimeout(updateButtons, 200);
-  });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(updateButtons, 100);
-}); {% endcomment %}
 
 {% comment %} ---------------------- Delivery Dates and market based Join waitlist logic ---------------------- {% endcomment %}
-  window.marketAvailability = {{ product.metafields.custom.market_availability.value | json }};
+  window.variantNativeAvailable = {
+    {% for variant in product.variants %}
+      {{ variant.id }}: {{ variant.available | json }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
 
   {% comment %}
     Warehouse-based availability. "Warehouse" metaobject entries (picked in
@@ -2486,9 +2304,8 @@ document.addEventListener('DOMContentLoaded', () => {
     domains (list of subdomain codes, "main" = bare domain), is_default
     (serves any domain not listed elsewhere). The custom.oos_warehouses
     metafield on the product and/or variant lists the location names
-    currently out of stock (maintained by Shopify Flow). When either
-    metafield is set it takes priority over the legacy market_availability
-    JSON; when neither is set the legacy logic below still applies.
+    currently out of stock (maintained by Shopify Flow). When no metafield
+    is set, Shopify's native variant availability is used instead.
   {% endcomment %}
   window.warehouseByDomain = {
     {%- for wh in settings.warehouses -%}
@@ -2537,7 +2354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Returns true/false when the warehouse metafields decide availability,
   // or null when they can't (no warehouse mapping configured, or no
-  // metafield set) so the caller falls back to legacy logic.
+  // metafield set) so the caller falls back to native variant availability.
   window.warehouseAvailability = function(variantId) {
     const norm = function(list) {
       return Array.isArray(list)
@@ -2622,38 +2439,17 @@ function updateButtonVisibilityAndState() {
   if (!(selectedVariant in window.variantOOSWarehouses)) {
     selectedVariant = {{ product.selected_or_first_available_variant.id }};
   }
-  const metaList = window.marketAvailability || [];
-  const currentDomain = window.location.host.toLowerCase();
-  
-
   console.log(selectedVariant, "selectedVariant")
-
 
   let isAvailable = false;
 
-  // 1. Check availability: warehouse metafields first, legacy market JSON otherwise
+  // 1. Warehouse metafields decide when set; otherwise fall back to Shopify's
+  // native variant availability (total stock across locations).
   if (selectedVariant) {
     const warehouseDecision = window.warehouseAvailability(selectedVariant);
-
-    if (warehouseDecision !== null) {
-      isAvailable = warehouseDecision;
-    } else {
-      const matchedVariant = metaList.find(m => {
-        const sameVariant = String(m.variant_id) === String(selectedVariant);
-        let metaDomain = m.domain ? m.domain.toLowerCase() : "";
-
-        if (m.market && m.market.toLowerCase() === "gb") {
-          metaDomain = "stendigcalendars.com";
-        }
-
-        const sameDomain = metaDomain === currentDomain;
-        return sameVariant && sameDomain;
-      });
-
-      if (matchedVariant) {
-        isAvailable = matchedVariant.qty > 0;
-      }
-    }
+    isAvailable = warehouseDecision !== null
+      ? warehouseDecision
+      : Boolean(window.variantNativeAvailable[selectedVariant]);
   }
   
   // 2. Check for Delivery Date Selection (FIXED: Check the value of the input, not the attribute)
@@ -4119,30 +3915,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fieldsets = Array.from(variantRadios.querySelectorAll('fieldset'));
     if (!fieldsets.length) return;
-    const marketList = Array.isArray(window.marketAvailability) ? window.marketAvailability : [];
-    const currentDomain = window.location.host.toLowerCase();
-
     function isVariantAvailableForCurrentMarket(variant) {
       if (!variant) return false;
 
       const warehouseDecision = window.warehouseAvailability ? window.warehouseAvailability(variant.id) : null;
       if (warehouseDecision !== null) return warehouseDecision;
 
-      if (!marketList.length) return Boolean(variant.available);
-
-      const matchedVariant = marketList.find((marketVariant) => {
-        const sameVariant = String(marketVariant.variant_id) === String(variant.id);
-        let marketDomain = marketVariant.domain ? String(marketVariant.domain).toLowerCase() : '';
-
-        if (marketVariant.market && String(marketVariant.market).toLowerCase() === 'gb') {
-          marketDomain = 'stendigcalendars.com';
-        }
-
-        return sameVariant && marketDomain === currentDomain;
-      });
-
-      if (!matchedVariant) return Boolean(variant.available);
-      return Number(matchedVariant.qty) > 0;
+      return Boolean(variant.available);
     }
 
     function syncUnavailableVariantLabels() {
