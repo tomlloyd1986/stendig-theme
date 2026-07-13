@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "View my cart ({{ count }})",
+      "add_both_checkout": "Add both & check out",
+      "checkout_without": "Check out without it",
       "item_added": "Item added to your cart"
     },
     "share": {

@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Kosár megtekintése ({{ count }})",
+      "add_both_checkout": "Mindkettő hozzáadása és fizetés",
+      "checkout_without": "Fizetés e nélkül",
       "item_added": "Betettük a terméket a kosárba"
     },
     "share": {

@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Lihat keranjang saya ({{ count }})",
+      "add_both_checkout": "Tambahkan keduanya & bayar",
+      "checkout_without": "Bayar tanpa produk ini",
       "item_added": "Item ditambahkan ke keranjang Anda"
     },
     "share": {

@@ -1277,6 +1277,8 @@
     },
     "cart": {
       "view": "Afficher mon panier ({{ count }})",
+      "add_both_checkout": "Ajouter les deux et payer",
+      "checkout_without": "Payer sans cet article",
       "item_added": "Article ajouté au panier"
     },
     "share": {

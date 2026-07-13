@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Pokaż koszyk ({{ count }})",
+      "add_both_checkout": "Dodaj oba i przejdź do kasy",
+      "checkout_without": "Przejdź do kasy bez tego",
       "item_added": "Pozycję dodano do koszyka"
     },
     "share": {

@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Näytä ostoskori ({{ count }})",
+      "add_both_checkout": "Lisää molemmat ja siirry kassalle",
+      "checkout_without": "Kassalle ilman tuotetta",
       "item_added": "Tuote lisätty ostoskoriisi"
     },
     "share": {

@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Ver o meu carrinho ({{ count }})",
+      "add_both_checkout": "Adicionar ambos e pagar",
+      "checkout_without": "Pagar sem este artigo",
       "item_added": "Item adicionado ao seu carrinho"
     },
     "share": {

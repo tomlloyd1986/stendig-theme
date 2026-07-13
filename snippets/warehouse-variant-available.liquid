@@ -1,0 +1,70 @@
+{% comment %}
+  Outputs the text "true" when the variant is purchasable in the given
+  warehouse — the server-side mirror of window.warehouseAvailability.
+
+  Accepts:
+  - variant: {Object} the variant to check
+  - parent: {Object} the variant's product
+  - current_wh: {String} current warehouse location name, lowercased ('' = none)
+
+  Merges custom.oos_warehouses (Flow-maintained) and
+  custom.oos_warehouses_manual (human-edited, may contain "all") from both
+  product and variant. When no metafield is set, falls back to the
+  variant's native availability.
+{% endcomment %}
+
+{%- liquid
+  assign has_meta = false
+  assign oos_str = '||'
+
+  if parent.metafields.custom.oos_warehouses.value
+    assign has_meta = true
+    for w in parent.metafields.custom.oos_warehouses.value
+      assign w_clean = w | strip | downcase
+      assign oos_str = oos_str | append: w_clean | append: '||'
+    endfor
+  endif
+
+  if parent.metafields.custom.oos_warehouses_manual.value
+    assign has_meta = true
+    for w in parent.metafields.custom.oos_warehouses_manual.value
+      assign w_clean = w | strip | downcase
+      assign oos_str = oos_str | append: w_clean | append: '||'
+    endfor
+  endif
+
+  if variant.metafields.custom.oos_warehouses.value
+    assign has_meta = true
+    for w in variant.metafields.custom.oos_warehouses.value
+      assign w_clean = w | strip | downcase
+      assign oos_str = oos_str | append: w_clean | append: '||'
+    endfor
+  endif
+
+  if variant.metafields.custom.oos_warehouses_manual.value
+    assign has_meta = true
+    for w in variant.metafields.custom.oos_warehouses_manual.value
+      assign w_clean = w | strip | downcase
+      assign oos_str = oos_str | append: w_clean | append: '||'
+    endfor
+  endif
+
+  if has_meta and current_wh != ''
+    assign wh_needle = '||' | append: current_wh | append: '||'
+    if oos_str contains '||all||'
+      echo ''
+    elsif oos_str contains wh_needle
+      echo ''
+    else
+      echo 'true'
+    endif
+  elsif has_meta
+    if oos_str contains '||all||'
+      echo ''
+    else
+      echo 'true'
+    endif
+  elsif variant.available
+    echo 'true'
+  endif
+-%}

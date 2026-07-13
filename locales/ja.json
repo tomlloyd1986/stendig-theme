@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "カートを見る ({{ count }})",
+      "add_both_checkout": "両方追加して購入手続きへ",
+      "checkout_without": "追加せずに購入手続きへ",
       "item_added": "カートにアイテムが追加されました"
     },
     "share": {

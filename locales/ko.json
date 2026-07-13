@@ -1277,6 +1277,8 @@
     },
     "cart": {
       "view": "내 카트 보기({{ count }}개)",
+      "add_both_checkout": "함께 담고 결제하기",
+      "checkout_without": "이 상품 없이 결제하기",
       "item_added": "카트에 추가된 품목"
     },
     "share": {

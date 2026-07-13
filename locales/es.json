@@ -1277,6 +1277,8 @@
     },
     "cart": {
       "view": "Ver mi carrito ({{ count }})",
+      "add_both_checkout": "Añadir ambos y pagar",
+      "checkout_without": "Pagar sin este artículo",
       "item_added": "Artículo agregado a tu carrito"
     },
     "share": {

@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Zobraziť môj košík ({{ count }})",
+      "add_both_checkout": "Pridať oboje a k pokladni",
+      "checkout_without": "K pokladni bez tejto položky",
       "item_added": "Položka sa pridala do vášho košíka"
     },
     "share": {

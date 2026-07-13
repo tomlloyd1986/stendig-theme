@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Xem giỏ hàng của tôi ({{ count }})",
+      "add_both_checkout": "Thêm cả hai & thanh toán",
+      "checkout_without": "Thanh toán không thêm",
       "item_added": "Mặt hàng đã thêm vào giỏ hàng"
     },
     "share": {

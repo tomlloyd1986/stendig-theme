@@ -1,0 +1,270 @@
+{% comment %}
+  Renders the body of the add-to-cart drawer: current cart contents, an
+  optional cross-sell suggestion, and the checkout actions.
+
+  Cross-sell rules are "cross_sell_rule" metaobjects picked (in priority
+  order) in Theme settings > Cart Cross-sell. The first rule that matches
+  wins. A rule matches when:
+  - its suggested product is not already in the cart
+  - its domain list is empty or contains the current subdomain code
+  - its "cart contains" list is empty or one of those products is in the cart
+  - none of its "cart must not contain" products are in the cart
+  - at least one variant of the suggested product is purchasable in the
+    current domain's warehouse
+
+  Rendered by sections/cart-notification-product.liquid on every add-to-cart
+  (Section Rendering API), so the cart and rule evaluation are always fresh.
+{% endcomment %}
+
+{%- liquid
+  assign host_clean = request.host | downcase | remove: 'www.'
+  assign host_parts = host_clean | split: '.'
+  if host_parts.size == 2
+    assign domain_code = 'main'
+  else
+    assign domain_code = host_parts | first
+  endif
+
+  assign current_wh = ''
+  assign default_wh = ''
+  for wh in settings.warehouses
+    assign wh_loc = wh.location.value | strip | downcase
+    if wh_loc == blank
+      continue
+    endif
+    if wh.is_default.value and default_wh == ''
+      assign default_wh = wh_loc
+    endif
+    if wh.domains.value
+      for d in wh.domains.value
+        assign dd = d | strip | downcase
+        if dd == domain_code or dd == host_clean
+          assign current_wh = wh_loc
+        endif
+      endfor
+    endif
+  endfor
+  if current_wh == ''
+    assign current_wh = default_wh
+  endif
+-%}
+
+{%- assign cs_rule = false -%}
+{%- assign cs_product = false -%}
+{%- assign cs_available_ids = '' -%}
+
+{%- if cart != empty -%}
+  {%- for rule in settings.cross_sell_rules -%}
+    {%- assign sp = rule.suggested_product.value -%}
+    {%- if sp == blank -%}{%- continue -%}{%- endif -%}
+
+    {%- liquid
+      # domain filter (empty list = all domains)
+      assign domain_ok = true
+      if rule.domains.value and rule.domains.value.size > 0
+        assign domain_ok = false
+        for d in rule.domains.value
+          assign dd = d | strip | downcase
+          if dd == domain_code or dd == host_clean
+            assign domain_ok = true
+          endif
+        endfor
+      endif
+    -%}
+    {%- unless domain_ok -%}{%- continue -%}{%- endunless -%}
+
+    {%- liquid
+      # never suggest something already in the cart
+      assign in_cart = false
+      for item in cart.items
+        if item.product_id == sp.id
+          assign in_cart = true
+        endif
+      endfor
+    -%}
+    {%- if in_cart -%}{%- continue -%}{%- endif -%}
+
+    {%- liquid
+      # cart must contain one of these (empty = any basket)
+      assign contains_ok = true
+      if rule.cart_contains.value and rule.cart_contains.value.size > 0
+        assign contains_ok = false
+        for rp in rule.cart_contains.value
+          for item in cart.items
+            if item.product_id == rp.id
+              assign contains_ok = true
+            endif
+          endfor
+        endfor
+      endif
+    -%}
+    {%- unless contains_ok -%}{%- continue -%}{%- endunless -%}
+
+    {%- liquid
+      # cart must not contain any of these
+      assign clash = false
+      if rule.cart_not_contains.value and rule.cart_not_contains.value.size > 0
+        for bp in rule.cart_not_contains.value
+          for item in cart.items
+            if item.product_id == bp.id
+              assign clash = true
+            endif
+          endfor
+        endfor
+      endif
+    -%}
+    {%- if clash -%}{%- continue -%}{%- endif -%}
+
+    {%- liquid
+      # keep only variants purchasable in this warehouse
+      assign avail_ids = ''
+      for variant in sp.variants
+        capture v_ok
+          render 'warehouse-variant-available', variant: variant, parent: sp, current_wh: current_wh
+        endcapture
+        if v_ok contains 'true'
+          assign avail_ids = avail_ids | append: variant.id | append: ','
+        endif
+      endfor
+    -%}
+    {%- if avail_ids == '' -%}{%- continue -%}{%- endif -%}
+
+    {%- assign cs_rule = rule -%}
+    {%- assign cs_product = sp -%}
+    {%- assign cs_available_ids = avail_ids -%}
+    {%- break -%}
+  {%- endfor -%}
+{%- endif -%}
+
+<div class="cart-drawer__scroll">
+  <div class="cart-drawer__items">
+    {%- for item in cart.items -%}
+      <div class="cart-drawer__item">
+        {%- if item.image -%}
+          <img
+            class="cart-drawer__item-image"
+            src="{{ item.image | img_url: '160x' }}"
+            alt="{{ item.image.alt | escape }}"
+            width="80"
+            height="{{ 80 | divided_by: item.image.aspect_ratio | ceil }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <div class="cart-drawer__item-info">
+          <p class="cart-drawer__item-title">{{ item.product.title | escape }}</p>
+          {%- unless item.product.has_only_default_variant -%}
+            <p class="cart-drawer__item-meta">{{ item.variant.title | escape }}</p>
+          {%- endunless -%}
+          {%- assign dd_prop = item.properties['Delivery Date'] -%}
+          {%- if dd_prop != blank -%}
+            <p class="cart-drawer__item-meta">{{ 'delivery.choose_date' | t }}: {{ dd_prop | escape }}</p>
+          {%- endif -%}
+          <p class="cart-drawer__item-meta">
+            {{ item.quantity }} &times; {{ item.final_price | money }}
+          </p>
+        </div>
+        <p class="cart-drawer__item-price">{{ item.final_line_price | money }}</p>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if cs_product -%}
+    {%- assign inherit_date = cart.items.first.properties['Delivery Date'] -%}
+    <aside
+      class="cart-upsell"
+      data-cross-sell
+      {% if inherit_date != blank %}data-delivery-date="{{ inherit_date | escape }}"{% endif %}
+    >
+      {%- if cs_rule.badge.value != blank -%}
+        <span class="cart-upsell__badge">{{ cs_rule.badge.value }}</span>
+      {%- endif -%}
+
+      <h3 class="cart-upsell__headline">{{ cs_rule.headline.value | default: cs_product.title }}</h3>
+
+      {%- if cs_rule.benefit.value != blank -%}
+        <p class="cart-upsell__benefit">{{ cs_rule.benefit.value }}</p>
+      {%- endif -%}
+
+      {%- liquid
+        assign default_variant = false
+        for variant in cs_product.variants
+          assign id_needle = variant.id | append: ','
+          if cs_available_ids contains id_needle and default_variant == false
+            assign default_variant = variant
+          endif
+        endfor
+      -%}
+
+      <div class="cart-upsell__product">
+        {%- if cs_product.featured_image -%}
+          <img
+            class="cart-upsell__image"
+            src="{{ cs_product.featured_image | img_url: '360x' }}"
+            alt="{{ cs_product.featured_image.alt | escape }}"
+            width="180"
+            height="{{ 180 | divided_by: cs_product.featured_image.aspect_ratio | ceil }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <div class="cart-upsell__product-info">
+          <p class="cart-upsell__title">{{ cs_product.title | escape }}</p>
+          <p class="cart-upsell__price" data-cross-sell-price>{{ default_variant.price | money }}</p>
+        </div>
+      </div>
+
+      {%- if cs_product.has_only_default_variant -%}
+        <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
+      {%- else -%}
+        <fieldset class="cart-upsell__variants">
+          <legend class="visually-hidden">{{ cs_product.options_with_values.first.name }}</legend>
+          {%- for variant in cs_product.variants -%}
+            {%- assign id_needle = variant.id | append: ',' -%}
+            {%- if cs_available_ids contains id_needle -%}
+              <input
+                type="radio"
+                class="visually-hidden cart-upsell__variant-input"
+                id="cross-sell-variant-{{ variant.id }}"
+                name="cross-sell-variant"
+                value="{{ variant.id }}"
+                data-price="{{ variant.price | money }}"
+                {% if variant.id == default_variant.id %}checked{% endif %}
+              >
+              <label class="cart-upsell__variant-label" for="cross-sell-variant-{{ variant.id }}">
+                {{- variant.title | escape -}}
+              </label>
+            {%- endif -%}
+          {%- endfor -%}
+        </fieldset>
+      {%- endif -%}
+    </aside>
+  {%- endif -%}
+</div>
+
+<div class="cart-drawer__footer">
+  {%- if cs_product -%}
+    <button type="button" class="button button--primary button--full-width" data-cross-sell-add>
+      <span>{{ 'general.cart.add_both_checkout' | t }}</span>
+      <div class="loading-overlay__spinner hidden">
+        <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+        </svg>
+      </div>
+    </button>
+    <form action="{{ routes.cart_url }}" method="post">
+      <button class="button button--secondary button--full-width" name="checkout">
+        {{ 'general.cart.checkout_without' | t }}
+      </button>
+    </form>
+  {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post">
+      <button class="button button--primary button--full-width" name="checkout">
+        {{ 'sections.cart.checkout' | t }}
+      </button>
+    </form>
+  {%- endif -%}
+
+  <div class="cart-drawer__links">
+    <a href="{{ routes.cart_url }}" class="link">{{ 'general.cart.view' | t: count: cart.item_count }}</a>
+    <button type="button" class="link" data-drawer-close>{{ 'general.continue_shopping' | t }}</button>
+  </div>
+</div>

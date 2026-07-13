@@ -50,6 +50,8 @@
     },
     "cart": {
       "view": "Prikaži mojo košarico ({{ count }})",
+      "add_both_checkout": "Dodaj oboje in na blagajno",
+      "checkout_without": "Na blagajno brez tega",
       "item_added": "Artikel je dodan v košarico"
     },
     "share": {

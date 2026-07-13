@@ -1277,6 +1277,8 @@
     },
     "cart": {
       "view": "Se min indkøbskurv ({{ count }})",
+      "add_both_checkout": "Tilføj begge & gå til kassen",
+      "checkout_without": "Gå til kassen uden",
       "item_added": "Varen er lagt i indkøbskurven"
     },
     "share": {
