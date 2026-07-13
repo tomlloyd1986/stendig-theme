@@ -210,55 +210,53 @@
       {%- endif -%}
 
       <div class="cart-upsell__product">
-        {%- if cs_product.featured_image -%}
+        {%- assign cs_image = default_variant.featured_image | default: cs_product.featured_image -%}
+        {%- if cs_image -%}
           <img
             class="cart-upsell__image"
-            src="{{ cs_product.featured_image | img_url: '200x' }}"
-            alt="{{ cs_product.featured_image.alt | escape }}"
+            data-cross-sell-image
+            src="{{ cs_image | img_url: '200x' }}"
+            alt="{{ cs_image.alt | escape }}"
             width="100"
-            height="{{ 100 | divided_by: cs_product.featured_image.aspect_ratio | ceil }}"
+            height="{{ 100 | divided_by: cs_image.aspect_ratio | ceil }}"
             loading="lazy"
           >
         {%- endif -%}
 
         <div class="cart-upsell__info">
           <p class="cart-upsell__title">{{ cs_product.title | escape }}</p>
-          <p class="cart-upsell__price">
+          <div class="cart-upsell__price">
             <span data-cross-sell-price>{{ default_disc | money }}</span>
             {%- if pct > 0 -%}
               <s data-cross-sell-compare>{{ default_variant.price | money }}</s>
             {%- endif -%}
-            {%- if cs_rule.badge.value != blank -%}
-              <span class="cart-upsell__badge">{{ cs_rule.badge.value }}</span>
-            {%- endif -%}
-          </p>
 
-          {%- if cs_product.has_only_default_variant -%}
-            <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
-          {%- else -%}
-            <fieldset class="cart-upsell__variants">
-              <legend class="visually-hidden">{{ cs_product.options_with_values.first.name }}</legend>
-              {%- for variant in cs_product.variants -%}
-                {%- assign id_needle = variant.id | append: ',' -%}
-                {%- if cs_available_ids contains id_needle -%}
-                  {%- assign v_disc = variant.price | times: price_factor | divided_by: 100 -%}
-                  <input
-                    type="radio"
-                    class="visually-hidden cart-upsell__variant-input"
-                    id="cross-sell-variant-{{ variant.id }}"
-                    name="cross-sell-variant"
-                    value="{{ variant.id }}"
-                    data-price="{{ v_disc | money }}"
-                    {% if pct > 0 %}data-compare="{{ variant.price | money }}"{% endif %}
-                    {% if variant.id == default_variant.id %}checked{% endif %}
-                  >
-                  <label class="cart-upsell__variant-label" for="cross-sell-variant-{{ variant.id }}">
-                    {{- variant.title | escape -}}
-                  </label>
-                {%- endif -%}
-              {%- endfor -%}
-            </fieldset>
-          {%- endif -%}
+            {%- if cs_product.has_only_default_variant -%}
+              <input type="hidden" name="cross-sell-variant" value="{{ default_variant.id }}">
+            {%- else -%}
+              <select
+                class="cart-upsell__variant-select"
+                name="cross-sell-variant"
+                aria-label="{{ cs_product.options_with_values.first.name | escape }}"
+              >
+                {%- for variant in cs_product.variants -%}
+                  {%- assign id_needle = variant.id | append: ',' -%}
+                  {%- if cs_available_ids contains id_needle -%}
+                    {%- assign v_disc = variant.price | times: price_factor | divided_by: 100 -%}
+                    <option
+                      value="{{ variant.id }}"
+                      data-price="{{ v_disc | money }}"
+                      {% if pct > 0 %}data-compare="{{ variant.price | money }}"{% endif %}
+                      {% if variant.featured_image %}data-image="{{ variant.featured_image | img_url: '200x' }}"{% endif %}
+                      {% if variant.id == default_variant.id %}selected{% endif %}
+                    >
+                      {{- variant.title | escape -}}
+                    </option>
+                  {%- endif -%}
+                {%- endfor -%}
+              </select>
+            {%- endif -%}
+          </div>
         </div>
 
         <button type="button" class="cart-upsell__add" data-cross-sell-add>

@@ -252,7 +252,7 @@ html.cart-drawer-open body {
 }
 
 .cart-upsell__image {
-  width: 7rem;
+  width: 10rem;
   height: auto;
   flex-shrink: 0;
   align-self: flex-start;
@@ -273,8 +273,8 @@ html.cart-drawer-open body {
   margin: 0;
   font-size: 1.4rem;
   display: flex;
-  align-items: baseline;
-  gap: 0.8rem;
+  align-items: center;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
@@ -282,14 +282,20 @@ html.cart-drawer-open body {
   opacity: 0.5;
 }
 
-.cart-upsell__badge {
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08rem;
-  border: 0.1rem solid rgb(var(--color-foreground));
-  padding: 0.2rem 0.6rem;
-  white-space: nowrap;
+.cart-upsell__variant-select {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  font-size: 1.2rem;
+  color: rgb(var(--color-foreground));
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.3);
+  border-radius: 0;
+  padding: 0.5rem 2.6rem 0.5rem 1rem;
+  cursor: pointer;
 }
 
 .cart-upsell__add {
@@ -314,34 +320,7 @@ html.cart-drawer-open body {
   pointer-events: none;
 }
 
-/* Variant pills */
-
-.cart-upsell__variants {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  border: none;
-  padding: 0;
-  margin: 0.8rem 0 0;
-}
-
-.cart-upsell__variant-label {
-  display: inline-block;
-  border: 0.1rem solid rgba(var(--color-foreground), 0.3);
-  color: rgb(var(--color-foreground));
-  font-size: 1.2rem;
-  padding: 0.5rem 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.cart-upsell__variant-input:checked + .cart-upsell__variant-label {
-  background-color: rgb(var(--color-foreground));
-  border-color: rgb(var(--color-foreground));
-  color: rgb(var(--color-background));
-}
-
-.cart-upsell__variant-input:focus-visible + .cart-upsell__variant-label {
+.cart-upsell__variant-select:focus-visible {
   outline: 0.2rem solid rgb(var(--color-foreground));
   outline-offset: 0.2rem;
 }

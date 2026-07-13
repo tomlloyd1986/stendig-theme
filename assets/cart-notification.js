@@ -38,10 +38,15 @@ class CartNotification extends HTMLElement {
 
     this.addEventListener('change', (evt) => {
       if (evt.target.name !== 'cross-sell-variant') return;
+      const option = evt.target.selectedOptions ? evt.target.selectedOptions[0] : evt.target;
+      if (!option) return;
+
       const priceElement = this.querySelector('[data-cross-sell-price]');
       const compareElement = this.querySelector('[data-cross-sell-compare]');
-      if (priceElement && evt.target.dataset.price) priceElement.textContent = evt.target.dataset.price;
-      if (compareElement && evt.target.dataset.compare) compareElement.textContent = evt.target.dataset.compare;
+      const imageElement = this.querySelector('[data-cross-sell-image]');
+      if (priceElement && option.dataset.price) priceElement.textContent = option.dataset.price;
+      if (compareElement && option.dataset.compare) compareElement.textContent = option.dataset.compare;
+      if (imageElement && option.dataset.image) imageElement.src = option.dataset.image;
     });
   }
 
@@ -91,10 +96,10 @@ class CartNotification extends HTMLElement {
     if (button.getAttribute('aria-disabled') === 'true') return;
 
     const panel = this.querySelector('[data-cross-sell]');
-    const selected =
-      this.querySelector('input[name="cross-sell-variant"]:checked') ||
-      this.querySelector('input[name="cross-sell-variant"][type="hidden"]');
-    if (!panel || !selected) return;
+    const selected = this.querySelector(
+      'select[name="cross-sell-variant"], input[name="cross-sell-variant"][type="hidden"]'
+    );
+    if (!panel || !selected || !selected.value) return;
 
     button.setAttribute('aria-disabled', 'true');
     button.classList.add('loading');
