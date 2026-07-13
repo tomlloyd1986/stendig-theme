@@ -50,6 +50,7 @@
     },
     "cart": {
       "view": "Ver o carrinho ({{ count }})",
+      "add": "Adicionar",
       "add_both_checkout": "Adicionar ambos e finalizar compra",
       "checkout_without": "Finalizar sem este item",
       "item_added": "Item adicionado ao carrinho"

@@ -50,6 +50,7 @@
     },
     "cart": {
       "view": "Peržiūrėti mano krepšelį ({{ count }})",
+      "add": "Pridėti",
       "add_both_checkout": "Pridėti abu ir apmokėti",
       "checkout_without": "Apmokėti be jo",
       "item_added": "Prekė įdėta į jūsų krepšelį"

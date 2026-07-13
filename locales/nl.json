@@ -1277,6 +1277,7 @@
     },
     "cart": {
       "view": "Winkelwagen bekijken ({{ count }})",
+      "add": "Toevoegen",
       "add_both_checkout": "Voeg beide toe & reken af",
       "checkout_without": "Afrekenen zonder dit artikel",
       "item_added": "Artikel toegevoegd aan winkelwagen"

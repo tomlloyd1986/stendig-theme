@@ -50,6 +50,7 @@
     },
     "cart": {
       "view": "Zobrazit košík ({{ count }})",
+      "add": "Přidat",
       "add_both_checkout": "Přidat obojí a k pokladně",
       "checkout_without": "K pokladně bez této položky",
       "item_added": "Položka byla přidána do košíku"

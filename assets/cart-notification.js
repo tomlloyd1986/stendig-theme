@@ -33,13 +33,15 @@ class CartNotification extends HTMLElement {
       }
 
       const addButton = evt.target.closest('[data-cross-sell-add]');
-      if (addButton) this.addCrossSellAndCheckout(addButton);
+      if (addButton) this.addCrossSell(addButton);
     });
 
     this.addEventListener('change', (evt) => {
       if (evt.target.name !== 'cross-sell-variant') return;
       const priceElement = this.querySelector('[data-cross-sell-price]');
+      const compareElement = this.querySelector('[data-cross-sell-compare]');
       if (priceElement && evt.target.dataset.price) priceElement.textContent = evt.target.dataset.price;
+      if (compareElement && evt.target.dataset.compare) compareElement.textContent = evt.target.dataset.compare;
     });
   }
 
@@ -85,7 +87,7 @@ class CartNotification extends HTMLElement {
     }
   }
 
-  async addCrossSellAndCheckout(button) {
+  async addCrossSell(button) {
     if (button.getAttribute('aria-disabled') === 'true') return;
 
     const panel = this.querySelector('[data-cross-sell]');
@@ -96,8 +98,6 @@ class CartNotification extends HTMLElement {
 
     button.setAttribute('aria-disabled', 'true');
     button.classList.add('loading');
-    const spinner = button.querySelector('.loading-overlay__spinner');
-    if (spinner) spinner.classList.remove('hidden');
 
     const item = { id: Number(selected.value), quantity: 1 };
     const inheritedDate = panel.dataset.deliveryDate;
@@ -109,17 +109,20 @@ class CartNotification extends HTMLElement {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [item] }),
+        body: JSON.stringify({
+          items: [item],
+          sections: this.getSectionsToRender().map((section) => section.id),
+        }),
       });
 
       if (!response.ok) throw new Error(`Cart add failed (${response.status})`);
 
-      window.location.href = '/checkout';
+      const state = await response.json();
+      if (state.sections) this.updateSections(state.sections);
     } catch (error) {
       console.error('Cross-sell add failed:', error);
       button.removeAttribute('aria-disabled');
       button.classList.remove('loading');
-      if (spinner) spinner.classList.add('hidden');
     }
   }
 

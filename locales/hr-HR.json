@@ -50,6 +50,7 @@
     },
     "cart": {
       "view": "Prikaži moju košaricu ({{ count }})",
+      "add": "Dodaj",
       "add_both_checkout": "Dodaj oba i plati",
       "checkout_without": "Plati bez toga",
       "item_added": "Artikl je dodan u vašu košaricu"

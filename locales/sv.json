@@ -50,6 +50,7 @@
     },
     "cart": {
       "view": "Visa min varukorg ({{ count }})",
+      "add": "Lägg till",
       "add_both_checkout": "Lägg till båda & gå till kassan",
       "checkout_without": "Gå till kassan utan",
       "item_added": "Artikeln har lagts till i varukorgen"
