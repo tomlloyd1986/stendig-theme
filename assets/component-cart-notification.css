@@ -250,6 +250,23 @@ html.cart-drawer-open body {
   padding: 2rem 0;
 }
 
+.drawer-upsell__media {
+  flex-shrink: 0;
+  align-self: flex-start;
+  display: block;
+  line-height: 0;
+}
+
+.drawer-upsell__title-link {
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+}
+
+.drawer-upsell__title-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+
 .drawer-upsell__price {
   margin: 0;
   font-size: 1.4rem;

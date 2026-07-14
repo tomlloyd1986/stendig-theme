@@ -222,19 +222,21 @@
       <div class="cart-drawer__item drawer-upsell__row">
         {%- assign cs_image = default_variant.featured_image | default: cs_product.featured_image -%}
         {%- if cs_image -%}
-          <img
-            class="cart-drawer__item-image"
-            data-cross-sell-image
-            src="{{ cs_image | img_url: '200x' }}"
-            alt="{{ cs_image.alt | escape }}"
-            width="100"
-            height="{{ 100 | divided_by: cs_image.aspect_ratio | ceil }}"
-            loading="lazy"
-          >
+          <a href="{{ cs_product.url }}" class="drawer-upsell__media" data-cross-sell-link>
+            <img
+              class="cart-drawer__item-image"
+              data-cross-sell-image
+              src="{{ cs_image | img_url: '200x' }}"
+              alt="{{ cs_image.alt | escape }}"
+              width="100"
+              height="{{ 100 | divided_by: cs_image.aspect_ratio | ceil }}"
+              loading="lazy"
+            >
+          </a>
         {%- endif -%}
 
         <div class="cart-drawer__item-info">
-          <p class="cart-drawer__item-title">{{ cs_product.title | escape }}</p>
+          <a href="{{ cs_product.url }}" class="cart-drawer__item-title drawer-upsell__title-link" data-cross-sell-link>{{ cs_product.title | escape }}</a>
           <p class="drawer-upsell__price">
             <span data-cross-sell-price>{{ default_disc | money }}</span>
             {%- if pct > 0 -%}
