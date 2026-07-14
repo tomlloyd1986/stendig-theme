@@ -7,6 +7,10 @@ class CartNotification extends HTMLElement {
     this.overlay = this.querySelector('.cart-drawer__overlay');
     this.onBodyClick = this.handleBodyClick.bind(this);
 
+    // Cleared once the element upgrades; the inline display:none prevents any
+    // flash of the unstyled drawer before the async stylesheet loads.
+    this.style.display = '';
+
     this.notification.addEventListener('keyup', (evt) => evt.code === 'Escape' && this.close());
     if (this.overlay) this.overlay.addEventListener('click', () => this.close());
 
