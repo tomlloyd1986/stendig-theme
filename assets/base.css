@@ -14,6 +14,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "Neue Haas Grotesk Text";
+  src: url("https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasDisplayMedium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 /* Tell Dawn to use it via its variables */
 :root {
   --font-body-family: "Neue Haas Grotesk Text", sans-serif;
