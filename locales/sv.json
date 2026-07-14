@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Visa min varukorg ({{ count }})",
+      "add": "Lägg till",
+      "remove": "Ta bort",
+      "shipping": "Frakt",
+      "calculated_at_checkout": "Beräknas i kassan",
+      "total": "Totalt värde",
+      "add_both_checkout": "Lägg till båda & gå till kassan",
+      "checkout_without": "Gå till kassan utan",
       "item_added": "Artikeln har lagts till i varukorgen"
     },
     "share": {
@@ -456,6 +463,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Leveransdatum",
     "choose_date": "Välj leveransdatum",
     "join_waitlist": "Gå med i väntelistan",
     "required_message": "Välj ett leveransdatum",

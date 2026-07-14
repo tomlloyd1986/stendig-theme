@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Prikaži mojo košarico ({{ count }})",
+      "add": "Dodaj",
+      "remove": "Odstrani",
+      "shipping": "Dostava",
+      "calculated_at_checkout": "Izračunano ob zaključku",
+      "total": "Skupna vrednost",
+      "add_both_checkout": "Dodaj oboje in na blagajno",
+      "checkout_without": "Na blagajno brez tega",
       "item_added": "Artikel je dodan v košarico"
     },
     "share": {
@@ -482,6 +489,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Datum dostave",
     "choose_date": "Izberite datum dostave",
     "join_waitlist": "Pridruži se čakalni listi",
     "required_message": "Izberite datum dostave",

@@ -330,6 +330,18 @@
     ]
   },
   {
+    "name": "Cart Cross-sell",
+    "settings": [
+      {
+        "type": "metaobject_list",
+        "id": "cross_sell_rules",
+        "label": "Cross-sell rules",
+        "metaobject_type": "cross_sell_rule",
+        "info": "Rules for the suggestion shown in the add-to-cart drawer, in priority order — the first matching rule wins. Create rules under Content > Metaobjects > Cross-sell rule. A rule is skipped when its product is already in the cart or is out of stock in the current domain's warehouse."
+      }
+    ]
+  },
+  {
     "name": "Warehouse Availability",
     "settings": [
       {

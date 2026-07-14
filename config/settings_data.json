@@ -19,6 +19,9 @@
     "type_header_font": "assistant_n4",
     "type_body_font": "assistant_n4",
     "favicon": "shopify://shop_images/Favicon.png",
+    "cross_sell_rules": [
+      "hang-your-calendar-without-strips"
+    ],
     "warehouses": [
       "uk-3-pl-consumer",
       "us-3-pl",
@@ -155,11 +158,6 @@
       "12793297677437526120": {
         "type": "shopify://apps/t-lab-ai-language-translate/blocks/custom_translations/b5b83690-efd4-434d-8c6a-a5cef4019faf",
         "disabled": false,
-        "settings": {}
-      },
-      "15557474716127144420": {
-        "type": "shopify://apps/kaching-bundles/blocks/app-embed-block/6c637362-a106-4a32-94ac-94dcfd68cdb8",
-        "disabled": true,
         "settings": {}
       },
       "17595556821664008138": {

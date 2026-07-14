@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Peržiūrėti mano krepšelį ({{ count }})",
+      "add": "Pridėti",
+      "remove": "Pašalinti",
+      "shipping": "Pristatymas",
+      "calculated_at_checkout": "Apskaičiuojama atsiskaitant",
+      "total": "Bendra vertė",
+      "add_both_checkout": "Pridėti abu ir apmokėti",
+      "checkout_without": "Apmokėti be jo",
       "item_added": "Prekė įdėta į jūsų krepšelį"
     },
     "share": {
@@ -482,6 +489,7 @@
   },
   "delivery": {
     "date_label": "{{ month }} {{ day }} d.",
+    "date_title": "Pristatymo data",
     "choose_date": "Pasirinkite pristatymo datą",
     "join_waitlist": "Prisijungti prie laukiančiųjų sąrašo",
     "required_message": "Pasirinkite pristatymo datą",

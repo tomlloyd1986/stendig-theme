@@ -1277,6 +1277,13 @@
     },
     "cart": {
       "view": "Meinen Warenkorb ({{ count }}) anzeigen",
+      "add": "Hinzufügen",
+      "remove": "Entfernen",
+      "shipping": "Versand",
+      "calculated_at_checkout": "Wird an der Kasse berechnet",
+      "total": "Gesamtwert",
+      "add_both_checkout": "Beides hinzufügen & zur Kasse",
+      "checkout_without": "Zur Kasse ohne diesen Artikel",
       "item_added": "Artikel wurde in den Warenkorb gelegt"
     },
     "share": {
@@ -1620,6 +1627,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Lieferdatum",
     "choose_date": "Lieferdatum auswählen",
     "join_waitlist": "Zur Warteliste",
     "required_message": "Wähle ein Lieferdatum",

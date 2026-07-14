@@ -1,19 +1,5 @@
-  <script>
-    (function(g,e,o,t,a,r,ge,tl,y,s){
-    g.getElementsByTagName(o)[0].insertAdjacentHTML('afterbegin','<style id="georedirect1634220615718style">body{opacity:0.0 !important;}</style>');
-    s=function(){g.getElementById('georedirect1634220615718style').innerHTML='body{opacity:1.0 !important;}';};
-    t=g.getElementsByTagName(o)[0];y=g.createElement(e);y.async=true;
-    y.src='https://geotargetly-api-1.com/gr?id=-Mlz7uT9fyKEvPo1DGo9&refurl='+g.referrer+'&winurl='+encodeURIComponent(window.location);
-    t.parentNode.insertBefore(y,t);y.onerror=function(){s()};
-    georedirect1634220615718loaded=function(redirect){var to=0;if(redirect){to=5000};
-    setTimeout(function(){s();},to)};
-    })(document,'script','head');
-    </script>
-    
       <!doctype html>
-        <html class="no-js" lang="{{ request.locale.iso_code }}" fontify-lang="{{ shop.locale }}" {% comment %}ly_dir_replace_for_[]_begin{% endcomment %}>
-          {%- assign language_code = 'rtl' -%}
-        
+        <html class="no-js" lang="{{ request.locale.iso_code }}">
         <head>
                                                                                                            
         <meta charset="utf-8">
@@ -312,12 +298,13 @@
         {{ 'mw.style.css' | asset_url | stylesheet_tag }}
         {{ 'custom.css' | asset_url | stylesheet_tag }}
     
-        {%- unless settings.type_body_font.system? -%}
-          <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
-        {%- endunless -%}
-        {%- unless settings.type_header_font.system? -%}
-          <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
-        {%- endunless -%}
+        {%- comment -%}
+          Preload the self-hosted brand fonts declared in base.css (these
+          override Dawn's font variables, so the theme-setting fonts above
+          are no longer rendered and don't need preloading).
+        {%- endcomment -%}
+        <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasGrotText-55Roman.woff2?v=1754861432" type="font/woff2" crossorigin>
+        <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasDisplayMedium.woff2" type="font/woff2" crossorigin>
     
         {%- if settings.predictive_search_enabled -%}
           <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">

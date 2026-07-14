@@ -1277,6 +1277,13 @@
     },
     "cart": {
       "view": "Se min indkøbskurv ({{ count }})",
+      "add": "Tilføj",
+      "remove": "Fjern",
+      "shipping": "Levering",
+      "calculated_at_checkout": "Beregnes ved kassen",
+      "total": "Samlet værdi",
+      "add_both_checkout": "Tilføj begge & gå til kassen",
+      "checkout_without": "Gå til kassen uden",
       "item_added": "Varen er lagt i indkøbskurven"
     },
     "share": {
@@ -1620,6 +1627,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Leveringsdato",
     "choose_date": "Vælg leveringsdato",
     "join_waitlist": "Tilmeld venteliste",
     "required_message": "Vælg en leveringsdato",

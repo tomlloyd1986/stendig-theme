@@ -1,35 +1,55 @@
 {% comment %}
-    Renders cart notification
+    Renders the add-to-cart drawer: full-height panel sliding in from the
+    right, showing cart contents, an optional cross-sell, and checkout CTAs.
+    Body content lives in cart-notification-content and is re-rendered on
+    every add-to-cart via sections/cart-notification-product.liquid.
 
     Accepts:
-    - color_scheme: {String} sets the color scheme of the notification (optional)
+    - color_scheme: {String} sets the color scheme of the drawer (optional)
 
     Usage:
     {% render 'cart-notification' %}
 {% endcomment %}
 
-<cart-notification>
-  <div class="cart-notification-wrapper page-width{% if color_scheme %} color-{{ color_scheme }}{% endif %}">
-    <div id="cart-notification" class="cart-notification focus-inset" aria-modal="true" aria-label="{{ 'general.cart.item_added' | t }}" role="dialog" tabindex="-1">
-      <div class="cart-notification__header">
-        <h2 class="cart-notification__heading caption-large">{%- render 'icon-checkmark' -%} {{ 'general.cart.item_added' | t }}</h2>
-        <button type="button" class="cart-notification__close modal__close-button link link--text focus-inset" aria-label="{{ 'accessibility.close' | t }}">
-          <svg class="icon icon-close" aria-hidden="true" focusable="false"><use href="#icon-close"></svg>
-        </button>
-      </div>
-      <div id="cart-notification-product" class="cart-notification-product"></div>
-      <div class="cart-notification__links">
-        <a href="{{ routes.cart_url }}" id="cart-notification-button" class="button button--secondary button--full-width"></a>
-        <form action="{{ routes.cart_url }}" method="post" id="cart-notification-form">
-          <button class="button button--primary button--full-width" name="checkout">{{ 'sections.cart.checkout' | t }}</button>
-        </form>
-        <button type="button" class="link button-label">{{ 'general.continue_shopping' | t }}</button>
-      </div>
+<cart-notification style="display: none;">
+  <div class="cart-drawer__overlay" aria-hidden="true"></div>
+  <div
+    id="cart-notification"
+    class="cart-drawer{% if color_scheme %} color-{{ color_scheme }}{% endif %} focus-inset"
+    aria-modal="true"
+    aria-label="{{ 'general.cart.item_added' | t }}"
+    role="dialog"
+    tabindex="-1"
+  >
+    <div class="cart-drawer__header">
+      <h2 class="cart-drawer__heading">{{ 'sections.cart.title' | t }}</h2>
+      <button type="button" class="cart-drawer__close focus-inset" aria-label="{{ 'accessibility.close' | t }}">
+        {{ 'accessibility.close' | t }}
+        <svg class="icon icon-close" aria-hidden="true" focusable="false"><use href="#icon-close"></svg>
+      </button>
+    </div>
+    <div id="cart-notification-content" class="cart-drawer__body">
+      {% render 'cart-notification-content' %}
     </div>
   </div>
 </cart-notification>
+
+{% comment %}
+  Critical inline styles: the component stylesheet loads async, so without
+  these the drawer flashes unstyled (in page flow, giant checkmark icon)
+  on every navigation until the CSS arrives.
+{% endcomment %}
 {% style %}
-  .cart-notification {
-     display: none;
+  cart-notification .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+  }
+  cart-notification .cart-drawer__overlay {
+    position: fixed;
+    opacity: 0;
+    visibility: hidden;
   }
 {% endstyle %}

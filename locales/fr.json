@@ -1277,6 +1277,13 @@
     },
     "cart": {
       "view": "Afficher mon panier ({{ count }})",
+      "add": "Ajouter",
+      "remove": "Supprimer",
+      "shipping": "Livraison",
+      "calculated_at_checkout": "Calculée à la caisse",
+      "total": "Valeur totale",
+      "add_both_checkout": "Ajouter les deux et payer",
+      "checkout_without": "Payer sans cet article",
       "item_added": "Article ajouté au panier"
     },
     "share": {
@@ -1620,6 +1627,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Date de livraison",
     "choose_date": "Choisir une date de livraison",
     "join_waitlist": "Rejoindre la liste d'attente",
     "required_message": "Choisissez une date de livraison",

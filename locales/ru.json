@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Просмотреть корзину ({{ count }})",
+      "add": "Добавить",
+      "remove": "Удалить",
+      "shipping": "Доставка",
+      "calculated_at_checkout": "Рассчитывается при оформлении",
+      "total": "Общая стоимость",
+      "add_both_checkout": "Добавить оба и оформить заказ",
+      "checkout_without": "Оформить заказ без него",
       "item_added": "Товар добавлен в корзину."
     },
     "share": {
@@ -482,6 +489,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Дата доставки",
     "choose_date": "Выберите дату доставки",
     "join_waitlist": "Присоединиться к листу ожидания",
     "required_message": "Выберите дату доставки",

@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Vizualizare coș ({{ count }})",
+      "add": "Adaugă",
+      "remove": "Elimină",
+      "shipping": "Livrare",
+      "calculated_at_checkout": "Calculată la finalizare",
+      "total": "Valoare totală",
+      "add_both_checkout": "Adaugă ambele și plătește",
+      "checkout_without": "Plătește fără acesta",
       "item_added": "Articolul a fost adăugat în coș"
     },
     "share": {
@@ -472,6 +479,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Data livrării",
     "choose_date": "Alege data livrării",
     "join_waitlist": "Înscrie-te pe lista de așteptare",
     "required_message": "Alegeți o dată de livrare",

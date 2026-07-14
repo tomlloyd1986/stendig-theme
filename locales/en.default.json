@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "View my cart ({{ count }})",
+      "add": "Add",
+      "remove": "Remove",
+      "shipping": "Shipping",
+      "calculated_at_checkout": "Calculated in checkout",
+      "total": "Total value",
+      "add_both_checkout": "Add both & check out",
+      "checkout_without": "Check out without it",
       "item_added": "Item added to your cart"
     },
     "share": {
@@ -458,6 +465,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Delivery Date",
     "choose_date": "Choose Delivery Date",
     "join_waitlist": "Join waitlist",
     "required_message": "Choose a delivery date",

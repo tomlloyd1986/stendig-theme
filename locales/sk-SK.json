@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Zobraziť môj košík ({{ count }})",
+      "add": "Pridať",
+      "remove": "Odstrániť",
+      "shipping": "Doprava",
+      "calculated_at_checkout": "Vypočíta sa pri pokladni",
+      "total": "Celková hodnota",
+      "add_both_checkout": "Pridať oboje a k pokladni",
+      "checkout_without": "K pokladni bez tejto položky",
       "item_added": "Položka sa pridala do vášho košíka"
     },
     "share": {
@@ -482,6 +489,7 @@
   },
   "delivery": {
     "date_label": "{{ day }}. {{ month }}",
+    "date_title": "Dátum doručenia",
     "choose_date": "Vyberte dátum doručenia",
     "join_waitlist": "Pridať sa na čakaciu listinu",
     "required_message": "Vyberte dátum doručenia",

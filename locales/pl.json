@@ -50,6 +50,13 @@
     },
     "cart": {
       "view": "Pokaż koszyk ({{ count }})",
+      "add": "Dodaj",
+      "remove": "Usuń",
+      "shipping": "Dostawa",
+      "calculated_at_checkout": "Obliczana przy kasie",
+      "total": "Łączna wartość",
+      "add_both_checkout": "Dodaj oba i przejdź do kasy",
+      "checkout_without": "Przejdź do kasy bez tego",
       "item_added": "Pozycję dodano do koszyka"
     },
     "share": {
@@ -482,6 +489,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
+    "date_title": "Data dostawy",
     "choose_date": "Wybierz datę dostawy",
     "join_waitlist": "Dołącz do listy oczekujących",
     "required_message": "Wybierz datę dostawy",
