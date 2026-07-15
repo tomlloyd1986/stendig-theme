@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "collection_2026": {
+      "type": "collection-2026",
+      "settings": {
+        "heading": "The 2026 Collection",
+        "intro": "Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout."
+      }
+    }
+  },
+  "order": ["collection_2026"]
+}
