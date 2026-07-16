@@ -20,7 +20,8 @@
     "type_body_font": "assistant_n4",
     "favicon": "shopify://shop_images/Favicon.png",
     "cross_sell_rules": [
-      "hang-your-calendar-without-strips"
+      "hang-your-calendar-without-strips",
+      "hang-your-calendar-without-nails"
     ],
     "warehouses": [
       "uk-3-pl-consumer",
@@ -147,11 +148,6 @@
       },
       "pagefly-page-builder": {
         "type": "shopify://apps/pagefly-page-builder/blocks/app-embed/83e179f7-59a0-4589-8c66-c0dddf959200",
-        "disabled": false,
-        "settings": {}
-      },
-      "15119538188275799212": {
-        "type": "shopify://apps/fontify/blocks/app-embed/334490e2-2153-4a2e-a452-e90bdeffa3cc",
         "disabled": false,
         "settings": {}
       },
