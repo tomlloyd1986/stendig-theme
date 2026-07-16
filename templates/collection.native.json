@@ -4,7 +4,10 @@
       "type": "collection-2026",
       "settings": {
         "heading": "The 2026 Collection",
-        "intro": "Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout."
+        "intro": "Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout.",
+        "product_1": "stendig-calendar",
+        "product_variants": "v-calendar",
+        "product_3": "hanging-strips"
       }
     }
   },
