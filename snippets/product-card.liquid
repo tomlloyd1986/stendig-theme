@@ -23,7 +23,7 @@
   Defaults keep normal product behaviour for every existing caller.
 {%- endcomment -%}
 {%- liquid
-  assign pcp_image = pcp_image
+  assign pcp_image = product_card_product.featured_media
   assign pcp_url = product_card_product.url
   assign pcp_title = product_card_product.title
   if card_variant

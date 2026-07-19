@@ -17,7 +17,9 @@
 -%}
 
 {% style %}
-  .c26 { padding: 5rem 0 6rem; }
+  /* Top/bottom only: a padding shorthand here would zero out the
+     horizontal padding .page-width provides on the same element. */
+  .c26 { padding-top: 5rem; padding-bottom: 6rem; }
   .c26__head {
     display: grid;
     grid-template-columns: 1fr;
@@ -29,11 +31,14 @@
   }
   .c26__heading {
     font-family: var(--font-heading-family);
-    font-size: 3.6rem;
+    font-size: 2.8rem;
     line-height: 1.05;
     letter-spacing: -0.02em;
     font-weight: 400;
     margin: 0;
+  }
+  @media screen and (min-width: 750px) {
+    .c26__heading { font-size: {{ section.settings.heading_size | default: 36 }}px; }
   }
   .c26__lede {
     font-size: 1.6rem;
@@ -47,6 +52,11 @@
     border-top: 0.1rem solid rgba(var(--color-foreground), 0.15);
     margin: 3rem 0 4rem;
   }
+  @media screen and (min-width: 750px) {
+    .c26__divider { margin-bottom: {{ section.settings.gap_below_divider | default: 96 }}px; }
+  }
+  .c26 .card-information__text.h5 { font-size: 1.4rem; }
+  .c26 .price { font-size: 1.4rem; letter-spacing: 0.06rem; }
 {% endstyle %}
 
 <div class="c26 page-width">
@@ -88,6 +98,8 @@
   "name": "2026 Collection",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "The 2026 Collection" },
+    { "type": "range", "id": "heading_size", "label": "Heading size (desktop)", "min": 28, "max": 56, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "gap_below_divider", "label": "Space below divider (desktop)", "min": 40, "max": 160, "step": 8, "unit": "px", "default": 96 },
     { "type": "textarea", "id": "intro", "label": "Intro text", "default": "Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout." },
     { "type": "header", "content": "Products" },
     { "type": "text", "id": "product_1", "label": "First product handle", "default": "stendig-calendar" },
