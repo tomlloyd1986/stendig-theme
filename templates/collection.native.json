@@ -1,15 +1,43 @@
 {
   "sections": {
-    "collection_2026": {
-      "type": "collection-2026",
+    "header": {
+      "type": "editorial-header",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "The 2026 Collection"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout.</p>"
+          }
+        },
+        "divider": {
+          "type": "divider",
+          "settings": {}
+        }
+      },
+      "block_order": ["heading", "text", "divider"],
       "settings": {
-        "heading": "The 2026 Collection",
-        "intro": "Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout.",
-        "product_1": "stendig-calendar",
-        "product_variants": "v-calendar",
-        "product_3": "hanging-strips"
+        "heading_size": 32,
+        "text_size": 14,
+        "space_above_divider": 80,
+        "space_below_divider": 100
+      }
+    },
+    "grid": {
+      "type": "curated-product-grid",
+      "settings": {
+        "source": "custom",
+        "products": ["stendig-calendar", "v-calendar", "hanging-strips"],
+        "split_variants": true,
+        "columns_desktop": 4,
+        "max_products": 12
       }
     }
   },
-  "order": ["collection_2026"]
+  "order": ["header", "grid"]
 }

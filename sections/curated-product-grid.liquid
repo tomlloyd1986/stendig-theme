@@ -1,0 +1,130 @@
+{% comment %}
+  Curated product grid — reusable editorial grid of genuine product cards.
+  Source modes: a collection, all products, or hand-picked products.
+  Optional colour split renders one card per variant (with its own image,
+  link and "Product (Colour)" title) for any multi-variant product.
+  Card type mirrors the live PageFly range page: Text 55 Roman 14px/21px,
+  price tight under the title, rows 35px apart.
+{% endcomment %}
+
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  #shopify-section-{{ section.id }} .cpg { padding-bottom: 2rem; }
+  #shopify-section-{{ section.id }} .cpg .card-information__text.h5 {
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    letter-spacing: 0;
+  }
+  #shopify-section-{{ section.id }} .cpg .card-information__text.h5 .full-unstyled-link { color: #000; }
+  #shopify-section-{{ section.id }} .cpg .price { font-size: 1.4rem; letter-spacing: 0; color: #000; }
+  #shopify-section-{{ section.id }} .cpg .price .product__tax { display: none; }
+  #shopify-section-{{ section.id }} .cpg .product-grid .grid__item { padding-bottom: 3.5rem; }
+{% endstyle %}
+
+{%- liquid
+  assign limit = section.settings.max_products
+
+  case section.settings.columns_desktop
+    when 2
+      assign desktop_class = 'grid--2-col-desktop'
+    when 3
+      assign desktop_class = 'grid--3-col-desktop'
+    else
+      assign desktop_class = 'grid--4-col-desktop grid--quarter-max'
+  endcase
+-%}
+
+<div class="cpg page-width">
+  <ul class="grid grid--2-col grid--3-col-tablet grid--one-third-max {{ desktop_class }} product-grid" role="list">
+    {%- liquid
+      assign card_count = 0
+
+      # Build the product source for the chosen mode.
+      if section.settings.source == 'custom'
+        assign source_products = section.settings.products
+      elsif section.settings.source == 'collection'
+        assign source_products = section.settings.collection.products
+      else
+        assign source_products = collections.all.products
+      endif
+
+      for product_item in source_products
+        if card_count >= limit
+          break
+        endif
+
+        # Colour split: one card per variant when the product has real
+        # options (i.e. not the single "Default Title" variant).
+        assign split_this = false
+        if section.settings.split_variants and product_item.has_only_default_variant == false
+          assign split_this = true
+        endif
+
+        if split_this
+          for variant in product_item.variants
+            if card_count >= limit
+              break
+            endif
+            assign card_count = card_count | plus: 1
+            capture v_title
+              echo product_item.title
+              echo ' ('
+              echo variant.title
+              echo ')'
+            endcapture
+            echo '<li class="grid__item">'
+            render 'product-card', product_card_product: product_item, card_variant: variant, card_title: v_title, media_size: 'adapt', show_secondary_image: false, show_image_outline: false, card_index: card_count
+            echo '</li>'
+          endfor
+        else
+          assign card_count = card_count | plus: 1
+          echo '<li class="grid__item">'
+          render 'product-card', product_card_product: product_item, media_size: 'adapt', show_secondary_image: false, show_image_outline: false, card_index: card_count
+          echo '</li>'
+        endif
+      endfor
+    -%}
+  </ul>
+
+  {%- if card_count == 0 -%}
+    <p style="font-size: 1.4rem; color: #000;">
+      {%- if section.settings.source == 'collection' -%}
+        Choose a collection in the section settings.
+      {%- else -%}
+        Choose products in the section settings.
+      {%- endif -%}
+    </p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Curated product grid",
+  "settings": [
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Product source",
+      "options": [
+        { "value": "collection", "label": "Collection" },
+        { "value": "all", "label": "All products" },
+        { "value": "custom", "label": "Hand-picked" }
+      ],
+      "default": "collection"
+    },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Used when source is \"Collection\"." },
+    { "type": "product_list", "id": "products", "label": "Hand-picked products", "limit": 12, "info": "Used when source is \"Hand-picked\". Drag to reorder." },
+    { "type": "checkbox", "id": "split_variants", "label": "Show each colour variant as its own card", "default": false, "info": "Products with multiple variants appear once per variant, using the variant's image and linking to that colour." },
+    { "type": "range", "id": "columns_desktop", "label": "Columns on desktop", "min": 2, "max": 4, "step": 1, "default": 4 },
+    { "type": "range", "id": "max_products", "label": "Maximum cards", "min": 2, "max": 24, "step": 1, "default": 12 }
+  ],
+  "presets": [
+    { "name": "Curated product grid" }
+  ]
+}
+{% endschema %}
