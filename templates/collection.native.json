@@ -39,7 +39,7 @@
         "heading_size": 32,
         "text_size": 14,
         "space_above_divider": 80,
-        "space_below_divider": 100
+        "space_below_divider": 20
       }
     },
     "grid": {
@@ -58,10 +58,10 @@
         "max_products": 12
       }
     },
-    "grouped_product_grid_wbFcTW": {
+    "grouped_product_grid_KF9KyT": {
       "type": "grouped-product-grid",
       "blocks": {
-        "group_QpH7mk": {
+        "group_ixGWex": {
           "type": "group",
           "settings": {
             "heading": "Stendig Calendar",
@@ -76,7 +76,7 @@
             "view_all_link": ""
           }
         },
-        "group_nCNeL7": {
+        "group_BjJtme": {
           "type": "group",
           "settings": {
             "heading": "V Calendar",
@@ -92,14 +92,14 @@
         }
       },
       "block_order": [
-        "group_QpH7mk",
-        "group_nCNeL7"
+        "group_ixGWex",
+        "group_BjJtme"
       ],
       "name": "Grouped product grid",
       "settings": {
         "columns_desktop": 4,
         "max_per_group": 8,
-        "heading_size": 24,
+        "heading_size": 14,
         "group_spacing": 64,
         "show_view_all": true
       }
@@ -108,6 +108,6 @@
   "order": [
     "header",
     "grid",
-    "grouped_product_grid_wbFcTW"
+    "grouped_product_grid_KF9KyT"
   ]
 }
