@@ -44,6 +44,7 @@
     },
     "grid": {
       "type": "curated-product-grid",
+      "disabled": true,
       "settings": {
         "source": "custom",
         "collection": "",
@@ -70,6 +71,7 @@
               "stendig-calendar",
               "hanging-strips"
             ],
+            "split_variants": false,
             "view_all_label": "View all",
             "view_all_link": ""
           }
@@ -83,6 +85,7 @@
             "products": [
               "v-calendar"
             ],
+            "split_variants": true,
             "view_all_label": "View all",
             "view_all_link": ""
           }
