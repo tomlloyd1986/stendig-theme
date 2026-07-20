@@ -104,22 +104,11 @@
   .header summary { list-style: none; cursor: pointer; }
   .header summary::-webkit-details-marker { display: none; }
 
-  /* Products trigger: text + caret on one centred line */
-  .st-products__summary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  /* Override Dawn's absolutely-positioned summary caret so it flows after the text */
-  .st-products__summary .icon-caret {
-    position: static;
-    width: 1rem;
-    height: 0.6rem;
-    top: auto;
-    right: auto;
-    transition: transform 0.2s ease;
-  }
-  .st-products details[open] > .st-products__summary .icon-caret { transform: rotate(180deg); }
+  /* Full-width dropdown anchoring.
+     Dawn sets `details-disclosure > details { position: relative }`, which
+     clamps the panel to the width of "Products". Reset it so the panel
+     anchors to the full-width .header-wrapper instead. */
+  .st-products > details { position: static; }
 
   /* Cart label: keep "Cart (0)" as tight inline text */
   .st-header__cart { display: inline-block; }
@@ -249,7 +238,6 @@
             <details id="Details-Products-{{ section.id }}">
               <summary class="st-header__link st-products__summary focus-inset" aria-label="{{ section.settings.products_label | default: 'Products' }}">
                 <span{% if section.settings.products_menu.links.first.child_active %} class="header__active-menu-item"{% endif %}>{{ section.settings.products_label | default: 'Products' | escape }}</span>
-                {% render 'icon-caret' %}
               </summary>
               <div class="st-products__panel motion-reduce">
                 <div class="st-products__panel-inner page-width">
