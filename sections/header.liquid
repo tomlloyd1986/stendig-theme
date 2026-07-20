@@ -21,8 +21,8 @@
 
   #shopify-section-{{ section.id }} .header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    /* Baseline-align so the nav/cart text sits on the logo's bottom edge */
+    align-items: baseline;
     gap: 3rem;
     /* !important beats base.css's forced 0 padding at >=990px */
     padding-top: 1.6rem !important;
@@ -51,23 +51,24 @@
     }
   {% endif %}
 
-  .st-header__group {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-    min-width: 0;
-  }
-  .st-header__group--right { gap: 2.4rem; }
-
+  /* Logo, nav and utility are the three top-level items of the header.
+     On desktop the nav's auto right-margin pushes utility to the right:
+       [logo] [nav]  ........  [search cart]
+     On mobile the nav is reordered to the far right, after the cart. */
   .st-header__nav {
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    gap: 2.4rem;
+    margin-right: auto;
+  }
+  .st-header__utility {
+    display: flex;
+    align-items: baseline;
     gap: 2.4rem;
   }
 
   .st-header__logo {
-    display: inline-flex;
-    align-items: center;
+    display: inline-block;
     text-decoration: none;
     color: inherit;
   }
@@ -185,13 +186,19 @@
       padding-top: 1.2rem;
       padding-bottom: 1.2rem;
     }
-    .st-header__group,
-    .st-header__nav { gap: 1.6rem; }
+    .st-header__nav,
+    .st-header__utility { gap: 1.6rem; }
     #shopify-section-{{ section.id }} .page-width {
       padding-left: 12px;
       padding-right: 12px;
     }
     .st-header__search { display: none; }
+
+    /* Nav moves to the far right, after the cart:
+         [logo] .......... [cart] [menu] */
+    #shopify-section-{{ section.id }} .header > *:first-child { margin-right: auto; }
+    .st-header__utility { order: 2; }
+    .st-header__nav { order: 3; margin-right: 0; }
     .st-products__panel-inner {
       flex-direction: column;
       padding-top: 2.4rem;
@@ -226,8 +233,7 @@
 
 <{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %} class="header-wrapper transparent-header color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}" data-sticky="{{ section.settings.enable_sticky_header }}">
   <header class="header page-width st-header">
-    <div class="st-header__group st-header__group--left">
-      {%- comment -%} Logo {%- endcomment -%}
+    {%- comment -%} Logo {%- endcomment -%}
       {%- if request.page_type == 'index' -%}<h1 class="header__heading st-header__logo-h">{%- endif -%}
         <a href="{{ routes.root_url }}" class="header__heading-link st-header__logo link link--text focus-inset">
           {%- if section.settings.logo != blank -%}
@@ -292,9 +298,8 @@
           <a href="{{ section.settings.support_url }}" class="st-header__link st-header__support focus-inset">{{ section.settings.support_label | default: 'Support' | escape }}</a>
         {%- endif -%}
       </nav>
-    </div>
 
-    <div class="st-header__group st-header__group--right">
+    <div class="st-header__utility">
       {%- comment -%} Search — text trigger, hidden on mobile {%- endcomment -%}
       <details-modal class="header__search st-header__search">
         <details>
