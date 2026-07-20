@@ -24,6 +24,9 @@
   #shopify-section-{{ section.id }} .cpg .price { font-size: 1.4rem; letter-spacing: 0; color: #000; }
   #shopify-section-{{ section.id }} .cpg .price .product__tax { display: none; }
   #shopify-section-{{ section.id }} .cpg .product-grid .grid__item { padding-bottom: 3.5rem; }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .page-width { padding-left: 12px; padding-right: 12px; }
+  }
 {% endstyle %}
 
 {%- liquid

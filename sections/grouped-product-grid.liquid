@@ -67,6 +67,9 @@
   #shopify-section-{{ section.id }} .gpg .card-information__wrapper > *:not(.visually-hidden:first-child) + *:not(.rating) { margin-top: 0; }
   #shopify-section-{{ section.id }} .gpg .product-grid .grid__item { padding-bottom: 3.5rem; }
   #shopify-section-{{ section.id }} .gpg__empty { font-size: 1.4rem; color: #000; }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .page-width { padding-left: 12px; padding-right: 12px; }
+  }
 {% endstyle %}
 
 <div class="gpg page-width">

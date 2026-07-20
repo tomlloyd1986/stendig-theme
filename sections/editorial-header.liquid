@@ -52,6 +52,9 @@
     border-top: 2px solid #d4d4d4;
     margin: {{ section.settings.space_above_divider }}px 0 {{ section.settings.space_below_divider }}px;
   }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .page-width { padding-left: 12px; padding-right: 12px; }
+  }
 {% endstyle %}
 
 <div class="edh page-width">
