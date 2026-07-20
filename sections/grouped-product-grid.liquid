@@ -1,0 +1,194 @@
+{% comment %}
+  Grouped product grid — products stacked under category headings.
+  Each "Category group" block is one section: a heading (with an optional
+  "View all" link) above its own grid of product cards. Add, remove and
+  reorder groups in the editor. Card type and spacing mirror the live
+  range page: Text 55 Roman 14px/21px, price tight under the title.
+{% endcomment %}
+
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-product-grid.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  case section.settings.columns_desktop
+    when 2
+      assign desktop_class = 'grid--2-col-desktop'
+    when 3
+      assign desktop_class = 'grid--3-col-desktop'
+    else
+      assign desktop_class = 'grid--4-col-desktop grid--quarter-max'
+  endcase
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} .gpg { padding-bottom: 2rem; }
+  #shopify-section-{{ section.id }} .gpg__group + .gpg__group {
+    margin-top: {{ section.settings.group_spacing }}px;
+  }
+  #shopify-section-{{ section.id }} .gpg__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.4rem;
+  }
+  #shopify-section-{{ section.id }} .gpg__heading {
+    font-family: var(--font-body-family);
+    font-size: {{ section.settings.heading_size }}px;
+    line-height: 1.3;
+    font-weight: 400;
+    letter-spacing: 0;
+    margin: 0;
+    color: #000;
+  }
+  #shopify-section-{{ section.id }} .gpg__view-all {
+    flex: none;
+    font-size: 1.35rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+    color: #000;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  #shopify-section-{{ section.id }} .gpg__view-all:hover { text-decoration: underline; }
+  #shopify-section-{{ section.id }} .gpg .card-information__text.h5 {
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    letter-spacing: 0;
+  }
+  #shopify-section-{{ section.id }} .gpg .card-information__text.h5 .full-unstyled-link { color: #000; }
+  #shopify-section-{{ section.id }} .gpg .price { font-size: 1.4rem; letter-spacing: 0; color: #000; }
+  #shopify-section-{{ section.id }} .gpg .price .product__tax { display: none; }
+  #shopify-section-{{ section.id }} .gpg .product-grid .grid__item { padding-bottom: 3.5rem; }
+  #shopify-section-{{ section.id }} .gpg__empty { font-size: 1.4rem; color: #000; }
+{% endstyle %}
+
+<div class="gpg page-width">
+  {%- for block in section.blocks -%}
+    {%- liquid
+      # Resolve this group's product source.
+      if block.settings.source == 'custom'
+        assign group_products = block.settings.products
+      else
+        assign group_products = block.settings.collection.products
+      endif
+
+      # Resolve the optional "View all" destination.
+      assign view_all_url = block.settings.view_all_link
+      if view_all_url == blank and block.settings.collection != blank
+        assign view_all_url = block.settings.collection.url
+      endif
+    -%}
+
+    <div class="gpg__group" {{ block.shopify_attributes }}>
+      {%- if block.settings.heading != blank -%}
+        <div class="gpg__head">
+          <h2 class="gpg__heading">{{ block.settings.heading | escape }}</h2>
+          {%- if section.settings.show_view_all and view_all_url != blank -%}
+            <a href="{{ view_all_url }}" class="gpg__view-all">
+              {{ block.settings.view_all_label | default: 'View all' | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <ul class="grid grid--2-col grid--3-col-tablet grid--one-third-max {{ desktop_class }} product-grid" role="list">
+        {%- liquid
+          assign card_count = 0
+
+          for product_item in group_products
+            if card_count >= section.settings.max_per_group
+              break
+            endif
+
+            assign split_this = false
+            if section.settings.split_variants and product_item.has_only_default_variant == false
+              assign split_this = true
+            endif
+
+            if split_this
+              for variant in product_item.variants
+                if card_count >= section.settings.max_per_group
+                  break
+                endif
+                assign card_count = card_count | plus: 1
+                capture v_title
+                  echo product_item.title
+                  echo ' ('
+                  echo variant.title
+                  echo ')'
+                endcapture
+                echo '<li class="grid__item">'
+                render 'product-card', product_card_product: product_item, card_variant: variant, card_title: v_title, media_size: 'adapt', show_secondary_image: false, show_image_outline: false, card_index: card_count
+                echo '</li>'
+              endfor
+            else
+              assign card_count = card_count | plus: 1
+              echo '<li class="grid__item">'
+              render 'product-card', product_card_product: product_item, media_size: 'adapt', show_secondary_image: false, show_image_outline: false, card_index: card_count
+              echo '</li>'
+            endif
+          endfor
+        -%}
+      </ul>
+
+      {%- if group_products == blank or group_products.size == 0 -%}
+        <p class="gpg__empty">Choose a collection or products for this group in the section settings.</p>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+
+  {%- if section.blocks.size == 0 -%}
+    <p class="gpg__empty">Add a category group to start building the page.</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Grouped product grid",
+  "settings": [
+    { "type": "range", "id": "columns_desktop", "label": "Columns on desktop", "min": 2, "max": 4, "step": 1, "default": 4 },
+    { "type": "range", "id": "max_per_group", "label": "Maximum cards per group", "min": 2, "max": 24, "step": 1, "default": 8 },
+    { "type": "range", "id": "heading_size", "label": "Group heading size", "min": 16, "max": 40, "step": 1, "unit": "px", "default": 24 },
+    { "type": "range", "id": "group_spacing", "label": "Space between groups", "min": 20, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show \"View all\" link", "default": true, "info": "Links to the group's collection (or a custom link) beside the heading." },
+    { "type": "checkbox", "id": "split_variants", "label": "Show each colour variant as its own card", "default": false, "info": "Products with multiple variants appear once per variant, using the variant's image and linking to that colour." }
+  ],
+  "blocks": [
+    {
+      "type": "group",
+      "name": "Category group",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Category" },
+        {
+          "type": "select",
+          "id": "source",
+          "label": "Product source",
+          "options": [
+            { "value": "collection", "label": "Collection" },
+            { "value": "custom", "label": "Hand-picked" }
+          ],
+          "default": "collection"
+        },
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Used when source is \"Collection\"." },
+        { "type": "product_list", "id": "products", "label": "Hand-picked products", "limit": 24, "info": "Used when source is \"Hand-picked\". Drag to reorder." },
+        { "type": "header", "content": "\"View all\" link" },
+        { "type": "text", "id": "view_all_label", "label": "Link label", "default": "View all" },
+        { "type": "url", "id": "view_all_link", "label": "Link (optional)", "info": "Leave empty to link to the chosen collection." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grouped product grid",
+      "blocks": [
+        { "type": "group" },
+        { "type": "group" }
+      ]
+    }
+  ]
+}
+{% endschema %}
