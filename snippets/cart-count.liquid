@@ -1,0 +1,7 @@
+{%- comment -%}
+  Renders the header cart label in the form "Cart (x)".
+  Shared between the header link and sections/cart-icon-bubble.liquid so the
+  count re-injected on add-to-cart matches the initial server render.
+{%- endcomment -%}
+<span class="st-header__cart-label">{{ 'templates.cart.cart' | t }}</span>&nbsp;(<span class="st-header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>)
+<span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
