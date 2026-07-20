@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "header": {
@@ -20,8 +29,13 @@
           "settings": {}
         }
       },
-      "block_order": ["heading", "text", "divider"],
+      "block_order": [
+        "heading",
+        "text",
+        "divider"
+      ],
       "settings": {
+        "space_above": 40,
         "heading_size": 32,
         "text_size": 14,
         "space_above_divider": 80,
@@ -32,12 +46,65 @@
       "type": "curated-product-grid",
       "settings": {
         "source": "custom",
-        "products": ["stendig-calendar", "v-calendar", "hanging-strips"],
+        "collection": "",
+        "products": [
+          "stendig-calendar",
+          "v-calendar",
+          "hanging-strips"
+        ],
         "split_variants": true,
         "columns_desktop": 4,
         "max_products": 12
       }
+    },
+    "grouped_product_grid_wbFcTW": {
+      "type": "grouped-product-grid",
+      "blocks": {
+        "group_QpH7mk": {
+          "type": "group",
+          "settings": {
+            "heading": "Stendig Calendar",
+            "source": "custom",
+            "collection": "",
+            "products": [
+              "stendig-calendar",
+              "hanging-strips"
+            ],
+            "view_all_label": "View all",
+            "view_all_link": ""
+          }
+        },
+        "group_nCNeL7": {
+          "type": "group",
+          "settings": {
+            "heading": "V Calendar",
+            "source": "custom",
+            "collection": "",
+            "products": [
+              "v-calendar"
+            ],
+            "view_all_label": "View all",
+            "view_all_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "group_QpH7mk",
+        "group_nCNeL7"
+      ],
+      "name": "Grouped product grid",
+      "settings": {
+        "columns_desktop": 4,
+        "max_per_group": 8,
+        "heading_size": 24,
+        "group_spacing": 64,
+        "show_view_all": true
+      }
     }
   },
-  "order": ["header", "grid"]
+  "order": [
+    "header",
+    "grid",
+    "grouped_product_grid_wbFcTW"
+  ]
 }
