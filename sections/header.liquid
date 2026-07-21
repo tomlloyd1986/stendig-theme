@@ -66,6 +66,12 @@
     align-items: flex-end;
     gap: 2.4rem;
   }
+  /* Vertical nudge for the nav/cart text — set from the theme editor.
+     Negative moves them up to sit on the logo's bottom edge. */
+  .st-header__nav,
+  .st-header__utility {
+    transform: translateY({{ section.settings.nav_offset_desktop | default: 0 }}px);
+  }
 
   /* Logo wrappers are flex/flex-end and line-height 0 so the header aligns
      to the true bottom of the wordmark, not the font's line-box metrics. */
@@ -81,8 +87,6 @@
     line-height: 0;
     text-decoration: none;
     color: inherit;
-    /* Baseline nudge — set from the theme editor (Logo vertical offset). */
-    transform: translateY({{ section.settings.logo_offset_desktop | default: -4 }}px);
   }
   .st-header__logo-text {
     font-size: 2rem;
@@ -198,9 +202,11 @@
       padding-top: 1.2rem;
       padding-bottom: 1.2rem;
     }
-    .st-header__logo { transform: translateY({{ section.settings.logo_offset_mobile | default: -4 }}px); }
     .st-header__nav,
-    .st-header__utility { gap: 1.6rem; }
+    .st-header__utility {
+      gap: 1.6rem;
+      transform: translateY({{ section.settings.nav_offset_mobile | default: 0 }}px);
+    }
     #shopify-section-{{ section.id }} .page-width {
       padding-left: 12px;
       padding-right: 12px;
@@ -588,24 +594,24 @@
     },
     {
       "type": "range",
-      "id": "logo_offset_desktop",
+      "id": "nav_offset_desktop",
       "min": -20,
       "max": 20,
       "step": 1,
       "unit": "px",
-      "default": -4,
-      "label": "Logo vertical offset (desktop)",
-      "info": "Negative moves the logo up so it lines up with the nav text."
+      "default": 0,
+      "label": "Nav vertical offset (desktop)",
+      "info": "Moves the nav / Search / Cart text. Negative moves it up to line up with the logo."
     },
     {
       "type": "range",
-      "id": "logo_offset_mobile",
+      "id": "nav_offset_mobile",
       "min": -20,
       "max": 20,
       "step": 1,
       "unit": "px",
-      "default": -4,
-      "label": "Logo vertical offset (mobile)"
+      "default": 0,
+      "label": "Nav vertical offset (mobile)"
     },
     {
       "type": "header",
