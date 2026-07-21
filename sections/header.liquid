@@ -29,6 +29,16 @@
     padding-bottom: 1.6rem !important;
   }
 
+  /* Mobile only (<=749px): extend the white bar below the content. The
+     .header.st-header selector out-specifies the base `.header` rule above
+     (which is !important at all widths); the media query keeps desktop
+     exactly as-is. */
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .header.st-header {
+      padding-bottom: 2.8rem !important;
+    }
+  }
+
   /* Full-width anchor for the Products dropdown panel + sticky/transparent behaviour.
      z-index keeps the (opaque) header bar above the menu drawer, so the logo
      and Close trigger stay visible while the drawer is open. */
