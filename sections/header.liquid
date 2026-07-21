@@ -28,10 +28,13 @@
     padding-top: 1.6rem !important;
     padding-bottom: 1.6rem !important;
   }
-  /* Extend the white bar below the content. Higher specificity (.header.st-header)
-     + !important so it beats the theme Custom CSS, which otherwise caps the
-     header padding at 8px from 750px up (that's why earlier tweaks did nothing). */
-  #shopify-section-{{ section.id }} .header.st-header { padding-bottom: 2.4rem !important; }
+  /* Mobile only: extend the white bar below the content. Higher specificity
+     (.header.st-header) + !important so it beats the base .header
+     `padding-bottom: 1.6rem !important`, which otherwise applies at every
+     width and was swallowing the mobile padding. Desktop is left untouched. */
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .header.st-header { padding-bottom: 2.8rem !important; }
+  }
 
   /* Full-width anchor for the Products dropdown panel + sticky/transparent behaviour.
      z-index keeps the (opaque) header bar above the menu drawer, so the logo
