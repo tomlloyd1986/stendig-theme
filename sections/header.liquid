@@ -16,13 +16,13 @@
 
 <style>
   /* Stendig header — Asket-style text navigation
-     Layout: [logo · Products · Support]  ...  [Search · Cart (x)]
+     Layout: [logo · Products]  ...  [Search · Cart (x)]
      All nav items are 14px text (1.4rem), matching product/section titles. */
 
   #shopify-section-{{ section.id }} .header {
     display: flex;
-    /* Baseline-align so the nav/cart text sits on the logo's bottom edge */
-    align-items: baseline;
+    /* Bottom-align so the nav/cart text sits on the logo's bottom edge */
+    align-items: flex-end;
     gap: 3rem;
     /* !important beats base.css's forced 0 padding at >=990px */
     padding-top: 1.6rem !important;
@@ -57,25 +57,35 @@
      On mobile the nav is reordered to the far right, after the cart. */
   .st-header__nav {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     gap: 2.4rem;
     margin-right: auto;
   }
   .st-header__utility {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     gap: 2.4rem;
   }
 
+  /* Logo wrappers are flex/flex-end and line-height 0 so the header aligns
+     to the true bottom of the wordmark, not the font's line-box metrics. */
+  .st-header__logo-h {
+    display: flex;
+    align-items: flex-end;
+    margin: 0;
+    line-height: 0;
+  }
   .st-header__logo {
-    display: inline-block;
+    display: flex;
+    align-items: flex-end;
+    line-height: 0;
     text-decoration: none;
     color: inherit;
   }
-  .st-header__logo-h { margin: 0; }
   .st-header__logo-text {
     font-size: 2rem;
     font-weight: 700;
+    line-height: 1;
     letter-spacing: -0.01em;
     color: inherit;
   }
@@ -262,7 +272,7 @@
         </a>
       {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
 
-      {%- comment -%} Products dropdown (from a navigation menu) + Support link {%- endcomment -%}
+      {%- comment -%} Products dropdown (from a navigation menu) {%- endcomment -%}
       <nav class="st-header__nav">
         {%- if section.settings.products_menu != blank and section.settings.products_menu.links.size > 0 -%}
           <details-disclosure class="st-products">
@@ -292,10 +302,6 @@
               </div>
             </details>
           </details-disclosure>
-        {%- endif -%}
-
-        {%- if section.settings.support_url != blank -%}
-          <a href="{{ section.settings.support_url }}" class="st-header__link st-header__support focus-inset">{{ section.settings.support_label | default: 'Support' | escape }}</a>
         {%- endif -%}
       </nav>
 
@@ -592,21 +598,6 @@
       "id": "products_label",
       "label": "Products label",
       "default": "Products"
-    },
-    {
-      "type": "header",
-      "content": "Support link"
-    },
-    {
-      "type": "text",
-      "id": "support_label",
-      "label": "Support label",
-      "default": "Support"
-    },
-    {
-      "type": "url",
-      "id": "support_url",
-      "label": "Support link"
     },
     {
       "type": "header",
