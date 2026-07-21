@@ -166,10 +166,22 @@
     .st-drawer { width: 100vw; }   /* mobile: whole screen */
   }
 
-  /* Underline the trigger while the drawer is open */
-  .st-drawer__toggle[aria-expanded="true"] {
-    text-decoration: underline;
-    text-underline-offset: 0.3rem;
+  /* Desktop: underline the trigger while the drawer is open */
+  @media screen and (min-width: 750px) {
+    .st-drawer__toggle[aria-expanded="true"] {
+      text-decoration: underline;
+      text-underline-offset: 0.3rem;
+    }
+  }
+
+  /* The trigger shows "Collection" by default; on mobile it becomes
+     "Close x" while the drawer is open, and the cart is hidden. */
+  .st-drawer__toggle-close { display: none; align-items: center; gap: 0.5rem; }
+  .st-drawer__toggle-x { width: 1rem; height: 1rem; }
+  @media screen and (max-width: 749px) {
+    .st-drawer__toggle[aria-expanded="true"] .st-drawer__toggle-open { display: none; }
+    .st-drawer__toggle[aria-expanded="true"] .st-drawer__toggle-close { display: inline-flex; }
+    body.st-drawer-open .st-header__cart { display: none; }
   }
 
   .st-drawer__group + .st-drawer__group { margin-top: 3.2rem; }
@@ -282,8 +294,9 @@
             class="st-header__link st-drawer__toggle focus-inset"
             aria-haspopup="dialog"
             aria-expanded="false"
+            aria-label="{{ section.settings.products_label | default: 'Collection' | escape }}"
             aria-controls="StDrawer-{{ section.id }}"
-          >{{ section.settings.products_label | default: 'Collection' | escape }}</button>
+          ><span class="st-drawer__toggle-open">{{ section.settings.products_label | default: 'Collection' | escape }}</span><span class="st-drawer__toggle-close" aria-hidden="true">{{ 'accessibility.close' | t }} <svg class="icon icon-close st-drawer__toggle-x" aria-hidden="true" focusable="false" viewBox="0 0 18 17"><use href="#icon-close"></svg></span></button>
         {%- endif -%}
       </nav>
 
@@ -509,7 +522,7 @@
 
       this.classList.add('is-open');
       if (this.toggle) this.toggle.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add('overflow-hidden', 'st-drawer-open');
       document.addEventListener('keydown', this.onKeydown);
       const first = this.querySelector('.st-drawer a, .st-drawer button');
       if (first) first.focus();
@@ -518,7 +531,7 @@
     close() {
       this.classList.remove('is-open');
       if (this.toggle) this.toggle.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('overflow-hidden', 'st-drawer-open');
       document.removeEventListener('keydown', this.onKeydown);
       if (this.toggle) this.toggle.focus();
     }
