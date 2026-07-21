@@ -156,8 +156,9 @@
     transition: transform 0.3s ease;
     z-index: 21;
     overflow-y: auto;
-    /* Content clears the header, which sits on top via z-index. */
-    padding: calc(var(--st-header-bottom, 6.4rem) + 2rem) 2.4rem 2.4rem;
+    /* Content clears the header, which sits on top via z-index (extra
+       buffer so the first heading is never tucked under the bar). */
+    padding: calc(var(--st-header-bottom, 8rem) + 4rem) 2.4rem 2.4rem;
     display: flex;
     flex-direction: column;
   }
