@@ -127,9 +127,14 @@
 
   /* ===== Menu drawer (left slide-out) ===== */
   .st-drawer-root { display: block; }
+  /* --st-header-bottom is the header's bottom edge in px, set in JS on open,
+     so the drawer and overlay sit below the header bar instead of over it. */
   .st-drawer__overlay {
     position: fixed;
-    inset: 0;
+    top: var(--st-header-bottom, 0px);
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(var(--color-foreground), 0.4);
     opacity: 0;
     visibility: hidden;
@@ -138,10 +143,10 @@
   }
   .st-drawer {
     position: fixed;
-    top: 0;
+    top: var(--st-header-bottom, 0px);
     left: 0;
-    height: 100%;
-    height: 100dvh;
+    height: calc(100vh - var(--st-header-bottom, 0px));
+    height: calc(100dvh - var(--st-header-bottom, 0px));
     width: 40rem;            /* desktop: a single column */
     max-width: 100vw;
     box-sizing: border-box;
@@ -506,6 +511,11 @@
     }
 
     open() {
+      // Offset the drawer to sit below the header bar.
+      const bar = document.querySelector('.header-wrapper');
+      const bottom = bar ? Math.max(0, Math.round(bar.getBoundingClientRect().bottom)) : 0;
+      this.style.setProperty('--st-header-bottom', bottom + 'px');
+
       this.classList.add('is-open');
       if (this.toggle) this.toggle.setAttribute('aria-expanded', 'true');
       document.body.classList.add('overflow-hidden');
