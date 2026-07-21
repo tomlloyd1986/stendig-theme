@@ -166,16 +166,11 @@
     .st-drawer { width: 100vw; }   /* mobile: whole screen */
   }
 
-  .st-drawer__close {
-    align-self: flex-end;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.4rem;
-    margin-bottom: 2rem;
-    color: rgb(var(--color-foreground));
+  /* Underline the trigger while the drawer is open */
+  .st-drawer__toggle[aria-expanded="true"] {
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
   }
-  .st-drawer__close .icon { width: 1.6rem; height: 1.6rem; }
 
   .st-drawer__group + .st-drawer__group { margin-top: 3.2rem; }
   .st-drawer__heading {
@@ -377,11 +372,6 @@
   <st-drawer id="StDrawer-{{ section.id }}" class="st-drawer-root">
     <div class="st-drawer__overlay" role="presentation"></div>
     <aside class="st-drawer" role="dialog" aria-modal="true" aria-label="{{ section.settings.products_label | default: 'Collection' | escape }}">
-      <button type="button" class="st-drawer__close focus-inset" aria-label="{{ 'accessibility.close' | t }}">
-        <svg class="icon icon-close" aria-hidden="true" focusable="false" viewBox="0 0 18 17">
-          <use href="#icon-close">
-        </svg>
-      </button>
       <nav class="st-drawer__menu">
         {%- for link in section.settings.products_menu.links -%}
           <div class="st-drawer__group">
@@ -500,12 +490,13 @@
   class StDrawer extends HTMLElement {
     connectedCallback() {
       this.overlay = this.querySelector('.st-drawer__overlay');
-      this.closeBtn = this.querySelector('.st-drawer__close');
       this.toggle = document.querySelector('[aria-controls="' + this.id + '"]');
 
-      if (this.toggle) this.toggle.addEventListener('click', (e) => { e.preventDefault(); this.open(); });
+      if (this.toggle) this.toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.classList.contains('is-open') ? this.close() : this.open();
+      });
       if (this.overlay) this.overlay.addEventListener('click', () => this.close());
-      if (this.closeBtn) this.closeBtn.addEventListener('click', () => this.close());
 
       this.onKeydown = (e) => { if (e.key === 'Escape') this.close(); };
     }
