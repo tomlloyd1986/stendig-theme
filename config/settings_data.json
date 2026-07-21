@@ -83,7 +83,7 @@
           "altlogo": "shopify://shop_images/Logo_white.png",
           "logo_width": 180,
           "products_menu": "products",
-          "products_label": "Products",
+          "products_label": "Collection",
           "support_label": "Support",
           "support_url": "shopify://pages/contact",
           "show_line_separator": false,
