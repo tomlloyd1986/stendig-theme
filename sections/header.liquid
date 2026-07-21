@@ -81,8 +81,8 @@
     line-height: 0;
     text-decoration: none;
     color: inherit;
-    /* Manual baseline nudge — negative moves the wordmark up. Tune to taste. */
-    transform: translateY(-4px);
+    /* Baseline nudge — set from the theme editor (Logo vertical offset). */
+    transform: translateY({{ section.settings.logo_offset_desktop | default: -4 }}px);
   }
   .st-header__logo-text {
     font-size: 2rem;
@@ -198,6 +198,7 @@
       padding-top: 1.2rem;
       padding-bottom: 1.2rem;
     }
+    .st-header__logo { transform: translateY({{ section.settings.logo_offset_mobile | default: -4 }}px); }
     .st-header__nav,
     .st-header__utility { gap: 1.6rem; }
     #shopify-section-{{ section.id }} .page-width {
@@ -584,6 +585,27 @@
       "default": 100,
       "unit": "t:sections.header.settings.logo_width.unit",
       "label": "t:sections.header.settings.logo_width.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_offset_desktop",
+      "min": -20,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": -4,
+      "label": "Logo vertical offset (desktop)",
+      "info": "Negative moves the logo up so it lines up with the nav text."
+    },
+    {
+      "type": "range",
+      "id": "logo_offset_mobile",
+      "min": -20,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": -4,
+      "label": "Logo vertical offset (mobile)"
     },
     {
       "type": "header",
