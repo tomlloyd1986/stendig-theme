@@ -121,51 +121,59 @@
   .header summary { list-style: none; cursor: pointer; }
   .header summary::-webkit-details-marker { display: none; }
 
-  /* Full-width dropdown anchoring.
-     Dawn sets `details-disclosure > details { position: relative }`, which
-     clamps the panel to the width of "Products". Reset it so the panel
-     anchors to the full-width .header-wrapper instead. */
-  .st-products { display: inline-flex; align-items: center; }
-  .st-products > details { position: static; display: inline-flex; align-items: center; }
-  .st-products__summary { line-height: 1; padding: 0; }
-
   /* Cart label: keep "Cart (0)" as tight inline text */
   .st-header__cart { display: inline-block; }
   .st-header__cart-label { margin-right: 0.4rem; }
 
-  /* Full-width dropdown panel */
-  .st-products__panel {
-    position: absolute;
+  /* ===== Menu drawer (left slide-out) ===== */
+  .st-drawer-root { display: block; }
+  .st-drawer__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(var(--color-foreground), 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+  }
+  .st-drawer {
+    position: fixed;
+    top: 0;
     left: 0;
-    right: 0;
-    top: 100%;
-    background: rgb(var(--color-background));
-    border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
-    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
-    z-index: 4;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  /* Columns pack from the left with full-height divider lines between them.
-     Vertical padding lives on the columns so the dividers span the whole
-     panel height, like Asket. */
-  .st-products__panel-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-  .st-products__col {
-    flex: 0 0 25%;
-    max-width: 25%;
+    height: 100%;
+    height: 100dvh;
+    width: 40rem;            /* desktop: a single column */
+    max-width: 100vw;
     box-sizing: border-box;
-    padding: 4rem 3.2rem;
-    border-left: 0.1rem solid rgba(var(--color-foreground), 0.12);
+    background: rgb(var(--color-background));
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+    overflow-y: auto;
+    padding: 2.4rem;
+    display: flex;
+    flex-direction: column;
   }
-  .st-products__col:first-child {
-    border-left: none;
-    padding-left: 0;
+  .st-drawer-root.is-open .st-drawer { transform: translateX(0); }
+  .st-drawer-root.is-open .st-drawer__overlay { opacity: 1; visibility: visible; }
+
+  @media screen and (max-width: 749px) {
+    .st-drawer { width: 100vw; }   /* mobile: whole screen */
   }
-  .st-products__heading {
+
+  .st-drawer__close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem;
+    margin-bottom: 2rem;
+    color: rgb(var(--color-foreground));
+  }
+  .st-drawer__close .icon { width: 1.6rem; height: 1.6rem; }
+
+  .st-drawer__group + .st-drawer__group { margin-top: 3.2rem; }
+  .st-drawer__heading {
     display: block;
     font-family: var(--font-body-family);
     font-size: 1.4rem;
@@ -174,12 +182,12 @@
     letter-spacing: 0;
     color: rgba(var(--color-foreground), 0.55);
     text-decoration: none;
-    margin: 0 0 2rem;
+    margin: 0 0 1.2rem;
   }
-  a.st-products__heading:hover { color: rgb(var(--color-foreground)); }
-  .st-products__list { margin: 0; padding: 0; }
+  a.st-drawer__heading:hover { color: rgb(var(--color-foreground)); }
+  .st-drawer__list { margin: 0; padding: 0; }
   /* Font matches the product-card titles; item spacing matches Asket (8px) */
-  .st-products__item {
+  .st-drawer__item {
     display: block;
     font-family: var(--font-body-family);
     font-size: 1.4rem;
@@ -190,7 +198,7 @@
     text-decoration: none;
     padding: 0.8rem 0;
   }
-  .st-products__item:hover {
+  .st-drawer__item:hover {
     text-decoration: underline;
     text-underline-offset: 0.3rem;
   }
@@ -218,21 +226,6 @@
     #shopify-section-{{ section.id }} .header > *:first-child { margin-right: auto; }
     .st-header__utility { order: 2; }
     .st-header__nav { order: 3; margin-right: 0; }
-    .st-products__panel-inner {
-      flex-direction: column;
-      padding-top: 2.4rem;
-      padding-bottom: 2.4rem;
-    }
-    .st-products__col {
-      min-width: 0;
-      padding: 0;
-      border-left: none;
-    }
-    .st-products__col + .st-products__col {
-      margin-top: 2.4rem;
-      padding-top: 2.4rem;
-      border-top: 0.1rem solid rgba(var(--color-foreground), 0.12);
-    }
   }
 </style>
 
@@ -281,36 +274,16 @@
         </a>
       {%- if request.page_type == 'index' -%}</h1>{%- endif -%}
 
-      {%- comment -%} Products dropdown (from a navigation menu) {%- endcomment -%}
+      {%- comment -%} Menu trigger — opens the left slide-out drawer {%- endcomment -%}
       <nav class="st-header__nav">
         {%- if section.settings.products_menu != blank and section.settings.products_menu.links.size > 0 -%}
-          <details-disclosure class="st-products">
-            <details id="Details-Products-{{ section.id }}">
-              <summary class="st-header__link st-products__summary focus-inset" aria-label="{{ section.settings.products_label | default: 'Products' }}">
-                <span{% if section.settings.products_menu.links.first.child_active %} class="header__active-menu-item"{% endif %}>{{ section.settings.products_label | default: 'Products' | escape }}</span>
-              </summary>
-              <div class="st-products__panel motion-reduce">
-                <div class="st-products__panel-inner page-width">
-                  {%- for link in section.settings.products_menu.links -%}
-                    <div class="st-products__col">
-                      {%- if link.links != blank -%}
-                        <a href="{{ link.url }}" class="st-products__heading"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
-                        <ul class="st-products__list list-unstyled" role="list">
-                          {%- for childlink in link.links -%}
-                            <li>
-                              <a href="{{ childlink.url }}" class="st-products__item"{% if childlink.current %} aria-current="page"{% endif %}>{{ childlink.title | escape }}</a>
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                      {%- else -%}
-                        <a href="{{ link.url }}" class="st-products__heading"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
-                      {%- endif -%}
-                    </div>
-                  {%- endfor -%}
-                </div>
-              </div>
-            </details>
-          </details-disclosure>
+          <button
+            type="button"
+            class="st-header__link st-drawer__toggle focus-inset"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="StDrawer-{{ section.id }}"
+          >{{ section.settings.products_label | default: 'Collection' | escape }}</button>
         {%- endif -%}
       </nav>
 
@@ -389,6 +362,42 @@
     </div>
   </header>
 </{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
+
+{%- comment -%}
+  Left slide-out menu drawer. Rendered outside the header so it is not
+  trapped by the header/nav transforms (a transformed ancestor would make
+  position:fixed relative to it instead of the viewport).
+{%- endcomment -%}
+{%- if section.settings.products_menu != blank and section.settings.products_menu.links.size > 0 -%}
+  <st-drawer id="StDrawer-{{ section.id }}" class="st-drawer-root">
+    <div class="st-drawer__overlay" role="presentation"></div>
+    <aside class="st-drawer" role="dialog" aria-modal="true" aria-label="{{ section.settings.products_label | default: 'Collection' | escape }}">
+      <button type="button" class="st-drawer__close focus-inset" aria-label="{{ 'accessibility.close' | t }}">
+        <svg class="icon icon-close" aria-hidden="true" focusable="false" viewBox="0 0 18 17">
+          <use href="#icon-close">
+        </svg>
+      </button>
+      <nav class="st-drawer__menu">
+        {%- for link in section.settings.products_menu.links -%}
+          <div class="st-drawer__group">
+            {%- if link.links != blank -%}
+              <a href="{{ link.url }}" class="st-drawer__heading"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              <ul class="st-drawer__list list-unstyled" role="list">
+                {%- for childlink in link.links -%}
+                  <li>
+                    <a href="{{ childlink.url }}" class="st-drawer__item"{% if childlink.current %} aria-current="page"{% endif %}>{{ childlink.title | escape }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- else -%}
+              <a href="{{ link.url }}" class="st-drawer__heading"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </nav>
+    </aside>
+  </st-drawer>
+{%- endif -%}
 
 {%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
 
@@ -482,6 +491,39 @@
   }
 
   customElements.define('sticky-header', StickyHeader);
+
+  class StDrawer extends HTMLElement {
+    connectedCallback() {
+      this.overlay = this.querySelector('.st-drawer__overlay');
+      this.closeBtn = this.querySelector('.st-drawer__close');
+      this.toggle = document.querySelector('[aria-controls="' + this.id + '"]');
+
+      if (this.toggle) this.toggle.addEventListener('click', (e) => { e.preventDefault(); this.open(); });
+      if (this.overlay) this.overlay.addEventListener('click', () => this.close());
+      if (this.closeBtn) this.closeBtn.addEventListener('click', () => this.close());
+
+      this.onKeydown = (e) => { if (e.key === 'Escape') this.close(); };
+    }
+
+    open() {
+      this.classList.add('is-open');
+      if (this.toggle) this.toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('overflow-hidden');
+      document.addEventListener('keydown', this.onKeydown);
+      const first = this.querySelector('.st-drawer a, .st-drawer button');
+      if (first) first.focus();
+    }
+
+    close() {
+      this.classList.remove('is-open');
+      if (this.toggle) this.toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('overflow-hidden');
+      document.removeEventListener('keydown', this.onKeydown);
+      if (this.toggle) this.toggle.focus();
+    }
+  }
+
+  customElements.define('st-drawer', StDrawer);
 {% endjavascript %}
 
 <script defer="defer">
@@ -667,10 +709,6 @@
     .template-index #shopify-section-{{ section.id }}:not(.scrolled) .st-header__link,
     .template-index #shopify-section-{{ section.id }}:not(.scrolled) .st-header__logo-text {
       color: {{ section.settings.transparent-color }}
-    }
-    .template-index #shopify-section-{{ section.id }}:not(.scrolled) .st-products__panel .st-header__link,
-    .template-index #shopify-section-{{ section.id }}:not(.scrolled) .st-products__panel .st-products__item {
-      color: rgb(var(--color-foreground));
     }
   {% endif %}
 {% endstyle %}
