@@ -225,13 +225,17 @@ html.cart-drawer-open body {
   letter-spacing: 0;
 }
 
-/* Match "Continue shopping" to the "Your cart" heading typography */
+/* Match "Continue shopping" to the "Your cart" heading typography.
+   Symmetric vertical padding (the base .button uses 0.9/1.1 top/bottom,
+   which reads as off-centre with regular-case text). */
 .cart-drawer__empty .button {
   font-family: inherit;
   font-size: 1.4rem;
   font-weight: 400;
   letter-spacing: 0;
   text-transform: none;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /* Cross-sell: pinned above the footer, styled as a line-item row */
