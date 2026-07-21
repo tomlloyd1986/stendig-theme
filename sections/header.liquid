@@ -515,10 +515,12 @@
     }
 
     open() {
-      // Offset the drawer to sit below the header bar.
+      // Offset the drawer to sit below the header bar. offsetHeight is the
+      // bar's rendered height (scroll-independent), set on :root so the
+      // fixed drawer/overlay reliably inherit it.
       const bar = document.querySelector('.header-wrapper');
-      const bottom = bar ? Math.max(0, Math.round(bar.getBoundingClientRect().bottom)) : 0;
-      this.style.setProperty('--st-header-bottom', bottom + 'px');
+      const offset = bar ? bar.offsetHeight : 0;
+      document.documentElement.style.setProperty('--st-header-bottom', offset + 'px');
 
       this.classList.add('is-open');
       if (this.toggle) this.toggle.setAttribute('aria-expanded', 'true');
