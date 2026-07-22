@@ -1,0 +1,119 @@
+{% comment %}
+  Feature tiles — native rebuild of the PageFly two-tile section.
+  A centred pair of clickable image tiles with small captions beneath
+  ("The Stendig Calendar >", "The V Calendar Collection >").
+  Desktop: each tile is 25vw wide, 10px apart, pair centred.
+  Tablet/mobile: tiles split the width 50/50.
+  Images keep their natural aspect and zoom slightly on hover.
+  Editable per tile: image, caption, link. Spacing/type locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .ft {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 80px 20px;
+  }
+  #shopify-section-{{ section.id }} .ft__tile {
+    flex: 0 0 25vw;
+    max-width: 25vw;
+    min-width: 0;
+    display: block;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .ft__media {
+    overflow: hidden;
+    position: relative;
+  }
+  #shopify-section-{{ section.id }} .ft__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s;
+    transform-origin: center center;
+  }
+  #shopify-section-{{ section.id }} .ft__tile:hover .ft__media img {
+    transform: scale(1.05);
+  }
+  #shopify-section-{{ section.id }} .ft__placeholder {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: #f3f3f3;
+  }
+  #shopify-section-{{ section.id }} .ft__caption {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 20px 0 0;
+  }
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .ft__tile {
+      flex: 1 1 0;
+      max-width: none;
+    }
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .ft { padding-left: 12px; padding-right: 12px; }
+  }
+{% endstyle %}
+
+<div class="ft">
+  {%- for block in section.blocks -%}
+    <a
+      href="{{ block.settings.link | default: '#' }}"
+      class="ft__tile"
+      {{ block.shopify_attributes }}
+    >
+      {%- if block.settings.image != blank -%}
+        <div class="ft__media">
+          <img
+            src="{{ block.settings.image | image_url: width: 1024 }}"
+            srcset="{{ block.settings.image | image_url: width: 375 }} 375w, {{ block.settings.image | image_url: width: 550 }} 550w, {{ block.settings.image | image_url: width: 750 }} 750w, {{ block.settings.image | image_url: width: 1024 }} 1024w, {{ block.settings.image | image_url: width: 1440 }} 1440w"
+            sizes="(min-width: 990px) 25vw, 50vw"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            alt="{{ block.settings.image.alt | escape }}"
+            loading="lazy"
+          >
+        </div>
+      {%- else -%}
+        <span class="ft__placeholder" role="presentation"></span>
+      {%- endif -%}
+
+      {%- if block.settings.caption != blank -%}
+        <h3 class="ft__caption">{{ block.settings.caption | escape }}</h3>
+      {%- endif -%}
+    </a>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Feature tiles",
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "caption", "label": "Caption", "default": "The Stendig Calendar >" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature tiles",
+      "blocks": [
+        { "type": "tile" },
+        { "type": "tile" }
+      ]
+    }
+  ]
+}
+{% endschema %}
