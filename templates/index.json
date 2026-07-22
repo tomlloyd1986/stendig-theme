@@ -1,11 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "hero_banner_gNr9ea": {
+      "type": "hero-banner",
+      "name": "Hero banner",
+      "settings": {
+        "image_desktop": "shopify://shop_images/2014-0527-Vignelli-SS-articleLarge_62833192-ea62-40e9-a032-4f5005ba0803.webp",
+        "button_label": "DISCOVER 2026",
+        "link": ""
+      }
+    },
     "pagefly-home": {
       "type": "pagefly-home",
       "settings": {}
     }
   },
   "order": [
+    "hero_banner_gNr9ea",
     "pagefly-home"
   ]
 }
