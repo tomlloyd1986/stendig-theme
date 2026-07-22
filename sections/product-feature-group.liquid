@@ -1,0 +1,259 @@
+{% comment %}
+  Product feature group — native rebuild of the PageFly home groups
+  ("The Stendig", "The V Calendar"). Anatomy, top to bottom:
+    divider line
+    small group label
+    split intro: large light heading + underlined link | 4:5 image
+    row of product cards (2 per row on mobile, 4 across from tablet up)
+  Cards use a hand-picked 4:5 image (hover swaps to a second image when
+  provided), a custom title, and the product's live price.
+  Editable: texts, links, images, products. Spacing and type locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .pfg { padding: 0 20px; }
+
+  #shopify-section-{{ section.id }} .pfg__divider {
+    border: none;
+    border-top: 2px solid #d4d4d4;
+    margin: 16px 0;
+  }
+
+  #shopify-section-{{ section.id }} .pfg__label {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 5px 0 0;
+    padding-bottom: 80px;
+  }
+
+  #shopify-section-{{ section.id }} .pfg__intro {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-bottom: 80px;
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .pfg__intro { grid-template-columns: 1fr 1fr; }
+  }
+  #shopify-section-{{ section.id }} .pfg__intro-text { padding-right: 20%; }
+  #shopify-section-{{ section.id }} .pfg__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 18px;
+  }
+  #shopify-section-{{ section.id }} .pfg__link {
+    display: inline-block;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    margin: 0 0 18px;
+  }
+  #shopify-section-{{ section.id }} .pfg__intro-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .pfg__cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -5px;
+    padding-bottom: 80px;
+  }
+  #shopify-section-{{ section.id }} .pfg__card {
+    flex: 0 0 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+    padding: 0 5px;
+    display: block;
+    text-decoration: none;
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .pfg__card {
+      flex: 0 0 25%;
+      max-width: 25%;
+    }
+  }
+  #shopify-section-{{ section.id }} .pfg__card-media {
+    position: relative;
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .pfg__card-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  #shopify-section-{{ section.id }} .pfg__card-media .pfg__img-hover {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+  #shopify-section-{{ section.id }} .pfg__card-media .pfg__img-main { position: relative; }
+  #shopify-section-{{ section.id }} .pfg__card:hover .pfg__img-main.has-hover { opacity: 0; }
+
+  #shopify-section-{{ section.id }} .pfg__card-title {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 10px 0 0;
+  }
+  #shopify-section-{{ section.id }} .pfg__card-price {
+    display: flex;
+    gap: 8px;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .pfg__card-price s { color: rgba(18, 18, 18, 0.6); }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .pfg { padding-left: 12px; padding-right: 12px; }
+  }
+{% endstyle %}
+
+<div class="pfg">
+  <hr class="pfg__divider">
+
+  {%- if section.settings.label != blank -%}
+    <h3 class="pfg__label">{{ section.settings.label | escape }}</h3>
+  {%- endif -%}
+
+  <div class="pfg__intro">
+    <div class="pfg__intro-text">
+      {%- if section.settings.heading != blank -%}
+        <h3 class="pfg__heading">{{ section.settings.heading | escape }}</h3>
+      {%- endif -%}
+      {%- if section.settings.link_label != blank and section.settings.link != blank -%}
+        <a href="{{ section.settings.link }}" class="pfg__link">{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </div>
+    <div class="pfg__intro-media">
+      {%- if section.settings.image != blank -%}
+        <img
+          src="{{ section.settings.image | image_url: width: 1080 }}"
+          srcset="{{ section.settings.image | image_url: width: 550 }} 550w, {{ section.settings.image | image_url: width: 810 }} 810w, {{ section.settings.image | image_url: width: 1080 }} 1080w, {{ section.settings.image | image_url: width: 1440 }} 1440w"
+          sizes="(min-width: 750px) 50vw, 100vw"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          loading="lazy"
+        >
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="pfg__cards">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign card_product = block.settings.product
+          assign card_image = block.settings.image | default: card_product.featured_media
+          assign card_title = block.settings.title | default: card_product.title
+        -%}
+        <a
+          href="{{ card_product.url | default: '#' }}"
+          class="pfg__card"
+          {{ block.shopify_attributes }}
+        >
+          <div class="pfg__card-media">
+            {%- if block.settings.hover_image != blank -%}
+              <img
+                class="pfg__img-hover"
+                src="{{ block.settings.hover_image | image_url: width: 750 }}"
+                srcset="{{ block.settings.hover_image | image_url: width: 375 }} 375w, {{ block.settings.hover_image | image_url: width: 550 }} 550w, {{ block.settings.hover_image | image_url: width: 750 }} 750w"
+                sizes="(min-width: 750px) 25vw, 50vw"
+                width="{{ block.settings.hover_image.width }}"
+                height="{{ block.settings.hover_image.height }}"
+                alt=""
+                loading="lazy"
+                aria-hidden="true"
+              >
+            {%- endif -%}
+            {%- if card_image != blank -%}
+              <img
+                class="pfg__img-main{% if block.settings.hover_image != blank %} has-hover{% endif %}"
+                src="{{ card_image | image_url: width: 750 }}"
+                srcset="{{ card_image | image_url: width: 375 }} 375w, {{ card_image | image_url: width: 550 }} 550w, {{ card_image | image_url: width: 750 }} 750w, {{ card_image | image_url: width: 1024 }} 1024w"
+                sizes="(min-width: 750px) 25vw, 50vw"
+                width="{{ card_image.width }}"
+                height="{{ card_image.height }}"
+                alt="{{ card_title | escape }}"
+                loading="lazy"
+              >
+            {%- endif -%}
+          </div>
+
+          {%- if card_title != blank -%}
+            <h3 class="pfg__card-title">{{ card_title | escape }}</h3>
+          {%- endif -%}
+
+          {%- if card_product != blank -%}
+            <p class="pfg__card-price">
+              <span>{{ card_product.price | money }}</span>
+              {%- if card_product.compare_at_price > card_product.price -%}
+                <s>{{ card_product.compare_at_price | money }}</s>
+              {%- endif -%}
+            </p>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product feature group",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Group label", "default": "The Stendig" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Massimo Vignelli's original classic" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Discover the calendar" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "image_picker", "id": "image", "label": "Intro image", "info": "Shown beside the heading. Displays at 4:5." }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product", "info": "Supplies the live price and the card's link." },
+        { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the product's featured image. Displays at 4:5." },
+        { "type": "image_picker", "id": "hover_image", "label": "Hover image", "info": "Optional. Shown while the pointer is over the card." },
+        { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the product's title." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product feature group",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}
