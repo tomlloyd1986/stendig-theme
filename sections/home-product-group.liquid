@@ -171,11 +171,39 @@
       {%- for block in section.blocks -%}
         {%- liquid
           assign card_product = block.settings.product
-          assign card_image = block.settings.image | default: card_product.featured_media
+
+          # Resolve an optional colour variant by (partial, case-insensitive)
+          # match against the variant titles, e.g. "White" -> "White / A1".
+          assign card_variant = null
+          if block.settings.variant != blank and card_product != blank
+            assign v_needle = block.settings.variant | strip | downcase
+            for v in card_product.variants
+              assign v_title = v.title | downcase
+              if v_title contains v_needle
+                assign card_variant = v
+                break
+              endif
+            endfor
+          endif
+
+          assign card_url = card_product.url
+          assign card_price = card_product.price
+          assign card_compare = card_product.compare_at_price
+          assign card_fallback_image = card_product.featured_media
+          if card_variant
+            assign card_url = card_product.url | append: '?variant=' | append: card_variant.id
+            assign card_price = card_variant.price
+            assign card_compare = card_variant.compare_at_price
+            if card_variant.image
+              assign card_fallback_image = card_variant.image
+            endif
+          endif
+
+          assign card_image = block.settings.image | default: card_fallback_image
           assign card_title = block.settings.title | default: card_product.title
         -%}
         <a
-          href="{{ card_product.url | default: '#' }}"
+          href="{{ card_url | default: '#' }}"
           class="pfg__card"
           {{ block.shopify_attributes }}
         >
@@ -213,9 +241,9 @@
 
           {%- if card_product != blank -%}
             <p class="pfg__card-price">
-              <span>{{ card_product.price | money }}</span>
-              {%- if card_product.compare_at_price > card_product.price -%}
-                <s>{{ card_product.compare_at_price | money }}</s>
+              <span>{{ card_price | money }}</span>
+              {%- if card_compare > card_price -%}
+                <s>{{ card_compare | money }}</s>
               {%- endif -%}
             </p>
           {%- endif -%}
@@ -242,7 +270,8 @@
       "name": "Product card",
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Supplies the live price and the card's link." },
-        { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the product's featured image. Displays at 4:5." },
+        { "type": "text", "id": "variant", "label": "Colour variant", "info": "Optional. Type the variant's colour, e.g. \"White\". The card then links to that variant and uses its price and image." },
+        { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the variant's or product's image. Displays at 4:5." },
         { "type": "image_picker", "id": "hover_image", "label": "Hover image", "info": "Optional. Shown while the pointer is over the card." },
         { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the product's title." }
       ]
