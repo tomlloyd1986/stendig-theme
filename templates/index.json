@@ -10,7 +10,7 @@
 {
   "sections": {
     "hero_banner_gNr9ea": {
-      "type": "hero-banner",
+      "type": "home-hero",
       "name": "Hero banner",
       "settings": {
         "image_desktop": "shopify://shop_images/2014-0527-Vignelli-SS-articleLarge_62833192-ea62-40e9-a032-4f5005ba0803.webp",
