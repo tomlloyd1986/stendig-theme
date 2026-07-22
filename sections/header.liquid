@@ -35,7 +35,9 @@
      exactly as-is. */
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .header.st-header {
-      padding-bottom: 2.8rem !important;
+      /* TEMPORARY test value — deliberately huge to verify the rule reaches
+         the mobile preview. Will be dialled back once confirmed. */
+      padding-bottom: 8rem !important;
     }
   }
 
