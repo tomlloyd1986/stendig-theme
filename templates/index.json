@@ -48,6 +48,37 @@
       "name": "Home: Feature tiles",
       "settings": {}
     },
+    "home_product_group_L4cmgE": {
+      "type": "home-product-group",
+      "blocks": {
+        "product_9Y6ELa": {
+          "type": "product",
+          "settings": {
+            "product": "stendig-calendar",
+            "title": ""
+          }
+        },
+        "product_TzMyLz": {
+          "type": "product",
+          "settings": {
+            "product": "hanging-strips",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_9Y6ELa",
+        "product_TzMyLz"
+      ],
+      "name": "Home: Product group",
+      "settings": {
+        "label": "The Stendig",
+        "heading": "Massimo Vignelli's original classic",
+        "link_label": "Discover the calendar",
+        "link": "shopify://products/stendig-calendar",
+        "image": "shopify://shop_images/tumblr_nh1oqpmNmf1r0r8u6o1_1280.jpg"
+      }
+    },
     "home_instagram_strip_Rx3NWc": {
       "type": "home-instagram-strip",
       "blocks": {
@@ -116,6 +147,7 @@
     "pagefly-home",
     "hero_banner_gNr9ea",
     "home_feature_tiles_YiehXX",
+    "home_product_group_L4cmgE",
     "home_instagram_strip_Rx3NWc"
   ]
 }
