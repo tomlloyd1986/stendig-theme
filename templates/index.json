@@ -9,6 +9,11 @@
  */
 {
   "sections": {
+    "pagefly-home": {
+      "type": "pagefly-home",
+      "disabled": true,
+      "settings": {}
+    },
     "hero_banner_gNr9ea": {
       "type": "home-hero",
       "name": "Hero banner",
@@ -18,13 +23,99 @@
         "link": ""
       }
     },
-    "pagefly-home": {
-      "type": "pagefly-home",
+    "home_feature_tiles_YiehXX": {
+      "type": "home-feature-tiles",
+      "blocks": {
+        "tile_qczArC": {
+          "type": "tile",
+          "settings": {
+            "caption": "The Stendig Calendar >",
+            "link": ""
+          }
+        },
+        "tile_gQkExz": {
+          "type": "tile",
+          "settings": {
+            "caption": "The Stendig Calendar >",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_qczArC",
+        "tile_gQkExz"
+      ],
+      "name": "Home: Feature tiles",
       "settings": {}
+    },
+    "home_instagram_strip_Rx3NWc": {
+      "type": "home-instagram-strip",
+      "blocks": {
+        "card_JWbmqL": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        },
+        "card_THqE99": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        },
+        "card_wWLnBY": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        },
+        "card_tGNyJY": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        },
+        "card_URV8CM": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        },
+        "card_wAUUmh": {
+          "type": "card",
+          "settings": {
+            "handle": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_JWbmqL",
+        "card_THqE99",
+        "card_wWLnBY",
+        "card_tGNyJY",
+        "card_URV8CM",
+        "card_wAUUmh"
+      ],
+      "name": "Home: Instagram strip",
+      "settings": {
+        "eyebrow": "At home",
+        "heading": "Stendig at home",
+        "tagline": "Tag your photos with #stendigcalendar for a chance to be featured",
+        "follow_label": "Follow @stendigcalendars >",
+        "follow_url": ""
+      }
     }
   },
   "order": [
+    "pagefly-home",
     "hero_banner_gNr9ea",
-    "pagefly-home"
+    "home_feature_tiles_YiehXX",
+    "home_instagram_strip_Rx3NWc"
   ]
 }
