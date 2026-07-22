@@ -1,0 +1,296 @@
+{% comment %}
+  Home: Instagram strip — the "Stendig at home" UGC section, built to the
+  Claude Design handoff (Turn 4): thin divider, eyebrow, left-aligned
+  Display-Light heading + tagline with circular prev/next buttons top-right
+  (desktop/tablet), and a horizontally scrolling strip of 4:5 photos with
+  Instagram handles beneath. Mobile: free swipe (cards peek), no arrows,
+  "Follow" link below the strip.
+  Eyebrow-to-heading spacing follows the home page's 80px rhythm.
+  Editable: texts, follow link, and the cards (image + handle + optional
+  link). Spacing, type and card sizes locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .igs { padding: 0 20px; }
+
+  #shopify-section-{{ section.id }} .igs__divider {
+    border: none;
+    border-top: 1px solid #e2e2e2;
+    margin: 0 0 14px;
+  }
+
+  #shopify-section-{{ section.id }} .igs__eyebrow {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0;
+    padding-bottom: 80px;
+  }
+
+  #shopify-section-{{ section.id }} .igs__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 28px;
+  }
+  #shopify-section-{{ section.id }} .igs__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 8px;
+  }
+  #shopify-section-{{ section.id }} .igs__tagline {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .igs__arrows {
+    display: flex;
+    gap: 10px;
+    flex: none;
+  }
+  #shopify-section-{{ section.id }} .igs__arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #121212;
+    background: #fff;
+    color: #121212;
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .igs__arrow:hover:not([disabled]) {
+    background: #121212;
+    color: #fff;
+  }
+  #shopify-section-{{ section.id }} .igs__arrow[disabled] {
+    border-color: #d4d4d4;
+    color: #c9c9c9;
+    cursor: default;
+  }
+
+  #shopify-section-{{ section.id }} .igs__strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 80px;
+  }
+  #shopify-section-{{ section.id }} .igs__strip::-webkit-scrollbar { display: none; }
+
+  #shopify-section-{{ section.id }} .igs__card {
+    flex: none;
+    width: 230px;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .igs__card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+  #shopify-section-{{ section.id }} .igs__placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #f3f3f3;
+  }
+  #shopify-section-{{ section.id }} .igs__handle {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 12px 0 0;
+  }
+
+  #shopify-section-{{ section.id }} .igs__follow {
+    display: none;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: none;
+    margin: 20px 0 0;
+  }
+
+  /* Tablet */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .igs__heading { font-size: 28px; }
+    #shopify-section-{{ section.id }} .igs__header { margin-bottom: 24px; }
+    #shopify-section-{{ section.id }} .igs__arrows { gap: 8px; }
+    #shopify-section-{{ section.id }} .igs__arrow { width: 36px; height: 36px; }
+    #shopify-section-{{ section.id }} .igs__card { width: 224px; }
+    #shopify-section-{{ section.id }} .igs__handle { margin-top: 10px; }
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .igs { padding-left: 12px; padding-right: 12px; }
+    #shopify-section-{{ section.id }} .igs__heading { font-size: 26px; }
+    #shopify-section-{{ section.id }} .igs__header { margin-bottom: 20px; }
+    #shopify-section-{{ section.id }} .igs__arrows { display: none; }
+    #shopify-section-{{ section.id }} .igs__strip { gap: 8px; padding-bottom: 0; }
+    #shopify-section-{{ section.id }} .igs__card { width: 232px; }
+    #shopify-section-{{ section.id }} .igs__handle { font-size: 13px; line-height: 19px; margin-top: 8px; }
+    #shopify-section-{{ section.id }} .igs__follow { display: inline-block; margin-bottom: 80px; }
+  }
+{% endstyle %}
+
+<home-ig-strip class="igs">
+  <hr class="igs__divider">
+
+  {%- if section.settings.eyebrow != blank -%}
+    <h3 class="igs__eyebrow">{{ section.settings.eyebrow | escape }}</h3>
+  {%- endif -%}
+
+  <div class="igs__header">
+    <div class="igs__header-text">
+      {%- if section.settings.heading != blank -%}
+        <h3 class="igs__heading">{{ section.settings.heading | escape }}</h3>
+      {%- endif -%}
+      {%- if section.settings.tagline != blank -%}
+        <p class="igs__tagline">{{ section.settings.tagline | escape }}</p>
+      {%- endif -%}
+    </div>
+    <div class="igs__arrows">
+      <button type="button" class="igs__arrow" data-igs-prev aria-label="Previous" disabled>&larr;</button>
+      <button type="button" class="igs__arrow" data-igs-next aria-label="Next">&rarr;</button>
+    </div>
+  </div>
+
+  <div class="igs__strip" data-igs-strip>
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign card_tag = 'div'
+        if block.settings.link != blank
+          assign card_tag = 'a'
+        endif
+      -%}
+      <{{ card_tag }}
+        {% if block.settings.link != blank %}href="{{ block.settings.link }}" target="_blank" rel="noopener"{% endif %}
+        class="igs__card"
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.image != blank -%}
+          <img
+            src="{{ block.settings.image | image_url: width: 460 }}"
+            srcset="{{ block.settings.image | image_url: width: 230 }} 230w, {{ block.settings.image | image_url: width: 460 }} 460w, {{ block.settings.image | image_url: width: 690 }} 690w"
+            sizes="232px"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            alt="{{ block.settings.handle | default: section.settings.heading | escape }}"
+            loading="lazy"
+          >
+        {%- else -%}
+          <span class="igs__placeholder" role="presentation"></span>
+        {%- endif -%}
+        {%- if block.settings.handle != blank -%}
+          <p class="igs__handle">{{ block.settings.handle | escape }}</p>
+        {%- endif -%}
+      </{{ card_tag }}>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.follow_label != blank and section.settings.follow_url != blank -%}
+    <a href="{{ section.settings.follow_url }}" class="igs__follow" target="_blank" rel="noopener">{{ section.settings.follow_label | escape }}</a>
+  {%- endif -%}
+</home-ig-strip>
+
+{% javascript %}
+  class HomeIgStrip extends HTMLElement {
+    connectedCallback() {
+      this.strip = this.querySelector('[data-igs-strip]');
+      this.prev = this.querySelector('[data-igs-prev]');
+      this.next = this.querySelector('[data-igs-next]');
+      if (!this.strip || !this.prev || !this.next) return;
+
+      this.prev.addEventListener('click', () => this.scrollByCard(-1));
+      this.next.addEventListener('click', () => this.scrollByCard(1));
+      this.strip.addEventListener('scroll', () => this.updateEnds(), { passive: true });
+      window.addEventListener('resize', () => this.updateEnds());
+      this.updateEnds();
+    }
+
+    cardStep() {
+      const card = this.strip.querySelector('.igs__card');
+      const gap = parseFloat(getComputedStyle(this.strip).columnGap || getComputedStyle(this.strip).gap) || 10;
+      return card ? card.offsetWidth + gap : 240;
+    }
+
+    scrollByCard(dir) {
+      this.strip.scrollBy({ left: dir * this.cardStep(), behavior: 'smooth' });
+    }
+
+    updateEnds() {
+      const atStart = this.strip.scrollLeft <= 4;
+      const atEnd = this.strip.scrollLeft >= this.strip.scrollWidth - this.strip.clientWidth - 4;
+      this.prev.toggleAttribute('disabled', atStart);
+      this.next.toggleAttribute('disabled', atEnd);
+    }
+  }
+
+  customElements.define('home-ig-strip', HomeIgStrip);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Home: Instagram strip",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "At home" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Stendig at home" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "Tag your photos with #stendigcalendar for a chance to be featured" },
+    { "type": "text", "id": "follow_label", "label": "Follow link label (mobile)", "default": "Follow @stendigcalendars >" },
+    { "type": "url", "id": "follow_url", "label": "Follow link URL", "info": "Shown below the strip on mobile only. Defaults to the Instagram profile.", "default": "https://www.instagram.com/stendigcalendars" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Displays at 4:5." },
+        { "type": "text", "id": "handle", "label": "Instagram handle", "placeholder": "@stendigcalendars" },
+        { "type": "url", "id": "link", "label": "Link", "info": "Optional. Makes the photo and handle clickable (opens in a new tab)." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home: Instagram strip",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}
