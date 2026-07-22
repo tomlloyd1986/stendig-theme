@@ -73,10 +73,7 @@
       },
       "header": {
         "type": "header",
-        "custom_css": [
-          "@media screen and (min-width: 750px) {.header {padding-top: 8px !important; padding-bottom: 8px !important; } .header__heading-logo img {max-height: 36px !important; }}",
-          ".header {padding-left: 20px !important; padding-right: 20px !important; max-width: 100% !important;}"
-        ],
+        "custom_css": [],
         "settings": {
           "color_scheme": "background-1",
           "logo": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
