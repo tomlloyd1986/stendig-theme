@@ -79,6 +79,36 @@
         "image": "shopify://shop_images/tumblr_nh1oqpmNmf1r0r8u6o1_1280.jpg"
       }
     },
+    "home_product_group_h3zpep": {
+      "type": "home-product-group",
+      "blocks": {
+        "product_JFPCTA": {
+          "type": "product",
+          "settings": {
+            "product": "v-calendar",
+            "title": ""
+          }
+        },
+        "product_3HT8WQ": {
+          "type": "product",
+          "settings": {
+            "product": "",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_JFPCTA",
+        "product_3HT8WQ"
+      ],
+      "name": "Home: Product group",
+      "settings": {
+        "label": "The Stendig",
+        "heading": "Massimo Vignelli's original classic",
+        "link_label": "Discover the calendar",
+        "link": ""
+      }
+    },
     "home_instagram_strip_Rx3NWc": {
       "type": "home-instagram-strip",
       "blocks": {
@@ -148,6 +178,7 @@
     "hero_banner_gNr9ea",
     "home_feature_tiles_YiehXX",
     "home_product_group_L4cmgE",
+    "home_product_group_h3zpep",
     "home_instagram_strip_Rx3NWc"
   ]
 }
