@@ -216,8 +216,9 @@
     {%- endfor -%}
   </div>
 
-  {%- if section.settings.follow_label != blank and section.settings.follow_url != blank -%}
-    <a href="{{ section.settings.follow_url }}" class="igs__follow" target="_blank" rel="noopener">{{ section.settings.follow_label | escape }}</a>
+  {%- if section.settings.follow_label != blank -%}
+    {%- assign follow_url = section.settings.follow_url | default: 'https://www.instagram.com/stendigcalendars' -%}
+    <a href="{{ follow_url }}" class="igs__follow" target="_blank" rel="noopener">{{ section.settings.follow_label | escape }}</a>
   {%- endif -%}
 </home-ig-strip>
 
@@ -266,7 +267,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Stendig at home" },
     { "type": "text", "id": "tagline", "label": "Tagline", "default": "Tag your photos with #stendigcalendar for a chance to be featured" },
     { "type": "text", "id": "follow_label", "label": "Follow link label (mobile)", "default": "Follow @stendigcalendars >" },
-    { "type": "url", "id": "follow_url", "label": "Follow link URL", "info": "Shown below the strip on mobile only. Defaults to the Instagram profile.", "default": "https://www.instagram.com/stendigcalendars" }
+    { "type": "url", "id": "follow_url", "label": "Follow link URL", "info": "Shown below the strip on mobile only. Set to your Instagram profile, e.g. https://www.instagram.com/stendigcalendars" }
   ],
   "blocks": [
     {
