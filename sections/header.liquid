@@ -34,10 +34,12 @@
      (which is !important at all widths); the media query keeps desktop
      exactly as-is. */
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .header.st-header {
-      /* TEMPORARY test value — deliberately huge to verify the rule reaches
-         the mobile preview. Will be dialled back once confirmed. */
-      padding-bottom: 8rem !important;
+    /* [data-sticky] is on the header wrapper; including it lifts specificity
+       above the theme Custom CSS rule
+       `.template-index #shopify-section-header [data-sticky=true] > header`
+       which otherwise caps the home-page mobile bar at 10px !important. */
+    #shopify-section-{{ section.id }} [data-sticky] > header.header.st-header {
+      padding-bottom: 2.8rem !important;
     }
   }
 
