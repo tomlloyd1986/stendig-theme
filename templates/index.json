@@ -55,6 +55,7 @@
           "type": "product",
           "settings": {
             "product": "stendig-calendar",
+            "variant": "",
             "title": ""
           }
         },
@@ -62,6 +63,7 @@
           "type": "product",
           "settings": {
             "product": "hanging-strips",
+            "variant": "",
             "title": ""
           }
         }
@@ -86,14 +88,16 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
+            "variant": "Red",
             "title": ""
           }
         },
         "product_3HT8WQ": {
           "type": "product",
           "settings": {
-            "product": "",
-            "title": ""
+            "product": "v-calendar",
+            "variant": "Yellow",
+            "title": "V Calendar 2026 (Yellow)"
           }
         }
       },
