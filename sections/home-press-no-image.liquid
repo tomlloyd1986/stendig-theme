@@ -1,0 +1,173 @@
+{% comment %}
+  Home: From the press (no image) — alternative to home-press.liquid, per
+  the Claude Design handoff (Turn 8, "imageless variant"): same masthead-
+  index behaviour (one quote at display scale, publication names as the
+  switcher) but without the fixed photo — the quote scales up and the
+  switcher sits full-width beneath it. Use this instead of Home: From the
+  press when the page feels image-heavy at this point.
+  Shares its interaction markup/script with home-press.liquid so only one
+  copy of the <press-switcher> custom element ships if both are unused;
+  keep the javascript block below identical between the two files.
+  Editable: eyebrow and quote blocks (quote text + publication, up to 8).
+  Layout, type and spacing locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .press { padding: 56px 20px 72px; }
+  #shopify-section-{{ section.id }} .press__eyebrow {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0 0 56px;
+  }
+
+  #shopify-section-{{ section.id }} .press__quote {
+    display: none;
+    margin: 0 0 48px;
+    max-width: 1040px;
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-weight: 300;
+    font-size: 52px;
+    line-height: 1.2;
+    color: #121212;
+    text-wrap: pretty;
+    min-height: 250px;
+  }
+  #shopify-section-{{ section.id }} .press__quote.is-active { display: block; }
+
+  #shopify-section-{{ section.id }} .press__pubs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+  #shopify-section-{{ section.id }} .press__pub {
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding: 0 0 2px;
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #b8b8b8;
+    cursor: pointer;
+  }
+  #shopify-section-{{ section.id }} .press__pub.is-active {
+    color: #121212;
+    border-bottom-color: #121212;
+  }
+
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .press { padding: 48px 20px 60px; }
+    #shopify-section-{{ section.id }} .press__eyebrow { margin-bottom: 44px; }
+    #shopify-section-{{ section.id }} .press__quote {
+      font-size: 38px;
+      line-height: 1.25;
+      min-height: 230px;
+      margin-bottom: 40px;
+    }
+    #shopify-section-{{ section.id }} .press__pubs { gap: 10px 20px; }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .press { padding: 40px 12px 48px; }
+    #shopify-section-{{ section.id }} .press__eyebrow { margin-bottom: 32px; }
+    #shopify-section-{{ section.id }} .press__quote {
+      font-size: 26px;
+      line-height: 1.3;
+      min-height: 170px;
+      margin-bottom: 32px;
+    }
+    #shopify-section-{{ section.id }} .press__pubs { gap: 10px 18px; }
+  }
+{% endstyle %}
+
+<press-switcher class="press">
+  {%- if section.settings.eyebrow != blank -%}
+    <h3 class="press__eyebrow">{{ section.settings.eyebrow | escape }}</h3>
+  {%- endif -%}
+
+  <div class="press__quotes" aria-live="polite">
+    {%- for block in section.blocks -%}
+      <p
+        class="press__quote{% if forloop.first %} is-active{% endif %}"
+        data-press-quote
+        data-index="{{ forloop.index0 }}"
+        {{ block.shopify_attributes }}
+      >&ldquo;{{ block.settings.quote }}&rdquo;</p>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="press__pubs" role="group" aria-label="{{ section.settings.eyebrow | default: 'From the press' | escape }}">
+      {%- for block in section.blocks -%}
+        <button
+          type="button"
+          class="press__pub{% if forloop.first %} is-active{% endif %}"
+          data-press-pub
+          data-index="{{ forloop.index0 }}"
+          aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+        >{{ block.settings.publication | escape }}</button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</press-switcher>
+
+{% javascript %}
+  class PressSwitcher extends HTMLElement {
+    connectedCallback() {
+      this.pubs = this.querySelectorAll('[data-press-pub]');
+      this.quotes = this.querySelectorAll('[data-press-quote]');
+      this.pubs.forEach((btn) => btn.addEventListener('click', () => this.activate(btn.dataset.index)));
+    }
+
+    activate(index) {
+      this.pubs.forEach((btn) => {
+        const active = btn.dataset.index === index;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      this.quotes.forEach((q) => q.classList.toggle('is-active', q.dataset.index === index));
+    }
+  }
+
+  customElements.define('press-switcher', PressSwitcher);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Home: Press (no image)",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the press" }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Press quote",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "info": "Quotation marks are added automatically." },
+        { "type": "text", "id": "publication", "label": "Publication", "placeholder": "Esquire" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home: Press (no image)",
+      "blocks": [
+        { "type": "quote", "settings": { "quote": "Less a calendar, more a piece of iconic design you can hang on your wall", "publication": "Esquire" } },
+        { "type": "quote", "settings": { "quote": "A masterpiece of minimalism", "publication": "Elle" } },
+        { "type": "quote", "settings": { "quote": "There's nothing quite like a massive, aesthetically pleasing wall calendar to signal that a new year is here.", "publication": "Vice Magazine" } },
+        { "type": "quote", "settings": { "quote": "The Stendig Calendar is the perfect combination of form and function", "publication": "Daily Beast" } },
+        { "type": "quote", "settings": { "quote": "Arguably the greatest calendar of all time", "publication": "Architect Magazine" } },
+        { "type": "quote", "settings": { "quote": "Designers, architects and style gurus the world over are fans of this massive calendar", "publication": "The Independent" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
