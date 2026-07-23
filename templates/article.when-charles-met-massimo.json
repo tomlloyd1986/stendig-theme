@@ -18,5 +18,8 @@
       "settings": {}
     }
   },
-  "order": ["header", "content"]
+  "order": [
+    "header",
+    "content"
+  ]
 }
