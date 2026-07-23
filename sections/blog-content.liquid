@@ -18,8 +18,8 @@
     padding: 0 20px 80px;
   }
   #shopify-section-{{ section.id }} .blogc__w-body { max-width: 640px; margin-left: auto; margin-right: auto; }
-  #shopify-section-{{ section.id }} .blogc__w-standard { max-width: 840px; margin-left: auto; margin-right: auto; }
-  #shopify-section-{{ section.id }} .blogc__w-wide { max-width: 1200px; margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .blogc__w-standard { max-width: 760px; margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .blogc__w-wide { max-width: 1040px; margin-left: auto; margin-right: auto; }
   #shopify-section-{{ section.id }} .blogc__w-ultrawide { max-width: none; }
 
   /* Text */
@@ -201,7 +201,7 @@
                     <img
                       src="{{ img | image_url: width: 1200 }}"
                       srcset="{{ img | image_url: width: 550 }} 550w, {{ img | image_url: width: 840 }} 840w, {{ img | image_url: width: 1200 }} 1200w, {{ img | image_url: width: 1680 }} 1680w, {{ img | image_url: width: 2048 }} 2048w"
-                      sizes="(max-width: 749px) {% if img_count == 1 %}100vw{% else %}50vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 840 | divided_by: img_count }}px{% when 'wide' %}{{ 1200 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
+                      sizes="(max-width: 749px) {% if img_count == 1 %}100vw{% else %}50vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 760 | divided_by: img_count }}px{% when 'wide' %}{{ 1040 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
                       width="{{ img.width }}"
                       height="{{ img.height }}"
                       alt="{{ img.alt | default: block.settings.caption | escape }}"
@@ -304,8 +304,8 @@
           "id": "width",
           "label": "Width",
           "options": [
-            { "value": "standard", "label": "Standard (840px)" },
-            { "value": "wide", "label": "Wide (1200px)" },
+            { "value": "standard", "label": "Standard (760px)" },
+            { "value": "wide", "label": "Wide (1040px)" },
             { "value": "ultrawide", "label": "Ultrawide (full width)" }
           ],
           "default": "standard"
@@ -334,8 +334,8 @@
           "id": "width",
           "label": "Width",
           "options": [
-            { "value": "standard", "label": "Standard (840px)" },
-            { "value": "wide", "label": "Wide (1200px)" },
+            { "value": "standard", "label": "Standard (760px)" },
+            { "value": "wide", "label": "Wide (1040px)" },
             { "value": "ultrawide", "label": "Ultrawide (full width)" }
           ],
           "default": "standard"
