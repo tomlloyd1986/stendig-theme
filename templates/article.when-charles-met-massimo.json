@@ -26,10 +26,44 @@
             "image_1": "shopify://shop_images/tumblr_f197e0221b8eb140d6ad0481c25de83e_b1cf6438_1280_1.jpg",
             "caption": ""
           }
+        },
+        "text_Mdmrc4": {
+          "type": "text",
+          "settings": {
+            "body": "<p>Charles Stendig didn’t design furniture. He discovered it.<br/><br/>Born in Brooklyn in 1919, a paratrooper turned businessman, Stendig built his company on a kind of boldness that was entirely his own. In the 1950s, while most Americans still lived among oak sideboards and floral upholstery, he was moving through postwar Europe, discovering sleek chairs in Finland and bentwood frames in Germany, arranging shipments from companies whose names few could pronounce.<br/><br/>Gregarious and intrepid, he approached his brief with zeal. After a chance meeting with a Finnish trade representative in the early 50s, Stendig accepted an invitation to visit the country and its burgeoning furniture industry, chartering a prop plane that took 26 hours and four fuel stops to reach its destination. When Thonet, the makers of a cane chair he wanted to stock, announced they were considering winding up its production, Stendig guaranteed a year of production costs up front to ensure its continuation. The chair became a classic, and a fixture of many American living rooms in the years to follow.<br/><br/>By 1965, Stendig had helped shift American taste toward the clean lines of European modernism, importing not only furniture but a new visual language. He ran his business from offices at 375 Park Avenue - a building that, by chance, also housed the offices of Massimo Vignelli, the Italian designer who would soon become one of modernism’s defining figures.</p>"
+          }
+        },
+        "images_G3pFn4": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/20Stendig021-articleLarge_54d2e97b-f757-4c58-b831-e0acdb2b1b03.webp",
+            "caption": ""
+          }
+        },
+        "text_xJaJB8": {
+          "type": "text",
+          "settings": {
+            "body": "<p>An admirer of the architects Mies van der Rohe and Le Corbusier, Vignelli had moved to the United States from Italy in the mid-1960s with the hope of propagating a design aesthetic inspired by their ideal of functional beauty. Alongside five other co-founders, he set up Unimark International, which became one of the world’s largest design firms and among the first to focus on creating corporate identities through design. Initially headquartered in Chicago, the firm decided to set up a New York office, with Vignelli at the helm.<br/><br/>Vignelli approached design with a marked clarity of vision and purpose. He preached simplicity and coherence and practiced them with intense discipline in everything he turned out, whether kitchenware, public signage, books or home interiors. Within a few years, he and his team would redesign New York’s subway map and signage, transforming the system into a legible network of colour and order. It was one of many projects that made Vignelli’s modernist clarity unmistakable, from corporate identities for American Airlines and Knoll to the quiet typography of Bloomingdale’s. Helvetica became their shared language, a font that perhaps more than any other embodied Vignelli's crisp, democratic, rigorous approach to the graphic arts.</p>"
+          }
+        },
+        "images_xwzbi7": {
+          "type": "images",
+          "settings": {
+            "width": "wide",
+            "image_1": "shopify://shop_images/tumblr_70636c131897c94b3c20e1a4e53e928d_edae9b9a_1280.jpg",
+            "image_2": "shopify://shop_images/tumblr_501e903c0df7c391fe956d0243059a8b_26ffdaea_500.jpg",
+            "image_3": "shopify://shop_images/knoll_4caabc12-05eb-4e52-b5a1-8c175002ade8.jpg",
+            "caption": ""
+          }
         }
       },
       "block_order": [
-        "images_87HkVi"
+        "images_87HkVi",
+        "text_Mdmrc4",
+        "images_G3pFn4",
+        "text_xJaJB8",
+        "images_xwzbi7"
       ],
       "settings": {}
     }
