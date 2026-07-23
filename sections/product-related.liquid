@@ -1,0 +1,156 @@
+{% comment %}
+  Product: Related items — native rebuild of the PageFly "You may also
+  like" row on the product pages: a Display-Light heading above up to four
+  clickable cards, each a square (1:1) image with a 14px title and a
+  one-line subtitle beneath ("Hanging Strips — Fix your Stendig to the
+  walls, without nails").
+  Cards take an optional product pick (supplies the link automatically)
+  or a custom link. Editable: heading and cards. Type/spacing locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .prel {
+    padding: 0 20px 80px;
+  }
+  #shopify-section-{{ section.id }} .prel__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 40px;
+  }
+  #shopify-section-{{ section.id }} .prel__cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -5px;
+  }
+  #shopify-section-{{ section.id }} .prel__card {
+    flex: 0 0 50%;
+    max-width: 50%;
+    box-sizing: border-box;
+    padding: 0 5px;
+    margin-bottom: 20px;
+    display: block;
+    text-decoration: none;
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .prel__card {
+      flex: 0 0 25%;
+      max-width: 25%;
+      margin-bottom: 0;
+    }
+  }
+  #shopify-section-{{ section.id }} .prel__card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center center;
+  }
+  #shopify-section-{{ section.id }} .prel__placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f3f3f3;
+  }
+  #shopify-section-{{ section.id }} .prel__title {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 14px 0 3px;
+  }
+  #shopify-section-{{ section.id }} .prel__subtitle {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0;
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .prel { padding-left: 12px; padding-right: 12px; }
+    #shopify-section-{{ section.id }} .prel__heading { font-size: 22px; margin-bottom: 28px; }
+  }
+{% endstyle %}
+
+<div class="prel">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="prel__heading">{{ section.settings.heading | escape }}</h2>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="prel__cards">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign card_url = block.settings.link
+          if card_url == blank and block.settings.product != blank
+            assign card_url = block.settings.product.url
+          endif
+          assign card_image = block.settings.image | default: block.settings.product.featured_media
+          assign card_title = block.settings.title | default: block.settings.product.title
+        -%}
+        <a href="{{ card_url | default: '#' }}" class="prel__card" {{ block.shopify_attributes }}>
+          {%- if card_image != blank -%}
+            <img
+              src="{{ card_image | image_url: width: 750 }}"
+              srcset="{{ card_image | image_url: width: 375 }} 375w, {{ card_image | image_url: width: 550 }} 550w, {{ card_image | image_url: width: 750 }} 750w, {{ card_image | image_url: width: 1024 }} 1024w"
+              sizes="(min-width: 750px) 25vw, 50vw"
+              width="{{ card_image.width }}"
+              height="{{ card_image.height }}"
+              alt="{{ card_title | escape }}"
+              loading="lazy"
+            >
+          {%- else -%}
+            <span class="prel__placeholder" role="presentation"></span>
+          {%- endif -%}
+
+          {%- if card_title != blank -%}
+            <h3 class="prel__title">{{ card_title | escape }}</h3>
+          {%- endif -%}
+          {%- if block.settings.subtitle != blank -%}
+            <p class="prel__subtitle">{{ block.settings.subtitle | escape }}</p>
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product: Related items",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product", "info": "Optional. Supplies the link, image and title unless overridden below." },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional override. Displays at 1:1 (square)." },
+        { "type": "text", "id": "title", "label": "Title", "info": "Optional override." },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "placeholder": "Fix your Stendig to the walls, without nails" },
+        { "type": "url", "id": "link", "label": "Link", "info": "Optional override of the product's link." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product: Related items",
+      "blocks": [
+        { "type": "card" },
+        { "type": "card" }
+      ]
+    }
+  ]
+}
+{% endschema %}
