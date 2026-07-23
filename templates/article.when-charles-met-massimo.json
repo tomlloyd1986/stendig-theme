@@ -11,10 +11,26 @@
   "sections": {
     "header": {
       "type": "blog-header",
-      "settings": {}
+      "settings": {
+        "title": "When Charles met Massimo",
+        "standfirst": "How a furniture dealer and a designer made a calendar that never went out of style"
+      }
     },
     "content": {
       "type": "blog-content",
+      "blocks": {
+        "images_87HkVi": {
+          "type": "images",
+          "settings": {
+            "width": "ultrawide",
+            "image_1": "shopify://shop_images/tumblr_f197e0221b8eb140d6ad0481c25de83e_b1cf6438_1280_1.jpg",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "images_87HkVi"
+      ],
       "settings": {}
     }
   },
