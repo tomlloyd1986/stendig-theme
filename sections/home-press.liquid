@@ -10,7 +10,13 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .press {
-    padding: 56px 20px 64px;
+    display: block;
+    padding: 0 20px 64px;
+  }
+  #shopify-section-{{ section.id }} .press__divider {
+    border: none;
+    border-top: 1px solid #e2e2e2;
+    margin: 0 0 14px;
   }
   #shopify-section-{{ section.id }} .press__eyebrow {
     font-family: var(--font-body-family);
@@ -91,7 +97,7 @@
 
   @media screen and (min-width: 750px) and (max-width: 989px) {
     #shopify-section-{{ section.id }} .press {
-      padding: 48px 20px 56px;
+      padding: 0 20px 56px;
     }
     #shopify-section-{{ section.id }} .press__eyebrow { margin-bottom: 40px; }
     #shopify-section-{{ section.id }} .press__grid { grid-template-columns: 1fr 280px; gap: 44px; }
@@ -105,7 +111,7 @@
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .press { padding: 40px 12px 48px; }
+    #shopify-section-{{ section.id }} .press { padding: 0 12px 48px; }
     #shopify-section-{{ section.id }} .press__eyebrow { margin-bottom: 32px; }
     #shopify-section-{{ section.id }} .press__quote {
       font-size: 26px;
@@ -118,6 +124,8 @@
 {% endstyle %}
 
 <press-switcher class="press">
+  <hr class="press__divider">
+
   {%- if section.settings.eyebrow != blank -%}
     <h3 class="press__eyebrow">{{ section.settings.eyebrow | escape }}</h3>
   {%- endif -%}
