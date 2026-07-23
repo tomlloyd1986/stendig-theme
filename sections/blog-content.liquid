@@ -188,12 +188,16 @@
                   case i
                     when 1
                       assign img = block.settings.image_1
+                      assign img_caption = block.settings.caption_1
                     when 2
                       assign img = block.settings.image_2
+                      assign img_caption = block.settings.caption_2
                     when 3
                       assign img = block.settings.image_3
+                      assign img_caption = block.settings.caption_3
                     when 4
                       assign img = block.settings.image_4
+                      assign img_caption = block.settings.caption_4
                   endcase
                 -%}
                 {%- if img != blank -%}
@@ -204,16 +208,16 @@
                       sizes="(max-width: 749px) {% if img_count == 1 %}100vw{% else %}50vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 760 | divided_by: img_count }}px{% when 'wide' %}{{ 1040 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
                       width="{{ img.width }}"
                       height="{{ img.height }}"
-                      alt="{{ img.alt | default: block.settings.caption | escape }}"
+                      alt="{{ img.alt | default: img_caption | escape }}"
                       loading="lazy"
                     >
+                    {%- if img_caption != blank -%}
+                      <p class="blogc__caption">{{ img_caption | escape }}</p>
+                    {%- endif -%}
                   </div>
                 {%- endif -%}
               {%- endfor -%}
             </div>
-            {%- if block.settings.caption != blank -%}
-              <figcaption class="blogc__caption">{{ block.settings.caption | escape }}</figcaption>
-            {%- endif -%}
           </figure>
         {%- endif -%}
 
@@ -311,10 +315,13 @@
           "default": "standard"
         },
         { "type": "image_picker", "id": "image_1", "label": "Image 1" },
+        { "type": "text", "id": "caption_1", "label": "Caption 1" },
         { "type": "image_picker", "id": "image_2", "label": "Image 2" },
+        { "type": "text", "id": "caption_2", "label": "Caption 2" },
         { "type": "image_picker", "id": "image_3", "label": "Image 3" },
+        { "type": "text", "id": "caption_3", "label": "Caption 3" },
         { "type": "image_picker", "id": "image_4", "label": "Image 4" },
-        { "type": "text", "id": "caption", "label": "Caption" }
+        { "type": "text", "id": "caption_4", "label": "Caption 4" }
       ]
     },
     {
