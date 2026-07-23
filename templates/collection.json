@@ -1,1 +1,113 @@
-{"sections":{"banner":{"type":"main-collection-banner","settings":{"show_collection_description":true,"show_collection_image":false}},"product-grid":{"type":"main-collection-product-grid","settings":{"products_per_page":16,"image_ratio":"adapt","show_secondary_image":true,"add_image_padding":false,"show_image_outline":false,"show_vendor":false,"show_rating":false,"enable_filtering":false,"enable_sorting":false,"collapse_on_larger_devices":false}}},"order":["banner","product-grid"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "header": {
+      "type": "editorial-header",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "The 2026 Collection"
+          }
+        },
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Massimo Vignelli's classic is joined by a modern reinvention, this year available in a choice of four different colours. Purchase a Stendig and V together, and receive an automatic discount at checkout.</p>"
+          }
+        },
+        "divider": {
+          "type": "divider",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "heading",
+        "text",
+        "divider"
+      ],
+      "settings": {
+        "space_above": 48,
+        "heading_size": 32,
+        "text_size": 14,
+        "space_above_divider": 80,
+        "space_below_divider": 20
+      }
+    },
+    "grid": {
+      "type": "curated-product-grid",
+      "disabled": true,
+      "settings": {
+        "source": "custom",
+        "collection": "",
+        "products": [
+          "stendig-calendar",
+          "v-calendar",
+          "hanging-strips"
+        ],
+        "split_variants": true,
+        "columns_desktop": 4,
+        "max_products": 12
+      }
+    },
+    "grouped_product_grid_KF9KyT": {
+      "type": "grouped-product-grid",
+      "blocks": {
+        "group_ixGWex": {
+          "type": "group",
+          "settings": {
+            "heading": "Stendig Calendar",
+            "source": "custom",
+            "collection": "",
+            "products": [
+              "stendig-calendar",
+              "hanging-strips"
+            ],
+            "split_variants": false,
+            "view_all_label": "View all",
+            "view_all_link": ""
+          }
+        },
+        "group_BjJtme": {
+          "type": "group",
+          "settings": {
+            "heading": "V Calendar",
+            "source": "custom",
+            "collection": "",
+            "products": [
+              "v-calendar"
+            ],
+            "split_variants": true,
+            "view_all_label": "View all",
+            "view_all_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "group_ixGWex",
+        "group_BjJtme"
+      ],
+      "name": "Grouped product grid",
+      "settings": {
+        "columns_desktop": 4,
+        "max_per_group": 8,
+        "heading_size": 14,
+        "group_spacing": 64,
+        "show_view_all": true
+      }
+    }
+  },
+  "order": [
+    "header",
+    "grid",
+    "grouped_product_grid_KF9KyT"
+  ]
+}
