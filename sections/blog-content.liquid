@@ -1,0 +1,365 @@
+{% comment %}
+  Blog: Content — the body of an editorial article as one reorderable
+  stack of blocks (Avant Arte structure, the site's own type system):
+    Text    — rich text in a centred 640px reading column
+    Quote   — display-scale centred pull quote (curly quotes added)
+    Images  — 1 to 4 images in a row, at Standard (840px), Wide (1200px)
+              or Ultrawide (full width within the page gutters), with an
+              optional caption
+    Product — small bordered product card (image, title, price/sold out)
+              linking to the product
+    Video   — Shopify-hosted upload or YouTube/Vimeo URL, same three
+              widths, optional caption and autoplay loop
+  Widths, type and spacing are locked; only content is editable.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .blogc {
+    padding: 0 20px 80px;
+  }
+  #shopify-section-{{ section.id }} .blogc__w-body { max-width: 640px; margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .blogc__w-standard { max-width: 840px; margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .blogc__w-wide { max-width: 1200px; margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .blogc__w-ultrawide { max-width: none; }
+
+  /* Text */
+  #shopify-section-{{ section.id }} .blogc__text {
+    margin-bottom: 28px;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+  }
+  #shopify-section-{{ section.id }} .blogc__text p { margin: 0 0 21px; }
+  #shopify-section-{{ section.id }} .blogc__text p:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .blogc__text a {
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  #shopify-section-{{ section.id }} .blogc__text strong { font-weight: 700; }
+
+  /* Quote */
+  #shopify-section-{{ section.id }} .blogc__quote {
+    margin-top: 44px;
+    margin-bottom: 72px;
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 28px;
+    line-height: 1.35;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  /* Images / video */
+  #shopify-section-{{ section.id }} .blogc__media {
+    margin-bottom: 48px;
+  }
+  #shopify-section-{{ section.id }} .blogc__media-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #shopify-section-{{ section.id }} .blogc__media-row > div {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  #shopify-section-{{ section.id }} .blogc__media img,
+  #shopify-section-{{ section.id }} .blogc__media video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed {
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  #shopify-section-{{ section.id }} .blogc__caption {
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    line-height: 19px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    margin: 12px 0 0;
+  }
+
+  /* Product card */
+  #shopify-section-{{ section.id }} .blogc__product {
+    margin-bottom: 48px;
+  }
+  #shopify-section-{{ section.id }} .blogc__product-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid #e2e2e2;
+    padding: 12px;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .blogc__product-card img {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    flex: none;
+  }
+  #shopify-section-{{ section.id }} .blogc__product-title {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .blogc__product-meta {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .blogc { padding: 0 12px 56px; }
+    #shopify-section-{{ section.id }} .blogc__quote {
+      font-size: 22px;
+      margin-top: 32px;
+      margin-bottom: 48px;
+    }
+    #shopify-section-{{ section.id }} .blogc__media { margin-bottom: 32px; }
+    #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
+    /* 3-4 images wrap into two columns on mobile */
+    #shopify-section-{{ section.id }} .blogc__media-row.has-many > div {
+      flex: 1 1 calc(50% - 4px);
+    }
+    #shopify-section-{{ section.id }} .blogc__product { margin-bottom: 32px; }
+  }
+{% endstyle %}
+
+<div class="blogc">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+
+      {%- when 'text' -%}
+        <div class="blogc__text blogc__w-body" {{ block.shopify_attributes }}>
+          {{ block.settings.body }}
+        </div>
+
+      {%- when 'quote' -%}
+        {%- if block.settings.quote != blank -%}
+          <blockquote class="blogc__quote blogc__w-standard" {{ block.shopify_attributes }}>&ldquo;{{ block.settings.quote }}&rdquo;</blockquote>
+        {%- endif -%}
+
+      {%- when 'images' -%}
+        {%- liquid
+          assign img_count = 0
+          if block.settings.image_1 != blank
+            assign img_count = img_count | plus: 1
+          endif
+          if block.settings.image_2 != blank
+            assign img_count = img_count | plus: 1
+          endif
+          if block.settings.image_3 != blank
+            assign img_count = img_count | plus: 1
+          endif
+          if block.settings.image_4 != blank
+            assign img_count = img_count | plus: 1
+          endif
+        -%}
+        {%- if img_count > 0 -%}
+          <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
+            <div class="blogc__media-row{% if img_count > 2 %} has-many{% endif %}">
+              {%- for i in (1..4) -%}
+                {%- liquid
+                  case i
+                    when 1
+                      assign img = block.settings.image_1
+                    when 2
+                      assign img = block.settings.image_2
+                    when 3
+                      assign img = block.settings.image_3
+                    when 4
+                      assign img = block.settings.image_4
+                  endcase
+                -%}
+                {%- if img != blank -%}
+                  <div>
+                    <img
+                      src="{{ img | image_url: width: 1200 }}"
+                      srcset="{{ img | image_url: width: 550 }} 550w, {{ img | image_url: width: 840 }} 840w, {{ img | image_url: width: 1200 }} 1200w, {{ img | image_url: width: 1680 }} 1680w, {{ img | image_url: width: 2048 }} 2048w"
+                      sizes="(max-width: 749px) {% if img_count == 1 %}100vw{% else %}50vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 840 | divided_by: img_count }}px{% when 'wide' %}{{ 1200 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
+                      width="{{ img.width }}"
+                      height="{{ img.height }}"
+                      alt="{{ img.alt | default: block.settings.caption | escape }}"
+                      loading="lazy"
+                    >
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if block.settings.caption != blank -%}
+              <figcaption class="blogc__caption">{{ block.settings.caption | escape }}</figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endif -%}
+
+      {%- when 'product' -%}
+        {%- liquid
+          assign card_product = block.settings.product
+        -%}
+        {%- if card_product != blank -%}
+          <div class="blogc__product blogc__w-body" {{ block.shopify_attributes }}>
+            <a href="{{ card_product.url }}" class="blogc__product-card">
+              {%- if card_product.featured_media != blank -%}
+                <img
+                  src="{{ card_product.featured_media | image_url: width: 128 }}"
+                  srcset="{{ card_product.featured_media | image_url: width: 128 }} 1x, {{ card_product.featured_media | image_url: width: 256 }} 2x"
+                  width="64"
+                  height="64"
+                  alt="{{ card_product.title | escape }}"
+                  loading="lazy"
+                >
+              {%- endif -%}
+              <span>
+                <span class="blogc__product-title">{{ card_product.title | escape }}</span>
+                <span class="blogc__product-meta">
+                  {%- if block.settings.subtitle != blank -%}
+                    {{ block.settings.subtitle | escape }}
+                  {%- elsif card_product.available -%}
+                    {{ card_product.price | money }}
+                  {%- else -%}
+                    Sold out
+                  {%- endif -%}
+                </span>
+              </span>
+            </a>
+          </div>
+        {%- endif -%}
+
+      {%- when 'video' -%}
+        <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
+          {%- if block.settings.video != blank -%}
+            {%- if block.settings.autoplay -%}
+              {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+            {%- else -%}
+              {{ block.settings.video | video_tag: controls: true }}
+            {%- endif -%}
+          {%- elsif block.settings.video_url != blank -%}
+            <div class="blogc__embed">
+              {%- if block.settings.video_url.type == 'youtube' -%}
+                <iframe src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              {%- elsif block.settings.video_url.type == 'vimeo' -%}
+                <iframe src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+          {%- if block.settings.caption != blank -%}
+            <figcaption class="blogc__caption">{{ block.settings.caption | escape }}</figcaption>
+          {%- endif -%}
+        </figure>
+
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Blog: Content",
+  "max_blocks": 50,
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "richtext", "id": "body", "label": "Text", "info": "Use bold for question-style subheadings." }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Quote",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "info": "Quotation marks are added automatically." }
+      ]
+    },
+    {
+      "type": "images",
+      "name": "Images",
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Width",
+          "options": [
+            { "value": "standard", "label": "Standard (840px)" },
+            { "value": "wide", "label": "Wide (1200px)" },
+            { "value": "ultrawide", "label": "Ultrawide (full width)" }
+          ],
+          "default": "standard"
+        },
+        { "type": "image_picker", "id": "image_1", "label": "Image 1" },
+        { "type": "image_picker", "id": "image_2", "label": "Image 2" },
+        { "type": "image_picker", "id": "image_3", "label": "Image 3" },
+        { "type": "image_picker", "id": "image_4", "label": "Image 4" },
+        { "type": "text", "id": "caption", "label": "Caption" }
+      ]
+    },
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "info": "Optional. Replaces the automatic price / sold-out line." }
+      ]
+    },
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Width",
+          "options": [
+            { "value": "standard", "label": "Standard (840px)" },
+            { "value": "wide", "label": "Wide (1200px)" },
+            { "value": "ultrawide", "label": "Ultrawide (full width)" }
+          ],
+          "default": "standard"
+        },
+        { "type": "video", "id": "video", "label": "Video", "info": "Shopify-hosted. Takes priority over the URL below." },
+        { "type": "video_url", "id": "video_url", "label": "YouTube / Vimeo URL", "accept": ["youtube", "vimeo"] },
+        { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
+        { "type": "text", "id": "caption", "label": "Caption" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["article", "page"]
+  },
+  "presets": [
+    {
+      "name": "Blog: Content",
+      "blocks": [
+        { "type": "text" },
+        { "type": "images" },
+        { "type": "quote" },
+        { "type": "text" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,70 @@
+{% comment %}
+  Blog: Header — the top of an editorial article (Avant Arte style, in the
+  site's own type): centred title and standfirst. No buttons, date or
+  author, per the design brief. The title defaults to the article's own
+  title so the template can be reused across posts; the standfirst is a
+  per-template setting.
+{% endcomment %}
+
+{%- liquid
+  assign header_title = section.settings.title | default: article.title
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} .blogh {
+    padding: 48px 20px 40px;
+    text-align: center;
+  }
+  #shopify-section-{{ section.id }} .blogh__title {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    max-width: 840px;
+    margin: 0 auto 16px;
+    text-wrap: pretty;
+  }
+  #shopify-section-{{ section.id }} .blogh__standfirst {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .blogh {
+      padding: 32px 12px 28px;
+    }
+    #shopify-section-{{ section.id }} .blogh__title { font-size: 26px; }
+  }
+{% endstyle %}
+
+<div class="blogh">
+  {%- if header_title != blank -%}
+    <h1 class="blogh__title">{{ header_title | escape }}</h1>
+  {%- endif -%}
+  {%- if section.settings.standfirst != blank -%}
+    <p class="blogh__standfirst">{{ section.settings.standfirst }}</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Blog: Header",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the article's title." },
+    { "type": "textarea", "id": "standfirst", "label": "Standfirst", "info": "The short intro paragraph under the title." }
+  ],
+  "enabled_on": {
+    "templates": ["article", "page"]
+  },
+  "presets": [
+    { "name": "Blog: Header" }
+  ]
+}
+{% endschema %}
