@@ -43,8 +43,9 @@
 
   /* Quote */
   #shopify-section-{{ section.id }} .blogc__quotewrap {
-    margin-top: 44px;
-    margin-bottom: 72px;
+    /* A touch wider than the 640px reading column */
+    max-width: 680px;
+    margin: 44px auto 72px;
   }
   #shopify-section-{{ section.id }} .blogc__quote {
     /* Reset Dawn's base blockquote (italic, grey, left border, padding) */
@@ -53,8 +54,7 @@
     border: none;
     font-style: normal;
     font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
-    /* 1.25 : 0.875 ratio against the 14px body copy */
-    font-size: 20px;
+    font-size: 30px;
     line-height: 1.3;
     font-weight: 400;
     letter-spacing: 0;
@@ -155,6 +155,7 @@
       margin-top: 32px;
       margin-bottom: 48px;
     }
+    #shopify-section-{{ section.id }} .blogc__quote { font-size: 24px; }
     #shopify-section-{{ section.id }} .blogc__media { margin-bottom: 32px; }
     #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
     /* 3-4 images wrap into two columns on mobile */
@@ -176,7 +177,7 @@
 
       {%- when 'quote' -%}
         {%- if block.settings.quote != blank -%}
-          <div class="blogc__quotewrap blogc__w-standard" {{ block.shopify_attributes }}>
+          <div class="blogc__quotewrap" {{ block.shopify_attributes }}>
             <blockquote class="blogc__quote">&ldquo;{{ block.settings.quote }}&rdquo;</blockquote>
             {%- if block.settings.attribution != blank -%}
               <p class="blogc__quote-attr">{{ block.settings.attribution | escape }}</p>
