@@ -178,7 +178,7 @@
       {%- when 'quote' -%}
         {%- if block.settings.quote != blank -%}
           <div class="blogc__quotewrap" {{ block.shopify_attributes }}>
-            <blockquote class="blogc__quote">&ldquo;{{ block.settings.quote }}&rdquo;</blockquote>
+            <blockquote class="blogc__quote">&ldquo;{{ block.settings.quote | escape }}&rdquo;</blockquote>
             {%- if block.settings.attribution != blank -%}
               <p class="blogc__quote-attr">{{ block.settings.attribution | escape }}</p>
             {%- endif -%}

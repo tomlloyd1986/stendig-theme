@@ -54,7 +54,7 @@
     display: none;
     margin: 0 0 40px;
     font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 44px;
     line-height: 1.25;
     color: #121212;
@@ -139,7 +139,7 @@
             data-press-quote
             data-index="{{ forloop.index0 }}"
             {{ block.shopify_attributes }}
-          >&ldquo;{{ block.settings.quote }}&rdquo;</p>
+          >&ldquo;{{ block.settings.quote | escape }}&rdquo;</p>
         {%- endfor -%}
       </div>
 
@@ -194,7 +194,7 @@
     }
   }
 
-  customElements.define('press-switcher', PressSwitcher);
+  if (!customElements.get('press-switcher')) customElements.define('press-switcher', PressSwitcher);
 {% endjavascript %}
 
 {% schema %}

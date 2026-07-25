@@ -174,7 +174,7 @@
 
           # Resolve an optional colour variant by (partial, case-insensitive)
           # match against the variant titles, e.g. "White" -> "White / A1".
-          assign card_variant = null
+          assign card_variant = false
           if block.settings.variant != blank and card_product != blank
             assign v_needle = block.settings.variant | strip | downcase
             for v in card_product.variants

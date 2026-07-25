@@ -257,7 +257,7 @@
     }
   }
 
-  customElements.define('home-ig-strip', HomeIgStrip);
+  if (!customElements.get('home-ig-strip')) customElements.define('home-ig-strip', HomeIgStrip);
 {% endjavascript %}
 
 {% schema %}
