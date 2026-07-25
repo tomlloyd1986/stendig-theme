@@ -172,35 +172,16 @@
         {%- liquid
           assign card_product = block.settings.product
 
-          # Resolve an optional colour variant by exact (case-insensitive)
-          # match against the variant title or any option value, so "Light
-          # Blue" and "Dark Blue" can never collide the way substring
-          # matching on "Blue" would.
+          # Resolve an optional variant by exact (case-insensitive) SKU
+          # match — SKUs are unique per variant, so this can't collide the
+          # way colour names could.
           assign card_variant = false
-
-          # "custom" in the dropdown defers to the free-text field, so new
-          # colourways can be used before they're added to the fixed list.
-          assign v_wanted = block.settings.variant
-          if v_wanted == 'custom'
-            assign v_wanted = block.settings.variant_custom
-          endif
-
-          if v_wanted != blank and v_wanted != 'none' and card_product != blank
-            assign v_needle = v_wanted | strip | downcase
+          if block.settings.sku != blank and card_product != blank
+            assign sku_needle = block.settings.sku | strip | downcase
             for v in card_product.variants
-              assign v_title = v.title | strip | downcase
-              if v_title == v_needle
+              assign v_sku = v.sku | strip | downcase
+              if v_sku == sku_needle
                 assign card_variant = v
-                break
-              endif
-              for v_opt in v.options
-                assign v_opt_d = v_opt | strip | downcase
-                if v_opt_d == v_needle
-                  assign card_variant = v
-                  break
-                endif
-              endfor
-              if card_variant
                 break
               endif
             endfor
@@ -291,27 +272,10 @@
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Supplies the live price and the card's link." },
         {
-          "type": "select",
-          "id": "variant",
-          "label": "Colour variant",
-          "options": [
-            { "value": "none", "label": "Whole product (no variant)" },
-            { "value": "White", "label": "White" },
-            { "value": "Black", "label": "Black" },
-            { "value": "Red", "label": "Red" },
-            { "value": "Yellow", "label": "Yellow" },
-            { "value": "Light Blue", "label": "Light Blue" },
-            { "value": "Dark Blue", "label": "Dark Blue" },
-            { "value": "custom", "label": "Other (type name below)" }
-          ],
-          "default": "none",
-          "info": "The card links to this colour of the chosen product and uses its price and image. Must match the variant's name on the product."
-        },
-        {
           "type": "text",
-          "id": "variant_custom",
-          "label": "Other colour variant",
-          "info": "Only used when the dropdown above is set to \"Other\". Type the variant's exact name, e.g. Green."
+          "id": "sku",
+          "label": "Variant SKU",
+          "info": "Optional. The card links to the variant with this SKU and uses its price and image. Leave blank to use the whole product."
         },
         { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the variant's or product's image. Displays at 4:5." },
         { "type": "image_picker", "id": "hover_image", "label": "Hover image", "info": "Optional. Shown while the pointer is over the card." },
