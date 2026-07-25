@@ -172,15 +172,27 @@
         {%- liquid
           assign card_product = block.settings.product
 
-          # Resolve an optional colour variant by (partial, case-insensitive)
-          # match against the variant titles, e.g. "White" -> "White / A1".
+          # Resolve an optional colour variant by exact (case-insensitive)
+          # match against the variant title or any option value, so "Light
+          # Blue" and "Dark Blue" can never collide the way substring
+          # matching on "Blue" would.
           assign card_variant = false
           if block.settings.variant != blank and card_product != blank
             assign v_needle = block.settings.variant | strip | downcase
             for v in card_product.variants
-              assign v_title = v.title | downcase
-              if v_title contains v_needle
+              assign v_title = v.title | strip | downcase
+              if v_title == v_needle
                 assign card_variant = v
+                break
+              endif
+              for v_opt in v.options
+                assign v_opt_d = v_opt | strip | downcase
+                if v_opt_d == v_needle
+                  assign card_variant = v
+                  break
+                endif
+              endfor
+              if card_variant
                 break
               endif
             endfor
@@ -270,7 +282,7 @@
       "name": "Product card",
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Supplies the live price and the card's link." },
-        { "type": "text", "id": "variant", "label": "Colour variant", "info": "Optional. Type the variant's colour, e.g. \"White\". The card then links to that variant and uses its price and image." },
+        { "type": "text", "id": "variant", "label": "Colour variant", "info": "Optional. Type the variant's colour exactly as named on the product, e.g. \"Light Blue\". The card then links to that variant and uses its price and image." },
         { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the variant's or product's image. Displays at 4:5." },
         { "type": "image_picker", "id": "hover_image", "label": "Hover image", "info": "Optional. Shown while the pointer is over the card." },
         { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the product's title." }
