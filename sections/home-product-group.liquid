@@ -177,7 +177,7 @@
           # Blue" and "Dark Blue" can never collide the way substring
           # matching on "Blue" would.
           assign card_variant = false
-          if block.settings.variant != blank and card_product != blank
+          if block.settings.variant != blank and block.settings.variant != 'none' and card_product != blank
             assign v_needle = block.settings.variant | strip | downcase
             for v in card_product.variants
               assign v_title = v.title | strip | downcase
@@ -282,7 +282,22 @@
       "name": "Product card",
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Supplies the live price and the card's link." },
-        { "type": "text", "id": "variant", "label": "Colour variant", "info": "Optional. Type the variant's colour exactly as named on the product, e.g. \"Light Blue\". The card then links to that variant and uses its price and image." },
+        {
+          "type": "select",
+          "id": "variant",
+          "label": "Colour variant",
+          "options": [
+            { "value": "none", "label": "Whole product (no variant)" },
+            { "value": "White", "label": "White" },
+            { "value": "Black", "label": "Black" },
+            { "value": "Red", "label": "Red" },
+            { "value": "Yellow", "label": "Yellow" },
+            { "value": "Light Blue", "label": "Light Blue" },
+            { "value": "Dark Blue", "label": "Dark Blue" }
+          ],
+          "default": "none",
+          "info": "The card links to this colour of the chosen product and uses its price and image. Must match the variant's name on the product."
+        },
         { "type": "image_picker", "id": "image", "label": "Card image", "info": "Optional. Falls back to the variant's or product's image. Displays at 4:5." },
         { "type": "image_picker", "id": "hover_image", "label": "Hover image", "info": "Optional. Shown while the pointer is over the card." },
         { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the product's title." }
