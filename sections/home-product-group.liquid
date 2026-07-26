@@ -138,6 +138,15 @@
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .pfg { padding-left: 12px; padding-right: 12px; }
   }
+
+  /* Editor-only diagnostic (request.design_mode) */
+  #shopify-section-{{ section.id }} .pfg__sku-warn {
+    font-family: var(--font-body-family);
+    font-size: 12px;
+    line-height: 1.5;
+    color: #b00020;
+    margin: 8px 0 0;
+  }
 {% endstyle %}
 
 <div class="pfg">
@@ -251,6 +260,13 @@
               {%- if card_compare > card_price -%}
                 <s>{{ card_compare | money }}</s>
               {%- endif -%}
+            </p>
+          {%- endif -%}
+
+          {%- comment -%} Theme-editor-only warning; never renders on the storefront {%- endcomment -%}
+          {%- if request.design_mode and block.settings.sku != blank and card_variant == false and card_product != blank -%}
+            <p class="pfg__sku-warn">No variant of &ldquo;{{ card_product.title | escape }}&rdquo; has SKU &ldquo;{{ block.settings.sku | escape }}&rdquo; &mdash; showing the whole product. Its variant SKUs are:
+              {%- for v in card_product.variants %} {{ v.title | escape }}: {{ v.sku | default: '(no SKU)' }}{% unless forloop.last %},{% endunless %}{% endfor -%}
             </p>
           {%- endif -%}
         </a>
