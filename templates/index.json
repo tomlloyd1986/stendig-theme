@@ -88,11 +88,27 @@
     "home_product_group_h3zpep": {
       "type": "home-product-group",
       "blocks": {
+        "product_jTPGPj": {
+          "type": "product",
+          "settings": {
+            "product": "v-calendar",
+            "sku": "SC26W",
+            "title": ""
+          }
+        },
+        "product_br8Eqk": {
+          "type": "product",
+          "settings": {
+            "product": "v-calendar",
+            "sku": "VC26R",
+            "title": ""
+          }
+        },
         "product_JFPCTA": {
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "",
+            "sku": "SC26B",
             "title": ""
           }
         },
@@ -106,6 +122,8 @@
         }
       },
       "block_order": [
+        "product_jTPGPj",
+        "product_br8Eqk",
         "product_JFPCTA",
         "product_3HT8WQ"
       ],
