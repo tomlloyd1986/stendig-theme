@@ -41,8 +41,12 @@
       padding-right: 20px !important;
     }
   }
+  /* The bar's content caps at the site-wide max width (the white background
+     and hairline on the wrapper still span the full viewport). */
   #shopify-section-{{ section.id }} .header {
-    max-width: 100% !important;
+    max-width: var(--st-page-max, 1440px) !important;
+    margin-left: auto;
+    margin-right: auto;
   }
   /* On mobile the side gutter is 12px (the Custom CSS previously forced 20px
      at every width, quietly overriding the intended mobile gutter). */
@@ -193,7 +197,8 @@
   .st-resources {
     position: absolute;
     top: 100%;
-    right: 20px;
+    /* Track the capped header content's right gutter, not the viewport edge */
+    right: max(20px, calc((100% - var(--st-page-max, 1440px)) / 2 + 20px));
     width: 300px;
     box-sizing: border-box;
     background: #fff;

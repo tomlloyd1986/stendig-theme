@@ -14,10 +14,15 @@
     justify-content: center;
     gap: 10px;
     padding: 80px 20px;
+    max-width: var(--st-page-max, 1440px);
+    margin-left: auto;
+    margin-right: auto;
   }
+  /* Tiles are a quarter of the viewport, but stop growing once the page
+     hits its site-wide cap */
   #shopify-section-{{ section.id }} .ft__tile {
-    flex: 0 0 25vw;
-    max-width: 25vw;
+    flex: 0 0 min(25vw, calc(var(--st-page-max, 1440px) / 4));
+    max-width: min(25vw, calc(var(--st-page-max, 1440px) / 4));
     min-width: 0;
     display: block;
     text-decoration: none;

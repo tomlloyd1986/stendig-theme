@@ -13,7 +13,13 @@
 {% style %}
   /* display:block matters — <home-ig-strip> is a custom element (inline by
      default), and horizontal padding doesn't wrap block children on inlines */
-  #shopify-section-{{ section.id }} .igs { display: block; padding: 0 20px; }
+  #shopify-section-{{ section.id }} .igs {
+    display: block;
+    padding: 0 20px;
+    max-width: var(--st-page-max, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   #shopify-section-{{ section.id }} .igs__divider {
     border: none;
