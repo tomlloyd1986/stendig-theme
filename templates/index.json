@@ -92,7 +92,7 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "SC26W",
+            "sku": "VC26W",
             "title": ""
           }
         },
@@ -108,7 +108,7 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "SC26B",
+            "sku": "VC26B",
             "title": ""
           }
         },
@@ -116,7 +116,7 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "",
+            "sku": "VC26Y",
             "title": "V Calendar 2026 (Yellow)"
           }
         }
