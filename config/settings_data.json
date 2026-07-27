@@ -82,9 +82,13 @@
           "nav_offset_desktop": -11,
           "nav_offset_mobile": -4,
           "collection_label": "Collection",
+          "collection_url": "",
           "mobile_collection_label": "Browse the collection",
           "menu_label": "Menu",
           "resources_label": "Resources",
+          "resources_menu": "",
+          "journal_label": "Browse the journal",
+          "journal_url": "",
           "show_line_separator": false,
           "enable_sticky_header": true,
           "transparent-header": false,
@@ -137,6 +141,50 @@
           "enable_country_selector": false,
           "enable_language_selector": true,
           "payment_enable": true
+        }
+      },
+      "popup-signup": {
+        "type": "popup-signup",
+        "blocks": {
+          "version_cXzFyR": {
+            "type": "version",
+            "settings": {
+              "name": "Out of stock",
+              "enabled": true,
+              "languages": "",
+              "eyebrow": "The Stendig",
+              "heading": "Sold out for 2026",
+              "body": "Be the first to hear when next year's calendars go on sale.",
+              "placeholder": "Email address",
+              "button_label": "Notify me",
+              "dismiss_label": "No thanks",
+              "ty_eyebrow": "Thank you",
+              "ty_heading": "You're on the list",
+              "ty_body": "We'll email you when next year's calendars go on sale.",
+              "code": "",
+              "copy_label": "Copy",
+              "copied_label": "Copied",
+              "shop_label": "Shop the store",
+              "shop_url": "",
+              "experiment": "",
+              "variant": "A"
+            }
+          }
+        },
+        "block_order": [
+          "version_cXzFyR"
+        ],
+        "settings": {
+          "enabled": true,
+          "trigger_mode": "delay_scroll",
+          "delay_seconds": 6,
+          "scroll_percent": 50,
+          "dismiss_days": 14,
+          "signup_days": 180,
+          "once_per_session": true,
+          "hide_on_cart": true,
+          "respect_consent": true,
+          "error_text": "Something went wrong — please try again."
         }
       }
     },
