@@ -224,7 +224,6 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".page-width {max-width: none !important;}",
       ".wisepops-wisepop-scrollable {box-shadow: unset !important;}",
       ".product__description {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-size: 14px; /* adjust to taste */ line-height: 1.5; /* adjust spacing */ letter-spacing: 0; /* tracking */}",
       ".product__description p {margin-bottom: 1.2em; /* paragraph spacing */}",
