@@ -121,6 +121,8 @@
   .stp__input::placeholder { color: rgba(18, 18, 18, 0.55); }
   .stp__input:focus { outline: none; border-color: #121212; }
 
+  /* Matches the product page's add-to-cart button: sentence case,
+     15px/1.2 with its slight tracking, black fill */
   .stp__button {
     width: 100%;
     box-sizing: border-box;
@@ -129,11 +131,10 @@
     border: none;
     border-radius: 0;
     font-family: var(--font-body-family);
-    font-size: 16px;
-    line-height: 16px;
+    font-size: 15px;
+    line-height: 1.2;
     font-weight: 400;
-    letter-spacing: 0;
-    text-transform: uppercase;
+    letter-spacing: 0.1rem;
     padding: 16px;
     cursor: pointer;
     margin: 0 0 16px;
@@ -241,16 +242,20 @@
     {%- liquid
       assign show_block = block.settings.enabled
 
-      if show_block and block.settings.markets != blank
+      # "All markets" checked = no market filter; unchecked = only the
+      # handles listed (unchecked with an empty list shows nowhere).
+      if show_block and block.settings.all_markets == false
         assign show_block = false
-        assign wanted = block.settings.markets | downcase | split: ','
-        for m in wanted
-          assign m_t = m | strip
-          if m_t == market_handle
-            assign show_block = true
-            break
-          endif
-        endfor
+        if block.settings.markets != blank
+          assign wanted = block.settings.markets | downcase | split: ','
+          for m in wanted
+            assign m_t = m | strip
+            if m_t == market_handle
+              assign show_block = true
+              break
+            endif
+          endfor
+        endif
       endif
 
       if show_block and block.settings.languages != blank
@@ -576,14 +581,15 @@
         { "type": "text", "id": "name", "label": "Campaign name", "info": "Internal — used in tags and analytics. E.g. Out of stock 2026.", "default": "Out of stock" },
         { "type": "checkbox", "id": "enabled", "label": "Enabled", "default": true },
         { "type": "header", "content": "Targeting" },
-        { "type": "text", "id": "markets", "label": "Markets", "info": "Comma-separated market handles (e.g. au, eu). Empty = all markets." },
+        { "type": "checkbox", "id": "all_markets", "label": "All markets", "default": true },
+        { "type": "text", "id": "markets", "label": "Only these markets", "info": "Used when All markets is off. Comma-separated market handles from Settings → Markets (e.g. au, eu)." },
         { "type": "text", "id": "languages", "label": "Languages", "info": "Comma-separated language codes (e.g. en, es). Empty = all languages." },
         { "type": "header", "content": "Sign-up state" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Sold out for 2026" },
         { "type": "textarea", "id": "body", "label": "Body", "default": "Be the first to hear when next year's calendars go on sale." },
         { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Email address" },
-        { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me", "info": "Displays in uppercase." },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me" },
         { "type": "text", "id": "dismiss_label", "label": "Dismiss label", "default": "No thanks" },
         { "type": "header", "content": "Thank-you state" },
         { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
