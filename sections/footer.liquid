@@ -89,10 +89,12 @@
               assign nl_market = 'primary'
               if nl_path != '/'
                 assign nl_market = nl_path | remove_first: '/' | split: '-' | last | downcase
+              else
+                assign nl_path = ''
               endif
             -%}
             {%- form 'customer', id: 'ContactFooter', class: 'footer__newsletter newsletter-form' -%}
-              <input type="hidden" name="contact[tags]" value="newsletter,market:{{ nl_market }},lang:{{ nl_lang }},path:{{ nl_path }}">
+              <input type="hidden" name="contact[tags]" value="newsletter,market:{{ nl_market }},lang:{{ nl_lang }},path:{{ nl_path | default: '/' }}">
               <div class="newsletter-form__field-wrapper">
                 <div class="field">
                   <input

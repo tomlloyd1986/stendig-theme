@@ -37,9 +37,13 @@
 
   # Market key derived from the subfolder ('/en-au' -> 'au'); the root
   # domain is 'primary'. Matches the market checkboxes in the block schema.
+  # PATH is '' (not '/') on the primary market so Brevo templates can build
+  # URLs as domain + PATH + /page for every contact.
   assign market_key = 'primary'
   if path_prefix != '/'
     assign market_key = path_prefix | remove_first: '/' | split: '-' | last | downcase
+  else
+    assign path_prefix = ''
   endif
 -%}
 
@@ -340,7 +344,8 @@
         if block.settings.experiment != blank
           assign tags = tags | append: ',experiment:' | append: block.settings.experiment | handleize | append: ',variant:' | append: block.settings.variant | default: 'a' | handleize
         endif
-        assign tags = tags | append: ',path:' | append: path_prefix | append: ',lang:' | append: lang_code
+        assign path_tag = path_prefix | default: '/'
+        assign tags = tags | append: ',path:' | append: path_tag | append: ',lang:' | append: lang_code
         if block.settings.code != blank
           assign tags = tags | append: ',code:' | append: block.settings.code
         endif
