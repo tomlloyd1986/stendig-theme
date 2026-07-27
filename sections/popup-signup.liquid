@@ -63,26 +63,33 @@
     z-index: 40;
     display: none;
   }
-  /* Entry: subtle fade on desktop, slide up from the bottom edge on
-     mobile. Runs only when the popup first opens — the sign-up to
-     thank-you swap stays instant (fixed-footprint rule). */
+  /* Entry per the design handoff: fade ~280ms ease-out; mobile adds a
+     10px rise (the sanctioned maximum — no full slides). Dismiss fades
+     out ~180ms. The sign-up to thank-you swap stays instant
+     (fixed-footprint rule). */
   @keyframes stp-fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  @keyframes stp-slide-up {
-    from { transform: translateY(calc(100% + 12px)); }
-    to { transform: translateY(0); }
+  @keyframes stp-rise-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes stp-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
   .stp.is-open {
     display: block;
-    animation: stp-fade-in 0.3s ease both;
+    animation: stp-fade-in 0.28s ease-out both;
   }
+  .stp.is-open.is-closing { animation: stp-fade-out 0.18s ease both; }
   @media screen and (max-width: 749px) {
-    .stp.is-open { animation: stp-slide-up 0.35s ease-out both; }
+    .stp.is-open { animation-name: stp-rise-in; }
+    .stp.is-open.is-closing { animation-name: stp-fade-out; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .stp.is-open { animation: none; }
+    .stp.is-open, .stp.is-open.is-closing { animation: none; }
   }
   /* Fixed footprint: both states share this box so nothing ever jumps */
   .stp__content { height: 345px; overflow: hidden; }
@@ -619,7 +626,8 @@
       panel.dataset.bound = '1';
       panel.querySelectorAll('[data-stp-close]').forEach((btn) => {
         btn.addEventListener('click', () => {
-          panel.classList.remove('is-open');
+          panel.classList.add('is-closing');
+          setTimeout(() => panel.classList.remove('is-open', 'is-closing'), 180);
           if (!panel.classList.contains('is-thanks')) {
             this.store('stp:dismissed:' + panel.dataset.campaign, String(Date.now()));
             this.track(panel, 'popup_dismiss');
