@@ -380,10 +380,10 @@
 
             {%- if section.settings.brevo_form_url != blank -%}
               {%- comment -%}
-                Direct-to-Brevo form. Deliberately NOT {% form 'customer' %}:
-                nothing in this form can reach /contact, so Shopify's captcha
-                challenge can never force a page reload. onsubmit guard means
-                even an unbound handler cannot navigate anywhere.
+                Direct-to-Brevo form. Deliberately NOT Shopify's customer
+                form tag: nothing in this form can reach /contact, so the
+                captcha challenge can never force a page reload. onsubmit
+                guard means even an unbound handler cannot navigate anywhere.
               {%- endcomment -%}
               <form class="stp__form" data-stp-brevo action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
                 <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
