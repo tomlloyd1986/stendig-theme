@@ -1,0 +1,604 @@
+{% comment %}
+  Popup: Email signup — native Wisepops replacement, built to the Claude
+  Design handoff (Turn 4, options 4a–4f): bottom-left corner panel at the
+  site gutter, no scrim, sign-up state swaps in place to a thank-you state
+  (with or without discount code) inside an identical footprint.
+
+  Architecture (per interview):
+  - Rendered site-wide from layout/theme.liquid as a static section; all
+    campaign management happens in the theme editor (blocks = versions).
+  - Signups create/update a Shopify customer via the customer form with
+    marketing consent; tags carry campaign / variant / market path /
+    language / discount code, and the existing Brevo–Shopify integration
+    syncs them to Brevo.
+  - Analytics: popup_impression / popup_submit / popup_dismiss events are
+    pushed to window.dataLayer (or gtag) with campaign, experiment,
+    variant, market, language and path_prefix — GA4's BigQuery export can
+    then feed the BI dashboard. If neither exists the calls no-op.
+  - A/B tests: give two (or more) versions the same Experiment name; each
+    visitor is assigned a stable variant, split evenly.
+  - Translations: recommend Shopify Translate & Adapt (theme content) —
+    the block text fields are translatable there per language.
+{% endcomment %}
+
+{%- liquid
+  assign skip_templates = 'cart,password,gift_card'
+  assign tpl = template.name | append: ''
+  assign skip = false
+  if section.settings.hide_on_cart and skip_templates contains tpl
+    assign skip = true
+  endif
+  if section.settings.enabled == false
+    assign skip = true
+  endif
+
+  assign market_handle = ''
+  if localization.market
+    assign market_handle = localization.market.handle | downcase
+  endif
+  assign lang_code = localization.language.iso_code | downcase
+  assign path_prefix = routes.root_url
+-%}
+
+{%- unless skip -%}
+{% style %}
+  st-popup { display: contents; }
+  .stp {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 400px;
+    max-width: calc(100vw - 40px);
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid #e2e2e2;
+    padding: 36px 36px 28px;
+    z-index: 40;
+    display: none;
+  }
+  .stp.is-open { display: block; }
+  /* Fixed footprint: both states share this box so nothing ever jumps */
+  .stp__content { height: 345px; overflow: hidden; }
+
+  .stp__close {
+    position: absolute;
+    top: 24px;
+    right: 21px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #121212;
+  }
+
+  .stp__eyebrow {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0 0 14px;
+  }
+  .stp__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.25;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 12px;
+  }
+  .stp__body {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    margin: 0 0 24px;
+  }
+
+  .stp__input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e2e2e2;
+    border-radius: 0;
+    background: #fff;
+    padding: 14px 16px;
+    font-family: var(--font-body-family);
+    font-size: 15px;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0 0 10px;
+  }
+  .stp__input::placeholder { color: rgba(18, 18, 18, 0.55); }
+  .stp__input:focus { outline: none; border-color: #121212; }
+
+  .stp__button {
+    width: 100%;
+    box-sizing: border-box;
+    background: #161616;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-family: var(--font-body-family);
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    padding: 16px;
+    cursor: pointer;
+    margin: 0 0 16px;
+  }
+
+  .stp__dismiss {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    line-height: 19px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .stp__code-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e2e2e2;
+    padding: 14px 16px;
+    margin: 0 0 14px;
+  }
+  .stp__code {
+    font-family: var(--font-body-family);
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #121212;
+  }
+  .stp__copy {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+  .stp__shop {
+    display: inline-block;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .stp__state--thanks { display: none; }
+  .stp.is-thanks .stp__state--signup { display: none; }
+  .stp.is-thanks .stp__state--thanks { display: block; }
+  .stp__error {
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    line-height: 19px;
+    color: #c8352e;
+    margin: 0 0 8px;
+    display: none;
+  }
+  .stp.has-error .stp__error { display: block; }
+
+  @media screen and (max-width: 749px) {
+    .stp {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      width: auto;
+      max-width: none;
+      padding: 28px 24px 22px;
+    }
+    .stp__content { height: 300px; }
+    .stp__close { top: 16px; right: 9px; }
+    .stp__eyebrow { margin-bottom: 12px; }
+    .stp__heading { font-size: 28px; margin-bottom: 10px; }
+    .stp__body { margin-bottom: 20px; }
+    .stp__button { min-height: 48px; margin-bottom: 14px; }
+  }
+{% endstyle %}
+
+<st-popup
+  data-mode="{{ section.settings.trigger_mode }}"
+  data-delay="{{ section.settings.delay_seconds | default: 6 }}"
+  data-scroll="{{ section.settings.scroll_percent | default: 50 }}"
+  data-dismiss-days="{{ section.settings.dismiss_days | default: 14 }}"
+  data-signup-days="{{ section.settings.signup_days | default: 180 }}"
+  data-session-cap="{{ section.settings.once_per_session }}"
+  data-consent="{{ section.settings.respect_consent }}"
+  data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
+  data-market="{{ market_handle }}"
+  data-language="{{ lang_code }}"
+  data-path-prefix="{{ path_prefix }}"
+>
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign show_block = block.settings.enabled
+
+      if show_block and block.settings.markets != blank
+        assign show_block = false
+        assign wanted = block.settings.markets | downcase | split: ','
+        for m in wanted
+          assign m_t = m | strip
+          if m_t == market_handle
+            assign show_block = true
+            break
+          endif
+        endfor
+      endif
+
+      if show_block and block.settings.languages != blank
+        assign show_block = false
+        assign wanted = block.settings.languages | downcase | split: ','
+        for l in wanted
+          assign l_t = l | strip
+          if l_t == lang_code
+            assign show_block = true
+            break
+          endif
+        endfor
+      endif
+    -%}
+    {%- if show_block -%}
+      {%- liquid
+        assign campaign = block.settings.name | default: 'popup' | handleize
+        assign tags = 'newsletter,popup,campaign:' | append: campaign
+        if block.settings.experiment != blank
+          assign tags = tags | append: ',experiment:' | append: block.settings.experiment | handleize | append: ',variant:' | append: block.settings.variant | default: 'a' | handleize
+        endif
+        assign tags = tags | append: ',path:' | append: path_prefix | append: ',lang:' | append: lang_code
+        if block.settings.code != blank
+          assign tags = tags | append: ',code:' | append: block.settings.code
+        endif
+        assign return_url = request.path | append: '?stp=thanks&stc=' | append: campaign
+      -%}
+      <aside
+        class="stp"
+        role="dialog"
+        aria-modal="false"
+        aria-label="{{ block.settings.heading | escape }}"
+        data-stp-panel
+        data-campaign="{{ campaign }}"
+        data-experiment="{{ block.settings.experiment | handleize }}"
+        data-variant="{{ block.settings.variant | default: 'a' | handleize }}"
+        data-code="{{ block.settings.code | escape }}"
+        {{ block.shopify_attributes }}
+      >
+        <button type="button" class="stp__close" data-stp-close aria-label="{{ 'accessibility.close' | t }}">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+
+        <div class="stp__content">
+          <div class="stp__state stp__state--signup">
+            {%- if block.settings.eyebrow != blank -%}
+              <p class="stp__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="stp__heading">{{ block.settings.heading | escape }}</h2>
+            {%- if block.settings.body != blank -%}
+              <p class="stp__body">{{ block.settings.body | escape }}</p>
+            {%- endif -%}
+
+            {%- form 'customer' -%}
+              <input type="hidden" name="contact[tags]" value="{{ tags | escape }}">
+              <input type="hidden" name="return_to" value="{{ return_url }}">
+              <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+              <input
+                type="email"
+                name="contact[email]"
+                class="stp__input"
+                placeholder="{{ block.settings.placeholder | default: 'Email address' | escape }}"
+                autocomplete="email"
+                required
+              >
+              <button type="submit" class="stp__button">{{ block.settings.button_label | default: 'Notify me' | escape }}</button>
+            {%- endform -%}
+
+            <button type="button" class="stp__dismiss" data-stp-close>{{ block.settings.dismiss_label | default: 'No thanks' | escape }}</button>
+          </div>
+
+          <div class="stp__state stp__state--thanks">
+            {%- if block.settings.ty_eyebrow != blank -%}
+              <p class="stp__eyebrow">{{ block.settings.ty_eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="stp__heading">{{ block.settings.ty_heading | default: "You're on the list" | escape }}</h2>
+            {%- if block.settings.ty_body != blank -%}
+              <p class="stp__body">{{ block.settings.ty_body | escape }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.code != blank -%}
+              <div class="stp__code-row">
+                <span class="stp__code">{{ block.settings.code | escape }}</span>
+                <button type="button" class="stp__copy" data-stp-copy data-copied-label="{{ block.settings.copied_label | default: 'Copied' | escape }}">{{ block.settings.copy_label | default: 'Copy' | escape }}</button>
+              </div>
+            {%- endif -%}
+
+            <a href="{{ block.settings.shop_url | default: routes.all_products_collection_url }}" class="stp__shop">{{ block.settings.shop_label | default: 'Shop the store' | escape }} &rarr;</a>
+          </div>
+        </div>
+      </aside>
+    {%- endif -%}
+  {%- endfor -%}
+</st-popup>
+
+{% javascript %}
+  class StPopup extends HTMLElement {
+    connectedCallback() {
+      this.panels = Array.from(this.querySelectorAll('[data-stp-panel]'));
+      if (!this.panels.length) return;
+      this.designMode = this.dataset.designMode === 'true';
+
+      // Returning from a full-page (captcha-challenge) submit?
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('stp') === 'thanks') {
+        const panel = this.panels.find((p) => p.dataset.campaign === params.get('stc')) || this.panels[0];
+        this.markSignedUp();
+        this.openPanel(panel, true);
+        return;
+      }
+
+      if (!this.designMode) {
+        if (this.suppressed()) return;
+        if (this.dataset.sessionCap === 'true' && this.session('stp:shown')) return;
+      }
+
+      this.panel = this.pickPanel();
+      if (!this.panel) return;
+
+      if (this.designMode) {
+        // Preview whichever version block is selected in the theme editor
+        document.addEventListener('shopify:block:select', (e) => {
+          this.panels.forEach((p) => {
+            const hit = p === e.target || p.contains(e.target);
+            p.classList.toggle('is-open', hit);
+            if (hit) this.bind(p);
+          });
+        });
+        this.openPanel(this.panel, false);
+        return;
+      }
+      this.arm();
+    }
+
+    /* ---- storage helpers (all guarded: private mode etc.) ---- */
+    store(k, v) { try { if (this.canPersist()) localStorage.setItem(k, v); } catch (e) {} }
+    read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    session(k, v) {
+      try {
+        if (v !== undefined) { sessionStorage.setItem(k, v); return v; }
+        return sessionStorage.getItem(k);
+      } catch (e) { return null; }
+    }
+    canPersist() {
+      if (this.dataset.consent !== 'true') return true;
+      const cp = window.Shopify && window.Shopify.customerPrivacy;
+      if (cp && typeof cp.userCanBeTracked === 'function') return cp.userCanBeTracked();
+      return true;
+    }
+
+    daysAgo(ts) { return (Date.now() - Number(ts)) / 86400000; }
+
+    suppressed() {
+      const signed = this.read('stp:signed');
+      if (signed && this.daysAgo(signed) < Number(this.dataset.signupDays)) return true;
+      return false;
+    }
+
+    pickPanel() {
+      const dismissDays = Number(this.dataset.dismissDays);
+      const eligible = this.panels.filter((p) => {
+        if (this.designMode) return true;
+        const d = this.read('stp:dismissed:' + p.dataset.campaign);
+        return !(d && this.daysAgo(d) < dismissDays);
+      });
+      if (!eligible.length) return null;
+
+      const first = eligible[0];
+      if (!first.dataset.experiment) return first;
+
+      // Even, stable split between variants of the first eligible experiment
+      const group = eligible.filter((p) => p.dataset.experiment === first.dataset.experiment);
+      let r = this.read('stp:rand');
+      if (r === null) { r = String(Math.random()); this.store('stp:rand', r); }
+      return group[Math.floor(Number(r) * group.length) % group.length];
+    }
+
+    /* ---- triggers ---- */
+    arm() {
+      const mode = this.dataset.mode;
+      const show = () => this.openPanel(this.panel, false);
+      if (mode === 'immediate') {
+        setTimeout(show, 2000);
+      } else if (mode === 'exit') {
+        if (window.matchMedia('(min-width: 750px)').matches) {
+          this.onExit = (e) => { if (e.clientY <= 10) show(); };
+          document.addEventListener('mouseout', this.onExit);
+        } else {
+          setTimeout(show, Number(this.dataset.delay) * 1000);
+        }
+      } else {
+        this.timer = setTimeout(show, Number(this.dataset.delay) * 1000);
+        this.onScroll = () => {
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          if (max > 0 && window.scrollY / max >= Number(this.dataset.scroll) / 100) show();
+        };
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+      }
+    }
+
+    disarm() {
+      clearTimeout(this.timer);
+      if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
+      if (this.onExit) document.removeEventListener('mouseout', this.onExit);
+    }
+
+    /* ---- open / close / submit ---- */
+    openPanel(panel, thanks) {
+      if (this.opened) return;
+      this.opened = true;
+      this.disarm();
+      this.bind(panel);
+      panel.classList.add('is-open');
+      if (thanks) panel.classList.add('is-thanks');
+      this.session('stp:shown', '1');
+      if (!thanks) this.track(panel, 'popup_impression');
+    }
+
+    bind(panel) {
+      if (panel.dataset.bound) return;
+      panel.dataset.bound = '1';
+      panel.querySelectorAll('[data-stp-close]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          panel.classList.remove('is-open');
+          if (!panel.classList.contains('is-thanks')) {
+            this.store('stp:dismissed:' + panel.dataset.campaign, String(Date.now()));
+            this.track(panel, 'popup_dismiss');
+          }
+        });
+      });
+
+      const form = panel.querySelector('form');
+      if (form) form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        panel.classList.remove('has-error');
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'text/html' },
+        }).then((resp) => {
+          if (resp.url && resp.url.includes('/challenge')) {
+            // Captcha required — let the browser do a real submit; the
+            // return_to URL reopens the thank-you state after.
+            form.submit();
+            return;
+          }
+          this.markSignedUp();
+          this.track(panel, 'popup_submit');
+          panel.classList.add('is-thanks');
+        }).catch(() => panel.classList.add('has-error'));
+      });
+
+      const copy = panel.querySelector('[data-stp-copy]');
+      if (copy) copy.addEventListener('click', () => {
+        const original = copy.textContent;
+        const done = () => {
+          copy.textContent = copy.dataset.copiedLabel;
+          setTimeout(() => { copy.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard) navigator.clipboard.writeText(panel.dataset.code).then(done, done);
+        else done();
+      });
+    }
+
+    markSignedUp() { this.store('stp:signed', String(Date.now())); }
+
+    /* popup_impression / popup_submit / popup_dismiss with campaign,
+       experiment, variant, market, language, path_prefix — lands in
+       dataLayer (GTM) or gtag (GA4 direct); no-ops without either. */
+    track(panel, name) {
+      if (this.designMode || !this.canPersist()) return;
+      const payload = {
+        campaign: panel.dataset.campaign,
+        experiment: panel.dataset.experiment || null,
+        variant: panel.dataset.experiment ? panel.dataset.variant : null,
+        market: this.dataset.market || null,
+        language: this.dataset.language,
+        path_prefix: this.dataset.pathPrefix,
+      };
+      if (window.dataLayer) window.dataLayer.push(Object.assign({ event: name }, payload));
+      else if (typeof window.gtag === 'function') window.gtag('event', name, payload);
+    }
+  }
+
+  if (!customElements.get('st-popup')) customElements.define('st-popup', StPopup);
+{% endjavascript %}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Popup: Email signup",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable popups", "default": true },
+    { "type": "header", "content": "Trigger" },
+    {
+      "type": "select",
+      "id": "trigger_mode",
+      "label": "Show the popup",
+      "options": [
+        { "value": "delay_scroll", "label": "After a delay or scroll" },
+        { "value": "exit", "label": "On exit intent (desktop)" },
+        { "value": "immediate", "label": "Almost immediately" }
+      ],
+      "default": "delay_scroll"
+    },
+    { "type": "range", "id": "delay_seconds", "label": "Delay", "min": 0, "max": 30, "step": 1, "unit": "s", "default": 6 },
+    { "type": "range", "id": "scroll_percent", "label": "…or after scrolling", "min": 10, "max": 90, "step": 5, "unit": "%", "default": 50 },
+    { "type": "header", "content": "Frequency" },
+    { "type": "range", "id": "dismiss_days", "label": "Hide after dismissal", "min": 0, "max": 90, "step": 1, "unit": "d", "default": 14 },
+    { "type": "range", "id": "signup_days", "label": "Hide after signup", "min": 0, "max": 360, "step": 5, "unit": "d", "default": 180 },
+    { "type": "checkbox", "id": "once_per_session", "label": "At most once per session", "default": true },
+    { "type": "checkbox", "id": "hide_on_cart", "label": "Never show on the cart page", "default": true },
+    { "type": "checkbox", "id": "respect_consent", "label": "Respect cookie consent", "default": true, "info": "Waits for marketing consent (Shopify Customer Privacy) before storing frequency cookies or sending analytics events." },
+    { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
+    { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / popup_submit / popup_dismiss are sent to Google Tag Manager or GA4 when present, for the BigQuery dashboard. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo by the Brevo integration. Translate popup text per language with Translate & Adapt." }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "version",
+      "name": "Popup version",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Campaign name", "info": "Internal — used in tags and analytics. E.g. Out of stock 2026.", "default": "Out of stock" },
+        { "type": "checkbox", "id": "enabled", "label": "Enabled", "default": true },
+        { "type": "header", "content": "Targeting" },
+        { "type": "text", "id": "markets", "label": "Markets", "info": "Comma-separated market handles (e.g. au, eu). Empty = all markets." },
+        { "type": "text", "id": "languages", "label": "Languages", "info": "Comma-separated language codes (e.g. en, es). Empty = all languages." },
+        { "type": "header", "content": "Sign-up state" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Sold out for 2026" },
+        { "type": "textarea", "id": "body", "label": "Body", "default": "Be the first to hear when next year's calendars go on sale." },
+        { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Email address" },
+        { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me", "info": "Displays in uppercase." },
+        { "type": "text", "id": "dismiss_label", "label": "Dismiss label", "default": "No thanks" },
+        { "type": "header", "content": "Thank-you state" },
+        { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
+        { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the list" },
+        { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll email you when next year's calendars go on sale." },
+        { "type": "text", "id": "code", "label": "Discount code", "info": "Optional. Shown in a copyable row and added to the signup's tags. Create the code itself in Discounts." },
+        { "type": "text", "id": "copy_label", "label": "Copy label", "default": "Copy" },
+        { "type": "text", "id": "copied_label", "label": "Copied label", "default": "Copied" },
+        { "type": "text", "id": "shop_label", "label": "Shop link label", "default": "Shop the store", "info": "The arrow is added automatically." },
+        { "type": "url", "id": "shop_url", "label": "Shop link", "info": "Defaults to the all-products collection." },
+        { "type": "header", "content": "A/B test" },
+        { "type": "text", "id": "experiment", "label": "Experiment name", "info": "Optional. Versions sharing a name are split evenly between visitors." },
+        { "type": "text", "id": "variant", "label": "Variant label", "info": "E.g. A or B. Reported with every analytics event.", "default": "A" }
+      ]
+    }
+  ]
+}
+{% endschema %}
