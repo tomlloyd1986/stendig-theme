@@ -2167,6 +2167,20 @@ details[open] .modal-overlay::after {
   color: #121212;
   white-space: nowrap;
 }
+/* The `.media > *` rule above stretches every direct media child to a
+   full-size absolute block — undo all of that for the pill (doubled class
+   beats that rule's specificity; this block also comes later). */
+.media > .st-stock-pill.st-stock-pill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  left: auto;
+  bottom: auto;
+  width: auto;
+  height: auto;
+  max-width: none;
+  display: inline-flex;
+}
 .st-stock-pill__dot {
   width: 7px;
   height: 7px;
