@@ -189,6 +189,7 @@
         "card_URV8CM",
         "card_wAUUmh"
       ],
+      "disabled": true,
       "name": "Home: Instagram strip",
       "settings": {
         "eyebrow": "At home",
@@ -196,6 +197,65 @@
         "tagline": "Tag your photos with #stendigcalendar for a chance to be featured",
         "follow_label": "Follow @stendigcalendars >",
         "follow_url": ""
+      }
+    },
+    "home_press_no_image_3mLpBD": {
+      "type": "home-press-no-image",
+      "blocks": {
+        "quote_c6PimY": {
+          "type": "quote",
+          "settings": {
+            "quote": "Less a calendar, more a piece of iconic design you can hang on your wall",
+            "publication": "Esquire"
+          }
+        },
+        "quote_7TkwEM": {
+          "type": "quote",
+          "settings": {
+            "quote": "A masterpiece of minimalism",
+            "publication": "Elle"
+          }
+        },
+        "quote_jCDHQd": {
+          "type": "quote",
+          "settings": {
+            "quote": "There's nothing quite like a massive, aesthetically pleasing wall calendar to signal that a new year is here.",
+            "publication": "Vice Magazine"
+          }
+        },
+        "quote_Ct7NBR": {
+          "type": "quote",
+          "settings": {
+            "quote": "The Stendig Calendar is the perfect combination of form and function",
+            "publication": "Daily Beast"
+          }
+        },
+        "quote_r9Wm4z": {
+          "type": "quote",
+          "settings": {
+            "quote": "Arguably the greatest calendar of all time",
+            "publication": "Architect Magazine"
+          }
+        },
+        "quote_kjexKx": {
+          "type": "quote",
+          "settings": {
+            "quote": "Designers, architects and style gurus the world over are fans of this massive calendar",
+            "publication": "The Independent"
+          }
+        }
+      },
+      "block_order": [
+        "quote_c6PimY",
+        "quote_7TkwEM",
+        "quote_jCDHQd",
+        "quote_Ct7NBR",
+        "quote_r9Wm4z",
+        "quote_kjexKx"
+      ],
+      "name": "Home: Press (no image)",
+      "settings": {
+        "eyebrow": "From the press"
       }
     }
   },
@@ -205,6 +265,7 @@
     "home_feature_tiles_YiehXX",
     "home_product_group_L4cmgE",
     "home_product_group_h3zpep",
-    "home_instagram_strip_Rx3NWc"
+    "home_instagram_strip_Rx3NWc",
+    "home_press_no_image_3mLpBD"
   ]
 }
