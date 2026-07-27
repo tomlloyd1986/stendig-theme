@@ -210,13 +210,20 @@
           "error_text": "Something went wrong — please try again.",
           "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td"
         }
+      },
+      "waitlist-modal": {
+        "type": "waitlist-modal",
+        "settings": {
+          "enabled": true,
+          "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td"
+        }
       }
     },
     "content_for_index": [],
     "blocks": {
       "7878088468538493966": {
         "type": "shopify://apps/wisepops-smart-popups-bars/blocks/app-embed/e7d7a4f7-0df4-4073-9375-5f36db513952",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "pagefly-page-builder": {
