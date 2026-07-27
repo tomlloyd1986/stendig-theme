@@ -9,36 +9,117 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "main-article",
+    "header": {
+      "type": "blog-header",
+      "settings": {
+        "title": "When Charles met Massimo",
+        "standfirst": "How a furniture dealer and a designer made a calendar that never went out of style"
+      }
+    },
+    "content": {
+      "type": "blog-content",
       "blocks": {
-        "featured_image": {
-          "type": "featured_image",
-          "settings": {}
+        "images_87HkVi": {
+          "type": "images",
+          "settings": {
+            "width": "ultrawide",
+            "image_1": "shopify://shop_images/tumblr_f197e0221b8eb140d6ad0481c25de83e_b1cf6438_1280_1.jpg",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
         },
-        "title": {
-          "type": "title",
-          "settings": {}
+        "text_Mdmrc4": {
+          "type": "text",
+          "settings": {
+            "body": "<p>Charles Stendig was born in Brooklyn in 1919. He served as a paratrooper in the war, and by the early 1950s he was in the furniture trade, at a time when most American living rooms still held oak sideboards and floral upholstery. Stendig thought people might want something else, and went looking for it in Europe.</p><p>He was a good salesman and a better traveller. After a chance meeting with a Finnish trade representative, he accepted an invitation to see the country's young furniture industry for himself, chartering a prop plane that took 26 hours and four fuel stops to get there. When Thonet considered winding up production of a cane chair he wanted to stock, Stendig guaranteed a year of production costs up front to keep it alive. The chair sold in enormous numbers and turned up in American living rooms for decades afterwards.</p><p>By 1965, Stendig Inc. had done as much as any importer to bring European modernism into the American home. The company worked out of 375 Park Avenue, a building that happened also to house the New York office of Unimark International, the design firm whose local operation was run by Massimo Vignelli.</p>"
+          }
         },
-        "content": {
-          "type": "content",
-          "settings": {}
+        "images_G3pFn4": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/20Stendig021-articleLarge_54d2e97b-f757-4c58-b831-e0acdb2b1b03.webp",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
         },
-        "share": {
-          "type": "share",
-          "settings": {}
+        "text_xJaJB8": {
+          "type": "text",
+          "settings": {
+            "body": "<p>Vignelli would become one of the defining designers of the century, though in 1966 that was still ahead of him. He had come to America convinced that the discipline he admired in Mies van der Rohe and Le Corbusier belonged in graphic design as much as in buildings, and he practised what he preached with unusual severity. He designed kitchenware, books, showrooms and signage, and applied the same few rules to all of it. Unimark, which he co-founded with five others, grew into the largest design firm in the world, and one of the first to sell corporations a complete identity rather than a logo. Within a few years his New York team had produced the identities for American Airlines and Knoll, and redesigned the map and signage of the city's subway, replacing decades of accumulated visual noise with a single coherent system. Nearly all of it was set in Helvetica, the typeface he would defend for the rest of his life.</p><p>The two men met in the building. Stendig asked Vignelli to create a brand identity for the company, built around a simple Helvetica logo. Then, sometime around the middle of 1966, he mentioned he was after a promotional gift for clients, something that would not end up in a drawer.</p>"
+          }
+        },
+        "images_xwzbi7": {
+          "type": "images",
+          "settings": {
+            "width": "wide",
+            "image_1": "shopify://shop_images/tumblr_70636c131897c94b3c20e1a4e53e928d_edae9b9a_1280.jpg",
+            "caption_1": "",
+            "image_2": "shopify://shop_images/tumblr_501e903c0df7c391fe956d0243059a8b_26ffdaea_500.jpg",
+            "caption_2": "",
+            "image_3": "shopify://shop_images/knoll_4caabc12-05eb-4e52-b5a1-8c175002ade8.jpg",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        },
+        "text_ztaDcb": {
+          "type": "text",
+          "settings": {
+            "body": "<p>The two men met in the building. Stendig asked Vignelli to create a brand identity for the company, built around a simple Helvetica logo. Then, sometime around the middle of 1966, he mentioned he was after a promotional gift for clients, something that would not end up in a drawer.</p>"
+          }
+        },
+        "quote_WnNcxw": {
+          "type": "quote",
+          "settings": {
+            "quote": "We had always wanted to design a large calendar,\" Vignelli said later. \"Stendig provided us with such an opportunity.",
+            "attribution": "Massimo Vignelli"
+          }
+        },
+        "text_qBegGG": {
+          "type": "text",
+          "settings": {
+            "body": "<p>The first Stendig Calendar, printed in 1966 for the year 1967, measured three feet by four. Each month was set in Helvetica, black and white pages alternating through the year. The double-digit numerals were kerned tightly enough to \"kiss\", as Vignelli put it. The space around the numbers mattered to him as much as the numbers themselves.</p><p></p>"
+          }
+        },
+        "images_LttEz6": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/2014-0527-Vignelli-SS-articleLarge.webp",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        },
+        "text_knFwzA": {
+          "type": "text",
+          "settings": {
+            "body": "<p>Stendig sent the first copies to clients and friends across the country, and within months the Museum of Modern Art had acquired the calendar for its permanent design collection, where it remains.</p><p>It has been printed every year since, unchanged: the same type, the same size, black and white still alternating. 2026 marks the sixtieth edition. Vignelli saw no reason to touch it. \"If you do it right, it will last forever.\"</p>"
+          }
         }
       },
       "block_order": [
-        "featured_image",
-        "title",
-        "share",
-        "content"
+        "images_87HkVi",
+        "text_Mdmrc4",
+        "images_G3pFn4",
+        "text_xJaJB8",
+        "images_xwzbi7",
+        "text_ztaDcb",
+        "quote_WnNcxw",
+        "text_qBegGG",
+        "images_LttEz6",
+        "text_knFwzA"
       ],
       "settings": {}
     }
   },
   "order": [
-    "main"
+    "header",
+    "content"
   ]
 }

@@ -1,16 +1,5 @@
-{%- liquid
-  if cart == empty
-    render 'icon-cart-empty'
-  else
-    render 'icon-cart'
-  endif
--%}
-<span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
-{%- if cart != empty -%}
-  <div class="cart-count-bubble">
-      {%- if cart.item_count < 100 -%}
-        <span aria-hidden="true">{{ cart.item_count }}</span>
-      {%- endif -%}
-      <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
-  </div>
-{%- endif -%}
+{%- comment -%}
+  Re-rendered into the header cart link (#cart-icon-bubble) on cart updates.
+  Uses the shared cart-count snippet so the live count matches the header.
+{%- endcomment -%}
+{%- render 'cart-count' -%}

@@ -20,7 +20,8 @@
     "type_body_font": "assistant_n4",
     "favicon": "shopify://shop_images/Favicon.png",
     "cross_sell_rules": [
-      "hang-your-calendar-without-strips"
+      "hang-your-calendar-without-strips",
+      "hang-your-calendar-without-nails"
     ],
     "warehouses": [
       "uk-3-pl-consumer",
@@ -72,17 +73,18 @@
       },
       "header": {
         "type": "header",
-        "custom_css": [
-          "@media screen and (min-width: 750px) {.header {padding-top: 8px !important; padding-bottom: 8px !important; } .header__heading-logo img {max-height: 36px !important; }}",
-          ".header {padding-left: 20px !important; padding-right: 20px !important; max-width: 100% !important;}"
-        ],
+        "custom_css": [],
         "settings": {
           "color_scheme": "background-1",
           "logo": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
           "altlogo": "shopify://shop_images/Logo_white.png",
           "logo_width": 180,
-          "logo_position": "middle-left",
-          "menu": "main-menu",
+          "nav_offset_desktop": -11,
+          "nav_offset_mobile": -4,
+          "collection_label": "Collection",
+          "mobile_collection_label": "Browse the collection",
+          "menu_label": "Menu",
+          "resources_label": "Resources",
           "show_line_separator": false,
           "enable_sticky_header": true,
           "transparent-header": false,
@@ -150,18 +152,8 @@
         "disabled": false,
         "settings": {}
       },
-      "15119538188275799212": {
-        "type": "shopify://apps/fontify/blocks/app-embed/334490e2-2153-4a2e-a452-e90bdeffa3cc",
-        "disabled": false,
-        "settings": {}
-      },
       "12793297677437526120": {
         "type": "shopify://apps/t-lab-ai-language-translate/blocks/custom_translations/b5b83690-efd4-434d-8c6a-a5cef4019faf",
-        "disabled": false,
-        "settings": {}
-      },
-      "17595556821664008138": {
-        "type": "shopify://apps/zoorix-cross-sell/blocks/zoorix-head/51fffd07-f9df-4d6a-b901-6d14b243dcad",
         "disabled": false,
         "settings": {}
       }
@@ -232,7 +224,6 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".page-width {max-width: none !important;}",
       ".wisepops-wisepop-scrollable {box-shadow: unset !important;}",
       ".product__description {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-size: 14px; /* adjust to taste */ line-height: 1.5; /* adjust spacing */ letter-spacing: 0; /* tracking */}",
       ".product__description p {margin-bottom: 1.2em; /* paragraph spacing */}",
