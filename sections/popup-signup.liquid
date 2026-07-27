@@ -378,20 +378,41 @@
               <p class="stp__body">{{ block.settings.body | escape }}</p>
             {%- endif -%}
 
-            {%- form 'customer' -%}
-              <input type="hidden" name="contact[tags]" value="{{ tags | escape }}">
-              <input type="hidden" name="return_to" value="{{ return_url }}">
-              <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
-              <input
-                type="email"
-                name="contact[email]"
-                class="stp__input"
-                placeholder="{{ block.settings.placeholder | default: 'Email address' | escape }}"
-                autocomplete="email"
-                required
-              >
-              <button type="submit" class="stp__button">{{ block.settings.button_label | default: 'Notify me' | escape }}</button>
-            {%- endform -%}
+            {%- if section.settings.brevo_form_url != blank -%}
+              {%- comment -%}
+                Direct-to-Brevo form. Deliberately NOT {% form 'customer' %}:
+                nothing in this form can reach /contact, so Shopify's captcha
+                challenge can never force a page reload. onsubmit guard means
+                even an unbound handler cannot navigate anywhere.
+              {%- endcomment -%}
+              <form class="stp__form" data-stp-brevo action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
+                <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+                <input
+                  type="email"
+                  name="EMAIL"
+                  class="stp__input"
+                  placeholder="{{ block.settings.placeholder | default: 'Email address' | escape }}"
+                  autocomplete="email"
+                  required
+                >
+                <button type="submit" class="stp__button">{{ block.settings.button_label | default: 'Notify me' | escape }}</button>
+              </form>
+            {%- else -%}
+              {%- form 'customer' -%}
+                <input type="hidden" name="contact[tags]" value="{{ tags | escape }}">
+                <input type="hidden" name="return_to" value="{{ return_url }}">
+                <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+                <input
+                  type="email"
+                  name="contact[email]"
+                  class="stp__input"
+                  placeholder="{{ block.settings.placeholder | default: 'Email address' | escape }}"
+                  autocomplete="email"
+                  required
+                >
+                <button type="submit" class="stp__button">{{ block.settings.button_label | default: 'Notify me' | escape }}</button>
+              {%- endform -%}
+            {%- endif -%}
 
             <button type="button" class="stp__dismiss" data-stp-close>{{ block.settings.dismiss_label | default: 'No thanks' | escape }}</button>
           </div>
@@ -561,19 +582,18 @@
         e.preventDefault();
         panel.classList.remove('has-error');
 
-        /* Preferred route: post straight to a Brevo form endpoint — this
+        /* Preferred route: post straight to the Brevo form endpoint — this
            store's /contact endpoint always bounces background posts
            through the captcha challenge (full page reload), Brevo's
            doesn't. no-cors means the response is opaque; double opt-in
            on the Brevo form is the junk filter. */
-        const brevoUrl = this.dataset.brevoUrl;
-        if (brevoUrl) {
-          const emailInput = form.querySelector('input[name="contact[email]"]');
+        if (form.hasAttribute('data-stp-brevo')) {
+          const emailInput = form.querySelector('input[type="email"]');
           const fd = new FormData();
           fd.append('EMAIL', emailInput ? emailInput.value : '');
           fd.append('email_address_check', '');
           fd.append('locale', 'en');
-          fetch(brevoUrl, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
+          fetch(form.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
             this.markSignedUp();
             this.identify(form, panel);
             this.track(panel, 'popup_submit');
@@ -622,7 +642,7 @@
        when the tracker is absent — the Shopify customer tags still
        carry the same data. */
     identify(form, panel) {
-      const emailInput = form.querySelector('input[name="contact[email]"]');
+      const emailInput = form.querySelector('input[type="email"]');
       if (!emailInput || !emailInput.value) return;
       const attrs = {
         POPUP_CAMPAIGN: panel.dataset.campaign,
