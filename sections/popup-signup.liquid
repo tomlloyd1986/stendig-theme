@@ -126,7 +126,14 @@
     margin: 0 0 10px;
   }
   .stp__input::placeholder { color: rgba(18, 18, 18, 0.55); }
-  .stp__input:focus { outline: none; border-color: #121212; }
+  /* The black border is the focus state; suppress Dawn's offset outline,
+     which the fixed-height panel clips into stray lines above and below */
+  .stp__input:focus,
+  .stp__input:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border-color: #121212;
+  }
 
   /* Matches the product page's add-to-cart button: sentence case,
      15px/1.2 with its slight tracking, black fill */
