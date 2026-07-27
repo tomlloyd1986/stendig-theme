@@ -448,8 +448,13 @@
       if (!this.panels.length) return;
       this.designMode = this.dataset.designMode === 'true';
 
-      // Returning from a full-page (captcha-challenge) submit?
       const params = new URLSearchParams(window.location.search);
+
+      // Tester's backdoor: ?stp=preview opens the popup immediately,
+      // ignoring frequency caps and sending no analytics.
+      if (params.get('stp') === 'preview') this.designMode = true;
+
+      // Returning from a full-page (captcha-challenge) submit?
       if (params.get('stp') === 'thanks') {
         const panel = this.panels.find((p) => p.dataset.campaign === params.get('stc')) || this.panels[0];
         this.markSignedUp();
