@@ -345,9 +345,8 @@
     {%- endif -%}
   {%- endfor -%}
 </st-popup>
-{%- endunless -%}
 
-{% javascript %}
+<script>
   class StPopup extends HTMLElement {
     connectedCallback() {
       this.panels = Array.from(this.querySelectorAll('[data-stp-panel]'));
@@ -537,7 +536,8 @@
   }
 
   if (!customElements.get('st-popup')) customElements.define('st-popup', StPopup);
-{% endjavascript %}
+</script>
+{%- endunless -%}
 
 {% schema %}
 {
