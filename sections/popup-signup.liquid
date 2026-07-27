@@ -578,6 +578,11 @@
       });
 
       const form = panel.querySelector('form');
+      // Third-party scripts (e.g. popup/marketing apps) have been observed
+      // programmatically re-submitting newsletter forms, which bypasses
+      // both submit listeners and onsubmit guards. The Brevo form never
+      // native-submits, so neuter form.submit() outright.
+      if (form && form.hasAttribute('data-stp-brevo')) form.submit = function () {};
       if (form) form.addEventListener('submit', (e) => {
         e.preventDefault();
         panel.classList.remove('has-error');
