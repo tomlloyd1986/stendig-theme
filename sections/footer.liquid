@@ -134,7 +134,9 @@
                 {%- if form.email != blank -%}
                   <script>
                     /* Mirror the signup context into Brevo contact fields via
-                       its Marketing Automation tracker; no-op without it. */
+                       its Marketing Automation tracker; no-op without it.
+                       COUNTRY comes from Shopify's IP-derived suggestion and
+                       is only sent when detected. */
                     (function () {
                       var email = {{ form.email | json }};
                       var attrs = {
@@ -142,13 +144,25 @@
                         LANGUAGE: {{ nl_lang | json }},
                         PATH: {{ nl_path | json }}
                       };
-                      try {
-                        if (window.Brevo && typeof window.Brevo.push === 'function') {
-                          window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
-                        } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
-                          window.sendinblue.identify(email, attrs);
-                        }
-                      } catch (e) {}
+                      function send() {
+                        try {
+                          if (window.Brevo && typeof window.Brevo.push === 'function') {
+                            window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
+                          } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+                            window.sendinblue.identify(email, attrs);
+                          }
+                        } catch (e) {}
+                      }
+                      fetch('/browsing_context_suggestions.json')
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                          var d = (data && data.detected_values) || {};
+                          var c = d.country || {};
+                          var n = d.country_name || c.name || c.handle || '';
+                          if (n) attrs.COUNTRY = n;
+                        })
+                        .catch(function () {})
+                        .then(send);
                     })();
                   </script>
                 {%- endif -%}

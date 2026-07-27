@@ -63,7 +63,27 @@
     z-index: 40;
     display: none;
   }
-  .stp.is-open { display: block; }
+  /* Entry: subtle fade on desktop, slide up from the bottom edge on
+     mobile. Runs only when the popup first opens — the sign-up to
+     thank-you swap stays instant (fixed-footprint rule). */
+  @keyframes stp-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes stp-slide-up {
+    from { transform: translateY(calc(100% + 12px)); }
+    to { transform: translateY(0); }
+  }
+  .stp.is-open {
+    display: block;
+    animation: stp-fade-in 0.3s ease both;
+  }
+  @media screen and (max-width: 749px) {
+    .stp.is-open { animation: stp-slide-up 0.35s ease-out both; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stp.is-open { animation: none; }
+  }
   /* Fixed footprint: both states share this box so nothing ever jumps */
   .stp__content { height: 345px; overflow: hidden; }
 
@@ -565,10 +585,28 @@
     }
 
     /* ---- open / close / submit ---- */
+    /* Shopify's own IP-derived country suggestion (first-party, powers its
+       geolocation recommendations). Fetched once when the popup opens so
+       submit is never delayed; empty string when unavailable. */
+    fetchGeo() {
+      if (this.geoFetched) return;
+      this.geoFetched = true;
+      this.geoCountry = '';
+      fetch('/browsing_context_suggestions.json')
+        .then((r) => r.json())
+        .then((data) => {
+          const d = (data && data.detected_values) || {};
+          const c = d.country || {};
+          this.geoCountry = d.country_name || c.name || c.handle || '';
+        })
+        .catch(() => {});
+    }
+
     openPanel(panel, thanks) {
       if (this.opened) return;
       this.opened = true;
       this.disarm();
+      this.fetchGeo();
       this.bind(panel);
       panel.classList.add('is-open');
       if (thanks) panel.classList.add('is-thanks');
@@ -670,6 +708,8 @@
         PATH: this.dataset.pathPrefix || '',
         DISCOUNT_CODE: panel.dataset.code || '',
       };
+      // Only when detected — never blank a COUNTRY the order sync wrote
+      if (this.geoCountry) attrs.COUNTRY = this.geoCountry;
       try {
         if (window.Brevo && typeof window.Brevo.push === 'function') {
           window.Brevo.push(['identify', { identifiers: { email_id: emailInput.value }, attributes: attrs }]);
