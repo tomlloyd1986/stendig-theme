@@ -32,12 +32,15 @@
     assign skip = true
   endif
 
-  assign market_handle = ''
-  if localization.market
-    assign market_handle = localization.market.handle | downcase
-  endif
   assign lang_code = localization.language.iso_code | downcase
   assign path_prefix = routes.root_url
+
+  # Market key derived from the subfolder ('/en-au' -> 'au'); the root
+  # domain is 'primary'. Matches the market checkboxes in the block schema.
+  assign market_key = 'primary'
+  if path_prefix != '/'
+    assign market_key = path_prefix | remove_first: '/' | split: '-' | last | downcase
+  endif
 -%}
 
 {%- unless skip -%}
@@ -234,7 +237,7 @@
   data-session-cap="{{ section.settings.once_per_session }}"
   data-consent="{{ section.settings.respect_consent }}"
   data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
-  data-market="{{ market_handle }}"
+  data-market="{{ market_key }}"
   data-language="{{ lang_code }}"
   data-path-prefix="{{ path_prefix }}"
 >
@@ -243,19 +246,79 @@
       assign show_block = block.settings.enabled
 
       # "All markets" checked = no market filter; unchecked = only the
-      # handles listed (unchecked with an empty list shows nowhere).
+      # ticked markets (none ticked shows nowhere).
       if show_block and block.settings.all_markets == false
-        assign show_block = false
-        if block.settings.markets != blank
-          assign wanted = block.settings.markets | downcase | split: ','
-          for m in wanted
-            assign m_t = m | strip
-            if m_t == market_handle
-              assign show_block = true
-              break
-            endif
-          endfor
+        assign mkts = ','
+        if block.settings.mk_primary
+          assign mkts = mkts | append: 'primary,'
         endif
+        if block.settings.mk_au
+          assign mkts = mkts | append: 'au,'
+        endif
+        if block.settings.mk_ca
+          assign mkts = mkts | append: 'ca,'
+        endif
+        if block.settings.mk_ch
+          assign mkts = mkts | append: 'ch,'
+        endif
+        if block.settings.mk_de
+          assign mkts = mkts | append: 'de,'
+        endif
+        if block.settings.mk_dk
+          assign mkts = mkts | append: 'dk,'
+        endif
+        if block.settings.mk_es
+          assign mkts = mkts | append: 'es,'
+        endif
+        if block.settings.mk_eu
+          assign mkts = mkts | append: 'eu,'
+        endif
+        if block.settings.mk_fr
+          assign mkts = mkts | append: 'fr,'
+        endif
+        if block.settings.mk_gb
+          assign mkts = mkts | append: 'gb,'
+        endif
+        if block.settings.mk_hk
+          assign mkts = mkts | append: 'hk,'
+        endif
+        if block.settings.mk_it
+          assign mkts = mkts | append: 'it,'
+        endif
+        if block.settings.mk_kr
+          assign mkts = mkts | append: 'kr,'
+        endif
+        if block.settings.mk_mx
+          assign mkts = mkts | append: 'mx,'
+        endif
+        if block.settings.mk_no
+          assign mkts = mkts | append: 'no,'
+        endif
+        if block.settings.mk_nz
+          assign mkts = mkts | append: 'nz,'
+        endif
+        if block.settings.mk_ph
+          assign mkts = mkts | append: 'ph,'
+        endif
+        if block.settings.mk_pl
+          assign mkts = mkts | append: 'pl,'
+        endif
+        if block.settings.mk_se
+          assign mkts = mkts | append: 'se,'
+        endif
+        if block.settings.mk_sg
+          assign mkts = mkts | append: 'sg,'
+        endif
+        if block.settings.mk_tw
+          assign mkts = mkts | append: 'tw,'
+        endif
+        if block.settings.mk_us
+          assign mkts = mkts | append: 'us,'
+        endif
+        assign mk_needle = ',' | append: market_key | append: ','
+        unless mkts contains mk_needle
+          assign show_block = false
+        endunless
       endif
 
       if show_block and block.settings.languages != blank
@@ -503,6 +566,7 @@
             return;
           }
           this.markSignedUp();
+          this.identify(form, panel);
           this.track(panel, 'popup_submit');
           panel.classList.add('is-thanks');
         }).catch(() => panel.classList.add('has-error'));
@@ -521,6 +585,34 @@
     }
 
     markSignedUp() { this.store('stp:signed', String(Date.now())); }
+
+    /* Write the signup context to Brevo contact attributes via Brevo's
+       Marketing Automation tracker, when the site has it (their Shopify
+       app installs it). Create matching attributes in Brevo first:
+       POPUP_CAMPAIGN, POPUP_EXPERIMENT, POPUP_VARIANT, SIGNUP_MARKET,
+       SIGNUP_LANGUAGE, SIGNUP_PATH, DISCOUNT_CODE (all text). No-ops
+       when the tracker is absent — the Shopify customer tags still
+       carry the same data. */
+    identify(form, panel) {
+      const emailInput = form.querySelector('input[name="contact[email]"]');
+      if (!emailInput || !emailInput.value) return;
+      const attrs = {
+        POPUP_CAMPAIGN: panel.dataset.campaign,
+        POPUP_EXPERIMENT: panel.dataset.experiment || '',
+        POPUP_VARIANT: panel.dataset.experiment ? panel.dataset.variant : '',
+        SIGNUP_MARKET: this.dataset.market || '',
+        SIGNUP_LANGUAGE: this.dataset.language || '',
+        SIGNUP_PATH: this.dataset.pathPrefix || '',
+        DISCOUNT_CODE: panel.dataset.code || '',
+      };
+      try {
+        if (window.Brevo && typeof window.Brevo.push === 'function') {
+          window.Brevo.push(['identify', { identifiers: { email_id: emailInput.value }, attributes: attrs }]);
+        } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+          window.sendinblue.identify(emailInput.value, attrs);
+        }
+      } catch (e) {}
+    }
 
     /* popup_impression / popup_submit / popup_dismiss with campaign,
        experiment, variant, market, language, path_prefix — lands in
@@ -581,8 +673,29 @@
         { "type": "text", "id": "name", "label": "Campaign name", "info": "Internal — used in tags and analytics. E.g. Out of stock 2026.", "default": "Out of stock" },
         { "type": "checkbox", "id": "enabled", "label": "Enabled", "default": true },
         { "type": "header", "content": "Targeting" },
-        { "type": "checkbox", "id": "all_markets", "label": "All markets", "default": true },
-        { "type": "text", "id": "markets", "label": "Only these markets", "info": "Used when All markets is off. Comma-separated market handles from Settings → Markets (e.g. au, eu)." },
+        { "type": "checkbox", "id": "all_markets", "label": "All markets", "default": true, "info": "Untick to choose individual markets below." },
+        { "type": "checkbox", "id": "mk_primary", "label": "Primary (no subfolder)", "default": false },
+        { "type": "checkbox", "id": "mk_au", "label": "Australia", "default": false },
+        { "type": "checkbox", "id": "mk_ca", "label": "Canada", "default": false },
+        { "type": "checkbox", "id": "mk_dk", "label": "Denmark", "default": false },
+        { "type": "checkbox", "id": "mk_eu", "label": "Europe (EU)", "default": false },
+        { "type": "checkbox", "id": "mk_fr", "label": "France", "default": false },
+        { "type": "checkbox", "id": "mk_de", "label": "Germany", "default": false },
+        { "type": "checkbox", "id": "mk_hk", "label": "Hong Kong", "default": false },
+        { "type": "checkbox", "id": "mk_it", "label": "Italy", "default": false },
+        { "type": "checkbox", "id": "mk_mx", "label": "Mexico", "default": false },
+        { "type": "checkbox", "id": "mk_nz", "label": "New Zealand", "default": false },
+        { "type": "checkbox", "id": "mk_no", "label": "Norway", "default": false },
+        { "type": "checkbox", "id": "mk_ph", "label": "Philippines", "default": false },
+        { "type": "checkbox", "id": "mk_pl", "label": "Poland", "default": false },
+        { "type": "checkbox", "id": "mk_sg", "label": "Singapore", "default": false },
+        { "type": "checkbox", "id": "mk_kr", "label": "South Korea", "default": false },
+        { "type": "checkbox", "id": "mk_es", "label": "Spain", "default": false },
+        { "type": "checkbox", "id": "mk_se", "label": "Sweden", "default": false },
+        { "type": "checkbox", "id": "mk_ch", "label": "Switzerland", "default": false },
+        { "type": "checkbox", "id": "mk_tw", "label": "Taiwan", "default": false },
+        { "type": "checkbox", "id": "mk_gb", "label": "United Kingdom", "default": false },
+        { "type": "checkbox", "id": "mk_us", "label": "United States", "default": false },
         { "type": "text", "id": "languages", "label": "Languages", "info": "Comma-separated language codes (e.g. en, es). Empty = all languages." },
         { "type": "header", "content": "Sign-up state" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
