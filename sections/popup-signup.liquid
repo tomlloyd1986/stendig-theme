@@ -589,8 +589,8 @@
     /* Write the signup context to Brevo contact attributes via Brevo's
        Marketing Automation tracker, when the site has it (their Shopify
        app installs it). Create matching attributes in Brevo first:
-       POPUP_CAMPAIGN, POPUP_EXPERIMENT, POPUP_VARIANT, SIGNUP_MARKET,
-       SIGNUP_LANGUAGE, SIGNUP_PATH, DISCOUNT_CODE (all text). No-ops
+       POPUP_CAMPAIGN, POPUP_EXPERIMENT, POPUP_VARIANT, MARKET,
+       LANGUAGE, PATH, DISCOUNT_CODE (all text). No-ops
        when the tracker is absent — the Shopify customer tags still
        carry the same data. */
     identify(form, panel) {
@@ -600,9 +600,9 @@
         POPUP_CAMPAIGN: panel.dataset.campaign,
         POPUP_EXPERIMENT: panel.dataset.experiment || '',
         POPUP_VARIANT: panel.dataset.experiment ? panel.dataset.variant : '',
-        SIGNUP_MARKET: this.dataset.market || '',
-        SIGNUP_LANGUAGE: this.dataset.language || '',
-        SIGNUP_PATH: this.dataset.pathPrefix || '',
+        MARKET: this.dataset.market || '',
+        LANGUAGE: this.dataset.language || '',
+        PATH: this.dataset.pathPrefix || '',
         DISCOUNT_CODE: panel.dataset.code || '',
       };
       try {
