@@ -345,6 +345,7 @@
     {%- endif -%}
   {%- endfor -%}
 </st-popup>
+{%- endunless -%}
 
 {% javascript %}
   class StPopup extends HTMLElement {
@@ -537,7 +538,6 @@
 
   if (!customElements.get('st-popup')) customElements.define('st-popup', StPopup);
 {% endjavascript %}
-{%- endunless -%}
 
 {% schema %}
 {
