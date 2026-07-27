@@ -33,7 +33,7 @@
           "settings": {
             "image": "shopify://shop_images/Beth_Davis_Stendig_2026_Detail_02.jpg",
             "caption": "The Stendig Calendar >",
-            "link": ""
+            "link": "shopify://products/stendig-calendar"
           }
         },
         "tile_gQkExz": {
@@ -41,7 +41,7 @@
           "settings": {
             "image": "shopify://shop_images/Four_Vs_23f1f706-5305-41fb-9ce6-7fed9bada729.jpg",
             "caption": "The V Calendar >",
-            "link": ""
+            "link": "shopify://products/v-calendar"
           }
         }
       },
@@ -130,9 +130,10 @@
       "name": "Home: Product group",
       "settings": {
         "label": "The Stendig",
-        "heading": "Massimo Vignelli's original classic",
+        "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
-        "link": ""
+        "link": "",
+        "image": "shopify://shop_images/V_Box.jpg"
       }
     },
     "home_instagram_strip_Rx3NWc": {
