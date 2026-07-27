@@ -1376,6 +1376,8 @@
       },
       "share": "Compartir este producto",
       "sold_out": "Agotado",
+      "stock_sold_out": "Agotado",
+      "stock_last_few": "Últimas unidades",
       "unavailable": "No disponible",
       "vendor": "Proveedor",
       "video_exit_message": "{{ title }} abre el video en pantalla completa en la misma ventana.",

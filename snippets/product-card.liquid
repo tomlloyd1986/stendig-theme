@@ -35,6 +35,37 @@
   if card_title
     assign pcp_title = card_title
   endif
+
+  # Stock state pill: 'sold_out' (red dot, dimmed image) beats 'last_few'
+  # (orange dot, <= 50 tracked units left). A per-variant card reads its
+  # own variant; a whole-product card sums inventory across variants that
+  # are tracked and can't oversell.
+  assign stock_state = ''
+  if card_variant
+    if card_variant.available == false
+      assign stock_state = 'sold_out'
+    elsif card_variant.inventory_management == 'shopify' and card_variant.inventory_policy == 'deny' and card_variant.inventory_quantity > 0 and card_variant.inventory_quantity <= 50
+      assign stock_state = 'last_few'
+    endif
+  elsif product_card_product != blank
+    if product_card_product.available == false
+      assign stock_state = 'sold_out'
+    else
+      assign stock_total = 0
+      assign stock_tracked = false
+      for v in product_card_product.variants
+        if v.inventory_management == 'shopify' and v.inventory_policy == 'deny'
+          assign stock_tracked = true
+          if v.inventory_quantity > 0
+            assign stock_total = stock_total | plus: v.inventory_quantity
+          endif
+        endif
+      endfor
+      if stock_tracked and stock_total > 0 and stock_total <= 50
+        assign stock_state = 'last_few'
+      endif
+    endif
+  endif
 -%}
 
 <div class="card-wrapper">
@@ -49,6 +80,11 @@
         <h3 class="card-information__text h5">
           <a href="{{ pcp_url | default: '#' }}" class="full-unstyled-link">
             {{ pcp_title | escape }}
+            {%- if stock_state == 'sold_out' -%}
+              <span class="visually-hidden"> &mdash; {{ 'products.product.stock_sold_out' | t }}</span>
+            {%- elsif stock_state == 'last_few' -%}
+              <span class="visually-hidden"> &mdash; {{ 'products.product.stock_last_few' | t }}</span>
+            {%- endif -%}
           </a>
         </h3>
       {%- endif -%}
@@ -90,9 +126,15 @@
         -%}
 
         <div{% if add_image_padding %} class="card__media-full-spacer"{% endif %}>
-          <div class="media media--transparent media--{{ media_size }} media--hover-effect"
+          <div class="media media--transparent media--{{ media_size }} media--hover-effect{% if stock_state == 'sold_out' %} st-media--dim{% endif %}"
             {% if media_size == 'adapt' and pcp_image %} style="padding-bottom: {{ 1 | divided_by: featured_media_aspect_ratio | times: 100 }}%;"{% endif %}
           >
+            {%- if stock_state != blank -%}
+              <span class="st-stock-pill st-stock-pill--{{ stock_state }}" aria-hidden="true">
+                <span class="st-stock-pill__dot"></span>
+                {%- if stock_state == 'sold_out' -%}{{ 'products.product.stock_sold_out' | t }}{%- else -%}{{ 'products.product.stock_last_few' | t }}{%- endif -%}
+              </span>
+            {%- endif -%}
             {%- liquid
               # First row of a collection grid loads eagerly so the LCP image
               # isn't deferred; the very first also gets high fetch priority.
@@ -150,10 +192,9 @@
         </div>
       {%- endif -%}
 
+      {%- comment -%} Sold out is handled by the stock pill; only the sale badge remains here {%- endcomment -%}
       <div class="card__badge">
-        {%- if product_card_product.available == false -%}
-          <span class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}">{{ 'products.product.sold_out' | t }}</span>
-        {%- elsif product_card_product.compare_at_price > product_card_product.price and product_card_product.available -%}
+        {%- if product_card_product.compare_at_price > product_card_product.price and product_card_product.available -%}
           <span class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}">{{ 'products.product.on_sale' | t }}</span>
         {%- endif -%}
       </div>

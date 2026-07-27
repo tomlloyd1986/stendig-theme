@@ -2144,6 +2144,40 @@ details[open] .modal-overlay::after {
   }
 }
 
+/* Product card stock pill (Sold out / Last few). The two dot colours are
+   the design system's only non-monochrome UI colours — semantic stock
+   signals only; do not reuse them elsewhere. The pill's border-radius is a
+   sanctioned exception, like the circular carousel arrows. */
+.st-stock-pill {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-family: var(--font-body-family);
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #121212;
+  white-space: nowrap;
+}
+.st-stock-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.st-stock-pill--sold_out .st-stock-pill__dot { background: #c8352e; }
+.st-stock-pill--last_few .st-stock-pill__dot { background: #d97a1f; }
+/* Sold out dims the imagery only — the pill stays full strength */
+.st-media--dim img { opacity: 0.5; }
+
 /* Header menu drawer */
 .header__icon--menu .icon {
   display: block;

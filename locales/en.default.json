@@ -149,6 +149,8 @@
       },
       "share": "Share this product",
       "sold_out": "Join waiting list",
+      "stock_sold_out": "Sold out",
+      "stock_last_few": "Last few",
       "unavailable": "Unavailable",
       "vendor": "Vendor",
       "video_exit_message": "{{ title }} opens full screen video in same window.",
