@@ -385,6 +385,14 @@
 
     open(trigger) {
       this.sku = this.currentSku(trigger);
+      // Re-arm the sign-up form when opening for a SKU not yet joined
+      // (e.g. joined Red, switched variant to Yellow without a reload);
+      // reopening for an already-joined SKU keeps the confirmation.
+      if (this.panel.classList.contains('is-thanks')) {
+        let joined = [];
+        try { joined = JSON.parse(localStorage.getItem('stw:skus') || '[]'); } catch (e) {}
+        if (!this.sku || joined.indexOf(this.sku) === -1) this.panel.classList.remove('is-thanks');
+      }
       this.fetchGeo();
       this.modal.classList.remove('is-closing');
       this.modal.classList.add('is-open');
