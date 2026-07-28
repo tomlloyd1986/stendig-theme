@@ -656,6 +656,19 @@
           fd.append('EMAIL', emailInput ? emailInput.value : '');
           fd.append('email_address_check', '');
           fd.append('locale', 'en');
+          // Attributes ride the form POST itself (atomic with the email —
+          // immune to the tracker-vs-form contact-creation race). Brevo
+          // maps them when matching fields exist on the form; extra
+          // fields are ignored otherwise. The identify call remains as a
+          // second channel.
+          fd.append('POPUP_CAMPAIGN', panel.dataset.campaign);
+          fd.append('POPUP_EXPERIMENT', panel.dataset.experiment || '');
+          fd.append('POPUP_VARIANT', panel.dataset.experiment ? panel.dataset.variant : '');
+          fd.append('MARKET', this.dataset.market || '');
+          fd.append('LANGUAGE', this.dataset.language || '');
+          fd.append('PATH', this.dataset.pathPrefix || '');
+          fd.append('DISCOUNT_CODE', panel.dataset.code || '');
+          if (this.geoCountry) fd.append('COUNTRY', this.geoCountry);
           fetch(form.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
             this.markSignedUp();
             this.identify(form, panel);
