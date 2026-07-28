@@ -571,7 +571,11 @@
                         {%- endif -%}
 
                         <div class="custom-join-waitlist-btns">
-                          <button class="button button--full-width button--secondary join-waitlist-btn-custom">{{ 'delivery.join_waitlist' | t }}</button>
+                          {%- comment -%} data-waitlist-trigger opens the native waitlist
+                              modal (waitlist-modal.liquid), which intercepts the click in
+                              the capture phase before this file's legacy Wisepops handlers
+                              can see it. {%- endcomment -%}
+                          <button type="button" data-waitlist-trigger class="button button--full-width button--secondary join-waitlist-btn-custom">{{ 'delivery.join_waitlist' | t }}</button>
                           <button disabled class="button button--full-width button--primary">
                             {{ 'shopify.checkout.stock.sold_out_label' | t }}
                           </button>
