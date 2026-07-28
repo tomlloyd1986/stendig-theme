@@ -457,15 +457,19 @@
         MARKET: this.dataset.market || '',
         LANGUAGE: this.dataset.language || '',
         PATH: this.dataset.pathPrefix || '',
-        WAITLIST_SKUS: this.mergedSkus(),
       };
       if (this.geoCountry) attrs.COUNTRY = this.geoCountry;
+      const skus = this.mergedSkus();
       try {
         if (window.Brevo && typeof window.Brevo.push === 'function') {
+          // Separate pushes so a rejected attribute (e.g. one not yet
+          // created in Brevo) can never sink the others
           window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
+          window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: { WAITLIST_SKUS: skus } }]);
           window.Brevo.push(['track', 'waitlist_join', { email: email }, { data: { sku: this.sku, market: attrs.MARKET, language: attrs.LANGUAGE } }]);
         } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
           window.sendinblue.identify(email, attrs);
+          window.sendinblue.identify(email, { WAITLIST_SKUS: skus });
           if (typeof window.sendinblue.track === 'function') window.sendinblue.track('waitlist_join', { sku: this.sku });
         }
       } catch (e) {}
