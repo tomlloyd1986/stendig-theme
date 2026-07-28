@@ -248,6 +248,7 @@
   data-language="{{ lang_code }}"
   data-path-prefix="{{ path_prefix }}"
   data-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
+  data-extra-triggers="{{ section.settings.extra_triggers | escape }}"
   data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
 >
   <script type="application/json" data-stw-skus>
@@ -325,9 +326,17 @@
 
       // Capture phase + hard stop: Wisepops (loaded store-wide via script
       // tag until the app is uninstalled) also listens on this button —
-      // the click must never reach it.
+      // the click must never reach it. extra_triggers lets PageFly-era
+      // buttons be claimed by the selector Wisepops itself targets.
+      let triggerSelector = '[data-waitlist-trigger], a[href="#waitlist"], a[href$="#waitlist"]';
+      if (this.dataset.extraTriggers) {
+        try {
+          document.querySelector(this.dataset.extraTriggers);
+          triggerSelector += ', ' + this.dataset.extraTriggers;
+        } catch (e) { /* invalid selector — ignore */ }
+      }
       this.onDocClick = (e) => {
-        const trigger = e.target.closest('[data-waitlist-trigger], a[href="#waitlist"], a[href$="#waitlist"]');
+        const trigger = e.target.closest(triggerSelector);
         if (!trigger) return;
         e.preventDefault();
         e.stopPropagation();
@@ -489,6 +498,7 @@
     { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll email you when next year's calendars go on sale." },
     { "type": "text", "id": "continue_label", "label": "Continue link label", "default": "Continue browsing", "info": "Dismisses the modal. The arrow is added automatically." },
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
+    { "type": "text", "id": "extra_triggers", "label": "Additional trigger selector", "info": "Optional CSS selector for extra Join-waitlist buttons (e.g. PageFly buttons — paste the same selector your Wisepops campaign targets). Clicks on matches open this modal instead of Wisepops." },
     { "type": "paragraph", "content": "Opens when a visitor clicks the sold-out product button (automatically converted), or any element with data-waitlist-trigger or a link to #waitlist. Records the same Brevo fields as the signup popup, plus WAITLIST_SKUS (create as a text attribute in Brevo) and a waitlist_join event carrying the SKU." }
   ]
 }
