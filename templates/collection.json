@@ -44,8 +44,8 @@
     },
     "grid": {
       "type": "curated-product-grid",
-      "disabled": true,
       "settings": {
+        "image_ratio": "1-1",
         "source": "custom",
         "collection": "",
         "products": [
@@ -95,8 +95,10 @@
         "group_ixGWex",
         "group_BjJtme"
       ],
+      "disabled": true,
       "name": "Grouped product grid",
       "settings": {
+        "image_ratio": "4-5",
         "columns_desktop": 4,
         "max_per_group": 8,
         "heading_size": 14,
