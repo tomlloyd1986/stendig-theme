@@ -2189,8 +2189,6 @@ details[open] .modal-overlay::after {
 }
 .st-stock-pill--sold_out .st-stock-pill__dot { background: #c8352e; }
 .st-stock-pill--last_few .st-stock-pill__dot { background: #d97a1f; }
-/* Sold out dims the imagery only — the pill stays full strength */
-.st-media--dim img { opacity: 0.5; }
 
 /* Header menu drawer */
 .header__icon--menu .icon {
