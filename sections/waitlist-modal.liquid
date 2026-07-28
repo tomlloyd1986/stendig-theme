@@ -323,13 +323,18 @@
         el.addEventListener('click', () => this.close());
       });
 
+      // Capture phase + hard stop: Wisepops (loaded store-wide via script
+      // tag until the app is uninstalled) also listens on this button —
+      // the click must never reach it.
       this.onDocClick = (e) => {
         const trigger = e.target.closest('[data-waitlist-trigger], a[href="#waitlist"], a[href$="#waitlist"]');
         if (!trigger) return;
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         this.open(trigger);
       };
-      document.addEventListener('click', this.onDocClick);
+      document.addEventListener('click', this.onDocClick, true);
 
       this.onKeydown = (e) => {
         if (e.key === 'Escape' && this.modal.classList.contains('is-open')) this.close();
@@ -345,7 +350,7 @@
     }
 
     disconnectedCallback() {
-      document.removeEventListener('click', this.onDocClick);
+      document.removeEventListener('click', this.onDocClick, true);
       document.removeEventListener('keydown', this.onKeydown);
       if (this.onSectionSelect) document.removeEventListener('shopify:section:select', this.onSectionSelect);
     }
