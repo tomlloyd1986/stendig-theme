@@ -389,8 +389,10 @@
       // (e.g. joined Red, switched variant to Yellow without a reload);
       // reopening for an already-joined SKU keeps the confirmation.
       if (this.panel.classList.contains('is-thanks')) {
+        const input = this.form.querySelector('input[type="email"]');
+        const email = ((input && input.value) || '').trim().toLowerCase();
         let joined = [];
-        try { joined = JSON.parse(localStorage.getItem('stw:skus') || '[]'); } catch (e) {}
+        try { joined = JSON.parse(localStorage.getItem('stw:skus:' + email) || '[]'); } catch (e) {}
         if (!this.sku || joined.indexOf(this.sku) === -1) this.panel.classList.remove('is-thanks');
       }
       this.fetchGeo();
@@ -440,13 +442,15 @@
       }).catch(() => this.panel.classList.add('has-error'));
     }
 
-    /* Accumulate this browser's waitlisted SKUs so the attribute grows
-       instead of being replaced on each join. */
-    mergedSkus() {
+    /* Accumulate waitlisted SKUs per email address (in this browser) so
+       the attribute grows across joins instead of being replaced — and
+       different emails from the same browser never cross-pollinate. */
+    mergedSkus(email) {
+      const key = 'stw:skus:' + (email || '').trim().toLowerCase();
       let list = [];
-      try { list = JSON.parse(localStorage.getItem('stw:skus') || '[]'); } catch (e) {}
+      try { list = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
       if (this.sku && list.indexOf(this.sku) === -1) list.push(this.sku);
-      try { localStorage.setItem('stw:skus', JSON.stringify(list)); } catch (e) {}
+      try { localStorage.setItem(key, JSON.stringify(list)); } catch (e) {}
       return list.join(',');
     }
 
@@ -459,7 +463,7 @@
         PATH: this.dataset.pathPrefix || '',
       };
       if (this.geoCountry) attrs.COUNTRY = this.geoCountry;
-      const skus = this.mergedSkus();
+      const skus = this.mergedSkus(email);
       try {
         if (window.Brevo && typeof window.Brevo.push === 'function') {
           // Separate pushes so a rejected attribute (e.g. one not yet
