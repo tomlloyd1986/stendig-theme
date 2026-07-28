@@ -199,12 +199,12 @@
         ],
         "settings": {
           "enabled": true,
-          "trigger_mode": "immediate",
-          "delay_seconds": 6,
-          "scroll_percent": 50,
+          "trigger_mode": "delay_scroll",
+          "delay_seconds": 3,
+          "scroll_percent": 30,
           "dismiss_days": 14,
           "signup_days": 180,
-          "once_per_session": true,
+          "once_per_session": false,
           "hide_on_cart": true,
           "respect_consent": true,
           "error_text": "Something went wrong — please try again.",
@@ -215,7 +215,19 @@
         "type": "waitlist-modal",
         "settings": {
           "enabled": true,
-          "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td"
+          "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td",
+          "eyebrow": "The Stendig",
+          "heading": "Join the waitlist",
+          "body": "The 2026 edition is sold out. Leave your email and be the first to hear when next year's calendars go on sale.",
+          "placeholder": "Email address",
+          "button_label": "Join waitlist",
+          "smallprint": "By joining the waitlist, you are opting in to receive marketing emails from Stendig Calendars",
+          "ty_eyebrow": "Thank you",
+          "ty_heading": "You're on the waitlist",
+          "ty_body": "We'll email you when next year's calendars go on sale.",
+          "continue_label": "Continue browsing",
+          "error_text": "Something went wrong — please try again.",
+          "extra_triggers": ""
         }
       }
     },
