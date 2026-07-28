@@ -248,6 +248,7 @@
   data-language="{{ lang_code }}"
   data-path-prefix="{{ path_prefix }}"
   data-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
+  data-available="{{ product.available }}"
   data-extra-triggers="{{ section.settings.extra_triggers | escape }}"
   data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
 >
@@ -335,8 +336,12 @@
           triggerSelector += ', ' + this.dataset.extraTriggers;
         } catch (e) { /* invalid selector — ignore */ }
       }
+      // On a sold-out product every buy button is a waitlist trigger,
+      // matched at click time so re-rendered buttons are still caught.
+      this.soldOut = this.dataset.available === 'false';
       this.onDocClick = (e) => {
-        const trigger = e.target.closest(triggerSelector);
+        let trigger = e.target.closest(triggerSelector);
+        if (!trigger && this.soldOut) trigger = e.target.closest('.product-form__submit, .ctm-buy-btn');
         if (!trigger) return;
         e.preventDefault();
         e.stopPropagation();
@@ -365,10 +370,14 @@
     }
 
     /* The native sold-out submit button (label customised to "Join
-       waiting list") becomes the modal trigger instead of a dead
-       disabled button. */
+       waiting list") becomes the modal trigger. On a sold-out product
+       the buy buttons are claimed whether or not Dawn disabled them —
+       this page's custom buy buttons stay enabled when sold out. */
     convertSoldOutButton() {
-      document.querySelectorAll('.product-form__submit[disabled], .product-form__submit[aria-disabled="true"]').forEach((btn) => {
+      const sel = this.soldOut
+        ? '.product-form__submit, .ctm-buy-btn'
+        : '.product-form__submit[disabled], .product-form__submit[aria-disabled="true"]';
+      document.querySelectorAll(sel).forEach((btn) => {
         btn.removeAttribute('disabled');
         btn.setAttribute('aria-disabled', 'false');
         btn.setAttribute('type', 'button');
