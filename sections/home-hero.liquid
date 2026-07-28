@@ -11,7 +11,16 @@
   assign img_d = section.settings.image_desktop
   assign img_t = section.settings.image_tablet | default: img_d
   assign img_m = section.settings.image_mobile | default: img_d
-  assign hero_link = section.settings.link | default: '/collections/range'
+  # Locale-aware fallback: routes.root_url is '/' on the default market and
+  # e.g. '/en-au' on subfolder markets, so the range link stays in-market.
+  assign hero_link = section.settings.link
+  if hero_link == blank
+    assign locale_root = routes.root_url
+    if locale_root == '/'
+      assign locale_root = ''
+    endif
+    assign hero_link = locale_root | append: '/collections/range'
+  endif
   assign button_label = section.settings.button_label
 -%}
 

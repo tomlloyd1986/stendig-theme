@@ -571,7 +571,11 @@
                         {%- endif -%}
 
                         <div class="custom-join-waitlist-btns">
-                          <button class="button button--full-width button--secondary join-waitlist-btn-custom">{{ 'delivery.join_waitlist' | t }}</button>
+                          {%- comment -%} data-waitlist-trigger opens the native waitlist
+                              modal (waitlist-modal.liquid), which intercepts the click in
+                              the capture phase before this file's legacy Wisepops handlers
+                              can see it. {%- endcomment -%}
+                          <button type="button" data-waitlist-trigger class="button button--full-width button--secondary join-waitlist-btn-custom">{{ 'delivery.join_waitlist' | t }}</button>
                           <button disabled class="button button--full-width button--primary">
                             {{ 'shopify.checkout.stock.sold_out_label' | t }}
                           </button>
@@ -2327,6 +2331,12 @@
   window.defaultWarehouse = {{ default_warehouse | json }} || null;
 
   window.currentWarehouse = (function() {
+    // Markets moved from subdomains (au.stendigcalendars.com) to
+    // subfolders (/en-au/...): resolve by the subfolder's market suffix
+    // first, falling back to the legacy subdomain scheme, then default.
+    const seg = (window.location.pathname.split('/')[1] || '').toLowerCase();
+    const m = seg.match(/^[a-z]{2}-([a-z0-9]+)$/);
+    if (m && window.warehouseByDomain[m[1]]) return window.warehouseByDomain[m[1]];
     const parts = window.location.host.toLowerCase().replace(/^www\./, '').split('.');
     const code = parts.length === 2 ? 'main' : parts[0];
     return window.warehouseByDomain[code] || window.defaultWarehouse;

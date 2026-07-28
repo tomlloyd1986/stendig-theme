@@ -82,9 +82,13 @@
           "nav_offset_desktop": -11,
           "nav_offset_mobile": -4,
           "collection_label": "Collection",
+          "collection_url": "",
           "mobile_collection_label": "Browse the collection",
           "menu_label": "Menu",
           "resources_label": "Resources",
+          "resources_menu": "",
+          "journal_label": "Browse the journal",
+          "journal_url": "",
           "show_line_separator": false,
           "enable_sticky_header": true,
           "transparent-header": false,
@@ -138,13 +142,88 @@
           "enable_language_selector": true,
           "payment_enable": true
         }
+      },
+      "popup-signup": {
+        "type": "popup-signup",
+        "blocks": {
+          "version_cXzFyR": {
+            "type": "version",
+            "settings": {
+              "name": "Out of stock",
+              "enabled": true,
+              "all_markets": true,
+              "mk_primary": false,
+              "mk_au": false,
+              "mk_ca": false,
+              "mk_dk": false,
+              "mk_eu": false,
+              "mk_fr": false,
+              "mk_de": false,
+              "mk_hk": false,
+              "mk_it": false,
+              "mk_mx": false,
+              "mk_nz": false,
+              "mk_no": false,
+              "mk_ph": false,
+              "mk_pl": false,
+              "mk_sg": false,
+              "mk_kr": false,
+              "mk_es": false,
+              "mk_se": false,
+              "mk_ch": false,
+              "mk_tw": false,
+              "mk_gb": false,
+              "mk_us": false,
+              "languages": "",
+              "eyebrow": "All calendars",
+              "heading": "Sold out for 2026",
+              "body": "Be the first to hear when next year's calendars go on sale.",
+              "placeholder": "Email address",
+              "button_label": "Notify me",
+              "dismiss_label": "No thanks",
+              "ty_eyebrow": "Thank you",
+              "ty_heading": "You're on the list",
+              "ty_body": "We'll email you when next year's calendars go on sale.",
+              "code": "",
+              "copy_label": "Copy",
+              "copied_label": "Copied",
+              "shop_label": "Shop the store",
+              "shop_url": "shopify://collections/range",
+              "experiment": "",
+              "variant": "A"
+            }
+          }
+        },
+        "block_order": [
+          "version_cXzFyR"
+        ],
+        "settings": {
+          "enabled": true,
+          "trigger_mode": "immediate",
+          "delay_seconds": 6,
+          "scroll_percent": 50,
+          "dismiss_days": 14,
+          "signup_days": 180,
+          "once_per_session": true,
+          "hide_on_cart": true,
+          "respect_consent": true,
+          "error_text": "Something went wrong — please try again.",
+          "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td"
+        }
+      },
+      "waitlist-modal": {
+        "type": "waitlist-modal",
+        "settings": {
+          "enabled": true,
+          "brevo_form_url": "https://ee2e1cae.sibforms.com/serve/MUIFACMc_huJiOHOcXUboK_NfioRd3dKg6s_-FOTIk0S8Nzdvlm7rnWLcfACYqCP7mqcmwmSjcN95tP7Bvs4pjgirhO1mUpZEU0RiafB-qpTGHoFR1IZnCI_hCIBockD3g-Iqtsi26MM1FA8KDAwnDogG59hUM6OUyleL3LbTSJ32uO5gi7dPH1xcDrneigK1Vm01z2eHzqiK9Td"
+        }
       }
     },
     "content_for_index": [],
     "blocks": {
       "7878088468538493966": {
         "type": "shopify://apps/wisepops-smart-popups-bars/blocks/app-embed/e7d7a4f7-0df4-4073-9375-5f36db513952",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "pagefly-page-builder": {

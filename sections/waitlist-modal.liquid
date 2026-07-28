@@ -1,0 +1,530 @@
+{% comment %}
+  Product: Waitlist — the sold-out product waitlist modal, built to the
+  Claude Design handoff (Turn 5, options 5a–5d): centred panel over a
+  40% scrim (bottom-docked over the scrim on mobile), fixed footprint
+  per breakpoint, sign-up state swaps in place to a confirmation state.
+  The primary button is sentence case by explicit decision.
+
+  Triggering: opens on click of any element with [data-waitlist-trigger]
+  or href="#waitlist". On native product templates the disabled sold-out
+  submit button (label "Join waiting list") is automatically enabled and
+  converted into a trigger. Renders on product templates only, and only
+  when a Brevo form URL is set.
+
+  Data: posts the email to the same Brevo form endpoint as the signup
+  popup, then identifies the contact with MARKET / LANGUAGE / PATH /
+  COUNTRY (IP-derived, only when detected) / POPUP_CAMPAIGN "waitlist" /
+  WAITLIST_SKUS (accumulated per browser), and records a Brevo
+  "waitlist_join" event plus a dataLayer/gtag event carrying the SKU.
+  The SKU is the product's current variant (?variant= aware), or a
+  data-sku attribute on the trigger.
+{% endcomment %}
+
+{%- liquid
+  assign wl_on = false
+  if template.name == 'product' and section.settings.enabled and section.settings.brevo_form_url != blank
+    assign wl_on = true
+  endif
+
+  assign lang_code = localization.language.iso_code | downcase
+  assign path_prefix = routes.root_url
+  assign market_key = 'primary'
+  if path_prefix != '/'
+    assign market_key = path_prefix | remove_first: '/' | split: '-' | last | downcase
+  else
+    assign path_prefix = ''
+  endif
+-%}
+
+{%- if wl_on -%}
+{% style %}
+  st-waitlist { display: contents; }
+  .stw {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+  }
+  .stw.is-open { display: block; }
+
+  .stw__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(18, 18, 18, 0.4);
+  }
+
+  .stw__panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px;
+    height: 420px;
+    box-sizing: border-box;
+    background: #fff;
+    padding: 48px 48px 36px;
+  }
+
+  /* Fade in ~280ms ease-out; out ~180ms. Mobile adds a <=10px rise —
+     the design system forbids anything larger. State swap is instant. */
+  @keyframes stw-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes stw-rise-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes stw-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  .stw.is-open .stw__scrim,
+  .stw.is-open .stw__panel { animation: stw-fade-in 0.28s ease-out both; }
+  .stw.is-closing .stw__scrim,
+  .stw.is-closing .stw__panel { animation: stw-fade-out 0.18s ease both; }
+  @media (prefers-reduced-motion: reduce) {
+    .stw.is-open .stw__scrim,
+    .stw.is-open .stw__panel,
+    .stw.is-closing .stw__scrim,
+    .stw.is-closing .stw__panel { animation: none; }
+  }
+
+  .stw__close {
+    position: absolute;
+    top: 36px;
+    right: 33px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #121212;
+    z-index: 1;
+  }
+
+  .stw__state {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+  }
+  .stw__panel .stw__state--signup { display: flex; }
+  .stw__panel.is-thanks .stw__state--signup { display: none; }
+  .stw__panel.is-thanks .stw__state--thanks { display: flex; }
+
+  .stw__eyebrow {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0 0 14px;
+  }
+  .stw__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.25;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 12px;
+  }
+  .stw__body {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    margin: 0 0 28px;
+    max-width: 380px;
+    text-wrap: pretty;
+  }
+
+  .stw__input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e2e2e2;
+    border-radius: 0;
+    background: #fff;
+    padding: 14px 16px;
+    font-family: var(--font-body-family);
+    font-size: 15px;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0 0 10px;
+  }
+  .stw__input::placeholder { color: rgba(18, 18, 18, 0.55); }
+  .stw__input:focus,
+  .stw__input:focus-visible {
+    outline: none;
+    box-shadow: none;
+    border-color: #121212;
+  }
+
+  /* Sentence case — deliberate exception to the uppercase rule */
+  .stw__button {
+    width: 100%;
+    box-sizing: border-box;
+    background: #161616;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-family: var(--font-body-family);
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0.1rem;
+    padding: 16px;
+    cursor: pointer;
+  }
+
+  .stw__smallprint {
+    font-family: var(--font-body-family);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.55);
+    margin: auto 0 0;
+    padding-top: 16px;
+  }
+
+  .stw__continue {
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+    cursor: pointer;
+  }
+
+  .stw__error {
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    line-height: 19px;
+    color: #c8352e;
+    margin: 0 0 8px;
+    display: none;
+  }
+  .stw__panel.has-error .stw__error { display: block; }
+
+  @media screen and (max-width: 749px) {
+    .stw__panel {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      top: auto;
+      transform: none;
+      width: auto;
+      height: 408px;
+      padding: 32px 24px 24px;
+    }
+    .stw.is-open .stw__panel { animation-name: stw-rise-in; }
+    .stw__close { top: 20px; right: 9px; }
+    .stw__eyebrow { margin-bottom: 12px; }
+    .stw__heading { font-size: 28px; margin-bottom: 10px; }
+    .stw__body { margin-bottom: 24px; max-width: none; }
+  }
+{% endstyle %}
+
+<st-waitlist
+  class="stw-root"
+  data-market="{{ market_key }}"
+  data-language="{{ lang_code }}"
+  data-path-prefix="{{ path_prefix }}"
+  data-sku="{{ product.selected_or_first_available_variant.sku | escape }}"
+  data-extra-triggers="{{ section.settings.extra_triggers | escape }}"
+  data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
+>
+  <script type="application/json" data-stw-skus>
+    { {%- for v in product.variants -%}"{{ v.id }}": {{ v.sku | json }}{% unless forloop.last %}, {% endunless %}{%- endfor -%} }
+  </script>
+
+  <div class="stw" data-stw-modal>
+    <div class="stw__scrim" data-stw-close role="presentation"></div>
+    <div class="stw__panel" role="dialog" aria-modal="true" aria-label="{{ section.settings.heading | escape }}" data-stw-panel>
+      <button type="button" class="stw__close" data-stw-close aria-label="{{ 'accessibility.close' | t }}">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+
+      <div class="stw__state stw__state--signup">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="stw__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="stw__heading">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.body != blank -%}
+          <p class="stw__body">{{ section.settings.body | escape }}</p>
+        {%- endif -%}
+
+        <form class="stw__form" action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false" data-stw-form>
+          <p class="stw__error" data-stw-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+          <input
+            type="email"
+            name="EMAIL"
+            class="stw__input"
+            placeholder="{{ section.settings.placeholder | default: 'Email address' | escape }}"
+            autocomplete="email"
+            required
+          >
+          <button type="submit" class="stw__button">{{ section.settings.button_label | default: 'Join waitlist' | escape }}</button>
+        </form>
+
+        {%- if section.settings.smallprint != blank -%}
+          <p class="stw__smallprint">{{ section.settings.smallprint | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="stw__state stw__state--thanks">
+        {%- if section.settings.ty_eyebrow != blank -%}
+          <p class="stw__eyebrow">{{ section.settings.ty_eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="stw__heading">{{ section.settings.ty_heading | default: "You're on the waitlist" | escape }}</h2>
+        {%- if section.settings.ty_body != blank -%}
+          <p class="stw__body">{{ section.settings.ty_body | escape }}</p>
+        {%- endif -%}
+        <button type="button" class="stw__continue" data-stw-close>{{ section.settings.continue_label | default: 'Continue browsing' | escape }} &rarr;</button>
+      </div>
+    </div>
+  </div>
+</st-waitlist>
+
+<script>
+  class StWaitlist extends HTMLElement {
+    connectedCallback() {
+      this.modal = this.querySelector('[data-stw-modal]');
+      this.panel = this.querySelector('[data-stw-panel]');
+      this.form = this.querySelector('[data-stw-form]');
+      if (!this.modal || !this.panel || !this.form) return;
+
+      try {
+        const mapEl = this.querySelector('[data-stw-skus]');
+        this.skuMap = mapEl ? JSON.parse(mapEl.textContent) : {};
+      } catch (e) { this.skuMap = {}; }
+
+      // Nothing in this form may ever navigate the page
+      this.form.submit = function () {};
+      this.form.addEventListener('submit', (e) => { e.preventDefault(); this.send(); });
+
+      this.querySelectorAll('[data-stw-close]').forEach((el) => {
+        el.addEventListener('click', () => this.close());
+      });
+
+      // Capture phase + hard stop: Wisepops (loaded store-wide via script
+      // tag until the app is uninstalled) also listens on this button —
+      // the click must never reach it. extra_triggers lets PageFly-era
+      // buttons be claimed by the selector Wisepops itself targets.
+      let triggerSelector = '[data-waitlist-trigger], a[href="#waitlist"], a[href$="#waitlist"]';
+      if (this.dataset.extraTriggers) {
+        try {
+          document.querySelector(this.dataset.extraTriggers);
+          triggerSelector += ', ' + this.dataset.extraTriggers;
+        } catch (e) { /* invalid selector — ignore */ }
+      }
+      this.onDocClick = (e) => {
+        const trigger = e.target.closest(triggerSelector);
+        if (!trigger) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        this.open(trigger);
+      };
+      document.addEventListener('click', this.onDocClick, true);
+
+      this.onKeydown = (e) => {
+        if (e.key === 'Escape' && this.modal.classList.contains('is-open')) this.close();
+      };
+      document.addEventListener('keydown', this.onKeydown);
+
+      this.convertSoldOutButton();
+
+      if (this.dataset.designMode === 'true') {
+        this.onSectionSelect = (e) => { if (e.target.contains(this)) this.open(null); };
+        document.addEventListener('shopify:section:select', this.onSectionSelect);
+      }
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('click', this.onDocClick, true);
+      document.removeEventListener('keydown', this.onKeydown);
+      if (this.onSectionSelect) document.removeEventListener('shopify:section:select', this.onSectionSelect);
+    }
+
+    /* Dawn's disabled sold-out submit becomes a live trigger; the
+       page's dedicated waitlist button carries data-waitlist-trigger
+       in its own markup (main-product.liquid). */
+    convertSoldOutButton() {
+      document.querySelectorAll('.product-form__submit[disabled], .product-form__submit[aria-disabled="true"]').forEach((btn) => {
+        btn.removeAttribute('disabled');
+        btn.setAttribute('aria-disabled', 'false');
+        btn.setAttribute('type', 'button');
+        btn.setAttribute('data-waitlist-trigger', '');
+      });
+    }
+
+    currentSku(trigger) {
+      if (trigger && trigger.dataset.sku) return trigger.dataset.sku;
+      const vid = new URLSearchParams(window.location.search).get('variant');
+      if (vid && this.skuMap[vid]) return this.skuMap[vid];
+      return this.dataset.sku || '';
+    }
+
+    open(trigger) {
+      this.sku = this.currentSku(trigger);
+      // Re-arm the sign-up form when opening for a SKU not yet joined
+      // (e.g. joined Red, switched variant to Yellow without a reload);
+      // reopening for an already-joined SKU keeps the confirmation.
+      if (this.panel.classList.contains('is-thanks')) {
+        const input = this.form.querySelector('input[type="email"]');
+        const email = ((input && input.value) || '').trim().toLowerCase();
+        let joined = [];
+        try { joined = JSON.parse(localStorage.getItem('stw:skus:' + email) || '[]'); } catch (e) {}
+        if (!this.sku || joined.indexOf(this.sku) === -1) this.panel.classList.remove('is-thanks');
+      }
+      this.fetchGeo();
+      this.modal.classList.remove('is-closing');
+      this.modal.classList.add('is-open');
+      document.body.classList.add('overflow-hidden');
+      const input = this.form.querySelector('input[type="email"]');
+      if (input) input.focus();
+      this.emit('waitlist_impression');
+    }
+
+    close() {
+      this.modal.classList.add('is-closing');
+      setTimeout(() => {
+        this.modal.classList.remove('is-open', 'is-closing');
+      }, 180);
+      document.body.classList.remove('overflow-hidden');
+      this.emit('waitlist_dismiss');
+    }
+
+    fetchGeo() {
+      if (this.geoFetched) return;
+      this.geoFetched = true;
+      this.geoCountry = '';
+      fetch('/browsing_context_suggestions.json')
+        .then((r) => r.json())
+        .then((data) => {
+          const d = (data && data.detected_values) || {};
+          const c = d.country || {};
+          this.geoCountry = d.country_name || c.name || c.handle || '';
+        })
+        .catch(() => {});
+    }
+
+    send() {
+      this.panel.classList.remove('has-error');
+      const input = this.form.querySelector('input[type="email"]');
+      const email = input ? input.value : '';
+      const fd = new FormData();
+      fd.append('EMAIL', email);
+      fd.append('email_address_check', '');
+      fd.append('locale', 'en');
+      // Attributes ride the form POST itself (atomic with the email —
+      // immune to the tracker-vs-form contact-creation race). Brevo maps
+      // them when matching fields exist on the form.
+      fd.append('POPUP_CAMPAIGN', 'waitlist');
+      fd.append('MARKET', this.dataset.market || '');
+      fd.append('LANGUAGE', this.dataset.language || '');
+      fd.append('PATH', this.dataset.pathPrefix || '');
+      fd.append('WAITLIST_SKUS', this.mergedSkus(email));
+      if (this.geoCountry) fd.append('COUNTRY', this.geoCountry);
+      fetch(this.form.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
+        this.identify(email);
+        this.emit('waitlist_submit');
+        this.panel.classList.add('is-thanks');
+      }).catch(() => this.panel.classList.add('has-error'));
+    }
+
+    /* Accumulate waitlisted SKUs per email address (in this browser) so
+       the attribute grows across joins instead of being replaced — and
+       different emails from the same browser never cross-pollinate. */
+    mergedSkus(email) {
+      const key = 'stw:skus:' + (email || '').trim().toLowerCase();
+      let list = [];
+      try { list = JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) {}
+      if (this.sku && list.indexOf(this.sku) === -1) list.push(this.sku);
+      try { localStorage.setItem(key, JSON.stringify(list)); } catch (e) {}
+      return list.join(',');
+    }
+
+    identify(email) {
+      if (!email) return;
+      const attrs = {
+        POPUP_CAMPAIGN: 'waitlist',
+        MARKET: this.dataset.market || '',
+        LANGUAGE: this.dataset.language || '',
+        PATH: this.dataset.pathPrefix || '',
+      };
+      if (this.geoCountry) attrs.COUNTRY = this.geoCountry;
+      const skus = this.mergedSkus(email);
+      try {
+        if (window.Brevo && typeof window.Brevo.push === 'function') {
+          // Separate pushes so a rejected attribute (e.g. one not yet
+          // created in Brevo) can never sink the others
+          window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
+          window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: { WAITLIST_SKUS: skus } }]);
+          window.Brevo.push(['track', 'waitlist_join', { email: email }, { data: { sku: this.sku, market: attrs.MARKET, language: attrs.LANGUAGE } }]);
+        } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+          window.sendinblue.identify(email, attrs);
+          window.sendinblue.identify(email, { WAITLIST_SKUS: skus });
+          if (typeof window.sendinblue.track === 'function') window.sendinblue.track('waitlist_join', { sku: this.sku });
+        }
+      } catch (e) {}
+    }
+
+    emit(name) {
+      const payload = {
+        sku: this.sku || null,
+        market: this.dataset.market || null,
+        language: this.dataset.language,
+        path_prefix: this.dataset.pathPrefix,
+      };
+      if (window.dataLayer) window.dataLayer.push(Object.assign({ event: name }, payload));
+      else if (typeof window.gtag === 'function') window.gtag('event', name, payload);
+    }
+  }
+
+  if (!customElements.get('st-waitlist')) customElements.define('st-waitlist', StWaitlist);
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product: Waitlist",
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable waitlist modal", "default": true },
+    { "type": "text", "id": "brevo_form_url", "label": "Brevo form URL", "info": "The action URL of a Brevo subscription form (…sibforms.com/serve/…). The modal only appears when this is set. Usually the same form as the signup popup." },
+    { "type": "header", "content": "Sign-up state" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Join the waitlist" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "The 2026 edition is sold out. Leave your email and be the first to hear when next year's calendars go on sale." },
+    { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Email address" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Join waitlist" },
+    { "type": "textarea", "id": "smallprint", "label": "Smallprint", "default": "By joining the waitlist, you are opting in to receive marketing emails from Stendig Calendars" },
+    { "type": "header", "content": "Confirmation state" },
+    { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
+    { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the waitlist" },
+    { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll email you when next year's calendars go on sale." },
+    { "type": "text", "id": "continue_label", "label": "Continue link label", "default": "Continue browsing", "info": "Dismisses the modal. The arrow is added automatically." },
+    { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
+    { "type": "text", "id": "extra_triggers", "label": "Additional trigger selector", "info": "Optional CSS selector for extra Join-waitlist buttons (e.g. PageFly buttons — paste the same selector your Wisepops campaign targets). Clicks on matches open this modal instead of Wisepops." },
+    { "type": "paragraph", "content": "Opens when a visitor clicks the sold-out product button (automatically converted), or any element with data-waitlist-trigger or a link to #waitlist. Records the same Brevo fields as the signup popup, plus WAITLIST_SKUS (create as a text attribute in Brevo) and a waitlist_join event carrying the SKU." }
+  ]
+}
+{% endschema %}

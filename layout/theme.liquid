@@ -325,6 +325,14 @@
     
                                                                                                                                    
       {% include 'cl_default_ecommerce_events' %}
+      {% comment %} Brevo tracker — carries the popup/newsletter signup
+         attributes (MARKET, LANGUAGE, PATH, POPUP_*) to Brevo via
+         identify calls. client_key is public by design. {% endcomment %}
+      <script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
+      <script>
+        window.Brevo = window.Brevo || [];
+        Brevo.push(["init", { client_key: "imykvei9ubrb9lryy2ah580o" }]);
+      </script>
       {% include 'pagefly-app-header' %}</head>
     
         {% comment %} {% capture HideBody %}
@@ -352,7 +360,9 @@
         </main>
     
         {% section 'footer' %}
-    
+        {% section 'popup-signup' %}
+        {% section 'waitlist-modal' %}
+
         <ul hidden>
           <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
         </ul>
