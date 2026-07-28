@@ -30,10 +30,6 @@
     padding-bottom: 0 !important;
     aspect-ratio: 4 / 5;
   }
-  /* Visitor's ratio choice (the toggle sets data-st-ratio on <body>)
-     overrides the default, page-wide */
-  body[data-st-ratio="4-5"] #shopify-section-{{ section.id }} .cpg .card .media--adapt { aspect-ratio: 4 / 5; }
-  body[data-st-ratio="1-1"] #shopify-section-{{ section.id }} .cpg .card .media--adapt { aspect-ratio: 1 / 1; }
 
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .page-width { padding-left: 12px; padding-right: 12px; }
@@ -54,9 +50,6 @@
 -%}
 
 <div class="cpg page-width">
-  {%- if section.settings.show_ratio_toggle -%}
-    {%- render 'ratio-toggle', default_ratio: '4-5', label_portrait: section.settings.label_portrait, label_square: section.settings.label_square -%}
-  {%- endif -%}
   <ul class="grid grid--2-col grid--3-col-tablet grid--one-third-max {{ desktop_class }} product-grid" role="list">
     {%- liquid
       assign card_count = 0
@@ -123,9 +116,6 @@
 {
   "name": "Curated product grid",
   "settings": [
-    { "type": "checkbox", "id": "show_ratio_toggle", "label": "Show visitor ratio toggle", "default": false, "info": "A Portrait / Square switch above the grid. The visitor's choice applies to every product grid on the page and is remembered." },
-    { "type": "text", "id": "label_portrait", "label": "Toggle label: portrait", "default": "Portrait" },
-    { "type": "text", "id": "label_square", "label": "Toggle label: square", "default": "Square" },
     {
       "type": "select",
       "id": "source",

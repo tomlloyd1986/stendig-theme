@@ -72,10 +72,6 @@
     padding-bottom: 0 !important;
     aspect-ratio: {% if section.settings.image_ratio == '1-1' %}1 / 1{% else %}4 / 5{% endif %};
   }
-  /* Visitor's ratio choice (the toggle sets data-st-ratio on <body>)
-     overrides the section default, page-wide */
-  body[data-st-ratio="4-5"] #shopify-section-{{ section.id }} .gpg .card .media--adapt { aspect-ratio: 4 / 5; }
-  body[data-st-ratio="1-1"] #shopify-section-{{ section.id }} .gpg .card .media--adapt { aspect-ratio: 1 / 1; }
 
   #shopify-section-{{ section.id }} .gpg__empty { font-size: 1.4rem; color: #000; }
   @media screen and (max-width: 749px) {
@@ -84,9 +80,6 @@
 {% endstyle %}
 
 <div class="gpg page-width">
-  {%- if section.settings.show_ratio_toggle -%}
-    {%- render 'ratio-toggle', default_ratio: section.settings.image_ratio, label_portrait: section.settings.label_portrait, label_square: section.settings.label_square -%}
-  {%- endif -%}
   {%- for block in section.blocks -%}
     {%- liquid
       # Resolve this group's product source.
@@ -181,9 +174,6 @@
       "default": "4-5",
       "info": "Applies to every card in this section."
     },
-    { "type": "checkbox", "id": "show_ratio_toggle", "label": "Show visitor ratio toggle", "default": false, "info": "A Portrait / Square switch above the grid. The visitor's choice applies to every product grid on the page and is remembered." },
-    { "type": "text", "id": "label_portrait", "label": "Toggle label: portrait", "default": "Portrait" },
-    { "type": "text", "id": "label_square", "label": "Toggle label: square", "default": "Square" },
     { "type": "range", "id": "columns_desktop", "label": "Columns on desktop", "min": 2, "max": 4, "step": 1, "default": 4 },
     { "type": "range", "id": "max_per_group", "label": "Maximum cards per group", "min": 2, "max": 24, "step": 1, "default": 8 },
     { "type": "range", "id": "heading_size", "label": "Group heading size", "min": 12, "max": 40, "step": 1, "unit": "px", "default": 14 },
