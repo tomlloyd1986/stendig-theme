@@ -385,42 +385,37 @@
             var lang = {{ localization.language.iso_code | downcase | json }};
             var busy = false;
 
-            function write() {
+            // Shopify drops empty-string attributes, so a missing _st_path
+            // and the primary market's empty path are the same state.
+            function stale(a) {
+              return (a._st_path || '') !== path
+                || (a._st_market || '') !== mkt
+                || (a._st_lang || '') !== lang;
+            }
+
+            /* Always read the live cart rather than server-rendered values:
+               a cached page (or a nil rendering inside the expression) must
+               never be able to break or skip the check. */
+            function sync() {
               if (busy) return;
               busy = true;
-              fetch('/cart/update.js', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ attributes: { _st_path: path, _st_market: mkt, _st_lang: lang } })
-              })
+              fetch('/cart.js', { headers: { Accept: 'application/json' }, cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (cart) {
+                  if (!cart || !cart.item_count || !stale(cart.attributes || {})) return null;
+                  return fetch('/cart/update.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ attributes: { _st_path: path, _st_market: mkt, _st_lang: lang } })
+                  });
+                })
                 .catch(function () {})
                 .then(function () { busy = false; });
             }
 
-            // Shopify drops empty-string attributes, so a missing _st_path
-            // and the primary market's empty path are the same state.
-            function stale(p, m, l) {
-              return (p || '') !== path || (m || '') !== mkt || (l || '') !== lang;
-            }
+            sync();
 
-            function sync() {
-              fetch('/cart.js', { headers: { Accept: 'application/json' } })
-                .then(function (r) { return r.json(); })
-                .then(function (cart) {
-                  if (!cart || !cart.item_count) return;
-                  var a = cart.attributes || {};
-                  if (stale(a._st_path, a._st_market, a._st_lang)) write();
-                })
-                .catch(function () {});
-            }
-
-            // Server-rendered state: no request needed on most page loads
-            {%- assign st_p = cart.attributes["_st_path"] -%}
-            {%- assign st_m = cart.attributes["_st_market"] -%}
-            {%- assign st_l = cart.attributes["_st_lang"] -%}
-            if ({{ cart.item_count | default: 0 }} > 0 && stale({{ st_p | json }}, {{ st_m | json }}, {{ st_l | json }})) write();
-
-            // …and re-check after anything that can create or change a cart
+            // …and again after anything that can create or change a cart
             document.addEventListener('click', function (e) {
               var t = e.target;
               if (!t || !t.closest) return;
