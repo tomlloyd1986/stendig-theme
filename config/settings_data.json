@@ -37,7 +37,6 @@
       "go-bolt-yyz-5"
     ],
     "delivery_dates": "<p>ASAP</p>",
-    "delivery_date_domain_exclusions": "domain: stendigcalendars.com\nexclude: 24 Nov\n\ndomain: us.myweb.com\nexclude: 1 Dec, 4 Nov",
     "checkout_logo_image": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
     "checkout_logo_size": "small",
     "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",

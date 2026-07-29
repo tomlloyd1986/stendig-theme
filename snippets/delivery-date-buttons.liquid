@@ -40,14 +40,20 @@
 {% assign current_domain = request.host | downcase | remove: 'www.' %}
 
 {% comment %}
-  Rules can target a full hostname (e.g. "de.stendigcalendars.com") or just the
-  subdomain code (e.g. "de"). Use "main" for the bare domain (stendigcalendars.com).
+  Rules target a market code (e.g. "de"), with "main" for the primary market
+  on the bare domain. Markets moved from subdomains to subfolders, so the code
+  comes from the URL prefix ("/de-de" -> "de"); request.host is now identical
+  for every market and can no longer distinguish them. A legacy subdomain
+  hostname still resolves, so old rules keep working if such a domain is hit.
 {% endcomment %}
-{% assign host_parts = current_domain | split: '.' %}
-{% if host_parts.size == 2 %}
-  {% assign current_subdomain = 'main' %}
+{% assign current_subdomain = 'main' %}
+{% if routes.root_url != '/' %}
+  {% assign current_subdomain = routes.root_url | remove_first: '/' | split: '-' | last | downcase %}
 {% else %}
-  {% assign current_subdomain = host_parts | first %}
+  {% assign host_parts = current_domain | split: '.' %}
+  {% if host_parts.size > 2 %}
+    {% assign current_subdomain = host_parts | first %}
+  {% endif %}
 {% endif %}
 
 {% comment %}
