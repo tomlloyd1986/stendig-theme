@@ -59,12 +59,21 @@ html.cart-drawer-open body {
   flex-shrink: 0;
 }
 
-.cart-drawer__heading {
-  margin: 0;
-  font-family: inherit;
+/* Title and Close are one matched pair. The doubled class out-specifies
+   base.css's h2 rule, which otherwise imposes the Display face at 2rem
+   with 0.06rem tracking on the title only. */
+.cart-drawer__header .cart-drawer__heading,
+.cart-drawer__header .cart-drawer__close {
+  font-family: var(--font-body-family);
   font-size: 1.4rem;
+  line-height: 1.5;
   font-weight: 400;
   letter-spacing: 0;
+  color: rgb(var(--color-foreground));
+}
+
+.cart-drawer__heading {
+  margin: 0;
 }
 
 .cart-drawer__close {
@@ -75,9 +84,6 @@ html.cart-drawer-open body {
   border: none;
   cursor: pointer;
   padding: 0;
-  font: inherit;
-  font-size: 1.4rem;
-  color: rgb(var(--color-foreground));
 }
 
 .cart-drawer__close .icon {
@@ -246,11 +252,14 @@ html.cart-drawer-open body {
   padding-top: 2rem;
 }
 
+/* Body face at the site's standard 14px/21px — not the semibold it was */
 .drawer-upsell__headline {
   margin: 0;
+  font-family: var(--font-body-family);
   font-size: 1.4rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.5;
+  letter-spacing: 0;
 }
 
 .drawer-upsell__benefit {
@@ -365,19 +374,6 @@ html.cart-drawer-open body {
 
 .cart-drawer__totals-muted {
   color: rgba(var(--color-foreground), 0.45);
-}
-
-.cart-drawer__payments {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem;
-  align-items: center;
-  margin-top: 1.2rem;
-}
-
-.cart-drawer__payment-icon {
-  height: 2.2rem;
-  width: auto;
 }
 
 @media screen and (max-width: 549px) {

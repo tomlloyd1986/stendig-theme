@@ -300,12 +300,5 @@
       </button>
     </form>
 
-    {%- if shop.enabled_payment_types.size > 0 -%}
-      <div class="cart-drawer__payments">
-        {%- for type in shop.enabled_payment_types -%}
-          {{ type | payment_type_svg_tag: class: 'cart-drawer__payment-icon' }}
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
   </div>
 {%- endif -%}
