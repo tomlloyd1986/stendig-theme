@@ -363,6 +363,45 @@
         {% section 'popup-signup' %}
         {% section 'waitlist-modal' %}
 
+        <script>
+          /* Stamp the browsed market context onto the cart as (hidden)
+             attributes, so orders carry the true subfolder — Shopify Flow
+             reads order.customAttributes and forwards MARKET/LANGUAGE/PATH
+             to Brevo. order.customerLocale can't do this: its country half
+             reflects the buyer's checkout, not the storefront browsed.
+             Only runs when a cart already exists (never creates one) and
+             once per context per session. */
+          (function () {
+            var path = {{ routes.root_url | json }};
+            if (path === '/') path = '';
+            var mkt = 'primary';
+            if (path) {
+              var segs = path.replace(/^\//, '').split('-');
+              mkt = segs[segs.length - 1].toLowerCase();
+            }
+            var lang = {{ localization.language.iso_code | downcase | json }};
+            var stamp = path + '|' + lang;
+            var tries = 0;
+            function attempt() {
+              try { if (sessionStorage.getItem('st:cartctx') === stamp) return; } catch (e) {}
+              if (document.cookie.indexOf('cart=') === -1) {
+                // No cart yet — re-check briefly so an add-to-cart followed
+                // by immediate checkout still gets stamped
+                if (tries++ < 12) setTimeout(attempt, 5000);
+                return;
+              }
+              fetch('/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ attributes: { _st_path: path, _st_market: mkt, _st_lang: lang } })
+              }).then(function () {
+                try { sessionStorage.setItem('st:cartctx', stamp); } catch (e) {}
+              }).catch(function () {});
+            }
+            attempt();
+          })();
+        </script>
+
         <ul hidden>
           <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
         </ul>
