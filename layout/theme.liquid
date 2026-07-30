@@ -375,14 +375,25 @@
              sets the cart cookie even while empty, so item count decides
              when to write — never the cookie. */
           (function () {
+            /* The URL the visitor is on is the ground truth. routes.root_url
+               normally matches it, but if it ever fails to reflect the market
+               prefix the stamp would silently read as the primary market, so
+               a prefix in the path wins over the Liquid value. */
             var path = {{ routes.root_url | json }};
             if (path === '/') path = '';
+            var seg = (window.location.pathname.split('/')[1] || '').toLowerCase();
+            if (/^[a-z]{2}-[a-z0-9]{2,}$/.test(seg)) path = '/' + seg;
+
             var mkt = 'primary';
             if (path) {
               var segs = path.replace(/^\//, '').split('-');
               mkt = segs[segs.length - 1].toLowerCase();
             }
             var lang = {{ localization.language.iso_code | downcase | json }};
+            if (path) {
+              var lseg = path.replace(/^\//, '').split('-')[0];
+              if (lseg) lang = lseg;
+            }
             var busy = false;
 
             // Shopify drops empty-string attributes, so a missing _st_path
