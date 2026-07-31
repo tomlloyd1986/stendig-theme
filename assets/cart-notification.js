@@ -145,8 +145,14 @@ class CartNotification extends HTMLElement {
   }
 
   open() {
-    this.classList.add('active');
     document.documentElement.classList.add('cart-drawer-open');
+
+    // Start the slide on a later frame so the contents render and the
+    // scroll lock settles first — otherwise the browser does that layout
+    // work in the animation's opening frames and it stutters.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => this.classList.add('active'));
+    });
 
     this.notification.addEventListener(
       'transitionend',
