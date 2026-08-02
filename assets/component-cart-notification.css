@@ -1,20 +1,27 @@
 /* Add-to-cart drawer: full-height panel sliding in from the right,
-   with cart contents, optional cross-sell row, and checkout footer. */
+   with cart contents, optional cross-sell row, and checkout footer.
+
+   The panel and overlay stay permanently composited (will-change) and are
+   never visibility-hidden: a hidden layer holds no rasterized tiles, so
+   Chrome would have to raster the whole drawer surface mid-slide, which
+   stutters the animation. Off-screen position comes from the transform
+   alone; the `inert` attribute (toggled in cart-notification.js) covers
+   focus, find-in-page, and assistive tech while closed. */
 
 .cart-drawer__overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.4s;
+  pointer-events: none;
+  will-change: opacity;
+  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   z-index: 9998;
 }
 
 cart-notification.active .cart-drawer__overlay {
   opacity: 1;
-  visibility: visible;
-  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: auto;
 }
 
 .cart-drawer {
@@ -32,15 +39,22 @@ cart-notification.active .cart-drawer__overlay {
   border-left: 0.1rem solid rgba(var(--color-foreground), 0.08);
   box-shadow: -1.6rem 0 4rem rgba(0, 0, 0, 0.08);
   transform: translateX(100%);
-  visibility: hidden;
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.4s;
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   z-index: 9999;
 }
 
 cart-notification.active .cart-drawer {
   transform: translateX(0);
-  visibility: visible;
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Reserve the scrollbar gutter permanently so the scroll lock below can't
+   change the viewport width (classic scrollbars: Windows, Macs with a
+   mouse plugged in). Without this, hiding the scrollbar reflows and
+   repaints the whole page at both ends of the slide. No-op where
+   scrollbars are overlay (trackpads, phones). */
+html {
+  scrollbar-gutter: stable;
 }
 
 html.cart-drawer-open,

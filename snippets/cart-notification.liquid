@@ -20,6 +20,7 @@
     aria-label="{{ 'general.cart.item_added' | t }}"
     role="dialog"
     tabindex="-1"
+    inert
   >
     <div class="cart-drawer__header">
       <h2 class="cart-drawer__heading">{{ 'sections.cart.title' | t }}</h2>
@@ -37,19 +38,21 @@
 {% comment %}
   Critical inline styles: the component stylesheet loads async, so without
   these the drawer flashes unstyled (in page flow, giant checkmark icon)
-  on every navigation until the CSS arrives.
+  on every navigation until the CSS arrives. No visibility:hidden here —
+  it would out-specify the stylesheet and keep the drawer's layer
+  unrasterized (see the note in component-cart-notification.css); the
+  transform alone keeps it off screen.
 {% endcomment %}
 {% style %}
   cart-notification .cart-drawer {
     position: fixed;
     top: 0;
     right: 0;
-    visibility: hidden;
     transform: translateX(100%);
   }
   cart-notification .cart-drawer__overlay {
     position: fixed;
     opacity: 0;
-    visibility: hidden;
+    pointer-events: none;
   }
 {% endstyle %}

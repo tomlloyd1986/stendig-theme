@@ -145,6 +145,10 @@ class CartNotification extends HTMLElement {
   }
 
   open() {
+    // Closed state is inert (focus/find-in-page/AT); the panel itself is
+    // only off screen, never visibility-hidden, so its layer stays
+    // rasterized and the slide runs entirely on the compositor.
+    this.notification.removeAttribute('inert');
     this.classList.add('active');
     document.documentElement.classList.add('cart-drawer-open');
 
@@ -167,13 +171,21 @@ class CartNotification extends HTMLElement {
     document.body.removeEventListener('click', this.onBodyClick);
 
     removeTrapFocus(this.activeElement);
+    this.notification.setAttribute('inert', '');
   }
 
   updateSections(sections) {
+    // Skip identical re-renders: refreshAndOpen fires on every cart-icon
+    // click, and replacing the drawer's DOM with the same markup forces a
+    // repaint at the exact moment the slide starts.
+    this.renderedSections = this.renderedSections || {};
     this.getSectionsToRender().forEach((section) => {
       const target = document.getElementById(section.targetId || section.id);
       if (!target || !sections[section.id]) return;
-      target.innerHTML = this.getSectionInnerHTML(sections[section.id], section.selector);
+      const html = this.getSectionInnerHTML(sections[section.id], section.selector);
+      if (this.renderedSections[section.id] === html) return;
+      this.renderedSections[section.id] = html;
+      target.innerHTML = html;
     });
   }
 
