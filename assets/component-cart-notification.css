@@ -35,18 +35,6 @@ cart-notification.active .cart-drawer__overlay {
   visibility: hidden;
   transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s 0.4s;
   z-index: 9999;
-  /* Keep the panel on its own compositor layer so the slide never waits
-     for promotion — it is fixed and only ever transforms. */
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cart-drawer,
-  cart-notification.active .cart-drawer,
-  .cart-drawer__overlay,
-  cart-notification.active .cart-drawer__overlay {
-    transition-duration: 0.01ms;
-  }
 }
 
 cart-notification.active .cart-drawer {
