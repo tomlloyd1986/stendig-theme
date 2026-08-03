@@ -1,0 +1,48 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "support-page",
+      "blocks": {
+        "question-1": {
+          "type": "question",
+          "settings": {
+            "question": "What is your returns policy",
+            "answer": "<p>Although we’re sure you’ll be delighted with your calendar, we are happy to accept returns for whatever reason for up to 14 days after it’s been delivered to you, for a full refund of the cost of the calendar (not including the cost of the outbound shipping). The cost of returning the item to us must be paid by you, and the item must be unused and in the same condition as sold. If you’d like to return the item, please email us at help@stendigcalendars.com. For our full refund T&Cs, click here.</p>"
+          }
+        },
+        "question_YcrcBL": {
+          "type": "question",
+          "settings": {
+            "question": "How do I return my calendar?",
+            "answer": "<p>If you’d like to return the item, please email us at help@stendigcalendars.com, quoting your order number.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question-1",
+        "question_YcrcBL"
+      ],
+      "settings": {
+        "sidebar_heading": "Support",
+        "menu": "support",
+        "title": "Returns",
+        "intro": "",
+        "contact_prefix": "Still looking for an answer?",
+        "contact_label": "Get in touch with us",
+        "contact_url": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
