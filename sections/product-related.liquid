@@ -9,7 +9,12 @@
   variant — its image, its ?variant= link, its colour appended to the
   title — so several cards can point at different colours of the same
   product. Each card carries the warehouse-aware Sold out / Last few
-  stock pill. Editable: heading and cards. Type/spacing locked.
+  stock pill.
+  A card that points at the page currently being viewed (same product,
+  and same variant when a SKU is set) hides itself, so up to 8 cards can
+  be stocked while only the first 4 eligible ones show — spares fill the
+  row when the self-reference rule knocks one out. Editable: heading and
+  cards. Type/spacing locked.
 {% endcomment %}
 
 {% style %}
@@ -99,8 +104,13 @@
 
   {%- if section.blocks.size > 0 -%}
     <div class="prel__cards">
+      {%- assign shown_cards = 0 -%}
       {%- for block in section.blocks -%}
         {%- liquid
+          if shown_cards >= 4
+            break
+          endif
+
           assign card_product = block.settings.product
 
           # Optional variant targeting by SKU (exact, case-insensitive) —
@@ -116,6 +126,20 @@
               endif
             endfor
           endif
+
+          # Self-reference rule: skip the card that points at the page the
+          # visitor is already on — the whole product when no SKU is set,
+          # or that exact variant when one is. Later blocks fill the slot.
+          if card_product != blank and product != blank and card_product.id == product.id
+            if card_variant
+              if card_variant.id == product.selected_or_first_available_variant.id
+                continue
+              endif
+            else
+              continue
+            endif
+          endif
+          assign shown_cards = shown_cards | plus: 1
 
           assign card_url = block.settings.link
           if card_url == blank and card_product != blank
@@ -194,9 +218,10 @@
 {% schema %}
 {
   "name": "Product: Related items",
-  "max_blocks": 4,
+  "max_blocks": 8,
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" },
+    { "type": "paragraph", "content": "Only the first 4 eligible cards show. A card pointing at the product (or variant) currently being viewed hides itself, and the next card fills its place — so cards 5–8 act as backups." }
   ],
   "blocks": [
     {
