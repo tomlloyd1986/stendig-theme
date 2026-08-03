@@ -1,0 +1,259 @@
+{% comment %}
+  Support: Page — Avant Arte-style support/FAQ layout. A "Support"
+  sidebar on the left lists every support page from a navigation menu
+  (the page currently being viewed is muted); the right column carries
+  the page title, an intro, an accordion of question blocks, and a
+  "Still looking for an answer?" contact line.
+
+  Content model:
+  - The intro paragraph is the page's own body from Shopify admin, so it
+    is per-page with no extra settings.
+  - Questions are section blocks, so each support page wants its own
+    template: duplicate "support" in the theme editor per page
+    (Releases, Orders and shipping, ...) and assign it.
+  - The sidebar menu is a navigation menu (Content > Menus) shared by
+    every support template; the current page highlights automatically.
+
+  The sidebar disappears on mobile (the footer menu covers navigation),
+  leaving the content full width. Type and spacing locked.
+{% endcomment %}
+
+{% style %}
+  #shopify-section-{{ section.id }} .sup {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    padding: 48px 20px 80px;
+    max-width: var(--st-page-max, 1440px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Sidebar */
+  #shopify-section-{{ section.id }} .sup__side {
+    flex: 0 0 240px;
+  }
+  #shopify-section-{{ section.id }} .sup__side-heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 24px;
+  }
+  #shopify-section-{{ section.id }} .sup__nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  #shopify-section-{{ section.id }} .sup__nav li {
+    margin: 0 0 14px;
+  }
+  #shopify-section-{{ section.id }} .sup__nav a {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} .sup__nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.35rem;
+  }
+  /* The page being viewed: muted, not a link target worth clicking */
+  #shopify-section-{{ section.id }} .sup__nav a[aria-current='page'] {
+    color: rgba(18, 18, 18, 0.45);
+    pointer-events: none;
+  }
+
+  /* Content column */
+  #shopify-section-{{ section.id }} .sup__content {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 820px;
+  }
+  #shopify-section-{{ section.id }} .sup__title {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 16px;
+  }
+  #shopify-section-{{ section.id }} .sup__intro {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    max-width: 640px;
+    margin: 0 0 12px;
+  }
+  #shopify-section-{{ section.id }} .sup__intro p { margin: 0 0 21px; }
+  #shopify-section-{{ section.id }} .sup__intro p:last-child { margin-bottom: 0; }
+
+  /* Accordion */
+  #shopify-section-{{ section.id }} .sup__item {
+    border-bottom: 1px solid rgba(18, 18, 18, 0.08);
+  }
+  #shopify-section-{{ section.id }} .sup__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 0;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: #121212;
+  }
+  #shopify-section-{{ section.id }} .sup__q::-webkit-details-marker { display: none; }
+  #shopify-section-{{ section.id }} .sup__q .icon-caret {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    transform: rotate(-90deg);
+    transition: transform 0.2s ease;
+  }
+  #shopify-section-{{ section.id }} .sup__item[open] .sup__q .icon-caret {
+    transform: rotate(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .sup__q .icon-caret { transition: none; }
+  }
+  #shopify-section-{{ section.id }} .sup__a {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    max-width: 640px;
+    padding: 0 0 20px;
+  }
+  #shopify-section-{{ section.id }} .sup__a p { margin: 0 0 21px; }
+  #shopify-section-{{ section.id }} .sup__a p:last-child { margin-bottom: 0; }
+  #shopify-section-{{ section.id }} .sup__a a {
+    color: #121212;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Contact line */
+  #shopify-section-{{ section.id }} .sup__contact {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    margin: 28px 0 0;
+  }
+  #shopify-section-{{ section.id }} .sup__contact a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.35rem;
+  }
+  #shopify-section-{{ section.id }} .sup__contact a:hover { color: #121212; }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .sup {
+      display: block;
+      padding: 32px 12px 56px;
+    }
+    /* Navigation between support pages falls to the footer menu */
+    #shopify-section-{{ section.id }} .sup__side { display: none; }
+    #shopify-section-{{ section.id }} .sup__title { font-size: 26px; }
+  }
+{% endstyle %}
+
+<div class="sup">
+  <aside class="sup__side">
+    {%- if section.settings.sidebar_heading != blank -%}
+      <h2 class="sup__side-heading">{{ section.settings.sidebar_heading | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.menu != blank -%}
+      <ul class="sup__nav">
+        {%- for link in section.settings.menu.links -%}
+          <li>
+            <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </aside>
+
+  <div class="sup__content">
+    <h1 class="sup__title">{{ section.settings.title | default: page.title | escape }}</h1>
+
+    {%- if page.content != blank -%}
+      <div class="sup__intro rte">{{ page.content }}</div>
+    {%- endif -%}
+
+    {%- for block in section.blocks -%}
+      {%- if block.settings.question != blank -%}
+        <details class="sup__item" {{ block.shopify_attributes }}>
+          <summary class="sup__q">
+            {{ block.settings.question | escape }}
+            {% render 'icon-caret' %}
+          </summary>
+          <div class="sup__a rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if section.settings.contact_label != blank -%}
+      <p class="sup__contact">
+        {{ section.settings.contact_prefix | escape }}
+        <a href="{{ section.settings.contact_url | default: '/pages/contact' }}">{{ section.settings.contact_label | escape }}</a>
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Support: Page",
+  "max_blocks": 30,
+  "settings": [
+    { "type": "paragraph", "content": "The intro paragraph under the title is the page's own content from Shopify admin. Give each support page its own copy of this template so its questions are independent." },
+    { "type": "text", "id": "sidebar_heading", "label": "Sidebar heading", "default": "Support" },
+    { "type": "link_list", "id": "menu", "label": "Sidebar menu", "info": "One menu shared by all support pages; the page being viewed is highlighted automatically." },
+    { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the page's title." },
+    { "type": "text", "id": "contact_prefix", "label": "Contact line", "default": "Still looking for an answer?" },
+    { "type": "text", "id": "contact_label", "label": "Contact link label", "default": "Get in touch with us" },
+    { "type": "url", "id": "contact_url", "label": "Contact link" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  },
+  "presets": [
+    {
+      "name": "Support: Page",
+      "blocks": [
+        { "type": "question" },
+        { "type": "question" }
+      ]
+    }
+  ]
+}
+{% endschema %}

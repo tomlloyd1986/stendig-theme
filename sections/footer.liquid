@@ -80,6 +80,9 @@
             {%- if section.settings.newsletter_heading != blank -%}
               <h2 class="footer-block__heading">{{ section.settings.newsletter_heading | escape }}</h2>
             {%- endif -%}
+            {%- if section.settings.newsletter_subtext != blank -%}
+              <p class="footer-block__newsletter-subtext">{{ section.settings.newsletter_subtext }}</p>
+            {%- endif -%}
              {% assign full_url = request.host | append: request.path %}
             {%- liquid
               # Same market/language/path capture as the signup popup, so
@@ -542,6 +545,12 @@
       "id": "newsletter_heading",
       "default": "Subscribe to our emails",
       "label": "t:sections.footer.settings.newsletter_heading.label"
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_subtext",
+      "label": "Newsletter subtext",
+      "info": "Shown under the heading, above the email field."
     },
     {
       "type": "header",

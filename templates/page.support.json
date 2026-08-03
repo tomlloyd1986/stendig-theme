@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "support-page",
+      "blocks": {
+        "question-1": {
+          "type": "question",
+          "settings": {
+            "question": "",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": ["question-1"],
+      "settings": {
+        "sidebar_heading": "Support"
+      }
+    }
+  },
+  "order": ["main"]
+}

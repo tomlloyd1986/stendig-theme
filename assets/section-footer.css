@@ -605,3 +605,52 @@ noscript .localization-selector.link {
     margin-top: 0;
   }
 }
+
+/* Newsletter column sits far left of the menu columns (Avant Arte
+   arrangement). The markup keeps its Dawn order (menus first, newsletter
+   after), so flex ordering puts the newsletter first visually: above the
+   menus on mobile, leftmost on desktop. */
+.footer__content-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-block--newsletter {
+  order: -1;
+  margin-top: 0;
+}
+
+.footer-block__newsletter-subtext {
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  line-height: 2.1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: rgb(var(--color-foreground));
+  max-width: 36rem;
+  margin: 0 0 1.6rem;
+}
+
+@media screen and (max-width: 749px) {
+  .footer-block--newsletter {
+    margin-bottom: 3rem;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .footer__content-top {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 6rem;
+  }
+
+  .footer-block--newsletter {
+    flex: 0 0 30rem;
+    display: block;
+  }
+
+  .footer__blocks-wrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
