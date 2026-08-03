@@ -1,7 +1,10 @@
 {% comment %}
-  Blog: Content — the body of an editorial article as one reorderable
-  stack of blocks (Avant Arte structure, the site's own type system):
-    Text    — rich text in a centred 640px reading column
+  Editorial content (file kept as blog-content for existing templates) —
+  the shared editorial block stack, used on blog articles and below the
+  product info on product pages (Avant Arte structure, the site's own
+  type system):
+    Text    — rich text in a centred 512px reading column, with an
+              optional Display heading above ("Space and scale")
     Quote   — display-scale centred pull quote (curly quotes added)
     Images  — 1 to 4 images in a row, at Standard (840px), Wide (1200px)
               or Ultrawide (full width within the page gutters), with an
@@ -20,12 +23,24 @@
     margin-left: auto;
     margin-right: auto;
   }
-  #shopify-section-{{ section.id }} .blogc__w-body { max-width: 640px; margin-left: auto; margin-right: auto; }
+  /* 512px ≈ 73 characters per line at 14px — the Avant Arte reading
+     measure (their column is 512px at larger type). */
+  #shopify-section-{{ section.id }} .blogc__w-body { max-width: 512px; margin-left: auto; margin-right: auto; }
   #shopify-section-{{ section.id }} .blogc__w-standard { max-width: 760px; margin-left: auto; margin-right: auto; }
   #shopify-section-{{ section.id }} .blogc__w-wide { max-width: 1040px; margin-left: auto; margin-right: auto; }
   #shopify-section-{{ section.id }} .blogc__w-ultrawide { max-width: none; }
 
   /* Text */
+  #shopify-section-{{ section.id }} .blogc__heading {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #000;
+    margin: 0 0 14px;
+    text-wrap: pretty;
+  }
   #shopify-section-{{ section.id }} .blogc__text {
     margin-bottom: 28px;
     font-family: var(--font-body-family);
@@ -46,8 +61,9 @@
 
   /* Quote */
   #shopify-section-{{ section.id }} .blogc__quotewrap {
-    /* A touch wider than the 640px reading column */
-    max-width: 680px;
+    /* A touch wider than the 512px reading column (same ratio the
+       original 640/680 pair had) */
+    max-width: 545px;
     /* Equal top and bottom. The top margin collapses against the bottom
        margin of whatever block precedes it (text 28px, media/product
        48px), so it has to be the larger of the pair to survive — hence
@@ -163,6 +179,7 @@
       margin-top: 48px;
       margin-bottom: 48px;
     }
+    #shopify-section-{{ section.id }} .blogc__heading { font-size: 22px; }
     #shopify-section-{{ section.id }} .blogc__quote { font-size: 24px; }
     #shopify-section-{{ section.id }} .blogc__media { margin-bottom: 32px; }
     #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
@@ -180,6 +197,9 @@
 
       {%- when 'text' -%}
         <div class="blogc__text blogc__w-body" {{ block.shopify_attributes }}>
+          {%- if block.settings.heading != blank -%}
+            <h2 class="blogc__heading">{{ block.settings.heading | escape }}</h2>
+          {%- endif -%}
           {{ block.settings.body }}
         </div>
 
@@ -311,13 +331,14 @@
 
 {% schema %}
 {
-  "name": "Blog: Content",
+  "name": "Editorial content",
   "max_blocks": 50,
   "blocks": [
     {
       "type": "text",
       "name": "Text",
       "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "info": "Optional Display heading above the text." },
         { "type": "richtext", "id": "body", "label": "Text", "info": "Use bold for question-style subheadings." }
       ]
     },
@@ -385,11 +406,11 @@
     }
   ],
   "enabled_on": {
-    "templates": ["article", "page"]
+    "templates": ["article", "page", "product"]
   },
   "presets": [
     {
-      "name": "Blog: Content",
+      "name": "Editorial content",
       "blocks": [
         { "type": "text" },
         { "type": "images" },
