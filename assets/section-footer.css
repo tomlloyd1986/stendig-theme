@@ -606,10 +606,11 @@ noscript .localization-selector.link {
   }
 }
 
-/* Newsletter column sits far left of the menu columns (Avant Arte
-   arrangement). The markup keeps its Dawn order (menus first, newsletter
-   after), so flex ordering puts the newsletter first visually: above the
-   menus on mobile, leftmost on desktop. */
+/* Footer layout (Asket arrangement): the newsletter takes the left half,
+   the menu blocks share the right half as two columns. The markup keeps
+   its Dawn order (menus first, newsletter after), so flex ordering puts
+   the newsletter first visually: above the menus on mobile, left on
+   desktop. */
 .footer__content-top {
   display: flex;
   flex-direction: column;
@@ -620,20 +621,28 @@ noscript .localization-selector.link {
   margin-top: 0;
 }
 
+/* The line that earns the half-width: display face at headline scale,
+   like Asket's "Be the first to know about product releases...". */
 .footer-block__newsletter-subtext {
-  font-family: var(--font-body-family);
-  font-size: 1.4rem;
-  line-height: 2.1rem;
+  font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+  font-size: 2.4rem;
+  line-height: 1.25;
   font-weight: 400;
   letter-spacing: 0;
   color: rgb(var(--color-foreground));
-  max-width: 36rem;
-  margin: 0 0 1.6rem;
+  max-width: 46rem;
+  margin: 0 0 2.4rem;
+  text-wrap: pretty;
 }
 
 @media screen and (max-width: 749px) {
   .footer-block--newsletter {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  .footer-block__newsletter-subtext {
+    font-size: 2rem;
+    margin-bottom: 2rem;
   }
 }
 
@@ -641,16 +650,40 @@ noscript .localization-selector.link {
   .footer__content-top {
     flex-direction: row;
     align-items: flex-start;
-    gap: 6rem;
+    gap: 4rem;
   }
 
   .footer-block--newsletter {
-    flex: 0 0 30rem;
+    flex: 0 0 calc(50% - 4rem);
     display: block;
   }
 
   .footer__blocks-wrapper {
     flex: 1 1 auto;
     min-width: 0;
+  }
+
+  .footer-block__newsletter-subtext {
+    font-size: 3.2rem;
+  }
+
+  /* Two columns inside the right half. Dawn sizes grid items with
+     percentage widths plus a negative wrapper margin, which miscounts in
+     a narrower container — a real 2-column grid sidesteps that entirely.
+     (Dawn's own block-count classes assume the full page width.) */
+  .footer__content-top .footer__blocks-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 4rem;
+    row-gap: 4rem;
+    margin-left: 0;
+    margin-bottom: 0;
+  }
+
+  .footer__content-top .footer__blocks-wrapper .grid__item {
+    width: auto;
+    max-width: none;
+    padding-left: 0;
+    padding-bottom: 0;
   }
 }
