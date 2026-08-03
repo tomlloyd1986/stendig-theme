@@ -107,19 +107,35 @@
           "96c3fad1-effd-47b9-8fb5-68395a8596b0": {
             "type": "link_list",
             "settings": {
-              "heading": "Follow us",
+              "heading": "Policies",
+              "menu": "footer-menu-3"
+            }
+          },
+          "881d584c-0534-44bf-999c-a8e57a5add25": {
+            "type": "link_list",
+            "settings": {
+              "heading": "Social Media",
               "menu": "footer-menu-2"
+            }
+          },
+          "footer-1": {
+            "type": "text",
+            "settings": {
+              "heading": "",
+              "subtext": ""
             }
           }
         },
         "block_order": [
           "footer-0",
-          "96c3fad1-effd-47b9-8fb5-68395a8596b0"
+          "96c3fad1-effd-47b9-8fb5-68395a8596b0",
+          "881d584c-0534-44bf-999c-a8e57a5add25",
+          "footer-1"
         ],
         "settings": {
           "color_scheme": "background-1",
           "newsletter_enable": true,
-          "newsletter_heading": "Sign up to our newsletter to be the first to hear when new calendars go on sale",
+          "newsletter_heading": "Subscribe to our emails",
           "newsletter_subtext": "",
           "show_social": true,
           "enable_country_selector": false,
