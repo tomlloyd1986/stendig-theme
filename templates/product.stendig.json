@@ -175,12 +175,44 @@
       ],
       "name": "Editorial content",
       "settings": {}
+    },
+    "product_related_niyryh": {
+      "type": "product-related",
+      "blocks": {
+        "card_mNUtrG": {
+          "type": "card",
+          "settings": {
+            "product": "hanging-strips",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_K8JR7e": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_mNUtrG",
+        "card_K8JR7e"
+      ],
+      "name": "Product: Related items",
+      "settings": {
+        "heading": "You may also like"
+      }
     }
   },
   "order": [
     "main",
     "product-recommendations",
     "pagefly-product-section",
-    "blog_content_dG366n"
+    "blog_content_dG366n",
+    "product_related_niyryh"
   ]
 }
