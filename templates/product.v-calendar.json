@@ -74,7 +74,9 @@
       "settings": {
         "enable_sticky_info": true,
         "hide_variants": false,
-        "enable_video_looping": false
+        "enable_video_looping": false,
+        "enable_group_media": false,
+        "media_grouping_option": "Color"
       }
     },
     "product-recommendations": {
@@ -93,11 +95,89 @@
     "pagefly-product-section": {
       "type": "pagefly-product-section",
       "settings": {}
+    },
+    "blog_content_g7HteE": {
+      "type": "blog-content",
+      "blocks": {
+        "text_EK78YM": {
+          "type": "text",
+          "settings": {
+            "heading": "New year, new colour",
+            "body": "<p>Unlike the Stendig, the V Calendar changes colour every year. The V’s designers, Yoshiki Waterhouse and Beatriz Cifuentes have mapped out a multiyear sequence of colourways. Each colour set in the series is designed to look beautiful on its own, but also to compliment the years that come before and after, following on in a harmonious progression.</p>"
+          }
+        },
+        "images_A9cegE": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/Four_Vs_23f1f706-5305-41fb-9ce6-7fed9bada729.jpg",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        },
+        "quote_e6h7kQ": {
+          "type": "quote",
+          "settings": {
+            "quote": "",
+            "attribution": ""
+          }
+        },
+        "text_JJWKLq": {
+          "type": "text",
+          "settings": {
+            "heading": "",
+            "body": ""
+          }
+        }
+      },
+      "block_order": [
+        "text_EK78YM",
+        "images_A9cegE",
+        "quote_e6h7kQ",
+        "text_JJWKLq"
+      ],
+      "name": "Editorial content",
+      "settings": {}
+    },
+    "product_related_e9zRhL": {
+      "type": "product-related",
+      "blocks": {
+        "card_mCphzy": {
+          "type": "card",
+          "settings": {
+            "product": "stendig-calendar",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_bY7npc": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_mCphzy",
+        "card_bY7npc"
+      ],
+      "name": "Product: Related items",
+      "settings": {
+        "heading": "You may also like"
+      }
     }
   },
   "order": [
     "main",
     "product-recommendations",
-    "pagefly-product-section"
+    "pagefly-product-section",
+    "blog_content_g7HteE",
+    "product_related_e9zRhL"
   ]
 }
