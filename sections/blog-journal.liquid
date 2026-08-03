@@ -227,7 +227,9 @@
           {%- endif -%}
           <h3 class="jrn__story-title">{{ article.title | escape }}</h3>
           <p class="jrn__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 28 }}</p>
-          <p class="jrn__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+          {%- if section.settings.show_dates -%}
+            <p class="jrn__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+          {%- endif -%}
         </a>
       {%- endfor -%}
     {%- endfor -%}
@@ -264,6 +266,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Journal", "info": "Falls back to the blog's title when empty." },
     { "type": "text", "id": "standfirst", "label": "Intro line", "default": "Notes on the calendar, the people who made it, and how to live with one." },
     { "type": "text", "id": "pinned_label", "label": "Pinned label", "default": "Pinned" },
+    { "type": "checkbox", "id": "show_dates", "label": "Show publish dates", "default": true },
     { "type": "text", "id": "older_label", "label": "Older articles label", "default": "Older articles", "info": "Shown in the pagination row when there are more pages. The arrow is added automatically." },
     { "type": "paragraph", "content": "Pin an article to the front of the mosaic by tagging it \"pinned\" (or ticking its journal.pinned metafield). The label above each title is the article's first other tag; excerpts come from the article's excerpt or its opening text; images use the article's featured image at its natural shape." }
   ],
