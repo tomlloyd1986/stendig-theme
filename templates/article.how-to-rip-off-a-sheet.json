@@ -11,10 +11,27 @@
   "sections": {
     "header": {
       "type": "blog-header",
-      "settings": {}
+      "settings": {
+        "title": "",
+        "standfirst": ""
+      }
     },
     "content": {
       "type": "blog-content",
+      "blocks": {
+        "video_HDVCJU": {
+          "type": "video",
+          "settings": {
+            "width": "ultrawide",
+            "video_url": "https://vimeo.com/1160116340",
+            "autoplay": false,
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_HDVCJU"
+      ],
       "settings": {}
     }
   },
