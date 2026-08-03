@@ -5,7 +5,11 @@
   one-line subtitle beneath ("Hanging Strips — Fix your Stendig to the
   walls, without nails").
   Cards take an optional product pick (supplies the link automatically)
-  or a custom link. Editable: heading and cards. Type/spacing locked.
+  or a custom link. An optional Variant SKU narrows the card to one
+  variant — its image, its ?variant= link, its colour appended to the
+  title — so several cards can point at different colours of the same
+  product. Each card carries the warehouse-aware Sold out / Last few
+  stock pill. Editable: heading and cards. Type/spacing locked.
 {% endcomment %}
 
 {% style %}
@@ -44,6 +48,11 @@
       max-width: 25%;
       margin-bottom: 0;
     }
+  }
+  /* position: relative anchors the absolute stock pill */
+  #shopify-section-{{ section.id }} .prel__media {
+    position: relative;
+    display: block;
   }
   #shopify-section-{{ section.id }} .prel__card img {
     display: block;
@@ -92,30 +101,86 @@
     <div class="prel__cards">
       {%- for block in section.blocks -%}
         {%- liquid
-          assign card_url = block.settings.link
-          if card_url == blank and block.settings.product != blank
-            assign card_url = block.settings.product.url
+          assign card_product = block.settings.product
+
+          # Optional variant targeting by SKU (exact, case-insensitive) —
+          # lets several cards point at different colours of one product.
+          assign card_variant = false
+          if block.settings.variant_sku != blank and card_product != blank
+            assign sku_needle = block.settings.variant_sku | strip | downcase
+            for v in card_product.variants
+              assign v_sku = v.sku | strip | downcase
+              if v_sku == sku_needle
+                assign card_variant = v
+                break
+              endif
+            endfor
           endif
-          assign card_image = block.settings.image | default: block.settings.product.featured_media
-          assign card_title = block.settings.title | default: block.settings.product.title
+
+          assign card_url = block.settings.link
+          if card_url == blank and card_product != blank
+            if card_variant
+              assign card_url = card_product.url | append: '?variant=' | append: card_variant.id
+            else
+              assign card_url = card_product.url
+            endif
+          endif
+
+          assign card_image = block.settings.image
+          if card_image == blank and card_variant and card_variant.image
+            assign card_image = card_variant.image
+          endif
+          if card_image == blank
+            assign card_image = card_product.featured_media
+          endif
+
+          assign card_title = block.settings.title
+          if card_title == blank
+            assign card_title = card_product.title
+            if card_variant and card_product.has_only_default_variant == false
+              assign card_title = card_title | append: ' — ' | append: card_variant.title
+            endif
+          endif
+
+          assign stock_state = ''
+          if card_product != blank
+            capture stock_state
+              render 'stock-state', product: card_product, variant: card_variant
+            endcapture
+          endif
         -%}
         <a href="{{ card_url | default: '#' }}" class="prel__card" {{ block.shopify_attributes }}>
-          {%- if card_image != blank -%}
-            <img
-              src="{{ card_image | image_url: width: 750 }}"
-              srcset="{{ card_image | image_url: width: 375 }} 375w, {{ card_image | image_url: width: 550 }} 550w, {{ card_image | image_url: width: 750 }} 750w, {{ card_image | image_url: width: 1024 }} 1024w"
-              sizes="(min-width: 750px) 25vw, 50vw"
-              width="{{ card_image.width }}"
-              height="{{ card_image.height }}"
-              alt="{{ card_title | escape }}"
-              loading="lazy"
-            >
-          {%- else -%}
-            <span class="prel__placeholder" role="presentation"></span>
-          {%- endif -%}
+          <span class="prel__media">
+            {%- if stock_state != blank -%}
+              <span class="st-stock-pill st-stock-pill--{{ stock_state }}" aria-hidden="true">
+                <span class="st-stock-pill__dot"></span>
+                {%- if stock_state == 'sold_out' -%}{{ 'products.product.stock_sold_out' | t }}{%- else -%}{{ 'products.product.stock_last_few' | t }}{%- endif -%}
+              </span>
+            {%- endif -%}
+            {%- if card_image != blank -%}
+              <img
+                src="{{ card_image | image_url: width: 750 }}"
+                srcset="{{ card_image | image_url: width: 375 }} 375w, {{ card_image | image_url: width: 550 }} 550w, {{ card_image | image_url: width: 750 }} 750w, {{ card_image | image_url: width: 1024 }} 1024w"
+                sizes="(min-width: 750px) 25vw, 50vw"
+                width="{{ card_image.width }}"
+                height="{{ card_image.height }}"
+                alt="{{ card_title | escape }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              <span class="prel__placeholder" role="presentation"></span>
+            {%- endif -%}
+          </span>
 
           {%- if card_title != blank -%}
-            <h3 class="prel__title">{{ card_title | escape }}</h3>
+            <h3 class="prel__title">
+              {{ card_title | escape }}
+              {%- if stock_state == 'sold_out' -%}
+                <span class="visually-hidden"> &mdash; {{ 'products.product.stock_sold_out' | t }}</span>
+              {%- elsif stock_state == 'last_few' -%}
+                <span class="visually-hidden"> &mdash; {{ 'products.product.stock_last_few' | t }}</span>
+              {%- endif -%}
+            </h3>
           {%- endif -%}
           {%- if block.settings.subtitle != blank -%}
             <p class="prel__subtitle">{{ block.settings.subtitle | escape }}</p>
@@ -139,6 +204,7 @@
       "name": "Card",
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Optional. Supplies the link, image and title unless overridden below." },
+        { "type": "text", "id": "variant_sku", "label": "Variant SKU", "info": "Optional. Points the card at one variant of the product above: its image, a link straight to it, and its colour added to the title (e.g. SC26R for the red V Calendar)." },
         { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional override. Displays at 1:1 (square)." },
         { "type": "text", "id": "title", "label": "Title", "info": "Optional override." },
         { "type": "text", "id": "subtitle", "label": "Subtitle", "placeholder": "Fix your Stendig to the walls, without nails" },
