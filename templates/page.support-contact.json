@@ -11,33 +11,13 @@
   "sections": {
     "main": {
       "type": "support-page",
-      "blocks": {
-        "question-1": {
-          "type": "question",
-          "settings": {
-            "question": "How much does delivery cost?",
-            "answer": "<p>Shipping depends on the exact shipping address, and is calculated at checkout.</p>"
-          }
-        },
-        "question_YcrcBL": {
-          "type": "question",
-          "settings": {
-            "question": "Will I need to pay duties?",
-            "answer": "<p>In most countries, we ship locally, meaning there are no import duties to pay. This applies to the following shipping destinations:</p><ul><li>Australia</li><li>Canada</li><li>European Union</li><li>Hong Kong</li><li>Japan</li><li>New Zealand</li><li>Singapore</li><li>South Korea</li><li>Taiwan</li><li>United Kingdom</li><li>United States</li></ul><p>If you are shipping outside of these countries, then there may be import duties that will need to be paid. These are not included in the price displayed at checkout, and are the responsibility of the customer.</p><p></p>"
-          }
-        }
-      },
-      "block_order": [
-        "question-1",
-        "question_YcrcBL"
-      ],
       "settings": {
         "sidebar_heading": "Support",
         "menu": "support",
-        "title": "Shipping",
-        "intro": "",
-        "contact_prefix": "Still looking for an answer?",
-        "contact_label": "Get in touch with us",
+        "title": "Contact us",
+        "intro": "<p>If you have any questions or a request, don’t hesitate to get in touch. If you have one, please quote your order number in the subject line.</p><p><strong>General information</strong></p><p><a href=\"mailto:help@stendigcalendars.com\" title=\"mailto:help@stendigcalendars.com\">help@stendigcalendars.com</a></p><p><strong>Press and media</strong></p><p><a href=\"mailto:press@stendigcalendars.com\" title=\"mailto:press@stendigcalendars.com\">press@stendigcalendars.com</a></p>",
+        "contact_prefix": "",
+        "contact_label": "",
         "contact_url": ""
       }
     }

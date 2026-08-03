@@ -15,78 +15,92 @@
         "question-1": {
           "type": "question",
           "settings": {
-            "question": "What we collect",
-            "answer": "<p><strong>Information you give us.</strong> When you place an order or create an account, we collect your name, email address, billing and delivery addresses, and phone number. If you contact us with a question, we keep a record of that correspondence. If you sign up to our mailing list, we collect your email address and any preferences you share with us.</p><p><strong>Payment information.</strong> Payments are processed securely by our payment providers (including Shopify Payments, PayPal, and the card networks). We never see or store your full card details. Our payment providers share with us only what we need to fulfil your order, such as confirmation that payment was made.</p><p><strong>Information collected automatically.</strong> When you browse the site, we collect technical data such as your IP address, browser type, device information, approximate location, and how you found and use the site. This is collected through cookies and similar technologies, described below.</p>"
+            "question": "Who we are",
+            "answer": "<p>Stendig Calendars is operated by Tipo Designs Ltd, a company registered in England and Wales (company number [COMPANY NUMBER]).</p><p>Registered address: 47 Keeling House, Claredale St, London, E2 6PG, United Kingdom<br/>Email: <a href=\"mailto:help@stendigcalendars.com\">help@stendigcalendars.com</a></p><p>These terms apply to consumers. If you are buying for business purposes, such as wholesale or resale, please contact us for our wholesale terms, which apply instead.</p>"
           }
         },
         "question_YcrcBL": {
           "type": "question",
           "settings": {
-            "question": "How we use your data",
-            "answer": "<p>We use your personal data to:</p><ul><li>Process and deliver your order, including sharing delivery details with our fulfilment and courier partners</li><li>Take payment and prevent fraud</li><li>Communicate with you about your order, such as confirmations, dispatch notifications, and delivery updates</li><li>Respond to your questions and provide customer support</li><li>Send you marketing emails, but only where you have opted in, and you can unsubscribe at any time using the link in any email</li><li>Understand how the site is used so we can improve it, using aggregated analytics</li><li>Comply with our legal obligations, such as tax and accounting requirements</li></ul><p><strong>Legal bases.</strong> Under UK and EU data protection law, we rely on the following legal bases: performance of a contract (processing your order), consent (marketing emails and non-essential cookies), legitimate interests (fraud prevention, analytics, and improving our products and services), and legal obligation (tax and accounting records).</p>"
+            "question": "Placing an order",
+            "answer": "<p>When you place an order, you will receive an email acknowledging that we have received it. This is not acceptance of your order. Our contract with you is formed when we send you an email confirming that your order has been dispatched.</p><p>We may decline or cancel an order before dispatch, for example if an item is out of stock, if we identify a pricing or product description error, or if we cannot verify payment. If we do, we will let you know and refund any amount you have paid in full.</p>"
           }
         },
         "question_K3HKQa": {
           "type": "question",
           "settings": {
-            "question": "Who we share your data with",
-            "answer": "<p>We never sell your personal data. We share it only with service providers who help us run the business:</p><ul><li><strong>Shopify</strong>, which hosts our online store and processes orders</li><li><strong>Payment providers</strong>, to take payment securely</li><li><strong>Fulfilment and warehousing partners</strong>, who pick, pack, and dispatch orders from our warehouses</li><li><strong>Couriers and postal services</strong>, who deliver your order and may contact you with delivery updates</li><li><strong>Email service providers</strong>, who send our order notifications and marketing emails</li><li><strong>Analytics providers</strong>, who help us understand how the site is used</li></ul><p>Each of these providers is contractually required to protect your data and use it only to provide services to us.</p><h2></h2>"
+            "question": "Products",
+            "answer": "<p>We make every effort to display our products accurately, but colours may vary slightly depending on your screen, and minor variations can occur between print runs. These variations are a normal characteristic of offset-printed products and do not constitute a fault.</p>"
           }
         },
         "question_famWH8": {
           "type": "question",
           "settings": {
-            "question": "International transfers",
-            "answer": "<p>We sell worldwide and fulfil orders from warehouses in more than one country, so your data may be transferred outside the UK and the European Economic Area, including to the United States. Where this happens, we ensure appropriate safeguards are in place, such as the UK International Data Transfer Addendum, the EU Standard Contractual Clauses, or an adequacy decision.</p>"
+            "question": "Prices and payment",
+            "answer": "<p>Prices are shown in the currency of your selected market and include VAT or sales tax where we are required to collect it. Delivery charges are shown separately at checkout before you pay.</p><p>Payment is taken in full when you place your order. We accept the payment methods shown at checkout. All payments are processed securely by our payment providers.</p><p>If we discover a genuine pricing error in an order you have placed, we will contact you and give you the option of confirming the order at the correct price or cancelling it for a full refund.</p>"
           }
         },
         "question_tawCkr": {
           "type": "question",
           "settings": {
-            "question": "Cookies",
-            "answer": "<p>We use cookies and similar technologies to make the site work, remember your basket and preferences, and understand how the site is used.</p><ul><li><strong>Essential cookies</strong> are required for the site to function, including checkout and security. These cannot be switched off.</li><li><strong>Analytics cookies</strong> help us understand how visitors use the site. We use these only with your consent where required.</li><li><strong>Marketing cookies</strong> may be used to measure the effectiveness of our advertising. We use these only with your consent where required.</li></ul><p>You can manage cookies through the cookie banner on the site or through your browser settings. Blocking essential cookies may prevent parts of the site from working.</p>"
+            "question": "Delivery",
+            "answer": "<p>Estimated delivery times and charges are shown at checkout and on our Shipping Policy page. Estimates are not guaranteed, but if delivery is delayed by an event outside our control we will let you know and take reasonable steps to minimise the delay.</p><p>The products become your responsibility from the moment they are delivered to the address you gave us. Ownership passes to you once we have received payment in full.</p><p>If nobody is available to receive the delivery and the products are returned to us, we may charge the reasonable costs of redelivery, or cancel the order and refund you less our reasonable costs.</p><h2></h2>"
           }
         },
         "question_PMCUnf": {
           "type": "question",
           "settings": {
-            "question": "How long we keep your data",
-            "answer": "<p>We keep your data only as long as we need it. Order and transaction records are kept for at least six years to meet tax and accounting obligations. Marketing data is kept until you unsubscribe or ask us to delete it. Customer service correspondence is kept for as long as reasonably necessary to handle your enquiry and any follow-up.</p>"
+            "question": "Customs and import duties",
+            "answer": "<p>Depending on your country, your order may be subject to import duties, taxes, or customs fees. Where these are included in your order total or collected by us at checkout, this will be clearly shown. Where they are not, they are your responsibility and are payable to the carrier or customs authority on or before delivery. Refusing a delivery because of customs charges is treated as a cancellation under section 7, and any costs or unrecoverable charges we incur may be deducted from your refund.</p>"
           }
         },
         "question_yNAhFi": {
           "type": "question",
           "settings": {
-            "question": "Your rights",
-            "answer": "<p>Depending on where you live, you have the right to:</p><ul><li>Access a copy of the personal data we hold about you</li><li>Correct inaccurate or incomplete data</li><li>Ask us to delete your data</li><li>Restrict or object to how we process your data, including for direct marketing</li><li>Receive your data in a portable format</li><li>Withdraw consent at any time, where we rely on consent</li></ul><p>To exercise any of these rights, contact us at [EMAIL ADDRESS]. We will respond within one month. We may need to verify your identity before acting on a request.</p><p>If you are in the UK, you also have the right to complain to the Information Commissioner's Office (ico.org.uk). If you are in the EU, you can complain to your local data protection authority.</p><p><strong>California residents.</strong> If you live in California, you have rights under the California Consumer Privacy Act, including the right to know what personal information we collect, the right to delete it, and the right to opt out of its sale or sharing. We do not sell personal information. To exercise these rights, contact us at [EMAIL ADDRESS].</p>"
+            "question": "Your right to cancel (UK and EU customers)",
+            "answer": "<p>If you are a consumer in the UK or the European Union, you have the right to cancel your order for any reason within 14 days of the day you (or someone you nominate) receive the products.</p><p>To cancel, email us at <a href=\"mailto:help@stendigcalendars.com\">help@stendigcalendars.com</a> with a clear statement that you wish to cancel, including your order number. You may use the model cancellation form at the end of these terms, but you do not have to.<br/><br/>If you cancel:</p><ul><li>You must return the products to us within 14 days of telling us you wish to cancel. Our Returns Policy explains how.</li><li>You are responsible for the cost of returning the products unless they are faulty or not as described.</li><li>We will refund the price you paid, including standard delivery charges, within 14 days of receiving the products back or receiving proof that you have sent them, whichever is earlier. If you chose a premium delivery option, we refund only the cost of our standard option.</li><li>Original delivery charges are refunded as required by law for UK and EU consumers exercising this cancellation right. For customers in other countries returning under our goodwill policy, we refund the product price only, and original delivery charges are not refunded.</li><li>We may reduce your refund to reflect any diminished value caused by handling beyond what is necessary to inspect the products, for example if a calendar is returned with pages removed, marked, or hung.</li></ul><p>This cancellation right is in addition to your legal rights if a product is faulty, described in section 8.</p><p>We extend a comparable goodwill returns period to customers in other countries. See our Returns Policy for details.<br/><br/><strong>Returns outside the 14-day window.</strong> We may, at our discretion, accept returns after the 14-day period has expired. Any such return is a goodwill gesture, not an entitlement. If accepted, we will refund the product price only. Original delivery charges will not be refunded, return postage remains your responsibility, and the products must be returned unused and in resaleable condition. This does not affect your statutory rights in respect of faulty goods, which apply regardless of the 14-day window.</p>"
           }
         },
         "question_NqVMQE": {
           "type": "question",
           "settings": {
-            "question": "Children",
-            "answer": "<p>Our site and products are not directed at children under 16, and we do not knowingly collect data from them.</p>"
+            "question": "Faulty or incorrect products",
+            "answer": "<p>If a product arrives damaged, faulty, or not as described, or if you receive the wrong item, contact us at <a href=\"mailto:help@stendigcalendars.com\">help@stendigcalendars.com</a> with your order number and photographs of the issue, and we will put it right with a replacement or a full refund, including delivery costs. We cover the cost of returning faulty or incorrect items.</p><p>Nothing in these terms affects your statutory rights. If you are in the UK, the Consumer Rights Act 2015 gives you rights where goods are faulty or not as described. If you are in the EU, you have a legal guarantee of at least two years under EU consumer law. Local mandatory consumer protections in your country of residence continue to apply.</p>"
           }
         },
         "question_gHCwnX": {
           "type": "question",
           "settings": {
-            "question": "Security",
-            "answer": "<p>We use appropriate technical and organisational measures to protect your data, including encryption in transit (HTTPS) and access controls. Payment details are handled entirely by our PCI-compliant payment providers.</p>"
+            "question": "Our liability",
+            "answer": "<p>If we fail to comply with these terms, we are responsible for loss or damage you suffer that is a foreseeable result of our breach, but we are not responsible for loss that is not foreseeable or for business losses.</p><p>We do not exclude or limit our liability where it would be unlawful to do so, including for death or personal injury caused by our negligence, for fraud, or for your statutory rights as a consumer.</p>"
           }
         },
         "question_JJi7t6": {
           "type": "question",
           "settings": {
-            "question": "Changes to this policy",
-            "answer": "<p>We may update this policy from time to time. The latest version will always be available on this page, with the date of the most recent update shown at the top. If we make significant changes, we will take reasonable steps to bring them to your attention.</p>"
+            "question": "Events outside our control",
+            "answer": "<p>We are not liable for delay or failure to perform caused by events outside our reasonable control, such as carrier disruption, customs delays, industrial action, or extreme weather. If such an event substantially delays your order, you may cancel it and receive a full refund for undelivered products.</p>"
           }
         },
         "question_3hrGeL": {
           "type": "question",
           "settings": {
-            "question": "Contact us",
-            "answer": "<p>Tipo Designs Ltd, 47 Keeling House, Claredale St, London, E2 6PG, United Kingdom</p><p>help@stendigcalendars.com</p>"
+            "question": "General",
+            "answer": "<p>We may transfer our rights under these terms to another organisation, but this will not affect your rights. Each section of these terms operates separately; if any part is found unlawful, the rest remain in effect. These terms are between you and us, and no one else has rights to enforce them.</p>"
+          }
+        },
+        "question_wMC6zk": {
+          "type": "question",
+          "settings": {
+            "question": "Governing law",
+            "answer": "<p>These terms are governed by the laws of England and Wales, and you can bring proceedings in the courts of England and Wales. If you live elsewhere, this does not deprive you of the protection of mandatory consumer laws of your country of residence, and you may also be able to bring proceedings in your local courts.</p>"
+          }
+        },
+        "question_rxwzPR": {
+          "type": "question",
+          "settings": {
+            "question": "Model cancellation form",
+            "answer": "<p>To: Tipo Designs Ltd, 47 Keeling House, Claredale St, London, E2 6PG, United Kingdom (<a href=\"mailto:help@stendigcalendars.com\">help@stendigcalendars.com</a>)</p><p>I hereby give notice that I cancel my contract of sale of the following goods:</p><ul><li>Ordered on / received on:</li><li>Order number:</li><li>Name of consumer:</li><li>Address of consumer:</li><li>Signature of consumer (only if this form is notified on paper):</li><li>Date:</li></ul>"
           }
         }
       },
@@ -101,13 +115,15 @@
         "question_NqVMQE",
         "question_gHCwnX",
         "question_JJi7t6",
-        "question_3hrGeL"
+        "question_3hrGeL",
+        "question_wMC6zk",
+        "question_rxwzPR"
       ],
       "settings": {
         "sidebar_heading": "Support",
         "menu": "support",
         "title": "Privacy policy",
-        "intro": "<p>Last updated: 3rd August, 2026</p><p>Stendig Calendars is operated by Tipo Designs Ltd (\"we\", \"us\", \"our\"), a company registered in England and Wales. This policy explains how we collect, use, and protect your personal data when you visit stendigcalendars.com, place an order, or interact with us. We are the data controller for the personal data described in this policy.</p><p>If you have any questions, you can contact us at help@stendigcalendars.com or by post at 47 Keeling House, Claredale St, London, E2 6PG, United Kingdom.</p>",
+        "intro": "<p>Last updated: 3rd August, 2026</p><p>These terms apply to all orders placed on stendigcalendars.com. Please read them before ordering. By placing an order, you agree to these terms.</p>",
         "contact_prefix": "Still looking for an answer?",
         "contact_label": "Get in touch with us",
         "contact_url": ""
