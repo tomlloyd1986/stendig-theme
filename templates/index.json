@@ -9,11 +9,6 @@
  */
 {
   "sections": {
-    "pagefly-home": {
-      "type": "pagefly-home",
-      "disabled": true,
-      "settings": {}
-    },
     "hero_banner_gNr9ea": {
       "type": "home-hero",
       "name": "Hero banner",
@@ -261,7 +256,6 @@
     }
   },
   "order": [
-    "pagefly-home",
     "hero_banner_gNr9ea",
     "home_feature_tiles_YiehXX",
     "home_product_group_L4cmgE",

@@ -92,10 +92,6 @@
         "show_rating": false
       }
     },
-    "pagefly-product-section": {
-      "type": "pagefly-product-section",
-      "settings": {}
-    },
     "blog_content_g7HteE": {
       "type": "blog-content",
       "blocks": {
@@ -176,7 +172,6 @@
   "order": [
     "main",
     "product-recommendations",
-    "pagefly-product-section",
     "blog_content_g7HteE",
     "product_related_e9zRhL"
   ]
