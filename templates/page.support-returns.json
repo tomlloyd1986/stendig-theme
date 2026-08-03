@@ -15,15 +15,15 @@
         "question-1": {
           "type": "question",
           "settings": {
-            "question": "How much does delivery cost?",
-            "answer": "<p>Shipping depends on the exact shipping address, and is calculated at checkout.</p>"
+            "question": "What is your returns policy",
+            "answer": "<p>Although we’re sure you’ll be delighted with your calendar, we are happy to accept returns for whatever reason for up to 14 days after it’s been delivered to you, for a full refund of the cost of the calendar (not including the cost of the outbound shipping). The cost of returning the item to us must be paid by you, and the item must be unused and in the same condition as sold. If you’d like to return the item, please email us at help@stendigcalendars.com. For our full refund T&Cs, click here.</p>"
           }
         },
         "question_YcrcBL": {
           "type": "question",
           "settings": {
-            "question": "Will I need to pay duties?",
-            "answer": "<p>In most countries, we ship locally, meaning there are no import duties to pay. This applies to the following shipping destinations:</p><ul><li>Australia</li><li>Canada</li><li>European Union</li><li>Hong Kong</li><li>Japan</li><li>New Zealand</li><li>Singapore</li><li>South Korea</li><li>Taiwan</li><li>United Kingdom</li><li>United States</li></ul><p>If you are shipping outside of these countries, then there may be import duties that will need to be paid. These are not included in the price displayed at checkout, and are the responsibility of the customer.</p><p></p>"
+            "question": "How do I return my calendar?",
+            "answer": "<p>If you’d like to return the item, please email us at help@stendigcalendars.com, quoting your order number.</p>"
           }
         }
       },
@@ -34,7 +34,7 @@
       "settings": {
         "sidebar_heading": "Support",
         "menu": "support",
-        "title": "Shipping",
+        "title": "Returns",
         "intro": "",
         "contact_prefix": "Still looking for an answer?",
         "contact_label": "Get in touch with us",
