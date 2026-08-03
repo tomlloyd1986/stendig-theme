@@ -11,10 +11,27 @@
   "sections": {
     "header": {
       "type": "blog-header",
-      "settings": {}
+      "settings": {
+        "title": "Massimo Vignelli in his own words",
+        "standfirst": "In 1966, Massimo Vignelli created the stendig calendar. This short documentary from 2010 illuminates the maestro's aesthetic philopsophy and boundless passion for design."
+      }
     },
     "content": {
       "type": "blog-content",
+      "blocks": {
+        "video_eE7wXC": {
+          "type": "video",
+          "settings": {
+            "width": "ultrawide",
+            "video_url": "https://vimeo.com/14421480",
+            "autoplay": false,
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_eE7wXC"
+      ],
       "settings": {}
     }
   },
