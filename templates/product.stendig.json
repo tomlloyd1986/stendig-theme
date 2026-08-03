@@ -1,1 +1,186 @@
-{"sections":{"main":{"type":"main-product","blocks":{"vendor":{"type":"text","disabled":true,"settings":{"text":"{{ product.vendor }}","text_style":"uppercase"}},"title":{"type":"title","settings":{}},"subtitle":{"type":"text","settings":{"text":"{{ product.metafields.descriptors.subtitle.value }}","text_style":"subtitle"}},"price":{"type":"price","settings":{}},"variant_picker":{"type":"variant_picker","settings":{"picker_type":"button"}},"quantity_selector":{"type":"quantity_selector","settings":{}},"buy_buttons":{"type":"buy_buttons","settings":{"show_dynamic_checkout":true}},"description":{"type":"description","settings":{}},"share":{"type":"share","disabled":true,"settings":{"share_label":"Share"}},"858a0a73-e9a2-4361-8d10-243f1a9ab025":{"type":"custom_liquid","settings":{"custom_liquid":""}}},"block_order":["vendor","title","subtitle","price","variant_picker","quantity_selector","buy_buttons","description","share","858a0a73-e9a2-4361-8d10-243f1a9ab025"],"settings":{"enable_sticky_info":true,"hide_variants":false,"enable_video_looping":false}},"product-recommendations":{"type":"product-recommendations","disabled":true,"settings":{"heading":"You may also like","image_ratio":"adapt","show_secondary_image":false,"add_image_padding":false,"show_image_outline":true,"show_vendor":false,"show_rating":false}},"pagefly-product-section":{"type":"pagefly-product-section","settings":{}},"cross-sell":{"type":"custom-liquid","settings":{"custom_liquid":"{% render \"cross-sell\" %}"}}},"order":["main","product-recommendations","pagefly-product-section","cross-sell"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "subtitle": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.descriptors.subtitle.value }}",
+            "text_style": "subtitle"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "disabled": true,
+          "settings": {
+            "share_label": "Share"
+          }
+        },
+        "858a0a73-e9a2-4361-8d10-243f1a9ab025": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": ""
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "subtitle",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "share",
+        "858a0a73-e9a2-4361-8d10-243f1a9ab025"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "enable_group_media": false,
+        "media_grouping_option": "Color"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "disabled": true,
+      "settings": {
+        "heading": "You may also like",
+        "image_ratio": "adapt",
+        "show_secondary_image": false,
+        "add_image_padding": false,
+        "show_image_outline": true,
+        "show_vendor": false,
+        "show_rating": false
+      }
+    },
+    "pagefly-product-section": {
+      "type": "pagefly-product-section",
+      "settings": {}
+    },
+    "blog_content_dG366n": {
+      "type": "blog-content",
+      "blocks": {
+        "quote_WJBkHP": {
+          "type": "quote",
+          "settings": {
+            "quote": "If you do it right, it will last forever",
+            "attribution": "Massimo Vignelli"
+          }
+        },
+        "images_Qkn3aE": {
+          "type": "images",
+          "settings": {
+            "width": "wide",
+            "image_1": "shopify://shop_images/Stendig_In_situ_3.jpg",
+            "caption_1": "",
+            "image_2": "shopify://shop_images/Beth_Davis_Stendig_2026_Detail_06.jpg",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        },
+        "text_WCfiUL": {
+          "type": "text",
+          "settings": {
+            "heading": "Space and scale",
+            "body": "<p>At the heart of the Stendig is a remarkable interplay between space and scale. At 122x92cm, it exceeds the typical size of a calendar, and is a feature of any room. Set within this are large Helvetica numerals that enumerate the days of the month.<br/><br/>The two digit dates are tightly and precisely kerned, such that the two characters just touch. The negative space left in and around these kissing numerals was of as much interest to Vignelli as the numbers themselves: the shape of the number 23, in particular, he considered graphic perfection.</p>"
+          }
+        },
+        "images_y4MWwQ": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/White_Nook_59a0f081-0315-4e4e-addb-19c75c4cdacf.jpg",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        },
+        "text_REkCkC": {
+          "type": "text",
+          "settings": {
+            "heading": "Upcycle old sheets",
+            "body": "<p>Once the month is over, sheets can be detached from the calendar along a perforated seam that runs along the top. Previous months’ sheets make excellent wrapping paper — we recommend rolling them up and saving them for Christmas.</p>"
+          }
+        },
+        "images_tqpw8X": {
+          "type": "images",
+          "settings": {
+            "width": "standard",
+            "image_1": "shopify://shop_images/Wrapping_stool.jpg",
+            "caption_1": "",
+            "caption_2": "",
+            "caption_3": "",
+            "caption_4": ""
+          }
+        }
+      },
+      "block_order": [
+        "quote_WJBkHP",
+        "images_Qkn3aE",
+        "text_WCfiUL",
+        "images_y4MWwQ",
+        "text_REkCkC",
+        "images_tqpw8X"
+      ],
+      "name": "Editorial content",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations",
+    "pagefly-product-section",
+    "blog_content_dG366n"
+  ]
+}
