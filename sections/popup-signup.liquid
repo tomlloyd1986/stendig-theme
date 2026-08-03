@@ -505,14 +505,31 @@
       if (!this.panel) return;
 
       if (this.designMode) {
-        // Preview whichever version block is selected in the theme editor
-        document.addEventListener('shopify:block:select', (e) => {
-          this.panels.forEach((p) => {
-            const hit = p === e.target || p.contains(e.target);
-            p.classList.toggle('is-open', hit);
-            if (hit) this.bind(p);
+        if (this.dataset.designMode === 'true') {
+          // Theme editor: stay hidden until the merchant selects the
+          // section (or one of its version blocks) in the sidebar, and
+          // hide again on deselect. Drives the class directly rather
+          // than openPanel() so reopening works and no impression is
+          // tracked while editing.
+          document.addEventListener('shopify:section:select', (e) => {
+            if (!e.target.contains(this) || !this.panel) return;
+            this.bind(this.panel);
+            this.panel.classList.add('is-open');
           });
-        });
+          document.addEventListener('shopify:section:deselect', (e) => {
+            if (!e.target.contains(this)) return;
+            this.panels.forEach((p) => p.classList.remove('is-open'));
+          });
+          document.addEventListener('shopify:block:select', (e) => {
+            this.panels.forEach((p) => {
+              const hit = p === e.target || p.contains(e.target);
+              p.classList.toggle('is-open', hit);
+              if (hit) this.bind(p);
+            });
+          });
+          return;
+        }
+        // ?stp=preview backdoor on the storefront: open immediately.
         this.openPanel(this.panel, false);
         return;
       }
