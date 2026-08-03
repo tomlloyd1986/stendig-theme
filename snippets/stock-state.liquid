@@ -1,24 +1,25 @@
-{% comment %}
-  Emits the stock-state token for a product, or for one specific variant:
-  'sold_out' (red dot) beats 'last_few' (orange dot); empty = no pill.
-
-  Availability prefers the warehouse metafields — custom.oos_warehouses /
-  _manual on product and variant, the same source the product page's
-  waitlist logic uses — resolved for the warehouse serving this market's
-  subfolder ('/en-au' -> 'au'; root domain -> 'main'). When no metafield
-  is set, Shopify's native availability decides. 'Last few' uses the
-  tracked quantity (per-warehouse counts aren't exposed to Liquid) and
-  only shows when the warehouse says available.
-
-  Accepts:
-  - product: {Object} the product
-  - variant: {Object} optional; scopes the check to one variant
-
-  Output carries no whitespace, so capture it and compare with ==:
-    {%- capture stock_state -%}{%- render 'stock-state', product: p, variant: v -%}{%- endcapture -%}
-{% endcomment %}
-
 {%- liquid
+  # Emits the stock-state token for a product, or for one specific variant:
+  # 'sold_out' (red dot) beats 'last_few' (orange dot); empty = no pill.
+  #
+  # Availability prefers the warehouse metafields — custom.oos_warehouses /
+  # _manual on product and variant, the same source the product page's
+  # waitlist logic uses — resolved for the warehouse serving this market's
+  # subfolder ('/en-au' -> 'au'; root domain -> 'main'). When no metafield
+  # is set, Shopify's native availability decides. 'Last few' uses the
+  # tracked quantity (per-warehouse counts aren't exposed to Liquid) and
+  # only shows when the warehouse says available.
+  #
+  # Accepts:
+  # - product: {Object} the product
+  # - variant: {Object} optional; scopes the check to one variant
+  #
+  # Callers capture the render output and MUST strip it before comparing
+  # (see product-card / product-related) — engines can leave whitespace
+  # in the capture. No tag-like text may appear in this doc block: a
+  # literal percent-brace sequence would terminate this liquid tag early
+  # at tokenization.
+
   assign wh_current = ''
   assign wh_default = ''
   assign wh_mk = 'main'

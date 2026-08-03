@@ -171,6 +171,9 @@
             capture stock_state
               render 'stock-state', product: card_product, variant: card_variant
             endcapture
+            # strip is load-bearing: stray capture whitespace breaks the
+            # modifier class and the == comparisons
+            assign stock_state = stock_state | strip
           endif
         -%}
         <a href="{{ card_url | default: '#' }}" class="prel__card" {{ block.shopify_attributes }}>

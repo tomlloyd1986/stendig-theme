@@ -37,8 +37,13 @@
   endif
 -%}
 
-{%- comment -%} Warehouse-aware 'sold_out' / 'last_few' / '' (shared logic) {%- endcomment -%}
+{%- comment -%}
+  Warehouse-aware 'sold_out' / 'last_few' / '' (shared logic). The strip
+  is load-bearing: any stray whitespace the engine leaves in the capture
+  breaks both the modifier class and the == comparisons below.
+{%- endcomment -%}
 {%- capture stock_state -%}{%- render 'stock-state', product: product_card_product, variant: card_variant -%}{%- endcapture -%}
+{%- assign stock_state = stock_state | strip -%}
 
 <div class="card-wrapper">
   <div class="card-information">
