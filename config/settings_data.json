@@ -107,35 +107,19 @@
           "96c3fad1-effd-47b9-8fb5-68395a8596b0": {
             "type": "link_list",
             "settings": {
-              "heading": "Policies",
-              "menu": "footer-menu-3"
-            }
-          },
-          "881d584c-0534-44bf-999c-a8e57a5add25": {
-            "type": "link_list",
-            "settings": {
-              "heading": "Social Media",
+              "heading": "Follow us",
               "menu": "footer-menu-2"
-            }
-          },
-          "footer-1": {
-            "type": "text",
-            "settings": {
-              "heading": "",
-              "subtext": ""
             }
           }
         },
         "block_order": [
           "footer-0",
-          "96c3fad1-effd-47b9-8fb5-68395a8596b0",
-          "881d584c-0534-44bf-999c-a8e57a5add25",
-          "footer-1"
+          "96c3fad1-effd-47b9-8fb5-68395a8596b0"
         ],
         "settings": {
           "color_scheme": "background-1",
           "newsletter_enable": true,
-          "newsletter_heading": "Subscribe to our emails",
+          "newsletter_heading": "Sign up to our newsletter to be the first to hear when new calendars go on sale",
           "newsletter_subtext": "",
           "show_social": true,
           "enable_country_selector": false,
@@ -236,11 +220,6 @@
       "7878088468538493966": {
         "type": "shopify://apps/wisepops-smart-popups-bars/blocks/app-embed/e7d7a4f7-0df4-4073-9375-5f36db513952",
         "disabled": true,
-        "settings": {}
-      },
-      "pagefly-page-builder": {
-        "type": "shopify://apps/pagefly-page-builder/blocks/app-embed/83e179f7-59a0-4589-8c66-c0dddf959200",
-        "disabled": false,
         "settings": {}
       },
       "12793297677437526120": {
