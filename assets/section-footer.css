@@ -541,6 +541,14 @@ noscript .localization-selector.link {
   }
 }
 
+/* Menu links carry Dawn's .link class, which underlines by default (and
+   .list-menu__item--active keeps the current page permanently underlined).
+   The footer reads as plain text; the underline is hover-only. */
+.footer-block__details-content .list-menu__item--link,
+.footer-block__details-content .list-menu__item--active {
+  text-decoration: none;
+}
+
 /* Menu links: pure black, regular weight, airy vertical spacing */
 .footer-block__details-content .list-menu__item--link {
   font-family: var(--font-body-family);

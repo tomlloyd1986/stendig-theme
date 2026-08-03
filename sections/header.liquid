@@ -406,15 +406,29 @@
       </nav>
 
     <div class="st-header__utility">
-      {%- comment -%} Resources dropdown trigger (desktop only) {%- endcomment -%}
+      {%- comment -%}
+        Resources dropdown trigger (desktop only). With a journal URL set it
+        is a real link: hover or keyboard focus opens the dropdown, clicking
+        goes to the journal. Without one there is nowhere to go, so it stays
+        a button that toggles on click.
+      {%- endcomment -%}
       {%- if show_resources -%}
-        <button
-          type="button"
-          class="st-header__link st-resources__toggle focus-inset"
-          aria-expanded="false"
-          aria-haspopup="true"
-          aria-controls="StResources-{{ section.id }}"
-        >{{ section.settings.resources_label | default: 'Resources' | escape }}</button>
+        {%- if section.settings.journal_url != blank -%}
+          <a
+            href="{{ section.settings.journal_url }}"
+            class="st-header__link st-resources__toggle focus-inset"
+            aria-expanded="false"
+            aria-controls="StResources-{{ section.id }}"
+          >{{ section.settings.resources_label | default: 'Resources' | escape }}</a>
+        {%- else -%}
+          <button
+            type="button"
+            class="st-header__link st-resources__toggle focus-inset"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="StResources-{{ section.id }}"
+          >{{ section.settings.resources_label | default: 'Resources' | escape }}</button>
+        {%- endif -%}
       {%- endif -%}
       {%- comment -%} Search — text trigger, hidden on mobile {%- endcomment -%}
       <details-modal class="header__search st-header__search">
@@ -655,8 +669,14 @@
       this.desktop = window.matchMedia('(min-width: 750px)');
 
       if (this.resToggle && this.resPanel) {
-        this.resToggle.addEventListener('click', () => this.setResources(!this.resPanel.classList.contains('is-open')));
-        // Hover-open is desktop behaviour; touch/click still toggles
+        // As a link the click navigates to the journal, so only the button
+        // variant toggles on click. Focus opens it either way, so keyboard
+        // users can tab straight from Resources into the dropdown's links.
+        if (this.resToggle.tagName !== 'A') {
+          this.resToggle.addEventListener('click', () => this.setResources(!this.resPanel.classList.contains('is-open')));
+        }
+        this.resToggle.addEventListener('focus', () => this.setResources(true));
+        // Hover-open is desktop behaviour
         this.resToggle.addEventListener('mouseenter', () => { if (this.desktop.matches) this.setResources(true); });
         this.onWrapperLeave = () => this.setResources(false);
         if (this.headerWrapper) this.headerWrapper.addEventListener('mouseleave', this.onWrapperLeave);
@@ -692,13 +712,23 @@
       this.onKeydown = (e) => {
         if (e.key === 'Escape') { this.setResources(false); this.setMenu(false); }
       };
+      // Focus opens the dropdown, so tabbing past it has to close it again
+      this.onFocusIn = (e) => {
+        if (
+          this.resPanel && this.resPanel.classList.contains('is-open') &&
+          !this.resPanel.contains(e.target) &&
+          !(this.resToggle && this.resToggle.contains(e.target))
+        ) this.setResources(false);
+      };
       document.addEventListener('click', this.onDocClick);
       document.addEventListener('keydown', this.onKeydown);
+      document.addEventListener('focusin', this.onFocusIn);
     }
 
     disconnectedCallback() {
       document.removeEventListener('click', this.onDocClick);
       document.removeEventListener('keydown', this.onKeydown);
+      document.removeEventListener('focusin', this.onFocusIn);
       if (this.headerWrapper && this.onWrapperLeave) this.headerWrapper.removeEventListener('mouseleave', this.onWrapperLeave);
       document.body.classList.remove('overflow-hidden', 'st-menu-open');
     }
