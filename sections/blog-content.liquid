@@ -61,9 +61,9 @@
 
   /* Quote */
   #shopify-section-{{ section.id }} .blogc__quotewrap {
-    /* A touch wider than the 512px reading column (same ratio the
-       original 640/680 pair had) */
-    max-width: 545px;
+    /* Clearly wider than the 512px reading column, per the handoff's
+       original quote width — the quote should break the column */
+    max-width: 680px;
     /* Equal top and bottom. The top margin collapses against the bottom
        margin of whatever block precedes it (text 28px, media/product
        48px), so it has to be the larger of the pair to survive — hence
