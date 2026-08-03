@@ -48,7 +48,12 @@
   #shopify-section-{{ section.id }} .blogc__quotewrap {
     /* A touch wider than the 640px reading column */
     max-width: 680px;
-    margin: 44px auto 72px;
+    /* Equal top and bottom. The top margin collapses against the bottom
+       margin of whatever block precedes it (text 28px, media/product
+       48px), so it has to be the larger of the pair to survive — hence
+       matching 72px rather than a smaller top value. */
+    margin: 72px auto;
+    text-align: center;
   }
   #shopify-section-{{ section.id }} .blogc__quote {
     /* Reset Dawn's base blockquote (italic, grey, left border, padding) */
@@ -155,7 +160,7 @@
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .blogc { padding: 0 12px 56px; }
     #shopify-section-{{ section.id }} .blogc__quotewrap {
-      margin-top: 32px;
+      margin-top: 48px;
       margin-bottom: 48px;
     }
     #shopify-section-{{ section.id }} .blogc__quote { font-size: 24px; }
