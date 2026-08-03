@@ -15,15 +15,15 @@
         "question-1": {
           "type": "question",
           "settings": {
-            "question": "Test",
-            "answer": "<p>sadasdasd</p>"
+            "question": "How much does delivery cost?",
+            "answer": "<p>Shipping depends on the exact shipping address, and is calculated at checkout.</p>"
           }
         },
         "question_YcrcBL": {
           "type": "question",
           "settings": {
-            "question": "Test",
-            "answer": "<p>TEst</p>"
+            "question": "Will I need to pay duties?",
+            "answer": "<p>In most countries, we ship locally, meaning there are no import duties to pay. This applies to the following shipping destinations:</p><ul><li>Australia</li><li>Canada</li><li>European Union</li><li>Hong Kong</li><li>Japan</li><li>New Zealand</li><li>Singapore</li><li>South Korea</li><li>Taiwan</li><li>United Kingdom</li><li>United States</li></ul><p>If you are shipping outside of these countries, then there may be import duties that will need to be paid. These are not included in the price displayed at checkout, and are the responsibility of the customer.</p><p></p>"
           }
         }
       },
@@ -35,6 +35,7 @@
         "sidebar_heading": "Support",
         "menu": "support",
         "title": "Shipping",
+        "intro": "",
         "contact_prefix": "Still looking for an answer?",
         "contact_label": "Get in touch with us",
         "contact_url": ""
