@@ -6,11 +6,11 @@
   "Still looking for an answer?" contact line.
 
   Content model:
-  - The intro paragraph is the page's own body from Shopify admin, so it
-    is per-page with no extra settings.
-  - Questions are section blocks, so each support page wants its own
-    template: duplicate "support" in the theme editor per page
-    (Releases, Orders and shipping, ...) and assign it.
+  - Questions and the intro are section settings/blocks, so each support
+    page wants its own template: duplicate "support" in the theme editor
+    per page (Releases, Orders and shipping, ...) and assign it. The
+    page's admin body is deliberately not rendered — repurposed pages
+    often carry stale copy.
   - The sidebar menu is a navigation menu (Content > Menus) shared by
     every support template; the current page highlights automatically.
 
@@ -112,7 +112,7 @@
     font-family: var(--font-body-family);
     font-size: 14px;
     line-height: 21px;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0;
     color: #121212;
   }
@@ -195,8 +195,8 @@
   <div class="sup__content">
     <h1 class="sup__title">{{ section.settings.title | default: page.title | escape }}</h1>
 
-    {%- if page.content != blank -%}
-      <div class="sup__intro rte">{{ page.content }}</div>
+    {%- if section.settings.intro != blank -%}
+      <div class="sup__intro rte">{{ section.settings.intro }}</div>
     {%- endif -%}
 
     {%- for block in section.blocks -%}
@@ -225,10 +225,11 @@
   "name": "Support: Page",
   "max_blocks": 30,
   "settings": [
-    { "type": "paragraph", "content": "The intro paragraph under the title is the page's own content from Shopify admin. Give each support page its own copy of this template so its questions are independent." },
+    { "type": "paragraph", "content": "Give each support page its own copy of this template so its intro and questions are independent. The page's admin body is not shown." },
     { "type": "text", "id": "sidebar_heading", "label": "Sidebar heading", "default": "Support" },
     { "type": "link_list", "id": "menu", "label": "Sidebar menu", "info": "One menu shared by all support pages; the page being viewed is highlighted automatically." },
     { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the page's title." },
+    { "type": "richtext", "id": "intro", "label": "Intro", "info": "Short paragraph under the title." },
     { "type": "text", "id": "contact_prefix", "label": "Contact line", "default": "Still looking for an answer?" },
     { "type": "text", "id": "contact_label", "label": "Contact link label", "default": "Get in touch with us" },
     { "type": "url", "id": "contact_url", "label": "Contact link" }
