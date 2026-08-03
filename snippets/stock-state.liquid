@@ -5,10 +5,13 @@
   # Availability prefers the warehouse metafields — custom.oos_warehouses /
   # _manual on product and variant, the same source the product page's
   # waitlist logic uses — resolved for the warehouse serving this market's
-  # subfolder ('/en-au' -> 'au'; root domain -> 'main'). When no metafield
-  # is set, Shopify's native availability decides. 'Last few' uses the
-  # tracked quantity (per-warehouse counts aren't exposed to Liquid) and
-  # only shows when the warehouse says available.
+  # subfolder ('/en-au' -> 'au'; root domain -> 'main'). Some products
+  # (the Stendig) carry the lists on their variants with the product
+  # level empty, so a product-scoped check also counts as out when every
+  # variant's own list says out for this warehouse. When no metafield is
+  # set anywhere, Shopify's native availability decides. 'Last few' uses
+  # the tracked quantity (per-warehouse counts aren't exposed to Liquid)
+  # and only shows when the warehouse says available.
   #
   # Accepts:
   # - product: {Object} the product
@@ -90,6 +93,45 @@
       endif
     endfor
   endif
+
+  # Product-scoped check with the lists living on the variants: out for
+  # this warehouse only when every variant says so. Manual variant lists
+  # honour 'all', automatic ones are exact matches — same rules as above.
+  unless variant
+    if wh_out == false
+      assign pv_total = 0
+      assign pv_out = 0
+      for pv in product.variants
+        assign pv_total = pv_total | plus: 1
+        assign pv_l_a = pv.metafields.custom.oos_warehouses.value
+        assign pv_l_m = pv.metafields.custom.oos_warehouses_manual.value
+        if pv_l_a or pv_l_m
+          assign wh_lists_set = true
+        endif
+        assign pv_is_out = false
+        for w in pv_l_m
+          assign wq = w | strip | downcase
+          if wq == 'all'
+            assign pv_is_out = true
+          elsif wh_current != '' and wq == wh_current
+            assign pv_is_out = true
+          endif
+        endfor
+        for w in pv_l_a
+          assign wq = w | strip | downcase
+          if wh_current != '' and wq == wh_current
+            assign pv_is_out = true
+          endif
+        endfor
+        if pv_is_out
+          assign pv_out = pv_out | plus: 1
+        endif
+      endfor
+      if pv_total > 0 and pv_out == pv_total
+        assign wh_out = true
+      endif
+    endif
+  endunless
 
   assign stock_state = ''
   if wh_lists_set
