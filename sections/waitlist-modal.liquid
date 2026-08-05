@@ -2,8 +2,9 @@
   Product: Waitlist — the sold-out product waitlist modal, built to the
   Claude Design handoff (Turn 5, options 5a–5d): centred panel over a
   40% scrim (bottom-docked over the scrim on mobile), fixed footprint
-  per breakpoint, sign-up state swaps in place to a confirmation state.
-  The primary button is sentence case by explicit decision.
+  per breakpoint. States swap in place: sign-up, then an optional phone
+  invite (skippable — the email has already been sent by then), then a
+  confirmation. The primary button is sentence case by explicit decision.
 
   Triggering: opens on click of any element with [data-waitlist-trigger]
   or href="#waitlist". On native product templates the disabled sold-out
@@ -18,6 +19,11 @@
   "waitlist_join" event plus a dataLayer/gtag event carrying the SKU.
   The SKU is the product's current variant (?variant= aware), or a
   data-sku attribute on the trigger.
+
+  Phone numbers (normalised to +<country code><digits>; the input is
+  pre-seeded with the market's calling code) ride a second form POST to
+  the same endpoint as Brevo's built-in SMS attribute, plus an identify
+  and a "waitlist_phone" event. Skipping records "waitlist_phone_skip".
 {% endcomment %}
 
 {%- liquid
@@ -64,6 +70,10 @@
     background: #fff;
     padding: 48px 48px 36px;
   }
+  /* The phone state carries one extra row (skip link) and a longer
+     consent line; at 420px the smallprint lands on the panel edge. The
+     panel is centred, so the extra height distributes evenly. */
+  .stw__panel.is-phone { height: 470px; }
 
   /* Fade in ~280ms ease-out; out ~180ms. Mobile adds a <=10px rise —
      the design system forbids anything larger. State swap is instant. */
@@ -114,7 +124,10 @@
     height: 100%;
   }
   .stw__panel .stw__state--signup { display: flex; }
-  .stw__panel.is-thanks .stw__state--signup { display: none; }
+  .stw__panel.is-phone .stw__state--signup { display: none; }
+  .stw__panel.is-phone .stw__state--phone { display: flex; }
+  .stw__panel.is-thanks .stw__state--signup,
+  .stw__panel.is-thanks .stw__state--phone { display: none; }
   .stw__panel.is-thanks .stw__state--thanks { display: flex; }
 
   .stw__eyebrow {
@@ -213,6 +226,10 @@
     cursor: pointer;
   }
 
+  /* The skip link sits under the phone form; the smallprint still
+     anchors to the panel's bottom via its own margin auto */
+  .stw__skip { margin-top: 16px; }
+
   .stw__error {
     font-family: var(--font-body-family);
     font-size: 13px;
@@ -235,6 +252,7 @@
       padding: 32px 24px 24px;
     }
     .stw.is-open .stw__panel { animation-name: stw-rise-in; }
+    .stw__panel.is-phone { height: 440px; }
     .stw__close { top: 20px; right: 9px; }
     .stw__eyebrow { margin-bottom: 12px; }
     .stw__heading { font-size: 28px; margin-bottom: 10px; }
@@ -289,6 +307,40 @@
         {%- endif -%}
       </div>
 
+      {%- if section.settings.phone_enabled -%}
+        <div class="stw__state stw__state--phone">
+          {%- if section.settings.ph_eyebrow != blank -%}
+            <p class="stw__eyebrow">{{ section.settings.ph_eyebrow | escape }}</p>
+          {%- endif -%}
+          <h2 class="stw__heading">{{ section.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
+          {%- if section.settings.ph_body != blank -%}
+            <p class="stw__body">{{ section.settings.ph_body | escape }}</p>
+          {%- endif -%}
+
+          <form class="stw__form" action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false" data-stw-phone-form>
+            <p class="stw__error" data-stw-phone-error
+              data-invalid-text="{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
+              data-network-text="{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}"
+            >{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
+            <input
+              type="tel"
+              name="SMS"
+              class="stw__input"
+              placeholder="{{ section.settings.ph_placeholder | default: 'Phone number' | escape }}"
+              autocomplete="tel"
+              data-stw-phone-input
+            >
+            <button type="submit" class="stw__button">{{ section.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
+          </form>
+
+          <button type="button" class="stw__continue stw__skip" data-stw-skip>{{ section.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }} &rarr;</button>
+
+          {%- if section.settings.ph_smallprint != blank -%}
+            <p class="stw__smallprint">{{ section.settings.ph_smallprint | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
       <div class="stw__state stw__state--thanks">
         {%- if section.settings.ty_eyebrow != blank -%}
           <p class="stw__eyebrow">{{ section.settings.ty_eyebrow | escape }}</p>
@@ -319,6 +371,17 @@
       // Nothing in this form may ever navigate the page
       this.form.submit = function () {};
       this.form.addEventListener('submit', (e) => { e.preventDefault(); this.send(); });
+
+      this.phoneForm = this.querySelector('[data-stw-phone-form]');
+      if (this.phoneForm) {
+        this.phoneForm.submit = function () {};
+        this.phoneForm.addEventListener('submit', (e) => { e.preventDefault(); this.sendPhone(); });
+        const skip = this.querySelector('[data-stw-skip]');
+        if (skip) skip.addEventListener('click', () => {
+          this.emit('waitlist_phone_skip');
+          this.toThanks();
+        });
+      }
 
       this.querySelectorAll('[data-stw-close]').forEach((el) => {
         el.addEventListener('click', () => this.close());
@@ -387,19 +450,22 @@
       this.sku = this.currentSku(trigger);
       // Re-arm the sign-up form when opening for a SKU not yet joined
       // (e.g. joined Red, switched variant to Yellow without a reload);
-      // reopening for an already-joined SKU keeps the confirmation.
-      if (this.panel.classList.contains('is-thanks')) {
+      // reopening for an already-joined SKU keeps the phone invite or
+      // confirmation where it was.
+      if (this.panel.classList.contains('is-thanks') || this.panel.classList.contains('is-phone')) {
         const input = this.form.querySelector('input[type="email"]');
         const email = ((input && input.value) || '').trim().toLowerCase();
         let joined = [];
         try { joined = JSON.parse(localStorage.getItem('stw:skus:' + email) || '[]'); } catch (e) {}
-        if (!this.sku || joined.indexOf(this.sku) === -1) this.panel.classList.remove('is-thanks');
+        if (!this.sku || joined.indexOf(this.sku) === -1) this.panel.classList.remove('is-thanks', 'is-phone');
       }
       this.fetchGeo();
       this.modal.classList.remove('is-closing');
       this.modal.classList.add('is-open');
       document.body.classList.add('overflow-hidden');
-      const input = this.form.querySelector('input[type="email"]');
+      const input = this.panel.classList.contains('is-phone')
+        ? this.querySelector('[data-stw-phone-input]')
+        : this.form.querySelector('input[type="email"]');
       if (input) input.focus();
       this.emit('waitlist_impression');
     }
@@ -447,8 +513,76 @@
       fetch(this.form.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
         this.identify(email);
         this.emit('waitlist_submit');
-        this.panel.classList.add('is-thanks');
+        if (this.phoneForm) this.enterPhone();
+        else this.panel.classList.add('is-thanks');
       }).catch(() => this.panel.classList.add('has-error'));
+    }
+
+    /* --- Phone invite (second screen) --- */
+
+    enterPhone() {
+      this.panel.classList.remove('has-error');
+      const input = this.querySelector('[data-stw-phone-input]');
+      // Seed the market's calling code so "include the country code"
+      // costs the visitor nothing; they can type over it freely.
+      if (input && !input.value) {
+        const codes = {
+          primary: '+1', us: '+1', ca: '+1', au: '+61', nz: '+64',
+          uk: '+44', gb: '+44', ie: '+353', de: '+49', fr: '+33',
+          it: '+39', es: '+34', nl: '+31', be: '+32', at: '+43',
+          ch: '+41', dk: '+45', se: '+46', no: '+47', pl: '+48',
+          tw: '+886', kr: '+82', hk: '+852', jp: '+81', sg: '+65',
+        };
+        const code = codes[this.dataset.market] || '';
+        if (code) input.value = code + ' ';
+      }
+      this.panel.classList.add('is-phone');
+      if (input) input.focus();
+      this.emit('waitlist_phone_impression');
+    }
+
+    toThanks() {
+      this.panel.classList.remove('has-error', 'is-phone');
+      this.panel.classList.add('is-thanks');
+    }
+
+    sendPhone() {
+      this.panel.classList.remove('has-error');
+      const input = this.querySelector('[data-stw-phone-input]');
+      const errEl = this.querySelector('[data-stw-phone-error]');
+      let number = ((input && input.value) || '').replace(/[\s().\-]/g, '');
+      if (number.slice(0, 2) === '00') number = '+' + number.slice(2);
+      // Brevo's SMS attribute requires an international number
+      if (!/^\+[1-9]\d{5,14}$/.test(number)) {
+        if (errEl) errEl.textContent = errEl.dataset.invalidText;
+        this.panel.classList.add('has-error');
+        return;
+      }
+      const emailInput = this.form.querySelector('input[type="email"]');
+      const email = emailInput ? emailInput.value : '';
+      // Same atomic form-POST pattern as the email step: the contact
+      // already exists, so this is a pure attribute update on it.
+      const fd = new FormData();
+      fd.append('EMAIL', email);
+      fd.append('email_address_check', '');
+      fd.append('locale', 'en');
+      fd.append('SMS', number);
+      fetch(this.phoneForm.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
+        try {
+          if (window.Brevo && typeof window.Brevo.push === 'function') {
+            window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: { SMS: number } }]);
+            window.Brevo.push(['track', 'waitlist_phone', { email: email }, { data: { sku: this.sku, market: this.dataset.market || '' } }]);
+          } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+            window.sendinblue.identify(email, { SMS: number });
+            if (typeof window.sendinblue.track === 'function') window.sendinblue.track('waitlist_phone', { sku: this.sku });
+          }
+        } catch (e) {}
+        this.emit('waitlist_phone_submit');
+        this.toThanks();
+      }).catch(() => {
+        if (errEl) errEl.textContent = errEl.dataset.networkText;
+        this.panel.classList.add('has-error');
+      });
     }
 
     /* Accumulate waitlisted SKUs per email address (in this browser) so
@@ -517,10 +651,20 @@
     { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Email address" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Join waitlist" },
     { "type": "textarea", "id": "smallprint", "label": "Smallprint", "default": "By joining the waitlist, you are opting in to receive marketing emails from Stendig Calendars" },
+    { "type": "header", "content": "Phone state" },
+    { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": true, "info": "Shown once the email is submitted. Skippable — the email signup has already been recorded either way. Numbers post to Brevo's SMS attribute." },
+    { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "default": "You're on the list" },
+    { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
+    { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
+    { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
+    { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
+    { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the confirmation. The arrow is added automatically." },
+    { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text from Stendig Calendars when calendars go on sale. Message and data rates may apply. Reply STOP to opt out." },
+    { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
     { "type": "header", "content": "Confirmation state" },
     { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
     { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the waitlist" },
-    { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll email you when next year's calendars go on sale." },
+    { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll let you know when next year's calendars go on sale.", "info": "Shown whether or not a phone number was added — keep it channel-neutral." },
     { "type": "text", "id": "continue_label", "label": "Continue link label", "default": "Continue browsing", "info": "Dismisses the modal. The arrow is added automatically." },
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
     { "type": "text", "id": "extra_triggers", "label": "Additional trigger selector", "info": "Optional CSS selector for extra Join-waitlist buttons (e.g. PageFly buttons — paste the same selector your Wisepops campaign targets). Clicks on matches open this modal instead of Wisepops." },
