@@ -483,34 +483,34 @@
 
           {%- if block.settings.phone_enabled and section.settings.brevo_form_url != blank -%}
             <div class="stp__state stp__state--phone">
-              {%- if block.settings.ph_eyebrow != blank -%}
-                <p class="stp__eyebrow">{{ block.settings.ph_eyebrow | escape }}</p>
+              {%- if section.settings.ph_eyebrow != blank -%}
+                <p class="stp__eyebrow">{{ section.settings.ph_eyebrow | escape }}</p>
               {%- endif -%}
-              <h2 class="stp__heading">{{ block.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
-              {%- if block.settings.ph_body != blank -%}
-                <p class="stp__body">{{ block.settings.ph_body | escape }}</p>
+              <h2 class="stp__heading">{{ section.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
+              {%- if section.settings.ph_body != blank -%}
+                <p class="stp__body">{{ section.settings.ph_body | escape }}</p>
               {%- endif -%}
 
               <form class="stp__form" data-stp-phone-form action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
                 <p class="stp__error" data-stp-phone-error
-                  data-invalid-text="{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
+                  data-invalid-text="{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
                   data-network-text="{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}"
-                >{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
+                >{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
                 <input
                   type="tel"
                   name="SMS"
                   class="stp__input"
-                  placeholder="{{ block.settings.ph_placeholder | default: 'Phone number' | escape }}"
+                  placeholder="{{ section.settings.ph_placeholder | default: 'Phone number' | escape }}"
                   autocomplete="tel"
                   data-stp-phone-input
                 >
-                <button type="submit" class="stp__button">{{ block.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
+                <button type="submit" class="stp__button">{{ section.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
               </form>
 
-              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ block.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }}</button>
+              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ section.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }}</button>
 
-              {%- if block.settings.ph_smallprint != blank -%}
-                <p class="stp__smallprint">{{ block.settings.ph_smallprint | escape }}</p>
+              {%- if section.settings.ph_smallprint != blank -%}
+                <p class="stp__smallprint">{{ section.settings.ph_smallprint | escape }}</p>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -958,6 +958,15 @@
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
     { "type": "header", "content": "Brevo" },
     { "type": "text", "id": "brevo_form_url", "label": "Brevo form URL", "info": "The action URL of a Brevo subscription form (…sibforms.com/serve/…). Signups then post directly to Brevo with no page reload. Leave empty to use Shopify's customer form instead (creates a Shopify customer, but this store's spam challenge makes the page briefly reload on submit)." },
+    { "type": "header", "content": "Phone state", "info": "Shared text for the optional phone screen. Turn it on per popup version, inside each version block." },
+    { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "info": "Optional. The corner popup is small — on phones an eyebrow can push the smallprint out of view." },
+    { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
+    { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
+    { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
+    { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
+    { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
+    { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
+    { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
     { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / popup_submit / popup_dismiss (plus popup_phone_impression / _submit / _skip when the phone state is on) are sent to Google Tag Manager or GA4 when present, for the BigQuery dashboard. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo by the Brevo integration. Translate popup text per language with Translate & Adapt." }
   ],
   "max_blocks": 8,
@@ -1001,15 +1010,7 @@
         { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me" },
         { "type": "text", "id": "dismiss_label", "label": "Dismiss label", "default": "No thanks" },
         { "type": "header", "content": "Phone state" },
-        { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": false, "info": "Adds a skippable screen between sign-up and thank-you. The email is already recorded either way. Numbers post to Brevo's SMS attribute. Requires the Brevo form URL." },
-        { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "info": "Optional. The corner popup is small — on phones an eyebrow can push the smallprint out of view." },
-        { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
-        { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
-        { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
-        { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
-        { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
-        { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
-        { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
+        { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": false, "info": "Adds a skippable screen between sign-up and thank-you. The email is already recorded either way. Numbers post to Brevo's SMS attribute. Requires the Brevo form URL. The screen's text is shared by all versions — edit it in the section's own settings (blocks are limited to 50 settings, and this one is near the cap)." },
         { "type": "header", "content": "Thank-you state" },
         { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
         { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the list" },
