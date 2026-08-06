@@ -967,7 +967,7 @@
     { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
     { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
     { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
-    { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / popup_submit / popup_dismiss (plus popup_phone_impression / _submit / _skip when the phone state is on) are sent to Google Tag Manager or GA4 when present, for the BigQuery dashboard. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo by the Brevo integration. Translate popup text per language with Translate & Adapt." }
+    { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / _submit / _dismiss (and popup_phone_impression / _submit / _skip) go to GTM or GA4 when present. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo. Translate popup text per language with Translate & Adapt." }
   ],
   "max_blocks": 8,
   "blocks": [
