@@ -46,14 +46,45 @@
   assign path_prefix = routes.root_url
 
   # Market key derived from the subfolder ('/en-au' -> 'au'); the root
-  # domain is 'primary'. Matches the market checkboxes in the block schema.
-  # PATH is '' (not '/') on the primary market so Brevo templates can build
-  # URLs as domain + PATH + /page for every contact.
+  # domain is 'primary'. PATH is '' (not '/') on the primary market so
+  # Brevo templates can build URLs as domain + PATH + /page for every
+  # contact.
   assign market_key = 'primary'
   if path_prefix != '/'
     assign market_key = path_prefix | remove_first: '/' | split: '-' | last | downcase
   else
     assign path_prefix = ''
+  endif
+
+  # Warehouse serving this market, resolved exactly as stock-state does:
+  # the metaobject whose domains list contains the market token ('main'
+  # for the root domain), else the default-flagged one. Block targeting
+  # matches typed codes against this warehouse's HANDLE — exact, or as
+  # a prefix up to a hyphen ('au' matches 'au-3-pl-consumer'). With no
+  # warehouse entries configured the popup falls back gracefully: codes
+  # never match, so "All markets" mode still shows everywhere.
+  assign wh_mk = 'main'
+  if routes.root_url != '/'
+    assign wh_mk = routes.root_url | remove_first: '/' | split: '-' | last | downcase
+  endif
+  assign popup_wh = ''
+  assign popup_wh_default = ''
+  for wh in settings.warehouses
+    assign wh_h = wh.system.handle | downcase
+    if wh.is_default.value and popup_wh_default == ''
+      assign popup_wh_default = wh_h
+    endif
+    if wh.domains.value
+      for wh_d in wh.domains.value
+        assign wh_dd = wh_d | strip | downcase
+        if wh_dd == wh_mk
+          assign popup_wh = wh_h
+        endif
+      endfor
+    endif
+  endfor
+  if popup_wh == ''
+    assign popup_wh = popup_wh_default
   endif
 -%}
 
@@ -314,80 +345,38 @@
     {%- liquid
       assign show_block = block.settings.enabled
 
-      # "All markets" checked = no market filter; unchecked = only the
-      # ticked markets (none ticked shows nowhere).
-      if show_block and block.settings.all_markets == false
-        assign mkts = ','
-        if block.settings.mk_primary
-          assign mkts = mkts | append: 'primary,'
+      # Warehouse targeting: does any typed code match the warehouse
+      # serving this visitor's market? Codes match the metaobject handle
+      # exactly or as a hyphen prefix. "All markets, except…" hides on a
+      # hit; "No markets, only…" shows only on a hit (so an empty list
+      # there shows nowhere).
+      if show_block
+        assign wh_hit = false
+        assign wh_codes = block.settings.wh_codes | downcase
+        if wh_codes != blank and popup_wh != ''
+          assign wh_code_list = wh_codes | split: ','
+          for c in wh_code_list
+            assign c_t = c | strip
+            if c_t == blank
+              continue
+            endif
+            if c_t == popup_wh
+              assign wh_hit = true
+              break
+            endif
+            assign c_dash = c_t | append: '-'
+            assign wh_head = popup_wh | slice: 0, c_dash.size
+            if wh_head == c_dash
+              assign wh_hit = true
+              break
+            endif
+          endfor
         endif
-        if block.settings.mk_au
-          assign mkts = mkts | append: 'au,'
-        endif
-        if block.settings.mk_ca
-          assign mkts = mkts | append: 'ca,'
-        endif
-        if block.settings.mk_ch
-          assign mkts = mkts | append: 'ch,'
-        endif
-        if block.settings.mk_de
-          assign mkts = mkts | append: 'de,'
-        endif
-        if block.settings.mk_dk
-          assign mkts = mkts | append: 'dk,'
-        endif
-        if block.settings.mk_es
-          assign mkts = mkts | append: 'es,'
-        endif
-        if block.settings.mk_eu
-          assign mkts = mkts | append: 'eu,'
-        endif
-        if block.settings.mk_fr
-          assign mkts = mkts | append: 'fr,'
-        endif
-        if block.settings.mk_gb
-          assign mkts = mkts | append: 'gb,'
-        endif
-        if block.settings.mk_hk
-          assign mkts = mkts | append: 'hk,'
-        endif
-        if block.settings.mk_it
-          assign mkts = mkts | append: 'it,'
-        endif
-        if block.settings.mk_kr
-          assign mkts = mkts | append: 'kr,'
-        endif
-        if block.settings.mk_mx
-          assign mkts = mkts | append: 'mx,'
-        endif
-        if block.settings.mk_no
-          assign mkts = mkts | append: 'no,'
-        endif
-        if block.settings.mk_nz
-          assign mkts = mkts | append: 'nz,'
-        endif
-        if block.settings.mk_ph
-          assign mkts = mkts | append: 'ph,'
-        endif
-        if block.settings.mk_pl
-          assign mkts = mkts | append: 'pl,'
-        endif
-        if block.settings.mk_se
-          assign mkts = mkts | append: 'se,'
-        endif
-        if block.settings.mk_sg
-          assign mkts = mkts | append: 'sg,'
-        endif
-        if block.settings.mk_tw
-          assign mkts = mkts | append: 'tw,'
-        endif
-        if block.settings.mk_us
-          assign mkts = mkts | append: 'us,'
-        endif
-        assign mk_needle = ',' | append: market_key | append: ','
-        unless mkts contains mk_needle
+        if block.settings.visibility == 'none'
+          assign show_block = wh_hit
+        elsif wh_hit
           assign show_block = false
-        endunless
+        endif
       endif
 
       if show_block and block.settings.languages != blank
@@ -483,34 +472,34 @@
 
           {%- if block.settings.phone_enabled and section.settings.brevo_form_url != blank -%}
             <div class="stp__state stp__state--phone">
-              {%- if section.settings.ph_eyebrow != blank -%}
-                <p class="stp__eyebrow">{{ section.settings.ph_eyebrow | escape }}</p>
+              {%- if block.settings.ph_eyebrow != blank -%}
+                <p class="stp__eyebrow">{{ block.settings.ph_eyebrow | escape }}</p>
               {%- endif -%}
-              <h2 class="stp__heading">{{ section.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
-              {%- if section.settings.ph_body != blank -%}
-                <p class="stp__body">{{ section.settings.ph_body | escape }}</p>
+              <h2 class="stp__heading">{{ block.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
+              {%- if block.settings.ph_body != blank -%}
+                <p class="stp__body">{{ block.settings.ph_body | escape }}</p>
               {%- endif -%}
 
               <form class="stp__form" data-stp-phone-form action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
                 <p class="stp__error" data-stp-phone-error
-                  data-invalid-text="{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
+                  data-invalid-text="{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
                   data-network-text="{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}"
-                >{{ section.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
+                >{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
                 <input
                   type="tel"
                   name="SMS"
                   class="stp__input"
-                  placeholder="{{ section.settings.ph_placeholder | default: 'Phone number' | escape }}"
+                  placeholder="{{ block.settings.ph_placeholder | default: 'Phone number' | escape }}"
                   autocomplete="tel"
                   data-stp-phone-input
                 >
-                <button type="submit" class="stp__button">{{ section.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
+                <button type="submit" class="stp__button">{{ block.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
               </form>
 
-              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ section.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }}</button>
+              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ block.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }}</button>
 
-              {%- if section.settings.ph_smallprint != blank -%}
-                <p class="stp__smallprint">{{ section.settings.ph_smallprint | escape }}</p>
+              {%- if block.settings.ph_smallprint != blank -%}
+                <p class="stp__smallprint">{{ block.settings.ph_smallprint | escape }}</p>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -958,15 +947,6 @@
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
     { "type": "header", "content": "Brevo" },
     { "type": "text", "id": "brevo_form_url", "label": "Brevo form URL", "info": "The action URL of a Brevo subscription form (…sibforms.com/serve/…). Signups then post directly to Brevo with no page reload. Leave empty to use Shopify's customer form instead (creates a Shopify customer, but this store's spam challenge makes the page briefly reload on submit)." },
-    { "type": "header", "content": "Phone state", "info": "Shared text for the optional phone screen. Turn it on per popup version, inside each version block." },
-    { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "info": "Optional. The corner popup is small — on phones an eyebrow can push the smallprint out of view." },
-    { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
-    { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
-    { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
-    { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
-    { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
-    { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
-    { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
     { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / _submit / _dismiss (and popup_phone_impression / _submit / _skip) go to GTM or GA4 when present. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo. Translate popup text per language with Translate & Adapt." }
   ],
   "max_blocks": 8,
@@ -978,29 +958,8 @@
         { "type": "text", "id": "name", "label": "Campaign name", "info": "Internal — used in tags and analytics. E.g. Out of stock 2026.", "default": "Out of stock" },
         { "type": "checkbox", "id": "enabled", "label": "Enabled", "default": true },
         { "type": "header", "content": "Targeting" },
-        { "type": "checkbox", "id": "all_markets", "label": "All markets", "default": true, "info": "Untick to choose individual markets below." },
-        { "type": "checkbox", "id": "mk_primary", "label": "Primary (no subfolder)", "default": false },
-        { "type": "checkbox", "id": "mk_au", "label": "Australia", "default": false },
-        { "type": "checkbox", "id": "mk_ca", "label": "Canada", "default": false },
-        { "type": "checkbox", "id": "mk_dk", "label": "Denmark", "default": false },
-        { "type": "checkbox", "id": "mk_eu", "label": "Europe (EU)", "default": false },
-        { "type": "checkbox", "id": "mk_fr", "label": "France", "default": false },
-        { "type": "checkbox", "id": "mk_de", "label": "Germany", "default": false },
-        { "type": "checkbox", "id": "mk_hk", "label": "Hong Kong", "default": false },
-        { "type": "checkbox", "id": "mk_it", "label": "Italy", "default": false },
-        { "type": "checkbox", "id": "mk_mx", "label": "Mexico", "default": false },
-        { "type": "checkbox", "id": "mk_nz", "label": "New Zealand", "default": false },
-        { "type": "checkbox", "id": "mk_no", "label": "Norway", "default": false },
-        { "type": "checkbox", "id": "mk_ph", "label": "Philippines", "default": false },
-        { "type": "checkbox", "id": "mk_pl", "label": "Poland", "default": false },
-        { "type": "checkbox", "id": "mk_sg", "label": "Singapore", "default": false },
-        { "type": "checkbox", "id": "mk_kr", "label": "South Korea", "default": false },
-        { "type": "checkbox", "id": "mk_es", "label": "Spain", "default": false },
-        { "type": "checkbox", "id": "mk_se", "label": "Sweden", "default": false },
-        { "type": "checkbox", "id": "mk_ch", "label": "Switzerland", "default": false },
-        { "type": "checkbox", "id": "mk_tw", "label": "Taiwan", "default": false },
-        { "type": "checkbox", "id": "mk_gb", "label": "United Kingdom", "default": false },
-        { "type": "checkbox", "id": "mk_us", "label": "United States", "default": false },
+        { "type": "select", "id": "visibility", "label": "Markets", "options": [ { "value": "all", "label": "All markets, except…" }, { "value": "none", "label": "No markets, only…" } ], "default": "all" },
+        { "type": "text", "id": "wh_codes", "label": "Warehouse codes", "info": "Comma-separated; matches the warehouse serving the visitor's market. Codes: us, au, eu, uk, hk, jp, kr, nz, sg, tw, go-bolt-yyz-5 (Canada). Empty list: All markets shows everywhere, No markets shows nowhere." },
         { "type": "text", "id": "languages", "label": "Languages", "info": "Comma-separated language codes (e.g. en, es). Empty = all languages." },
         { "type": "header", "content": "Sign-up state" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
@@ -1010,7 +969,15 @@
         { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me" },
         { "type": "text", "id": "dismiss_label", "label": "Dismiss label", "default": "No thanks" },
         { "type": "header", "content": "Phone state" },
-        { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": false, "info": "Adds a skippable screen between sign-up and thank-you. The email is already recorded either way. Numbers post to Brevo's SMS attribute. Requires the Brevo form URL. The screen's text is shared by all versions — edit it in the section's own settings (blocks are limited to 50 settings, and this one is near the cap)." },
+        { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": false, "info": "Adds a skippable screen between sign-up and thank-you. The email is already recorded either way. Numbers post to Brevo's SMS attribute. Requires the Brevo form URL." },
+        { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "info": "Optional. The corner popup is small — on phones an eyebrow can push the smallprint out of view." },
+        { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
+        { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
+        { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
+        { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
+        { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
+        { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
+        { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
         { "type": "header", "content": "Thank-you state" },
         { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
         { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the list" },
