@@ -4,6 +4,16 @@
   site gutter, no scrim, sign-up state swaps in place to a thank-you state
   (with or without discount code) inside an identical footprint.
 
+  Each version block can optionally insert a phone-capture state between
+  sign-up and thank-you (same pattern as the waitlist modal): skippable,
+  input pre-seeded with the IP-detected country's calling code (market
+  fallback), number normalised to international format and posted to
+  Brevo's SMS attribute plus an identify and a popup_phone event
+  (popup_phone_skip on skip). Requires the Brevo form URL — the phone
+  state is not rendered on the Shopify customer-form fallback. Closing
+  the popup during the phone state does NOT count as a dismissal: the
+  email was already captured.
+
   Architecture (per interview):
   - Rendered site-wide from layout/theme.liquid as a static section; all
     campaign management happens in the theme editor (blocks = versions).
@@ -236,8 +246,28 @@
     text-underline-offset: 0.3em;
   }
   .stp__state--thanks { display: none; }
-  .stp.is-thanks .stp__state--signup { display: none; }
+  .stp__state--phone { display: none; }
+  .stp.is-phone .stp__state--signup { display: none; }
+  .stp.is-phone .stp__state--phone { display: block; }
+  .stp.is-thanks .stp__state--signup,
+  .stp.is-thanks .stp__state--phone { display: none; }
   .stp.is-thanks .stp__state--thanks { display: block; }
+
+  /* Phone state: tightened spacing so the extra row (skip link) and
+     consent line share the same fixed footprint as the other states —
+     sized to the defaults (no eyebrow, two-line consent) on the 300px
+     mobile box */
+  .stp__state--phone .stp__body { margin-bottom: 16px; }
+  .stp__state--phone .stp__button { margin-bottom: 12px; }
+  .stp__smallprint {
+    font-family: var(--font-body-family);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.55);
+    margin: 8px 0 0;
+  }
   .stp__error {
     font-family: var(--font-body-family);
     font-size: 13px;
@@ -451,6 +481,40 @@
             <button type="button" class="stp__dismiss" data-stp-close>{{ block.settings.dismiss_label | default: 'No thanks' | escape }}</button>
           </div>
 
+          {%- if block.settings.phone_enabled and section.settings.brevo_form_url != blank -%}
+            <div class="stp__state stp__state--phone">
+              {%- if block.settings.ph_eyebrow != blank -%}
+                <p class="stp__eyebrow">{{ block.settings.ph_eyebrow | escape }}</p>
+              {%- endif -%}
+              <h2 class="stp__heading">{{ block.settings.ph_heading | default: 'Be first in line' | escape }}</h2>
+              {%- if block.settings.ph_body != blank -%}
+                <p class="stp__body">{{ block.settings.ph_body | escape }}</p>
+              {%- endif -%}
+
+              <form class="stp__form" data-stp-phone-form action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
+                <p class="stp__error" data-stp-phone-error
+                  data-invalid-text="{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}"
+                  data-network-text="{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}"
+                >{{ block.settings.ph_error_text | default: 'Please enter your number including the country code.' | escape }}</p>
+                <input
+                  type="tel"
+                  name="SMS"
+                  class="stp__input"
+                  placeholder="{{ block.settings.ph_placeholder | default: 'Phone number' | escape }}"
+                  autocomplete="tel"
+                  data-stp-phone-input
+                >
+                <button type="submit" class="stp__button">{{ block.settings.ph_button_label | default: "Text me when they're on sale" | escape }}</button>
+              </form>
+
+              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ block.settings.ph_skip_label | default: 'No thanks, email is fine' | escape }}</button>
+
+              {%- if block.settings.ph_smallprint != blank -%}
+                <p class="stp__smallprint">{{ block.settings.ph_smallprint | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
           <div class="stp__state stp__state--thanks">
             {%- if block.settings.ty_eyebrow != blank -%}
               <p class="stp__eyebrow">{{ block.settings.ty_eyebrow | escape }}</p>
@@ -622,6 +686,7 @@
           const d = (data && data.detected_values) || {};
           const c = d.country || {};
           this.geoCountry = d.country_name || c.name || c.handle || '';
+          this.geoIso = (c.handle || '').toUpperCase();
         })
         .catch(() => {});
     }
@@ -645,12 +710,26 @@
         btn.addEventListener('click', () => {
           panel.classList.add('is-closing');
           setTimeout(() => panel.classList.remove('is-open', 'is-closing'), 180);
-          if (!panel.classList.contains('is-thanks')) {
+          // The phone state means the email was already captured — closing
+          // there is not a dismissal of the campaign.
+          if (!panel.classList.contains('is-thanks') && !panel.classList.contains('is-phone')) {
             this.store('stp:dismissed:' + panel.dataset.campaign, String(Date.now()));
             this.track(panel, 'popup_dismiss');
           }
         });
       });
+
+      const phoneForm = panel.querySelector('[data-stp-phone-form]');
+      if (phoneForm) {
+        phoneForm.submit = function () {};
+        phoneForm.addEventListener('submit', (e) => { e.preventDefault(); this.sendPhone(panel); });
+        const skip = panel.querySelector('[data-stp-phone-skip]');
+        if (skip) skip.addEventListener('click', () => {
+          this.track(panel, 'popup_phone_skip');
+          panel.classList.remove('is-phone', 'has-error');
+          panel.classList.add('is-thanks');
+        });
+      }
 
       const form = panel.querySelector('form');
       // Third-party scripts (e.g. popup/marketing apps) have been observed
@@ -690,7 +769,8 @@
             this.markSignedUp();
             this.identify(form, panel);
             this.track(panel, 'popup_submit');
-            panel.classList.add('is-thanks');
+            if (panel.querySelector('[data-stp-phone-form]')) this.enterPhone(panel);
+            else panel.classList.add('is-thanks');
           }).catch(() => panel.classList.add('has-error'));
           return;
         }
@@ -726,6 +806,77 @@
     }
 
     markSignedUp() { this.store('stp:signed', String(Date.now())); }
+
+    /* ---- phone state (same behaviour as the waitlist modal) ---- */
+
+    enterPhone(panel) {
+      panel.classList.remove('has-error');
+      const input = panel.querySelector('[data-stp-phone-input]');
+      // Seed the visitor's calling code — IP-detected country first,
+      // market as fallback while geo is unresolved.
+      if (input && !input.value) {
+        const code = this.dialCode();
+        if (code) input.value = '+' + code + ' ';
+      }
+      panel.classList.add('is-phone');
+      if (input) input.focus();
+      this.track(panel, 'popup_phone_impression');
+    }
+
+    dialCode() {
+      if (!StPopup.DIAL) {
+        StPopup.DIAL = {};
+        ('AD376 AE971 AF93 AG1 AI1 AL355 AM374 AO244 AR54 AS1 AT43 AU61 AW297 AX358 AZ994 BA387 BB1 BD880 BE32 BF226 BG359 BH973 BI257 BJ229 BL590 BM1 BN673 BO591 BQ599 BR55 BS1 BT975 BW267 BY375 BZ501 CA1 CC61 CD243 CF236 CG242 CH41 CI225 CK682 CL56 CM237 CN86 CO57 CR506 CU53 CV238 CW599 CX61 CY357 CZ420 DE49 DJ253 DK45 DM1 DO1 DZ213 EC593 EE372 EG20 EH212 ER291 ES34 ET251 FI358 FJ679 FK500 FM691 FO298 FR33 GA241 GB44 GD1 GE995 GF594 GG44 GH233 GI350 GL299 GM220 GN224 GP590 GQ240 GR30 GT502 GU1 GW245 GY592 HK852 HN504 HR385 HT509 HU36 ID62 IE353 IL972 IM44 IN91 IO246 IQ964 IR98 IS354 IT39 JE44 JM1 JO962 JP81 KE254 KG996 KH855 KI686 KM269 KN1 KP850 KR82 KW965 KY1 KZ7 LA856 LB961 LC1 LI423 LK94 LR231 LS266 LT370 LU352 LV371 LY218 MA212 MC377 MD373 ME382 MF590 MG261 MH692 MK389 ML223 MM95 MN976 MO853 MP1 MQ596 MR222 MS1 MT356 MU230 MV960 MW265 MX52 MY60 MZ258 NA264 NC687 NE227 NF672 NG234 NI505 NL31 NO47 NP977 NR674 NU683 NZ64 OM968 PA507 PE51 PF689 PG675 PH63 PK92 PL48 PM508 PR1 PS970 PT351 PW680 PY595 QA974 RE262 RO40 RS381 RU7 RW250 SA966 SB677 SC248 SD249 SE46 SG65 SH290 SI386 SJ47 SK421 SL232 SM378 SN221 SO252 SR597 SS211 ST239 SV503 SX1 SY963 SZ268 TC1 TD235 TG228 TH66 TJ992 TK690 TL670 TM993 TN216 TO676 TR90 TT1 TV688 TW886 TZ255 UA380 UG256 US1 UY598 UZ998 VA39 VC1 VE58 VG1 VI1 VN84 VU678 WF681 WS685 YE967 YT262 ZA27 ZM260 ZW263')
+          .split(' ').forEach((t) => { StPopup.DIAL[t.slice(0, 2)] = t.slice(2); });
+      }
+      let iso = this.geoIso || '';
+      if (!iso) {
+        const mk = this.dataset.market || '';
+        iso = mk === 'primary' ? 'US' : mk === 'uk' ? 'GB' : mk.toUpperCase();
+      }
+      return StPopup.DIAL[iso] || '';
+    }
+
+    sendPhone(panel) {
+      panel.classList.remove('has-error');
+      const input = panel.querySelector('[data-stp-phone-input]');
+      const errEl = panel.querySelector('[data-stp-phone-error]');
+      let number = ((input && input.value) || '').replace(/[\s().\-]/g, '');
+      if (number.slice(0, 2) === '00') number = '+' + number.slice(2);
+      // Brevo's SMS attribute requires an international number
+      if (!/^\+[1-9]\d{5,14}$/.test(number)) {
+        if (errEl) errEl.textContent = errEl.dataset.invalidText;
+        panel.classList.add('has-error');
+        return;
+      }
+      const emailInput = panel.querySelector('input[type="email"]');
+      const email = emailInput ? emailInput.value : '';
+      // Same atomic form-POST pattern as the email step: the contact
+      // already exists, so this is a pure attribute update on it.
+      const fd = new FormData();
+      fd.append('EMAIL', email);
+      fd.append('email_address_check', '');
+      fd.append('locale', 'en');
+      fd.append('SMS', number);
+      const phoneForm = panel.querySelector('[data-stp-phone-form]');
+      fetch(phoneForm.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
+        try {
+          if (window.Brevo && typeof window.Brevo.push === 'function') {
+            window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: { SMS: number } }]);
+            window.Brevo.push(['track', 'popup_phone', { email: email }, { data: { campaign: panel.dataset.campaign, market: this.dataset.market || '' } }]);
+          } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+            window.sendinblue.identify(email, { SMS: number });
+            if (typeof window.sendinblue.track === 'function') window.sendinblue.track('popup_phone', { campaign: panel.dataset.campaign });
+          }
+        } catch (e) {}
+        this.track(panel, 'popup_phone_submit');
+        panel.classList.remove('is-phone');
+        panel.classList.add('is-thanks');
+      }).catch(() => {
+        if (errEl) errEl.textContent = errEl.dataset.networkText;
+        panel.classList.add('has-error');
+      });
+    }
 
     /* Write the signup context to Brevo contact attributes via Brevo's
        Marketing Automation tracker, when the site has it (their Shopify
@@ -807,7 +958,7 @@
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
     { "type": "header", "content": "Brevo" },
     { "type": "text", "id": "brevo_form_url", "label": "Brevo form URL", "info": "The action URL of a Brevo subscription form (…sibforms.com/serve/…). Signups then post directly to Brevo with no page reload. Leave empty to use Shopify's customer form instead (creates a Shopify customer, but this store's spam challenge makes the page briefly reload on submit)." },
-    { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / popup_submit / popup_dismiss are sent to Google Tag Manager or GA4 when present, for the BigQuery dashboard. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo by the Brevo integration. Translate popup text per language with Translate & Adapt." }
+    { "type": "paragraph", "content": "Each block below is a popup version. Give two versions the same Experiment name to A/B test them (traffic splits evenly; events carry the variant). Analytics events popup_impression / popup_submit / popup_dismiss (plus popup_phone_impression / _submit / _skip when the phone state is on) are sent to Google Tag Manager or GA4 when present, for the BigQuery dashboard. Signups become Shopify customers tagged with campaign, variant, market path and language — synced to Brevo by the Brevo integration. Translate popup text per language with Translate & Adapt." }
   ],
   "max_blocks": 8,
   "blocks": [
@@ -849,6 +1000,16 @@
         { "type": "text", "id": "placeholder", "label": "Email placeholder", "default": "Email address" },
         { "type": "text", "id": "button_label", "label": "Button label", "default": "Notify me" },
         { "type": "text", "id": "dismiss_label", "label": "Dismiss label", "default": "No thanks" },
+        { "type": "header", "content": "Phone state" },
+        { "type": "checkbox", "id": "phone_enabled", "label": "Ask for a phone number after signup", "default": false, "info": "Adds a skippable screen between sign-up and thank-you. The email is already recorded either way. Numbers post to Brevo's SMS attribute. Requires the Brevo form URL." },
+        { "type": "text", "id": "ph_eyebrow", "label": "Eyebrow", "info": "Optional. The corner popup is small — on phones an eyebrow can push the smallprint out of view." },
+        { "type": "text", "id": "ph_heading", "label": "Heading", "default": "Be first in line" },
+        { "type": "textarea", "id": "ph_body", "label": "Body", "default": "Add your number and we'll text you the moment they go on sale" },
+        { "type": "text", "id": "ph_placeholder", "label": "Phone placeholder", "default": "Phone number" },
+        { "type": "text", "id": "ph_button_label", "label": "Button label", "default": "Text me when they're on sale" },
+        { "type": "text", "id": "ph_skip_label", "label": "Skip link label", "default": "No thanks, email is fine", "info": "Goes straight to the thank-you state." },
+        { "type": "textarea", "id": "ph_smallprint", "label": "Smallprint", "default": "By adding your number you agree to receive a text when calendars go on sale. Reply STOP to opt out." },
+        { "type": "text", "id": "ph_error_text", "label": "Invalid number message", "default": "Please enter your number including the country code." },
         { "type": "header", "content": "Thank-you state" },
         { "type": "text", "id": "ty_eyebrow", "label": "Eyebrow", "default": "Thank you" },
         { "type": "text", "id": "ty_heading", "label": "Heading", "default": "You're on the list" },
