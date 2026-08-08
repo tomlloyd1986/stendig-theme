@@ -5,12 +5,41 @@
   desktop image as fallback. Height fills the viewport below the measured
   header (--st-header-bottom, kept in sync by the header section).
   Editable: images, button label, link. Spacing/typography locked.
+
+  Shape-aware crops: the page-width cap (1440px) pins the hero's width
+  while its height keeps tracking the viewport, so on large screens the
+  box collapses toward tablet and then phone proportions. Above the cap
+  the box's aspect ratio depends only on viewport HEIGHT, so min-height
+  sources serve the tablet/mobile crop once the box's ratio crosses the
+  midpoint between two crops' ratios — each box shape gets the crop
+  composed nearest to it. Thresholds are derived from the uploaded
+  images' actual ratios (box height ~= viewport - 84px: header 64 +
+  bottom gutter 20). Below the cap the thresholds are conservative: the
+  box there is even narrower, so a switch is never wrong, only late.
 {% endcomment %}
 
 {%- liquid
   assign img_d = section.settings.image_desktop
   assign img_t = section.settings.image_tablet | default: img_d
   assign img_m = section.settings.image_mobile | default: img_d
+
+  # Viewport-height thresholds for the shape-based sources (0 = never).
+  # Guarded so a missing upload, or one no narrower than the crop above
+  # it, simply never triggers.
+  assign shape_t_h = 0
+  assign shape_m_h = 0
+  if img_d != blank
+    assign base_ratio = img_d.aspect_ratio
+    if section.settings.image_tablet != blank and img_t.aspect_ratio < base_ratio
+      assign mid = base_ratio | plus: img_t.aspect_ratio | divided_by: 2.0
+      assign shape_t_h = 1400.0 | divided_by: mid | plus: 84 | round
+      assign base_ratio = img_t.aspect_ratio
+    endif
+    if section.settings.image_mobile != blank and img_m.aspect_ratio < base_ratio
+      assign mid = base_ratio | plus: img_m.aspect_ratio | divided_by: 2.0
+      assign shape_m_h = 1400.0 | divided_by: mid | plus: 84 | round
+    endif
+  endif
   # Locale-aware fallback: routes.root_url is '/' on the default market and
   # e.g. '/en-au' on subfolder markets, so the range link stays in-market.
   assign hero_link = section.settings.link
@@ -78,6 +107,15 @@
       object-position: center bottom;
     }
   }
+  {%- if shape_t_h > 0 %}
+  /* Large screens serving the tablet/mobile crop anchor it the same way
+     those crops are anchored on their native screens */
+  @media screen and (min-width: 990px) and (min-height: {{ shape_t_h }}px) {
+    #shopify-section-{{ section.id }} .hero__media img {
+      object-position: center bottom;
+    }
+  }
+  {%- endif %}
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .hero { padding: 0 12px; }
   }
@@ -105,6 +143,25 @@
             sizes="100vw"
           >
         {%- endif -%}
+        {%- comment -%}
+          Shape-based sources for large screens (see header comment).
+          Order matters: the small-screen sources above win first, then
+          the taller mobile-shape threshold must precede the tablet one.
+        {%- endcomment -%}
+        {%- if shape_m_h > 0 -%}
+          <source
+            media="(min-width: 990px) and (min-height: {{ shape_m_h }}px)"
+            srcset="{{ img_m | image_url: width: 1100 }} 1100w, {{ img_m | image_url: width: 1600 }} 1600w, {{ img_m | image_url: width: 2200 }} 2200w, {{ img_m | image_url: width: 2800 }} 2800w"
+            sizes="(min-width: 1440px) 1400px, calc(100vw - 40px)"
+          >
+        {%- endif -%}
+        {%- if shape_t_h > 0 -%}
+          <source
+            media="(min-width: 990px) and (min-height: {{ shape_t_h }}px)"
+            srcset="{{ img_t | image_url: width: 1100 }} 1100w, {{ img_t | image_url: width: 1600 }} 1600w, {{ img_t | image_url: width: 2200 }} 2200w, {{ img_t | image_url: width: 2800 }} 2800w"
+            sizes="(min-width: 1440px) 1400px, calc(100vw - 40px)"
+          >
+        {%- endif -%}
         <img
           src="{{ img_d | image_url: width: 2048 }}"
           srcset="{{ img_d | image_url: width: 1400 }} 1400w, {{ img_d | image_url: width: 2048 }} 2048w, {{ img_d | image_url: width: 2600 }} 2600w"
@@ -130,8 +187,8 @@
   "name": "Home: Hero banner",
   "settings": [
     { "type": "image_picker", "id": "image_desktop", "label": "Image — desktop" },
-    { "type": "image_picker", "id": "image_tablet", "label": "Image — tablet", "info": "Optional. Falls back to the desktop image." },
-    { "type": "image_picker", "id": "image_mobile", "label": "Image — mobile", "info": "Optional. Falls back to the desktop image." },
+    { "type": "image_picker", "id": "image_tablet", "label": "Image — tablet", "info": "Optional. Falls back to the desktop image. Also shown on very large screens when the hero's shape approaches tablet proportions — upload at least 2000px wide." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Image — mobile", "info": "Optional. Falls back to the desktop image. Also shown on very tall screens when the hero's shape approaches phone proportions — upload at least 2000px wide." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "DISCOVER 2026" },
     { "type": "url", "id": "link", "label": "Link", "info": "Where the button — and the whole hero — points. Defaults to the range collection." }
   ],
