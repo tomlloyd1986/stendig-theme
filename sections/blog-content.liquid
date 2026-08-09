@@ -114,9 +114,22 @@
     width: 100%;
     height: auto;
   }
+  /* The frame takes the video's own shape. A portrait video in a 16:9
+     frame is letterboxed by the player: the frame is full width but the
+     picture shrinks to fit the height, so it ends up a narrow strip. */
   #shopify-section-{{ section.id }} .blogc__embed {
     position: relative;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(--blogc-ratio, 16 / 9);
+  }
+  /* Anything squarer than 16:9 would tower over a desktop screen at full
+     width, so cap it by height instead — the width follows from the
+     shape and the frame centres. Once the column is narrower than that
+     (phones, and portrait video especially), width wins and the video
+     runs edge to edge. Landscape is left alone. */
+  #shopify-section-{{ section.id }} .blogc__embed--capped {
+    width: 100%;
+    max-width: calc(80vh * var(--blogc-ratio-num, 1));
+    margin-inline: auto;
   }
   #shopify-section-{{ section.id }} .blogc__embed iframe {
     position: absolute;
@@ -182,6 +195,9 @@
     #shopify-section-{{ section.id }} .blogc__heading { font-size: 22px; }
     #shopify-section-{{ section.id }} .blogc__quote { font-size: 24px; }
     #shopify-section-{{ section.id }} .blogc__media { margin-bottom: 32px; }
+    /* On a phone the column is the constraint, not the screen height:
+       every shape runs edge to edge, even where that makes it tall. */
+    #shopify-section-{{ section.id }} .blogc__embed--capped { max-width: 100%; }
     #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
     /* 3-4 images wrap into two columns on mobile */
     #shopify-section-{{ section.id }} .blogc__media-row.has-many > div {
@@ -312,7 +328,26 @@
               {{ block.settings.video | video_tag: controls: true }}
             {%- endif -%}
           {%- elsif block.settings.video_url != blank -%}
-            <div class="blogc__embed">
+            {%- liquid
+              case block.settings.shape
+                when 'square'
+                  assign v_ratio = '1 / 1'
+                  assign v_num = '1'
+                when 'portrait'
+                  assign v_ratio = '4 / 5'
+                  assign v_num = '0.8'
+                when 'tall'
+                  assign v_ratio = '9 / 16'
+                  assign v_num = '0.5625'
+                else
+                  assign v_ratio = '16 / 9'
+                  assign v_num = ''
+              endcase
+            -%}
+            <div
+              class="blogc__embed{% if v_num != blank %} blogc__embed--capped{% endif %}"
+              style="--blogc-ratio: {{ v_ratio }};{% if v_num != blank %} --blogc-ratio-num: {{ v_num }};{% endif %}"
+            >
               {%- if block.settings.video_url.type == 'youtube' -%}
                 <iframe src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
               {%- elsif block.settings.video_url.type == 'vimeo' -%}
@@ -398,6 +433,7 @@
           ],
           "default": "standard"
         },
+        { "type": "select", "id": "shape", "label": "Video shape", "info": "Match the video's own proportions. A portrait video left on Landscape is letterboxed by the player and looks tiny. Non-landscape shapes are sized to fit the screen height and go full width on phones.", "options": [ { "value": "landscape", "label": "Landscape (16:9)" }, { "value": "square", "label": "Square (1:1)" }, { "value": "portrait", "label": "Portrait (4:5)" }, { "value": "tall", "label": "Tall (9:16)" } ], "default": "landscape" },
         { "type": "video", "id": "video", "label": "Video", "info": "Shopify-hosted. Takes priority over the URL below." },
         { "type": "video_url", "id": "video_url", "label": "YouTube / Vimeo URL", "accept": ["youtube", "vimeo"] },
         { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
