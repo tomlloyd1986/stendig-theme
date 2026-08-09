@@ -136,36 +136,118 @@
                 <h3 class="newsletter-form__message newsletter-form__message--success form__message" id="ContactFooter-success" tabindex="-1" autofocus>{% render 'icon-success' %}{{ 'newsletter.success' | t }}</h3>
               {%- endif -%}
 
-              <script>
-                /* Mirror the signup context into Brevo contact fields via its
-                   Marketing Automation tracker (the Shopify customer sync
-                   carries the email but none of these attributes; the tags on
-                   the customer record are not attributes either).
+              {%- comment -%}
+                Direct-to-Brevo mode swaps in these messages without a page
+                reload; they stay hidden until the script reveals one.
+              {%- endcomment -%}
+              {%- if section.settings.brevo_form_url != blank -%}
+                <h3 class="newsletter-form__message newsletter-form__message--success form__message" data-nl-success hidden>{% render 'icon-success' %}{{ 'newsletter.success' | t }}</h3>
+                <small class="newsletter-form__message form__message" data-nl-error hidden>{% render 'icon-error' %}{{ section.settings.newsletter_error_text | default: 'Something went wrong — please try again.' | escape }}</small>
+              {%- endif -%}
 
-                   The identify cannot run at submit time — this form does a
-                   real page navigation, which cancels the tracker's in-flight
-                   request — so the email is parked in sessionStorage on submit
-                   and flushed on the next page load. That survives the round
-                   trip whether or not the success state renders, which matters
-                   because this store's /contact endpoint bounces submissions
-                   through the captcha challenge. A validation error clears the
-                   parked email instead of sending it.
+              <script>
+                /* Carries the signup context (MARKET / LANGUAGE / PATH /
+                   COUNTRY) to Brevo. Two modes:
+
+                   With a Brevo form URL set, the submission goes straight to
+                   Brevo with the attributes riding in the same POST — the
+                   popup's pattern, and the only one immune to a blocked
+                   tracker. No page reload, so no captcha challenge either.
+                   The Shopify customer form remains the no-JS fallback.
+
+                   Without one, the Shopify customer form posts as before and
+                   the tracker is the only channel. It cannot fire at submit
+                   time — the page navigation cancels its request — so the
+                   email is parked in sessionStorage and flushed on the next
+                   page load, which survives the challenge round trip whether
+                   or not the success state renders. A validation error
+                   discards the parked email instead of sending it.
 
                    COUNTRY comes from Shopify's IP-derived suggestion and is
                    only sent when detected. */
                 (function () {
                   var KEY = 'st:nl:pending';
+                  var BREVO_URL = {{ section.settings.brevo_form_url | json }};
                   var attrs = {
                     MARKET: {{ nl_market | json }},
                     LANGUAGE: {{ nl_lang | json }},
                     PATH: {{ nl_path | json }}
                   };
-
                   var form = document.getElementById('ContactFooter');
+
+                  function identify(email) {
+                    try {
+                      if (window.Brevo && typeof window.Brevo.push === 'function') {
+                        window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
+                      } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+                        window.sendinblue.identify(email, attrs);
+                      }
+                    } catch (e) {}
+                  }
+
+                  function detectCountry() {
+                    return fetch('/browsing_context_suggestions.json')
+                      .then(function (r) { return r.json(); })
+                      .then(function (data) {
+                        var d = (data && data.detected_values) || {};
+                        var c = d.country || {};
+                        var n = d.country_name || c.name || c.handle || '';
+                        if (n) attrs.COUNTRY = n;
+                      })
+                      .catch(function () {});
+                  }
+
+                  if (BREVO_URL && form) {
+                    var input = form.querySelector('input[type="email"]');
+                    // Warm the country lookup once the visitor engages, so the
+                    // submit itself never waits on it.
+                    if (input) {
+                      input.addEventListener('focus', function () {
+                        if (!input.dataset.geoAsked) {
+                          input.dataset.geoAsked = '1';
+                          detectCountry();
+                        }
+                      });
+                    }
+
+                    // Nothing here may ever navigate: a third-party script
+                    // calling form.submit() would bypass the listener.
+                    form.submit = function () {};
+                    form.addEventListener('submit', function (e) {
+                      e.preventDefault();
+                      var email = input && input.value ? input.value.trim() : '';
+                      if (!email) return;
+                      var okEl = form.querySelector('[data-nl-success]');
+                      var errEl = form.querySelector('[data-nl-error]');
+                      if (errEl) errEl.hidden = true;
+
+                      var fd = new FormData();
+                      fd.append('EMAIL', email);
+                      fd.append('email_address_check', '');
+                      fd.append('locale', 'en');
+                      fd.append('POPUP_CAMPAIGN', 'footer');
+                      fd.append('MARKET', attrs.MARKET);
+                      fd.append('LANGUAGE', attrs.LANGUAGE);
+                      fd.append('PATH', attrs.PATH);
+                      if (attrs.COUNTRY) fd.append('COUNTRY', attrs.COUNTRY);
+
+                      fetch(BREVO_URL, { method: 'POST', body: fd, mode: 'no-cors' })
+                        .then(function () {
+                          identify(email);
+                          input.value = '';
+                          if (okEl) okEl.hidden = false;
+                        })
+                        .catch(function () {
+                          if (errEl) errEl.hidden = false;
+                        });
+                    });
+                    return;
+                  }
+
                   if (form) {
                     form.addEventListener('submit', function () {
-                      var input = form.querySelector('input[type="email"]');
-                      var value = input && input.value ? input.value.trim() : '';
+                      var value = form.querySelector('input[type="email"]');
+                      value = value && value.value ? value.value.trim() : '';
                       if (value) {
                         try { sessionStorage.setItem(KEY, value); } catch (e) {}
                       }
@@ -177,35 +259,16 @@
                   return;
                   {%- endif %}
 
-                  var email = '';
+                  var pending = '';
                   {%- if form.posted_successfully? and form.email != blank %}
-                  email = {{ form.email | json }};
+                  pending = {{ form.email | json }};
                   {%- endif %}
-                  if (!email) {
-                    try { email = sessionStorage.getItem(KEY) || ''; } catch (e) {}
+                  if (!pending) {
+                    try { pending = sessionStorage.getItem(KEY) || ''; } catch (e) {}
                   }
-                  if (!email) return;
+                  if (!pending) return;
                   try { sessionStorage.removeItem(KEY); } catch (e) {}
-
-                  function send() {
-                    try {
-                      if (window.Brevo && typeof window.Brevo.push === 'function') {
-                        window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
-                      } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
-                        window.sendinblue.identify(email, attrs);
-                      }
-                    } catch (e) {}
-                  }
-                  fetch('/browsing_context_suggestions.json')
-                    .then(function (r) { return r.json(); })
-                    .then(function (data) {
-                      var d = (data && data.detected_values) || {};
-                      var c = d.country || {};
-                      var n = d.country_name || c.name || c.handle || '';
-                      if (n) attrs.COUNTRY = n;
-                    })
-                    .catch(function () {})
-                    .then(send);
+                  detectCountry().then(function () { identify(pending); });
                 })();
               </script>
             {%- endform -%}
@@ -589,6 +652,19 @@
       "id": "newsletter_subtext",
       "label": "Newsletter subtext",
       "info": "Shown under the heading, above the email field."
+    },
+    {
+      "type": "text",
+      "id": "brevo_form_url",
+      "label": "Brevo form URL",
+      "info": "The action URL of a Brevo subscription form (the same one the signup popup uses). Signups then post straight to Brevo with the market, language and path attached, with no page reload. Leave empty to keep using Shopify's customer form, which creates a Shopify customer and relies on the Brevo tracker for those attributes."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_error_text",
+      "label": "Newsletter error message",
+      "default": "Something went wrong \u2014 please try again.",
+      "info": "Shown if the signup cannot reach Brevo. Only used when a Brevo form URL is set."
     },
     {
       "type": "header",
