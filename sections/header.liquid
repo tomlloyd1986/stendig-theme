@@ -765,7 +765,14 @@
       const fixed = percentage.toFixed(2);
 
       document.querySelector("#shopify-section-{{ section.id }}").classList.toggle("scrolled", scrollTop > 10);
-    })
+    });
+    {%- comment -%}
+      The semicolon above is load-bearing: the next statement in this
+      script is an IIFE, so without it the parser reads this call's
+      return value as a function and calls it — "document.addEventListener
+      is not a function" — which killed everything below, including the
+      --st-header-bottom measurement the home hero sizes against.
+    {%- endcomment -%}
   {% endif %}
 
   /* Keep --st-header-bottom (the header's rendered height) in sync at all
