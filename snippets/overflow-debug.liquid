@@ -1,0 +1,74 @@
+{% comment %}
+  TEMPORARY diagnostic for the transient horizontal scroll at page load.
+  Inert unless the URL carries ?overflowdebug=1, so it costs live visitors
+  nothing but a few hundred bytes. Remove once the culprit is fixed.
+
+  Loads in the head and samples every frame for five seconds, because the
+  effect appears before a console paste could run and clears itself after
+  roughly a second. For each frame where the document is wider than the
+  viewport it names the elements sticking out past the right edge, first
+  sighting only. Fixed elements are skipped: they cannot extend the page
+  (the cart drawer parks off-screen and is only visible as a passenger).
+  Also logs when the webfonts finish, since a metric-different fallback
+  swapping out is one candidate for something that resolves on its own.
+{% endcomment %}
+<script>
+  (function () {
+    if (!/[?&]overflowdebug/.test(window.location.search)) return;
+
+    var seen = {};
+    var start = performance.now();
+    var lastOver = -1;
+
+    function describe(el) {
+      var s = el.tagName.toLowerCase();
+      if (el.id) s += '#' + el.id;
+      var cls = typeof el.className === 'string' ? el.className.trim() : '';
+      if (cls) s += '.' + cls.split(/\s+/).slice(0, 4).join('.');
+      return s;
+    }
+
+    function scan(t) {
+      var d = document.documentElement;
+      var w = d.clientWidth;
+      var over = d.scrollWidth - w;
+      if (over !== lastOver) {
+        console.log('[overflow] ' + Math.round(t) + 'ms — document ' + (over > 0 ? 'overflows by ' + over + 'px' : 'fits'));
+        lastOver = over;
+      }
+      if (over <= 0 || !document.body) return;
+
+      var els = document.body.querySelectorAll('*');
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        var cs = window.getComputedStyle(el);
+        if (cs.position === 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') continue;
+        var r = el.getBoundingClientRect();
+        if (!r.width && !r.height) continue;
+        var right = r.right + window.scrollX;
+        if (right <= w + 1) continue;
+        var key = describe(el);
+        if (seen[key]) continue;
+        seen[key] = true;
+        console.log(
+          '[overflow] ' + Math.round(t) + 'ms — sticks out ' + Math.round(right - w) + 'px: ' + key,
+          { width: Math.round(r.width), position: cs.position, transform: cs.transform, el: el }
+        );
+      }
+    }
+
+    function frame() {
+      var t = performance.now() - start;
+      scan(t);
+      if (t < 5000) requestAnimationFrame(frame);
+      else console.log('[overflow] finished. Fonts: ' + document.fonts.status);
+    }
+    requestAnimationFrame(frame);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        console.log('[overflow] webfonts ready at ' + Math.round(performance.now() - start) + 'ms');
+      });
+    }
+  })();
+</script>
