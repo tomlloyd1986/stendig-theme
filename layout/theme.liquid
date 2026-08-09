@@ -365,6 +365,17 @@
         {% section 'popup-signup' %}
         {% section 'waitlist-modal' %}
 
+        {%- comment -%}
+          Rendered here rather than from the header section: the sticky
+          header transforms that section on scroll, and a transformed
+          ancestor turns the drawer's position: fixed into containment,
+          so its off-screen width became real horizontal page scroll.
+          No color_scheme is passed — the drawer's colours come from the
+          root variables, which match the background-1 scheme it used to
+          inherit from the header.
+        {%- endcomment -%}
+        {%- render 'cart-notification' -%}
+
         <script>
           /* Stamp the browsed market context onto the cart as underscore
              (customer-hidden) attributes, so orders carry the true

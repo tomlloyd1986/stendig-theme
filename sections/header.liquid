@@ -561,7 +561,17 @@
   </st-nav-menus>
 </{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
 
-{%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
+{%- comment -%}
+  The cart drawer is deliberately NOT rendered here. Everything in this
+  file sits inside #shopify-section-header, and the sticky-header script
+  puts transform: translateY(-100%) on that section to hide it on scroll.
+  A transform makes its subtree's containing block the section rather
+  than the viewport, so the drawer's position: fixed stops meaning fixed:
+  its 480px, parked off the right edge, starts counting toward the
+  document's scrollable width and the page can be scrolled sideways —
+  appearing and disappearing as the header hides and resets. It is
+  rendered from layout/theme.liquid instead, where nothing transforms it.
+{%- endcomment -%}
 
 {% javascript %}
   class StickyHeader extends HTMLElement {
