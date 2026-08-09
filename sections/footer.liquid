@@ -134,42 +134,80 @@
               </div>
               {%- if form.posted_successfully? -%}
                 <h3 class="newsletter-form__message newsletter-form__message--success form__message" id="ContactFooter-success" tabindex="-1" autofocus>{% render 'icon-success' %}{{ 'newsletter.success' | t }}</h3>
-                {%- if form.email != blank -%}
-                  <script>
-                    /* Mirror the signup context into Brevo contact fields via
-                       its Marketing Automation tracker; no-op without it.
-                       COUNTRY comes from Shopify's IP-derived suggestion and
-                       is only sent when detected. */
-                    (function () {
-                      var email = {{ form.email | json }};
-                      var attrs = {
-                        MARKET: {{ nl_market | json }},
-                        LANGUAGE: {{ nl_lang | json }},
-                        PATH: {{ nl_path | json }}
-                      };
-                      function send() {
-                        try {
-                          if (window.Brevo && typeof window.Brevo.push === 'function') {
-                            window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
-                          } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
-                            window.sendinblue.identify(email, attrs);
-                          }
-                        } catch (e) {}
-                      }
-                      fetch('/browsing_context_suggestions.json')
-                        .then(function (r) { return r.json(); })
-                        .then(function (data) {
-                          var d = (data && data.detected_values) || {};
-                          var c = d.country || {};
-                          var n = d.country_name || c.name || c.handle || '';
-                          if (n) attrs.COUNTRY = n;
-                        })
-                        .catch(function () {})
-                        .then(send);
-                    })();
-                  </script>
-                {%- endif -%}
               {%- endif -%}
+
+              <script>
+                /* Mirror the signup context into Brevo contact fields via its
+                   Marketing Automation tracker (the Shopify customer sync
+                   carries the email but none of these attributes; the tags on
+                   the customer record are not attributes either).
+
+                   The identify cannot run at submit time — this form does a
+                   real page navigation, which cancels the tracker's in-flight
+                   request — so the email is parked in sessionStorage on submit
+                   and flushed on the next page load. That survives the round
+                   trip whether or not the success state renders, which matters
+                   because this store's /contact endpoint bounces submissions
+                   through the captcha challenge. A validation error clears the
+                   parked email instead of sending it.
+
+                   COUNTRY comes from Shopify's IP-derived suggestion and is
+                   only sent when detected. */
+                (function () {
+                  var KEY = 'st:nl:pending';
+                  var attrs = {
+                    MARKET: {{ nl_market | json }},
+                    LANGUAGE: {{ nl_lang | json }},
+                    PATH: {{ nl_path | json }}
+                  };
+
+                  var form = document.getElementById('ContactFooter');
+                  if (form) {
+                    form.addEventListener('submit', function () {
+                      var input = form.querySelector('input[type="email"]');
+                      var value = input && input.value ? input.value.trim() : '';
+                      if (value) {
+                        try { sessionStorage.setItem(KEY, value); } catch (e) {}
+                      }
+                    });
+                  }
+
+                  {%- if form.errors %}
+                  try { sessionStorage.removeItem(KEY); } catch (e) {}
+                  return;
+                  {%- endif %}
+
+                  var email = '';
+                  {%- if form.posted_successfully? and form.email != blank %}
+                  email = {{ form.email | json }};
+                  {%- endif %}
+                  if (!email) {
+                    try { email = sessionStorage.getItem(KEY) || ''; } catch (e) {}
+                  }
+                  if (!email) return;
+                  try { sessionStorage.removeItem(KEY); } catch (e) {}
+
+                  function send() {
+                    try {
+                      if (window.Brevo && typeof window.Brevo.push === 'function') {
+                        window.Brevo.push(['identify', { identifiers: { email_id: email }, attributes: attrs }]);
+                      } else if (window.sendinblue && typeof window.sendinblue.identify === 'function') {
+                        window.sendinblue.identify(email, attrs);
+                      }
+                    } catch (e) {}
+                  }
+                  fetch('/browsing_context_suggestions.json')
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                      var d = (data && data.detected_values) || {};
+                      var c = d.country || {};
+                      var n = d.country_name || c.name || c.handle || '';
+                      if (n) attrs.COUNTRY = n;
+                    })
+                    .catch(function () {})
+                    .then(send);
+                })();
+              </script>
             {%- endform -%}
           </div>
         {%- endif -%}
