@@ -60,10 +60,39 @@
     function frame() {
       var t = performance.now() - start;
       scan(t);
-      if (t < 5000) requestAnimationFrame(frame);
-      else console.log('[overflow] finished. Fonts: ' + document.fonts.status);
+      if (t < 20000) requestAnimationFrame(frame);
+      else console.log('[overflow] finished watching. Fonts: ' + document.fonts.status);
     }
     requestAnimationFrame(frame);
+
+    /* The gesture itself. A trackpad can bounce past the edge with nothing
+       overflowing at all, so log what is actually true at that moment:
+       scrollX stays 0 and the document still fits = elastic overscroll,
+       not a layout problem. Names whatever sits past the right edge. */
+    var lastGesture = -Infinity;   // never swallow the first gesture
+    function onGesture(e) {
+      var now = performance.now();
+      if (now - lastGesture < 400) return;
+      lastGesture = now;
+      var d = document.documentElement;
+      var past = [];
+      document.body.querySelectorAll('*').forEach(function (el) {
+        var cs = window.getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') return;
+        var r = el.getBoundingClientRect();
+        if (!r.width && !r.height) return;
+        if (r.left >= d.clientWidth - 1) past.push(describe(el) + ' (' + cs.position + ', starts ' + Math.round(r.left) + ')');
+      });
+      console.log(
+        '[overflow] gesture at ' + Math.round(now - start) + 'ms — scrollX ' + Math.round(window.scrollX) +
+        ', document ' + d.scrollWidth + ' vs viewport ' + d.clientWidth +
+        (d.scrollWidth > d.clientWidth ? ' → REAL OVERFLOW' : ' → fits, so this is overscroll') +
+        '. Parked past the right edge: ' + (past.slice(0, 6).join('; ') || 'nothing')
+      );
+    }
+    window.addEventListener('wheel', onGesture, { passive: true });
+    window.addEventListener('scroll', onGesture, { passive: true });
+    window.addEventListener('touchmove', onGesture, { passive: true });
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
