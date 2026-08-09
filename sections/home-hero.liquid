@@ -40,6 +40,16 @@
       assign shape_m_h = 1400.0 | divided_by: mid | plus: 84 | round
     endif
   endif
+  # Focal point per crop, from the focus point set on the image itself in
+  # the editor (Shopify's image.presentation.focal_point, e.g. "50% 30%").
+  # Every crop is a cover crop, so this decides what survives it. Without
+  # a focus point the previous defaults stand: centred on desktop, bottom
+  # anchored on the narrower crops. A crop that falls back to the desktop
+  # image inherits its focus point.
+  assign focal_d = img_d.presentation.focal_point | default: 'center center'
+  assign focal_t = img_t.presentation.focal_point | default: 'center bottom'
+  assign focal_m = img_m.presentation.focal_point | default: 'center bottom'
+
   # Locale-aware fallback: routes.root_url is '/' on the default market and
   # e.g. '/en-au' on subfolder markets, so the range link stays in-market.
   assign hero_link = section.settings.link
@@ -80,7 +90,7 @@
   }
   #shopify-section-{{ section.id }} .hero__media img {
     object-fit: cover;
-    object-position: center center;
+    object-position: {{ focal_d }};
   }
   #shopify-section-{{ section.id }} .hero__placeholder {
     position: absolute;
@@ -101,24 +111,35 @@
     margin-bottom: 30px;
     text-align: center;
   }
+  /* Each rule matches the crop the picture element is serving at that
+     size, so the focus point travels with its own image. Ordering is the
+     inverse of the sources below: there the first match wins, here the
+     last one does — so the mobile-shape rule must follow the tablet one. */
   @media screen and (max-width: 989px) {
-    /* Smaller screens anchor the image to its bottom edge, like the live site */
     #shopify-section-{{ section.id }} .hero__media img {
-      object-position: center bottom;
+      object-position: {{ focal_t }};
+    }
+  }
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .hero { padding: 0 12px; }
+    #shopify-section-{{ section.id }} .hero__media img {
+      object-position: {{ focal_m }};
     }
   }
   {%- if shape_t_h > 0 %}
-  /* Large screens serving the tablet/mobile crop anchor it the same way
-     those crops are anchored on their native screens */
   @media screen and (min-width: 990px) and (min-height: {{ shape_t_h }}px) {
     #shopify-section-{{ section.id }} .hero__media img {
-      object-position: center bottom;
+      object-position: {{ focal_t }};
     }
   }
   {%- endif %}
-  @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .hero { padding: 0 12px; }
+  {%- if shape_m_h > 0 %}
+  @media screen and (min-width: 990px) and (min-height: {{ shape_m_h }}px) {
+    #shopify-section-{{ section.id }} .hero__media img {
+      object-position: {{ focal_m }};
+    }
   }
+  {%- endif %}
 {% endstyle %}
 
 <div class="hero">
@@ -186,9 +207,9 @@
 {
   "name": "Home: Hero banner",
   "settings": [
-    { "type": "image_picker", "id": "image_desktop", "label": "Image — desktop" },
-    { "type": "image_picker", "id": "image_tablet", "label": "Image — tablet", "info": "Optional. Falls back to the desktop image. Also shown on very large screens when the hero's shape approaches tablet proportions — upload at least 2000px wide." },
-    { "type": "image_picker", "id": "image_mobile", "label": "Image — mobile", "info": "Optional. Falls back to the desktop image. Also shown on very tall screens when the hero's shape approaches phone proportions — upload at least 2000px wide." },
+    { "type": "image_picker", "id": "image_desktop", "label": "Image — desktop", "info": "Set the focus point on the image itself (click the image, then Edit) to choose what stays in frame when it is cropped." },
+    { "type": "image_picker", "id": "image_tablet", "label": "Image — tablet", "info": "Optional. Falls back to the desktop image. Also shown on very large screens when the hero's shape approaches tablet proportions — upload at least 2000px wide. Carries its own focus point." },
+    { "type": "image_picker", "id": "image_mobile", "label": "Image — mobile", "info": "Optional. Falls back to the desktop image. Also shown on very tall screens when the hero's shape approaches phone proportions — upload at least 2000px wide. Carries its own focus point." },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "DISCOVER 2026" },
     { "type": "url", "id": "link", "label": "Link", "info": "Where the button — and the whole hero — points. Defaults to the range collection." }
   ],
