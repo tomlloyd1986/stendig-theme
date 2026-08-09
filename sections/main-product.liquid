@@ -572,9 +572,7 @@
 
                         <div class="custom-join-waitlist-btns">
                           {%- comment -%} data-waitlist-trigger opens the native waitlist
-                              modal (waitlist-modal.liquid), which intercepts the click in
-                              the capture phase before this file's legacy Wisepops handlers
-                              can see it. {%- endcomment -%}
+                              modal (waitlist-modal.liquid). {%- endcomment -%}
                           <button type="button" data-waitlist-trigger class="button button--full-width button--secondary join-waitlist-btn-custom">{{ 'delivery.join_waitlist' | t }}</button>
                           <button disabled class="button button--full-width button--primary">
                             {{ 'shopify.checkout.stock.sold_out_label' | t }}
@@ -2115,37 +2113,6 @@
     ]
   }
 </script>
-
-<!--
-  <script data-cfasync="false">
-    (function(W,i,s,e,P,o,p){W['WisePopsObject']=P;W[P]=W[P]||function(){(W[P].q=W[P].q||[]).push(arguments)},W[P].l=1*new Date();o=i.createElement(s),p=i.getElementsByTagName(s)[0];o.defer=1;o.src=e;p.parentNode.insertBefore(o,p)})(window,document,'script','//loader.wisepops.com/get-loader.js?v=1&site=muK6YCHMaD','wisepops');
-  </script>
--->
-{% comment %} {% if productDisabled %} {% endcomment %}
-  <script type="text/javascript">
-    {% comment %} console.log('Onload productDisabled = {{ productDisabled }}'); {% endcomment %}
-
-    {% comment %} document.addEventListener('readystatechange', function() { {% endcomment %}
-
-      {% comment %} if(document.readyState == 'complete') { {% endcomment %}
-        const out_of_stock = document.querySelector('.join-waitlist-btn-custom')
-        if(out_of_stock) {
-          out_of_stock.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log(out_of_stock, 'out_of_stock')
-            {% if hostName == 'stendigcalendars' %}
-              wisepops("event", "joinwaitlist_vcal");
-            {% else %}
-              {% if hostName.size == 2 %}
-                wisepops("event", "{{ request.host | split: "." | first }}-{{ product.metafields.cart.out_of_stock_trigger }}");
-              {% endif %}
-            {% endif %}
-          })
-        }
-      {% comment %} } {% endcomment %}
-    {% comment %} }) {% endcomment %}
-  </script>
-{% comment %} {% endif %} {% endcomment %}
 
 <script>
   
@@ -3773,11 +3740,6 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 {% endschema %}
 
-<!--
-  <script data-cfasync="false">
-        (function(W,i,s,e,P,o,p){W['WisePopsObject']=P;W[P]=W[P]||function(){(W[P].q=W[P].q||[]).push(arguments)},W[P].l=1*new Date();o=i.createElement(s),p=i.getElementsByTagName(s)[0];o.defer=1;o.src=e;p.parentNode.insertBefore(o,p)})(window,document,'script','//loader.wisepops.com/get-loader.js?v=1&site=muK6YCHMaD','wisepops');
-  </script>
--->
 
 <script>
   let var_sel = document.querySelector("variant-radios");
@@ -3874,29 +3836,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // console.log('Waiting List', target);
 
-    if (
-      target.closest(".join-waitlist-btn-custom") ||
-      target.classList.contains("join-waitlist-btn-custom")
-    ) {
-      wisepops('event', 'joinwaitlist_vcal');
-      wisepops(
-        "event",
-        "joinwaitlist_vcal"
-      );
-      {% comment %} console.log("click waiting List email popup"); {% endcomment %}
-
-      let wiseWaitPop = document.querySelectorAll("#wisepops-instance-505943");
-      if (wiseWaitPop) {
-        wiseWaitPop.forEach((e) => {
-          let wiseWaitPopShadow = e.shadowRoot;
-          let btn = wiseWaitPopShadow.querySelector(
-            'button[aria-labelledby="wisepops-tab-label-505943"]'
-          );
-          {% comment %} console.log("wisePOP Shadow Root", btn); {% endcomment %}
-          btn.click();
-        });
-      }
-    }
 
     if (target.closest(".ctm_buy_it_now")) {
       document

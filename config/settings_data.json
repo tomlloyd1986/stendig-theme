@@ -232,11 +232,6 @@
     },
     "content_for_index": [],
     "blocks": {
-      "7878088468538493966": {
-        "type": "shopify://apps/wisepops-smart-popups-bars/blocks/app-embed/e7d7a4f7-0df4-4073-9375-5f36db513952",
-        "disabled": true,
-        "settings": {}
-      },
       "12793297677437526120": {
         "type": "shopify://apps/t-lab-ai-language-translate/blocks/custom_translations/b5b83690-efd4-434d-8c6a-a5cef4019faf",
         "disabled": false,
@@ -309,7 +304,6 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".wisepops-wisepop-scrollable {box-shadow: unset !important;}",
       ".product__description {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-size: 14px; /* adjust to taste */ line-height: 1.5; /* adjust spacing */ letter-spacing: 0; /* tracking */}",
       ".product__description p {margin-bottom: 1.2em; /* paragraph spacing */}",
       " /* Header navigation font */.header__inline-menu .list-menu__item,.header__inline-menu .list-menu__item a {font-family: \"Neue Haas Grotesk Text\", sans-serif; font-weight: 400; /* adjust if you want bold */ font-size: 14px; /* tweak size */ letter-spacing: 0; /* tracking */}"

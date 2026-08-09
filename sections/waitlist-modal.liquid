@@ -387,10 +387,9 @@
         el.addEventListener('click', () => this.close());
       });
 
-      // Capture phase + hard stop: Wisepops (loaded store-wide via script
-      // tag until the app is uninstalled) also listens on this button —
-      // the click must never reach it. extra_triggers lets PageFly-era
-      // buttons be claimed by the selector Wisepops itself targets.
+      // Capture phase + hard stop, so no other listener on these buttons
+      // can act on the click first. extra_triggers claims buttons that
+      // carry no data-waitlist-trigger of their own.
       let triggerSelector = '[data-waitlist-trigger], a[href="#waitlist"], a[href$="#waitlist"]';
       if (this.dataset.extraTriggers) {
         try {
@@ -678,7 +677,7 @@
     { "type": "textarea", "id": "ty_body", "label": "Body", "default": "We'll let you know when next year's calendars go on sale.", "info": "Shown whether or not a phone number was added — keep it channel-neutral." },
     { "type": "text", "id": "continue_label", "label": "Continue link label", "default": "Continue browsing", "info": "Dismisses the modal. The arrow is added automatically." },
     { "type": "text", "id": "error_text", "label": "Submission error message", "default": "Something went wrong — please try again." },
-    { "type": "text", "id": "extra_triggers", "label": "Additional trigger selector", "info": "Optional CSS selector for extra Join-waitlist buttons (e.g. PageFly buttons — paste the same selector your Wisepops campaign targets). Clicks on matches open this modal instead of Wisepops." },
+    { "type": "text", "id": "extra_triggers", "label": "Additional trigger selector", "info": "Optional CSS selector for any other Join-waitlist button that does not carry data-waitlist-trigger. Clicks on matches open this modal." },
     { "type": "paragraph", "content": "Opens when a visitor clicks the sold-out product button (automatically converted), or any element with data-waitlist-trigger or a link to #waitlist. Records the same Brevo fields as the signup popup, plus WAITLIST_SKUS (create as a text attribute in Brevo) and a waitlist_join event carrying the SKU." }
   ]
 }
