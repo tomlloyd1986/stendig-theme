@@ -714,3 +714,12 @@ noscript .localization-selector.link {
     padding-bottom: 0;
   }
 }
+
+/* base.css gives .form__message display:flex, and an author rule beats the
+   browser's built-in [hidden] { display: none } no matter how the element
+   is marked up — so the newsletter's success and error states, which ship
+   hidden and are revealed on submit, need this stated explicitly. Class +
+   attribute out-specifies the base rule, so no !important is required. */
+.newsletter-form__message[hidden] {
+  display: none;
+}
