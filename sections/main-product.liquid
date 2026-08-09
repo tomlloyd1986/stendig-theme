@@ -2396,6 +2396,13 @@ const deliveryDateInputUI = document.getElementById("delivery-date-input-custom"
 const deliveryDateButtons = document.querySelectorAll(".delivery-date-button-custom");
 
 const deliveryDateWrapper = document.querySelector('.delivery-date-wrapper-custom');
+// The hidden Delivery Date input is part of the form on every product, but
+// the buttons that fill it come from the optional "Delivery dates" block.
+// Without that block there is no way to choose a date, so a date cannot be
+// a condition of buying — otherwise the buy buttons sit there disabled with
+// nothing to click and no message explaining why (addRequiredMessage also
+// no-ops without the wrapper).
+const deliveryDateRequired = Boolean(deliveryDateWrapper) && deliveryDateButtons.length > 0;
 const requiredMessageClass = 'delivery-date-required-message'; 
 const deliveryDateLabel = deliveryDateWrapper ? deliveryDateWrapper.querySelector('.delivery-date-label-custom') : null;
 const requiredDeliveryDateMessage = {{ 'delivery.required_message' | t | json }};
@@ -2462,8 +2469,9 @@ function updateButtonVisibilityAndState() {
       : Boolean(window.variantNativeAvailable[selectedVariant]);
   }
   
-  // 2. Check for Delivery Date Selection (FIXED: Check the value of the input, not the attribute)
-  const isDateSelected = deliveryDateInputForm && deliveryDateInputForm.value;
+  // 2. Check for Delivery Date Selection (the value of the input, not the
+  // attribute) — only when this product actually offers a date to pick.
+  const isDateSelected = !deliveryDateRequired || (deliveryDateInputForm && deliveryDateInputForm.value);
 
   console.log("Is Available:", isAvailable, "Is Date Selected:", isDateSelected);
   console.log("Is Available:", isAvailable, "Is Date Selected:", isDateSelected);
