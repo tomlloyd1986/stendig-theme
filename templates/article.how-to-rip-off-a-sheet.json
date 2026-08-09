@@ -23,10 +23,10 @@
           "type": "video",
           "settings": {
             "width": "ultrawide",
+            "shape": "portrait",
             "video_url": "https://vimeo.com/1160116340",
             "autoplay": false,
-            "caption": "",
-            "shape": "portrait"
+            "caption": ""
           }
         }
       },
@@ -40,6 +40,8 @@
       "name": "Blog: Step by step",
       "settings": {
         "eyebrow": "Step by step",
+        "width": "standard",
+        "columns": "2",
         "image_1": "shopify://shop_images/SC26_4x5_Rip_Instructions_1.jpg",
         "caption_1": "Find the perforation hidden beneath the header, about 1cm / 0.5\" from the bottom.",
         "image_2": "shopify://shop_images/SC26_4x5_Rip_Instructions_2.jpg",
