@@ -1198,7 +1198,11 @@ deferred-media {
   align-items: center;
   box-sizing: border-box;
   font: inherit;
-  padding: 0.9rem 3rem 1.1rem;
+  font-family: var(--font-body-family);
+  font-weight: 400;
+  /* Dawn ships 0.9rem top / 1.1rem bottom, which lifts the label off the
+     button's centre — visible at these sizes with Neue Haas Grotesk. */
+  padding: 1rem 3rem;
   text-decoration: none;
   border: 0.1rem solid transparent;
   border-radius: 0;
@@ -1234,13 +1238,16 @@ deferred-media {
   background-color: rgba(var(--color-button-text), 0.3);
 }
 
+/* Buttons read as the rest of the site: Neue Haas Grotesk Text at the body
+   size, regular weight, no tracking. Dawn's 15px with 0.1rem tracking was
+   the one place type was set apart from the design system. */
 .button,
 .button-label,
 .shopify-challenge__button,
 .customer button {
-  font-size: 1.5rem;
-  letter-spacing: 0.1rem;
-  line-height: 1.2;
+  font-size: 1.4rem;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
 
 .button--tertiary {

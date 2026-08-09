@@ -178,7 +178,8 @@
     border-color: #121212;
   }
 
-  /* Sentence case — deliberate exception to the uppercase rule */
+  /* Sentence case — deliberate exception to the uppercase rule. Type
+     matches the site's buttons: body size, regular weight, no tracking. */
   .stw__button {
     width: 100%;
     box-sizing: border-box;
@@ -187,10 +188,10 @@
     border: none;
     border-radius: 0;
     font-family: var(--font-body-family);
-    font-size: 15px;
-    line-height: 1.2;
+    font-size: 14px;
+    line-height: 1.5;
     font-weight: 400;
-    letter-spacing: 0.1rem;
+    letter-spacing: 0;
     padding: 16px;
     cursor: pointer;
   }
@@ -226,7 +227,7 @@
   /* The phone state carries one extra row (the skip link), so its
      spacing is tightened to keep the same fixed panel as the other
      states; the smallprint still anchors to the bottom via margin auto */
-  .stw__state--phone .stw__body { margin-bottom: 20px; }
+  .stw__state--phone .stw__body { margin-bottom: 16px; }
   .stw__skip { margin-top: 12px; }
   .stw__state--phone .stw__smallprint { padding-top: 12px; }
 
