@@ -33,11 +33,22 @@
     color: #121212;
     margin: 14px 0 0;
   }
+  /* Same widths as the editorial section, so a narrow video and these
+     steps can be set to match. */
+  #shopify-section-{{ section.id }} .rip__w-standard { max-width: 760px; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .rip__w-wide { max-width: 1040px; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .rip__w-ultrawide { max-width: none; }
   #shopify-section-{{ section.id }} .rip__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     margin-top: 80px;
+  }
+  /* Two by two: the photos double in size, so the rows need real space
+     between them — same figure the tablet layout already uses. */
+  #shopify-section-{{ section.id }} .rip__grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 10px;
   }
   #shopify-section-{{ section.id }} .rip__step {
     display: flex;
@@ -95,12 +106,13 @@
 {% endstyle %}
 
 <div class="rip">
-  <hr class="rip__divider">
-  {%- if section.settings.eyebrow != blank -%}
-    <p class="rip__eyebrow">{{ section.settings.eyebrow | escape }}</p>
-  {%- endif -%}
+  <div class="rip__inner rip__w-{{ section.settings.width | default: 'ultrawide' }}">
+    <hr class="rip__divider">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="rip__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
 
-  <div class="rip__grid">
+    <div class="rip__grid{% if section.settings.columns == '2' %} rip__grid--2{% endif %}">
     {%- for i in (1..4) -%}
       {%- liquid
         assign image_key = 'image_' | append: i
@@ -135,8 +147,9 @@
         {%- if step_caption != blank -%}
           <p class="rip__caption">{{ step_caption }}</p>
         {%- endif -%}
-      </div>
-    {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
   </div>
 </div>
 
@@ -145,6 +158,8 @@
   "name": "Blog: Step by step",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Step by step" },
+    { "type": "select", "id": "width", "label": "Width", "options": [ { "value": "standard", "label": "Standard (760px)" }, { "value": "wide", "label": "Wide (1040px)" }, { "value": "ultrawide", "label": "Ultrawide (full width)" } ], "default": "ultrawide" },
+    { "type": "select", "id": "columns", "label": "Layout", "options": [ { "value": "4", "label": "Four across" }, { "value": "2", "label": "Two by two" } ], "default": "4", "info": "Two by two suits the narrower widths, and pairs with a portrait video. Tablets and phones are always two across." },
     { "type": "image_picker", "id": "image_1", "label": "Photo 1", "info": "All photos display at 4:5. Leave empty to use the built-in sheet-removal photos." },
     { "type": "textarea", "id": "caption_1", "label": "Caption 1", "default": "Find the perforation hidden beneath the header and start a small tear, 1 cm / ½″ long." },
     { "type": "image_picker", "id": "image_2", "label": "Photo 2" },
