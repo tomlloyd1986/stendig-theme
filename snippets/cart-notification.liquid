@@ -42,16 +42,39 @@
   it would out-specify the stylesheet and keep the drawer's layer
   unrasterized (see the note in component-cart-notification.css); the
   transform alone keeps it off screen.
+
+  Position alone was not enough. cart-notification.js is deferred, so it
+  clears the element's display well before the async stylesheet lands,
+  and in that window the panel had no width, height or background: a
+  transparent, content-sized block of cart markup parked just past the
+  right edge. Nothing overflows — the document is never wider than the
+  viewport — but a trackpad's horizontal overscroll bounces past the edge
+  and shows it, until the stylesheet arrives and turns it into a tidy
+  white panel. These values mirror the stylesheet exactly, so the drawer
+  is the same shape from the first paint.
 {% endcomment %}
 {% style %}
+  /* Same reservation the stylesheet makes; critical too, so the viewport
+     width does not change under the page when the stylesheet lands. */
+  html {
+    scrollbar-gutter: stable;
+  }
   cart-notification .cart-drawer {
     position: fixed;
     top: 0;
     right: 0;
+    height: 100%;
+    height: 100dvh;
+    width: min(48rem, 100vw);
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(var(--color-background, 255, 255, 255));
+    z-index: 9999;
     transform: translateX(100%);
   }
   cart-notification .cart-drawer__overlay {
     position: fixed;
+    inset: 0;
     opacity: 0;
     pointer-events: none;
   }
