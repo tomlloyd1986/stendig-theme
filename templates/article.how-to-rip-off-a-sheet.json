@@ -25,7 +25,8 @@
             "width": "ultrawide",
             "video_url": "https://vimeo.com/1160116340",
             "autoplay": false,
-            "caption": ""
+            "caption": "",
+            "shape": "portrait"
           }
         }
       },
