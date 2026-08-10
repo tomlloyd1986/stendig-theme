@@ -20,7 +20,8 @@
   - Signups create/update a Shopify customer via the customer form with
     marketing consent; tags carry campaign / variant / market path /
     language / discount code, and the existing Brevo–Shopify integration
-    syncs them to Brevo.
+    syncs them to Brevo. Language rides along on every signup, but no
+    longer targets which version shows — markets do that.
   - Analytics: popup_impression / popup_submit / popup_dismiss events are
     pushed to window.dataLayer (or gtag) with campaign, experiment,
     variant, market, language and path_prefix — GA4's BigQuery export can
@@ -379,17 +380,6 @@
         endif
       endif
 
-      if show_block and block.settings.languages != blank
-        assign show_block = false
-        assign wanted = block.settings.languages | downcase | split: ','
-        for l in wanted
-          assign l_t = l | strip
-          if l_t == lang_code
-            assign show_block = true
-            break
-          endif
-        endfor
-      endif
     -%}
     {%- if show_block -%}
       {%- liquid
@@ -960,7 +950,6 @@
         { "type": "header", "content": "Targeting" },
         { "type": "select", "id": "visibility", "label": "Markets", "options": [ { "value": "all", "label": "All markets, except…" }, { "value": "none", "label": "No markets, only…" } ], "default": "all" },
         { "type": "text", "id": "wh_codes", "label": "Warehouse codes", "info": "Comma-separated; matches the warehouse serving the visitor's market. Codes: us, au, eu, uk, hk, jp, kr, nz, sg, tw, go-bolt-yyz-5 (Canada). Empty list: All markets shows everywhere, No markets shows nowhere." },
-        { "type": "text", "id": "languages", "label": "Languages", "info": "Comma-separated language codes (e.g. en, es). Empty = all languages." },
         { "type": "header", "content": "Sign-up state" },
         { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Stendig" },
         { "type": "text", "id": "heading", "label": "Heading", "default": "Sold out for 2026" },
