@@ -22,11 +22,16 @@
         "video_HDVCJU": {
           "type": "video",
           "settings": {
-            "width": "ultrawide",
+            "width": "standard",
             "shape": "portrait",
-            "video_url": "https://vimeo.com/1160116340",
+            "video": "shopify://files/videos/Rip3.mp4",
+            "video_url": "",
             "autoplay": false,
-            "caption": ""
+            "caption": "",
+            "lang_a": "",
+            "video_url_a": "",
+            "lang_b": "",
+            "video_url_b": ""
           }
         }
       },
