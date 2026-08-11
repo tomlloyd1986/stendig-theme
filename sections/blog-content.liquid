@@ -12,7 +12,9 @@
     Product — small bordered product card (image, title, price/sold out)
               linking to the product
     Video   — Shopify-hosted upload or YouTube/Vimeo URL, same three
-              widths, optional caption and autoplay loop
+              widths, optional caption and autoplay loop; two optional
+              language-override slots swap in a different video for the
+              storefront languages they list
   Widths, type and spacing are locked; only content is editable.
 {% endcomment %}
 
@@ -320,14 +322,56 @@
         {%- endif -%}
 
       {%- when 'video' -%}
+        {%- liquid
+          # Language overrides: each slot lists the language codes it
+          # serves; when the storefront language matches one, that slot's
+          # video replaces the default. A matched slot with nothing in it
+          # is ignored. Width, shape, autoplay and caption stay shared —
+          # the caption is a text setting, translatable the usual way.
+          assign v_video = block.settings.video
+          assign v_url = block.settings.video_url
+          assign v_lang = localization.language.iso_code | downcase
+          assign v_slot = ''
+          if block.settings.lang_a != blank
+            assign langs = block.settings.lang_a | downcase | split: ','
+            for l in langs
+              assign l_t = l | strip
+              if l_t == v_lang
+                assign v_slot = 'a'
+                break
+              endif
+            endfor
+          endif
+          if v_slot == '' and block.settings.lang_b != blank
+            assign langs = block.settings.lang_b | downcase | split: ','
+            for l in langs
+              assign l_t = l | strip
+              if l_t == v_lang
+                assign v_slot = 'b'
+                break
+              endif
+            endfor
+          endif
+          if v_slot == 'a'
+            if block.settings.video_a != blank or block.settings.video_url_a != blank
+              assign v_video = block.settings.video_a
+              assign v_url = block.settings.video_url_a
+            endif
+          elsif v_slot == 'b'
+            if block.settings.video_b != blank or block.settings.video_url_b != blank
+              assign v_video = block.settings.video_b
+              assign v_url = block.settings.video_url_b
+            endif
+          endif
+        -%}
         <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
-          {%- if block.settings.video != blank -%}
+          {%- if v_video != blank -%}
             {%- if block.settings.autoplay -%}
-              {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+              {{ v_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
             {%- else -%}
-              {{ block.settings.video | video_tag: controls: true }}
+              {{ v_video | video_tag: controls: true }}
             {%- endif -%}
-          {%- elsif block.settings.video_url != blank -%}
+          {%- elsif v_url != blank -%}
             {%- liquid
               case block.settings.shape
                 when 'square'
@@ -348,10 +392,10 @@
               class="blogc__embed{% if v_num != blank %} blogc__embed--capped{% endif %}"
               style="--blogc-ratio: {{ v_ratio }};{% if v_num != blank %} --blogc-ratio-num: {{ v_num }};{% endif %}"
             >
-              {%- if block.settings.video_url.type == 'youtube' -%}
-                <iframe src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-              {%- elsif block.settings.video_url.type == 'vimeo' -%}
-                <iframe src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              {%- if v_url.type == 'youtube' -%}
+                <iframe src="https://www.youtube.com/embed/{{ v_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              {%- elsif v_url.type == 'vimeo' -%}
+                <iframe src="https://player.vimeo.com/video/{{ v_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -437,7 +481,14 @@
         { "type": "video", "id": "video", "label": "Video", "info": "Shopify-hosted. Takes priority over the URL below." },
         { "type": "video_url", "id": "video_url", "label": "YouTube / Vimeo URL", "accept": ["youtube", "vimeo"] },
         { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
-        { "type": "text", "id": "caption", "label": "Caption" }
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "header", "content": "Language overrides", "info": "Optional. Show a different video to some languages. Codes are the storefront language codes, comma-separated (e.g. de or zh-tw, ko). A slot with no video is ignored; everything else — width, shape, autoplay, caption — is shared." },
+        { "type": "text", "id": "lang_a", "label": "Override 1: languages" },
+        { "type": "video", "id": "video_a", "label": "Override 1: video" },
+        { "type": "video_url", "id": "video_url_a", "label": "Override 1: URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_b", "label": "Override 2: languages" },
+        { "type": "video", "id": "video_b", "label": "Override 2: video" },
+        { "type": "video_url", "id": "video_url_b", "label": "Override 2: URL", "accept": ["youtube", "vimeo"] }
       ]
     }
   ],
