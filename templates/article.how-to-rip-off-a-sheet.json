@@ -28,10 +28,16 @@
             "video_url": "",
             "autoplay": false,
             "caption": "",
-            "lang_a": "",
+            "lang_a": "en",
             "video_url_a": "",
-            "lang_b": "",
-            "video_url_b": ""
+            "lang_b": "fr",
+            "video_url_b": "",
+            "lang_c": "de",
+            "lang_d": "es",
+            "lang_e": "it",
+            "lang_f": "zh-tw",
+            "lang_g": "ko",
+            "lang_h": "ja"
           }
         }
       },
