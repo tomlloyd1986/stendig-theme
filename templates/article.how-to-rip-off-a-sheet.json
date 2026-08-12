@@ -24,7 +24,7 @@
           "settings": {
             "width": "standard",
             "shape": "portrait",
-            "video": "shopify://files/videos/Rip3.mp4",
+            "video": "shopify://files/videos/Rip - UK.mp4",
             "video_url": "",
             "autoplay": false,
             "caption": "",
@@ -33,11 +33,17 @@
             "lang_b": "fr",
             "video_url_b": "",
             "lang_c": "de",
+            "video_url_c": "",
             "lang_d": "es",
+            "video_url_d": "",
             "lang_e": "it",
+            "video_url_e": "",
             "lang_f": "zh-tw",
+            "video_url_f": "",
             "lang_g": "ko",
-            "lang_h": "ja"
+            "video_url_g": "",
+            "lang_h": "ja",
+            "video_url_h": ""
           }
         }
       },
