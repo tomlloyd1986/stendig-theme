@@ -402,10 +402,25 @@
         -%}
         <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
           {%- if v_video != blank -%}
+            {%- liquid
+              # video_tag builds the poster from the video's preview image,
+              # and without image_size it asks for a small one — which the
+              # browser then stretches over the whole frame, soft, while
+              # the video itself plays sharp. Size it to the widest the
+              # frame can be at this width setting, doubled for retina.
+              case block.settings.width
+                when 'standard'
+                  assign v_poster_size = '1600x'
+                when 'wide'
+                  assign v_poster_size = '2200x'
+                else
+                  assign v_poster_size = '2800x'
+              endcase
+            -%}
             {%- if block.settings.autoplay -%}
-              {{ v_video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+              {{ v_video | video_tag: image_size: v_poster_size, autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
             {%- else -%}
-              {{ v_video | video_tag: controls: true }}
+              {{ v_video | video_tag: image_size: v_poster_size, controls: true }}
             {%- endif -%}
           {%- elsif v_url != blank -%}
             {%- liquid
@@ -581,7 +596,7 @@
         { "type": "video_url", "id": "video_url", "label": "URL — all other languages", "accept": ["youtube", "vimeo"] },
         { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
         { "type": "text", "id": "caption", "label": "Caption" },
-        { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Optional but recommended. The player picks its own thumbnail at whatever size it measures the frame to be when it loads, which on a wide frame looks soft. A still uploaded here is sharp at any size, and holds the player back until someone clicks. Shared across languages." },
+        { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Optional, and only for YouTube/Vimeo — those players choose their own thumbnail at whatever size they measure the frame to be, which looks soft on a large frame. A still uploaded here is sharp at any size and holds the player back until clicked. Uploaded videos take their poster from the video itself. Shared across languages." },
         { "type": "header", "content": "Per-language videos", "info": "Each language below falls back to the video above until you give it one of its own. The code is editable — a slot can serve several languages (\"da, sv\") or a different one entirely." },
         { "type": "text", "id": "lang_a", "label": "English — language codes", "default": "en" },
         { "type": "video", "id": "video_a", "label": "English — video" },
