@@ -12,9 +12,10 @@
     Product — small bordered product card (image, title, price/sold out)
               linking to the product
     Video   — Shopify-hosted upload or YouTube/Vimeo URL, same three
-              widths, optional caption and autoplay loop; eight optional
-              language-override slots swap in a different video for the
-              storefront languages each one lists
+              widths, optional caption and autoplay loop. One slot per
+              published language swaps in a different video for that
+              language; an optional poster image replaces the player's
+              own thumbnail and defers loading the player until clicked
   Widths, type and spacing are locked; only content is editable.
 {% endcomment %}
 
@@ -139,6 +140,47 @@
     width: 100%;
     height: 100%;
     border: 0;
+  }
+  /* Our own poster, shown until the player is asked for */
+  #shopify-section-{{ section.id }} .blogc__embed-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #f3f3f3;
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(18, 18, 18, 0.75);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed-poster:hover .blogc__embed-play {
+    background: #121212;
+  }
+  #shopify-section-{{ section.id }} .blogc__embed-play svg {
+    width: 32px;
+    height: 32px;
   }
   #shopify-section-{{ section.id }} .blogc__caption {
     font-family: var(--font-body-family);
@@ -382,14 +424,55 @@
                   assign v_num = ''
               endcase
             -%}
+            {%- liquid
+              assign v_src = ''
+              assign v_allow = 'autoplay; fullscreen; picture-in-picture'
+              if v_url.type == 'youtube'
+                assign v_src = 'https://www.youtube.com/embed/' | append: v_url.id
+                assign v_allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              elsif v_url.type == 'vimeo'
+                assign v_src = 'https://player.vimeo.com/video/' | append: v_url.id
+              endif
+              assign v_title = block.settings.caption | default: 'Video'
+            -%}
             <div
               class="blogc__embed{% if v_num != blank %} blogc__embed--capped{% endif %}"
               style="--blogc-ratio: {{ v_ratio }};{% if v_num != blank %} --blogc-ratio-num: {{ v_num }};{% endif %}"
             >
-              {%- if v_url.type == 'youtube' -%}
-                <iframe src="https://www.youtube.com/embed/{{ v_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-              {%- elsif v_url.type == 'vimeo' -%}
-                <iframe src="https://player.vimeo.com/video/{{ v_url.id }}" title="{{ block.settings.caption | default: 'Video' | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+              {%- if v_src != blank -%}
+                {%- if block.settings.poster != blank -%}
+                  {%- comment -%}
+                    The player's own poster is served at whatever size it
+                    measures the frame to be as it starts up, which on a
+                    large frame is an upscaled small image — soft, even
+                    though the video itself is sharp. A still we control is
+                    sharp at any size, and holds the third-party player
+                    back until someone actually wants it.
+                  {%- endcomment -%}
+                  <button
+                    type="button"
+                    class="blogc__embed-poster"
+                    data-embed-src="{{ v_src }}"
+                    data-embed-allow="{{ v_allow }}"
+                    data-embed-title="{{ v_title | escape }}"
+                    aria-label="{{ 'Play video' }}{% if block.settings.caption != blank %}: {{ block.settings.caption | escape }}{% endif %}"
+                  >
+                    <img
+                      src="{{ block.settings.poster | image_url: width: 1600 }}"
+                      srcset="{{ block.settings.poster | image_url: width: 800 }} 800w, {{ block.settings.poster | image_url: width: 1200 }} 1200w, {{ block.settings.poster | image_url: width: 1600 }} 1600w, {{ block.settings.poster | image_url: width: 2400 }} 2400w"
+                      sizes="(max-width: 749px) 100vw, {% case block.settings.width %}{% when 'standard' %}760px{% when 'wide' %}1040px{% else %}100vw{% endcase %}"
+                      alt="{{ block.settings.poster.alt | default: v_title | escape }}"
+                      width="{{ block.settings.poster.width }}"
+                      height="{{ block.settings.poster.height }}"
+                      loading="lazy"
+                    >
+                    <span class="blogc__embed-play" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" focusable="false"><path d="M9 7.5v9l7-4.5-7-4.5z" fill="currentColor"/></svg>
+                    </span>
+                  </button>
+                {%- else -%}
+                  <iframe src="{{ v_src }}" title="{{ v_title | escape }}" allow="{{ v_allow }}" allowfullscreen loading="lazy"></iframe>
+                {%- endif -%}
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -401,6 +484,28 @@
     {%- endcase -%}
   {%- endfor -%}
 </div>
+
+<script>
+  /* Swap a poster for the real player on click. Delegated from the
+     document and registered once, so it survives the editor re-rendering
+     a section and covers every Editorial content block on the page. */
+  (function () {
+    if (window.__blogcPosterBound) return;
+    window.__blogcPosterBound = true;
+    document.addEventListener('click', function (e) {
+      var poster = e.target.closest && e.target.closest('.blogc__embed-poster');
+      if (!poster) return;
+      var src = poster.dataset.embedSrc;
+      if (!src) return;
+      var frame = document.createElement('iframe');
+      frame.src = src + (src.indexOf('?') === -1 ? '?' : '&') + 'autoplay=1';
+      frame.title = poster.dataset.embedTitle || 'Video';
+      frame.setAttribute('allow', poster.dataset.embedAllow || 'autoplay; fullscreen; picture-in-picture');
+      frame.setAttribute('allowfullscreen', '');
+      poster.replaceWith(frame);
+    });
+  })();
+</script>
 
 {% schema %}
 {
@@ -472,35 +577,36 @@
           "default": "standard"
         },
         { "type": "select", "id": "shape", "label": "Video shape", "info": "Match the video's own proportions. A portrait video left on Landscape is letterboxed by the player and looks tiny. Non-landscape shapes are sized to fit the screen height and go full width on phones.", "options": [ { "value": "landscape", "label": "Landscape (16:9)" }, { "value": "square", "label": "Square (1:1)" }, { "value": "portrait", "label": "Portrait (4:5)" }, { "value": "tall", "label": "Tall (9:16)" } ], "default": "landscape" },
-        { "type": "video", "id": "video", "label": "Video", "info": "Shopify-hosted. Takes priority over the URL below." },
-        { "type": "video_url", "id": "video_url", "label": "YouTube / Vimeo URL", "accept": ["youtube", "vimeo"] },
+        { "type": "video", "id": "video", "label": "Video — all other languages", "info": "Shopify-hosted. Takes priority over the URL below." },
+        { "type": "video_url", "id": "video_url", "label": "URL — all other languages", "accept": ["youtube", "vimeo"] },
         { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
         { "type": "text", "id": "caption", "label": "Caption" },
-        { "type": "header", "content": "Language overrides", "info": "Optional. Show a different video to particular languages. Type the storefront language codes a slot serves, comma-separated (de, or zh-tw, ko). Leave the rest empty. A slot with codes but no video falls back to the default. Width, shape and autoplay are shared; the caption translates the usual way." },
-        { "type": "text", "id": "lang_a", "label": "1. Languages" },
-        { "type": "video", "id": "video_a", "label": "1. Video" },
-        { "type": "video_url", "id": "video_url_a", "label": "1. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_b", "label": "2. Languages" },
-        { "type": "video", "id": "video_b", "label": "2. Video" },
-        { "type": "video_url", "id": "video_url_b", "label": "2. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_c", "label": "3. Languages" },
-        { "type": "video", "id": "video_c", "label": "3. Video" },
-        { "type": "video_url", "id": "video_url_c", "label": "3. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_d", "label": "4. Languages" },
-        { "type": "video", "id": "video_d", "label": "4. Video" },
-        { "type": "video_url", "id": "video_url_d", "label": "4. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_e", "label": "5. Languages" },
-        { "type": "video", "id": "video_e", "label": "5. Video" },
-        { "type": "video_url", "id": "video_url_e", "label": "5. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_f", "label": "6. Languages" },
-        { "type": "video", "id": "video_f", "label": "6. Video" },
-        { "type": "video_url", "id": "video_url_f", "label": "6. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_g", "label": "7. Languages" },
-        { "type": "video", "id": "video_g", "label": "7. Video" },
-        { "type": "video_url", "id": "video_url_g", "label": "7. URL", "accept": ["youtube", "vimeo"] },
-        { "type": "text", "id": "lang_h", "label": "8. Languages" },
-        { "type": "video", "id": "video_h", "label": "8. Video" },
-        { "type": "video_url", "id": "video_url_h", "label": "8. URL", "accept": ["youtube", "vimeo"] }
+        { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Optional but recommended. The player picks its own thumbnail at whatever size it measures the frame to be when it loads, which on a wide frame looks soft. A still uploaded here is sharp at any size, and holds the player back until someone clicks. Shared across languages." },
+        { "type": "header", "content": "Per-language videos", "info": "Each language below falls back to the video above until you give it one of its own. The code is editable — a slot can serve several languages (\"da, sv\") or a different one entirely." },
+        { "type": "text", "id": "lang_a", "label": "English — language codes", "default": "en" },
+        { "type": "video", "id": "video_a", "label": "English — video" },
+        { "type": "video_url", "id": "video_url_a", "label": "English — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_b", "label": "French — language codes", "default": "fr" },
+        { "type": "video", "id": "video_b", "label": "French — video" },
+        { "type": "video_url", "id": "video_url_b", "label": "French — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_c", "label": "German — language codes", "default": "de" },
+        { "type": "video", "id": "video_c", "label": "German — video" },
+        { "type": "video_url", "id": "video_url_c", "label": "German — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_d", "label": "Spanish — language codes", "default": "es" },
+        { "type": "video", "id": "video_d", "label": "Spanish — video" },
+        { "type": "video_url", "id": "video_url_d", "label": "Spanish — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_e", "label": "Italian — language codes", "default": "it" },
+        { "type": "video", "id": "video_e", "label": "Italian — video" },
+        { "type": "video_url", "id": "video_url_e", "label": "Italian — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_f", "label": "Chinese (Traditional) — language codes", "default": "zh-tw" },
+        { "type": "video", "id": "video_f", "label": "Chinese (Traditional) — video" },
+        { "type": "video_url", "id": "video_url_f", "label": "Chinese (Traditional) — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_g", "label": "Korean — language codes", "default": "ko" },
+        { "type": "video", "id": "video_g", "label": "Korean — video" },
+        { "type": "video_url", "id": "video_url_g", "label": "Korean — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_h", "label": "Japanese — language codes", "default": "ja" },
+        { "type": "video", "id": "video_h", "label": "Japanese — video" },
+        { "type": "video_url", "id": "video_url_h", "label": "Japanese — URL", "accept": ["youtube", "vimeo"] }
       ]
     }
   ],
