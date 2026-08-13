@@ -26,170 +26,24 @@
                                                            
     
     
-    {% comment %}START OF SHIPPING PAGE HIDING{% endcomment %}
-    
-        {% if request.host != 'eu.stendigcalendars.com' and request.host != 'no.stendigcalendars.com' and request.host != 'se.stendigcalendars.com' %}
+    {% comment %}START OF SHIPPING PAGE HIDING
+  Legacy region-only content classes from the subdomain era. Every
+  request is now stendigcalendars.com, so the old host conditionals
+  always resolved the same way: every xx-only class hidden except
+  .uk-only and .eu-uk-only (whose conditions excluded the primary
+  domain). This static block is byte-for-byte that outcome, minus
+  seventeen dead conditionals. The mechanism cannot vary by market any
+  more — if region-gated content is ever needed again, key it on
+  routes.root_url, not the host.
+{% endcomment %}
         <style>
-          .eu-only {
-                display:none !important;
-              }                                                        
+          .eu-only, .fr-only, .dk-only, .nl-only, .de-only, .it-only,
+          .es-only, .ca-only, .au-only, .nz-only, .tw-only, .kr-only,
+          .sg-only, .hk-only, .in-only, .us-only {
+            display: none !important;
+          }
         </style>
-        {% endif %}
-        {% if request.host != 'fr.stendigcalendars.com' %}
-        <style>
-          .fr-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %}
-        {% if request.host != 'dk.stendigcalendars.com' %}
-        <style>
-          .dk-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %}     
-        {% if request.host != 'nl.stendigcalendars.com' %}
-        <style>
-          .nl-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %}
-        {% if request.host != 'de.stendigcalendars.com' and request.host != 'ch.stendigcalendars.com' %}
-        <style>
-          .de-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %}
-        {% if request.host != 'it.stendigcalendars.com' %}
-        <style>
-          .it-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %} 
-        {% if request.host != 'es.stendigcalendars.com' %}
-        <style>
-          .es-only {
-                display:none !important;
-              }                                                        
-        </style>
-        {% endif %}                                                         
-        {% if request.host != 'stendigcalendars.com' and request.host != 'uk.stendigcalendars.com' %}
-        <style>
-          .uk-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}                                                         
-        {% if request.host != 'ca.stendigcalendars.com' %}
-        <style>
-          .ca-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}
-        {% if request.host != 'au.stendigcalendars.com' %}
-        <style>
-          .au-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %} 
-        {% if request.host != 'nz.stendigcalendars.com' %}
-        <style>
-          .nz-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}
-        {% if request.host != 'tw.stendigcalendars.com' %}
-        <style>
-          .tw-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}   
-        {% if request.host != 'kr.stendigcalendars.com' %}
-        <style>
-          .kr-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}  
-        {% if request.host != 'sg.stendigcalendars.com' %}
-        <style>
-          .sg-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}   
-        {% if request.host != 'hk.stendigcalendars.com' %}
-        <style>
-          .hk-only {
-                display:none !important;
-              }                                                           
-        </style>  
-        {% endif %}
-        {% if request.host != 'in.stendigcalendars.com' %}
-        <style>
-          .in-only {
-                display:none !important;
-              }                                                           
-        </style>
-        {% endif %}
-        {% if request.host != 'eu.stendigcalendars.com' %}
-        <style>
-          .eu-only {
-                display:none !important;
-              }
-        </style>
-         {% endif %}
-        {% if request.host != 'us.stendigcalendars.com' %}
-        <style>
-          .us-only {
-                display:none !important;
-              }                                                                              
-        </style>
-        {% endif %}                                                       
-            {% if request.host != 'no.stendigcalendars.com' and request.host != 'ch.stendigcalendars.com' and request.host != 'se.stendigcalendars.com' and request.host != 'it.stendigcalendars.com' and request.host != 'fr.stendigcalendars.com' and request.host != 'dk.stendigcalendars.com' and request.host != 'nl.stendigcalendars.com' and request.host != 'es.stendigcalendars.com' and request.host != 'de.stendigcalendars.com' and request.host != 'dk.stendigcalendars.com' and request.host != 'uk.stendigcalendars.com' and request.host != 'stendigcalendars.com' %}
-        <style>
-          .eu-uk-only {
-                         display:none !important;
-              }   
-              .sc-fXazdy.UjHkE.pf-123_ {
-    display: none;
-}
-
-@media screen and (min-width: 750px)      {
-.deferred-media__poster-button {
-        left: 8% !important;
-        top: 8%!important;
-        width: 5%!important;
-        height: 5%!important;
-                }
-
-.deferred-media__poster-button .icon { 
-        width: 50%!important;
-        height: 50%!important; }
-}
-@media screen and (min-width: 1000px)      {
-.deferred-media__poster-button {
-        left: 7% !important;
-        top: 7%!important;
-        width: 5rem!important;
-        height: 5rem!important;
-                }
-
-.deferred-media__poster-button .icon { 
-        width: 50%!important;
-        height: 50%!important; }
-}                   
-        </style>
-        {% endif %}                                                          
-    {% comment %}END OF SHIPPING PAGE HIDING{% endcomment %}
+{% comment %}END OF SHIPPING PAGE HIDING{% endcomment %}
                                                                                                                     
                                                           
         {%- if settings.favicon != blank -%}
@@ -298,9 +152,7 @@
         {% endstyle %}
     
         {{ 'base.css' | asset_url | stylesheet_tag }}
-        {{ 'v.css' | asset_url | stylesheet_tag }}
         {{ 'mw.style.css' | asset_url | stylesheet_tag }}
-        {{ 'custom.css' | asset_url | stylesheet_tag }}
     
         {%- comment -%}
           Preload the self-hosted brand fonts declared in base.css (these
@@ -309,14 +161,12 @@
         {%- endcomment -%}
         <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasGrotText-55Roman.woff2?v=1754861432" type="font/woff2" crossorigin>
         <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasDisplayMedium.woff2" type="font/woff2" crossorigin>
+        <link rel="preload" as="font" href="https://cdn.shopify.com/s/files/1/0601/3104/9710/files/NeueHaasGrotDisp-45Light.woff2?v=1754861408" type="font/woff2" crossorigin>
     
         {%- if settings.predictive_search_enabled -%}
           <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
         {%- endif -%}
     
-        <script src="{{ 'v.js' | asset_url }}" defer="defer"></script>
-        <script src="{{ 'mw.app.js' | asset_url }}" defer="defer"></script>
-        <script src="{{ 'custom.js' | asset_url }}" defer="defer"></script>
     
         <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
       
