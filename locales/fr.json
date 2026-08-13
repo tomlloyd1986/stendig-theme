@@ -1180,8 +1180,8 @@
       "announcement": "Annonce",
       "menu": "Menu",
       "cart_count": {
-        "one": "{{ count }} article",
-        "other": "{{ count }} articles"
+        "one": "{{ count }} article",
+        "other": "{{ count }} articles"
       }
     },
     "cart": {
