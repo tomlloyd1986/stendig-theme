@@ -13,9 +13,11 @@
   sources serve the tablet/mobile crop once the box's ratio crosses the
   midpoint between two crops' ratios — each box shape gets the crop
   composed nearest to it. Thresholds are derived from the uploaded
-  images' actual ratios (box height ~= viewport - 84px: header 64 +
-  bottom gutter 20). Below the cap the thresholds are conservative: the
-  box there is even narrower, so a switch is never wrong, only late.
+  images' actual ratios (box height ~= viewport - 120px: measured
+  header ~97 + bottom gutter 20, rounded up so any error makes the
+  switch late rather than early). Below the cap the thresholds are
+  conservative too: the box there is even narrower, so a switch is
+  never wrong, only late.
 {% endcomment %}
 
 {%- liquid
@@ -32,12 +34,12 @@
     assign base_ratio = img_d.aspect_ratio
     if section.settings.image_tablet != blank and img_t.aspect_ratio < base_ratio
       assign mid = base_ratio | plus: img_t.aspect_ratio | divided_by: 2.0
-      assign shape_t_h = 1400.0 | divided_by: mid | plus: 84 | round
+      assign shape_t_h = 1400.0 | divided_by: mid | plus: 120 | round
       assign base_ratio = img_t.aspect_ratio
     endif
     if section.settings.image_mobile != blank and img_m.aspect_ratio < base_ratio
       assign mid = base_ratio | plus: img_m.aspect_ratio | divided_by: 2.0
-      assign shape_m_h = 1400.0 | divided_by: mid | plus: 84 | round
+      assign shape_m_h = 1400.0 | divided_by: mid | plus: 120 | round
     endif
   endif
   # Focal point per crop, from the focus point set on the image itself in
