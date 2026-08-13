@@ -228,11 +228,11 @@
   },
   "sections": {
     "header": {
-      "announcement": "告知",
+      "announcement": "お知らせ",
       "menu": "メニュー",
       "cart_count": {
-        "one": "{{ count }}個のアイテム",
-        "other": "{{ count }}個のアイテム"
+        "one": "{{ count }} 点",
+        "other": "{{ count }} 点"
       }
     },
     "cart": {
