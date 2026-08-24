@@ -53,8 +53,8 @@ async function render(values, over = {}) {
     routes: { all_products_collection_url: '/collections/all' },
     ...over,
   })
-  const panels = [...html.matchAll(/data-campaign="([^"]*)"[\s\S]*?data-experiment="([^"]*)"[\s\S]*?data-variant="([^"]*)"[\s\S]*?data-weight="([^"]*)"/g)]
-    .map((m) => ({ campaign: m[1], experiment: m[2], variant: m[3], weight: m[4] }))
+  const panels = [...html.matchAll(/data-campaign="([^"]*)"[\s\S]*?data-experiment="([^"]*)"[\s\S]*?data-variant="([^"]*)"[\s\S]*?data-weight="([^"]*)"[\s\S]*?data-delay="([^"]*)"[\s\S]*?data-scroll="([^"]*)"[\s\S]*?data-dismiss-days="([^"]*)"[\s\S]*?data-signup-days="([^"]*)"/g)]
+    .map((m) => ({ campaign: m[1], experiment: m[2], variant: m[3], weight: m[4], delay: m[5], scroll: m[6], dismissDays: m[7], signupDays: m[8] }))
   return { html, panels }
 }
 
@@ -116,6 +116,55 @@ const check = (name, ok, extra = '') => {
   check('the Brevo form is the submit path', html.includes('data-stp-brevo'))
   const noBrevo = await render([entry({})], { section: { settings: { brevo_form_url: '', error_text: '', use_admin_popups: true } } })
   check('without a Brevo URL the customer form branch renders', noBrevo.html.includes('contact[tags]'))
+}
+
+// 7. A version's own rules ride its panel; unset rides as '' for the script
+//    to fall through to the store's.
+{
+  const own = entry({ delay_seconds: { value: '10' }, dismiss_days: { value: '7' } })
+  const { panels } = await render([own])
+  check('a rule override rides its panel', panels[0].delay === '10' && panels[0].dismissDays === '7', JSON.stringify(panels[0]))
+  check("an unset rule rides as ''", panels[0].scroll === '' && panels[0].signupDays === '', JSON.stringify(panels[0]))
+}
+
+// 8. The store-wide defaults: section settings, admin store rules over them —
+//    the assign block above the root element, rendered on its own.
+{
+  const top = section.slice(
+    section.indexOf('# The behaviour defaults'),
+    section.indexOf('# Warehouse serving'),
+  )
+  if (!top) throw new Error('behaviour-defaults block not found')
+  const probe =
+    '{% liquid\n' +
+    top.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n') +
+    '\n%}{{ stp_delay }}|{{ stp_scroll }}|{{ stp_dismiss_days }}|{{ stp_signup_days }}'
+  const resolve = (settings, rules) =>
+    engine.parseAndRender(probe, {
+      section: { settings },
+      metaobjects: { popup_settings: rules ? { store: rules } : {} },
+    })
+  check(
+    'section settings alone resolve the defaults',
+    (await resolve({ use_admin_popups: true, delay_seconds: 8 }, null)) === '8|50|14|180',
+    await resolve({ use_admin_popups: true, delay_seconds: 8 }, null),
+  )
+  check(
+    "the admin's store rules override the section",
+    (await resolve(
+      { use_admin_popups: true, delay_seconds: 8 },
+      { delay_seconds: { value: '9' }, signup_days: { value: '30' } },
+    )) === '9|50|14|30',
+    'got a different resolution',
+  )
+  check(
+    'the kill switch off ignores the store rules entirely',
+    (await resolve(
+      { use_admin_popups: false, delay_seconds: 8 },
+      { delay_seconds: { value: '9' } },
+    )) === '8|50|14|180',
+    'got a different resolution',
+  )
 }
 
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks pass')

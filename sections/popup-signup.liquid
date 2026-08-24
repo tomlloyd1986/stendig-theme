@@ -57,6 +57,24 @@
     assign path_prefix = ''
   endif
 
+  # The behaviour defaults: the section's own settings, and — when content
+  # comes from the admin — the admin's store rules over them. One entry,
+  # written by the admin's publish; a field's '' never lands here because
+  # the settings entry is always written whole.
+  assign stp_delay = section.settings.delay_seconds | default: 6
+  assign stp_scroll = section.settings.scroll_percent | default: 50
+  assign stp_dismiss_days = section.settings.dismiss_days | default: 14
+  assign stp_signup_days = section.settings.signup_days | default: 180
+  if section.settings.use_admin_popups
+    assign stp_rules = metaobjects.popup_settings['store']
+    if stp_rules
+      assign stp_delay = stp_rules.delay_seconds.value | default: stp_delay
+      assign stp_scroll = stp_rules.scroll_percent.value | default: stp_scroll
+      assign stp_dismiss_days = stp_rules.dismiss_days.value | default: stp_dismiss_days
+      assign stp_signup_days = stp_rules.signup_days.value | default: stp_signup_days
+    endif
+  endif
+
   # Warehouse serving this market, resolved exactly as stock-state does:
   # the metaobject whose domains list contains the market token ('main'
   # for the root domain), else the default-flagged one. Block targeting
@@ -330,10 +348,10 @@
 
 <st-popup
   data-mode="{{ section.settings.trigger_mode }}"
-  data-delay="{{ section.settings.delay_seconds | default: 6 }}"
-  data-scroll="{{ section.settings.scroll_percent | default: 50 }}"
-  data-dismiss-days="{{ section.settings.dismiss_days | default: 14 }}"
-  data-signup-days="{{ section.settings.signup_days | default: 180 }}"
+  data-delay="{{ stp_delay }}"
+  data-scroll="{{ stp_scroll }}"
+  data-dismiss-days="{{ stp_dismiss_days }}"
+  data-signup-days="{{ stp_signup_days }}"
   data-session-cap="{{ section.settings.once_per_session }}"
   data-consent="{{ section.settings.respect_consent }}"
   data-design-mode="{% if request.design_mode %}true{% else %}false{% endif %}"
@@ -455,6 +473,10 @@
         data-variant="{{ stp_var }}"
         data-weight="{{ v.weight.value }}"
         data-code="{{ v.code.value | escape }}"
+        data-delay="{{ v.delay_seconds.value }}"
+        data-scroll="{{ v.scroll_percent.value }}"
+        data-dismiss-days="{{ v.dismiss_days.value }}"
+        data-signup-days="{{ v.signup_days.value }}"
       >
         <button type="button" class="stp__close" data-stp-close aria-label="{{ 'accessibility.close' | t }}">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -757,7 +779,6 @@
       }
 
       if (!this.designMode) {
-        if (this.suppressed()) return;
         if (this.dataset.sessionCap === 'true' && this.session('stp:shown')) return;
       }
 
@@ -814,18 +835,25 @@
 
     daysAgo(ts) { return (Date.now() - Number(ts)) / 86400000; }
 
-    suppressed() {
-      const signed = this.read('stp:signed');
-      if (signed && this.daysAgo(signed) < Number(this.dataset.signupDays)) return true;
-      return false;
+    // A panel's own rule, or the root's where the panel carries none —
+    // admin versions may override any of the four, and '' means "the
+    // store's". Legacy block panels carry none at all.
+    panelRule(p, key) {
+      const own = p && p.dataset[key];
+      return own !== undefined && own !== '' ? Number(own) : Number(this.dataset[key]);
     }
 
     pickPanel() {
-      const dismissDays = Number(this.dataset.dismissDays);
+      // Both quiet windows are per panel: a dismissal is held against the
+      // campaign it dismissed, a signup against every panel — each for as
+      // long as that panel's own window says.
+      const signed = this.read('stp:signed');
       const eligible = this.panels.filter((p) => {
         if (this.designMode) return true;
         const d = this.read('stp:dismissed:' + p.dataset.campaign);
-        return !(d && this.daysAgo(d) < dismissDays);
+        if (d && this.daysAgo(d) < this.panelRule(p, 'dismissDays')) return false;
+        if (signed && this.daysAgo(signed) < this.panelRule(p, 'signupDays')) return false;
+        return true;
       });
       if (!eligible.length) return null;
 
@@ -860,13 +888,13 @@
           this.onExit = (e) => { if (e.clientY <= 10) show(); };
           document.addEventListener('mouseout', this.onExit);
         } else {
-          setTimeout(show, Number(this.dataset.delay) * 1000);
+          setTimeout(show, this.panelRule(this.panel, 'delay') * 1000);
         }
       } else {
-        this.timer = setTimeout(show, Number(this.dataset.delay) * 1000);
+        this.timer = setTimeout(show, this.panelRule(this.panel, 'delay') * 1000);
         this.onScroll = () => {
           const max = document.documentElement.scrollHeight - window.innerHeight;
-          if (max > 0 && window.scrollY / max >= Number(this.dataset.scroll) / 100) show();
+          if (max > 0 && window.scrollY / max >= this.panelRule(this.panel, 'scroll') / 100) show();
         };
         window.addEventListener('scroll', this.onScroll, { passive: true });
       }
