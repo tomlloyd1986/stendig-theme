@@ -61,12 +61,6 @@
           "settings": {
             "share_label": "Share"
           }
-        },
-        "858a0a73-e9a2-4361-8d10-243f1a9ab025": {
-          "type": "custom_liquid",
-          "settings": {
-            "custom_liquid": ""
-          }
         }
       },
       "block_order": [
@@ -78,8 +72,7 @@
         "quantity_selector",
         "buy_buttons",
         "description",
-        "share",
-        "858a0a73-e9a2-4361-8d10-243f1a9ab025"
+        "share"
       ],
       "settings": {
         "enable_sticky_info": true,
@@ -179,6 +172,7 @@
           "type": "card",
           "settings": {
             "product": "hanging-strips",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -188,6 +182,7 @@
           "type": "card",
           "settings": {
             "product": "v-calendar",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
