@@ -1,29 +1,95 @@
 {% comment %}
-  Blog: Header — the top of an editorial article (Avant Arte style, in the
-  site's own type): centred title and standfirst. No buttons, date or
-  author, per the design brief. The title defaults to the article's own
-  title so the template can be reused across posts; the standfirst is a
-  per-template setting.
+  Blog: Header — the top of an editorial article, per the approved
+  canvas design ("Blog Article Headers", centred direction with
+  breadcrumb): a full-width crumb bar (hairline above and below) with
+  Journal / category / article title, then a centred 48px Display
+  title, muted standfirst and a short closing rule.
+
+  The crumb builds itself: Journal links to the article's blog, the
+  category is the article's first tag that isn't the "pinned" flag
+  (same rule as the journal mosaic's labels) linking to the tag
+  filter, and the current title sits muted and unlinked, truncating
+  on one line rather than wrapping. On templates without an article
+  (pages), the bar simply doesn't render.
+
+  The title defaults to the article's own title so the template works
+  across posts; the standfirst is a per-template setting. The mock's
+  -0.4px tracking compensated for its Helvetica fallback — Neue Haas
+  Display is already tighter, so the system's letter-spacing 0 stands.
 {% endcomment %}
 
 {%- liquid
   assign header_title = section.settings.title | default: article.title
+
+  assign crumb_category = ''
+  for tag in article.tags
+    assign tag_down = tag | downcase
+    if tag_down == 'pinned'
+      continue
+    endif
+    assign crumb_category = tag
+    break
+  endfor
 -%}
 
 {% style %}
+  #shopify-section-{{ section.id }} .blogh__crumbbar {
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+  }
+  #shopify-section-{{ section.id }} .blogh__crumbs {
+    max-width: var(--st-page-max, 1440px);
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    list-style: none;
+    white-space: nowrap;
+  }
+  #shopify-section-{{ section.id }} .blogh__crumbs li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  #shopify-section-{{ section.id }} .blogh__crumb,
+  #shopify-section-{{ section.id }} a.blogh__crumb {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    text-decoration: none;
+  }
+  #shopify-section-{{ section.id }} a.blogh__crumb:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  #shopify-section-{{ section.id }} .blogh__crumb--current {
+    color: rgba(18, 18, 18, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #shopify-section-{{ section.id }} .blogh__chev {
+    flex: none;
+    display: block;
+  }
+
   #shopify-section-{{ section.id }} .blogh {
-    padding: 48px 20px 24px;
+    padding: 64px 20px 48px;
     text-align: center;
   }
   #shopify-section-{{ section.id }} .blogh__title {
     font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
-    font-size: 32px;
-    line-height: 1.2;
+    font-size: 48px;
+    line-height: 1.15;
     font-weight: 400;
     letter-spacing: 0;
     color: #000;
-    max-width: 840px;
-    margin: 0 auto 16px;
+    max-width: 880px;
+    margin: 0 auto;
     text-wrap: pretty;
   }
   #shopify-section-{{ section.id }} .blogh__standfirst {
@@ -32,18 +98,45 @@
     line-height: 21px;
     font-weight: 400;
     letter-spacing: 0;
-    color: #121212;
+    color: rgba(18, 18, 18, 0.6);
     /* Matches the 512px reading column in Editorial content */
     max-width: 512px;
-    margin: 0 auto;
+    margin: 18px auto 0;
+  }
+  #shopify-section-{{ section.id }} .blogh__rule {
+    border: none;
+    border-top: 1px solid #e2e2e2;
+    width: 40px;
+    margin: 32px auto 0;
   }
   @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .blogh__crumbs { padding: 12px; }
     #shopify-section-{{ section.id }} .blogh {
-      padding: 32px 12px 16px;
+      padding: 40px 12px 40px;
     }
-    #shopify-section-{{ section.id }} .blogh__title { font-size: 26px; }
+    #shopify-section-{{ section.id }} .blogh__title { font-size: 30px; }
   }
 {% endstyle %}
+
+{%- if article != blank and blog != blank -%}
+  <nav class="blogh__crumbbar" aria-label="Breadcrumb">
+    <ol class="blogh__crumbs">
+      <li>
+        <a class="blogh__crumb" href="{{ blog.url }}">{{ blog.title | escape }}</a>
+        <svg class="blogh__chev" width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 1l3 3-3 3" stroke="rgba(18, 18, 18, 0.45)" stroke-width="1.2" fill="none"/></svg>
+      </li>
+      {%- if crumb_category != blank -%}
+        <li>
+          <a class="blogh__crumb" href="{{ blog.url }}/tagged/{{ crumb_category | handleize }}">{{ crumb_category | escape }}</a>
+          <svg class="blogh__chev" width="8" height="8" viewBox="0 0 8 8" fill="none" aria-hidden="true" focusable="false"><path d="M2.5 1l3 3-3 3" stroke="rgba(18, 18, 18, 0.45)" stroke-width="1.2" fill="none"/></svg>
+        </li>
+      {%- endif -%}
+      <li aria-current="page">
+        <span class="blogh__crumb blogh__crumb--current">{{ header_title | escape }}</span>
+      </li>
+    </ol>
+  </nav>
+{%- endif -%}
 
 <div class="blogh">
   {%- if header_title != blank -%}
@@ -52,6 +145,7 @@
   {%- if section.settings.standfirst != blank -%}
     <p class="blogh__standfirst">{{ section.settings.standfirst }}</p>
   {%- endif -%}
+  <hr class="blogh__rule">
 </div>
 
 {% schema %}
@@ -59,7 +153,8 @@
   "name": "Blog: Header",
   "settings": [
     { "type": "text", "id": "title", "label": "Title", "info": "Optional. Falls back to the article's title." },
-    { "type": "textarea", "id": "standfirst", "label": "Standfirst", "info": "The short intro paragraph under the title." }
+    { "type": "textarea", "id": "standfirst", "label": "Standfirst", "info": "The short intro paragraph under the title." },
+    { "type": "paragraph", "content": "The breadcrumb builds itself on articles: the blog's title, the article's first tag (its category, linking to the tag filter), then the article title. On pages it doesn't render." }
   ],
   "enabled_on": {
     "templates": ["article", "page"]
