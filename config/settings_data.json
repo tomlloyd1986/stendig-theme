@@ -188,6 +188,7 @@
         ],
         "settings": {
           "enabled": true,
+          "use_admin_popups": true,
           "trigger_mode": "delay_scroll",
           "delay_seconds": 3,
           "scroll_percent": 30,
