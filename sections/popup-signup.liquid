@@ -342,6 +342,222 @@
   data-language="{{ lang_code }}"
   data-path-prefix="{{ path_prefix }}"
 >
+  {%- if section.settings.use_admin_popups -%}
+  {%- comment -%} stp-admin-start
+    Versions from the admin: `popup_version` metaobject entries, one per arm,
+    written by the Stendig admin's Popups section. The loop over ranks is
+    deliberate — entry order is not guaranteed and Liquid's sort cannot reach
+    inside a field object (see the admin repo's popup-ordering spike) — and
+    the publishable capability already hides DRAFT entries from `values`.
+
+    The live window is wall-clock store time on both sides: the admin stores
+    the plain datetime-local string, and `now` renders in the store's zone,
+    so the two compare as numbers without either converting. Edges are as
+    fresh as the page cache, so treat them as minute-ish, not second-exact.
+
+    Copy is one JSON field carrying every language; each line falls back to
+    English PER FIELD, exactly as the admin's preview renders it.
+  {%- endcomment -%}
+  {%- liquid
+    assign stp_now = 'now' | date: '%Y%m%d%H%M' | plus: 0
+  -%}
+  {%- for stp_rank in (1..8) -%}
+    {%- for v in metaobjects.popup_version.values -%}
+      {%- liquid
+        if v.rank.value != stp_rank
+          continue
+        endif
+
+        # Markets are stored as the admin picked them; the entry must name
+        # the market this request resolved to ('primary' on the root domain).
+        assign stp_mk = false
+        if v.markets.value
+          for stp_m in v.markets.value
+            if stp_m == market_key
+              assign stp_mk = true
+              break
+            endif
+          endfor
+        endif
+        unless stp_mk
+          continue
+        endunless
+
+        if v.live_from.value != blank
+          assign stp_from = v.live_from.value | date: '%Y%m%d%H%M' | plus: 0
+          if stp_now < stp_from
+            continue
+          endif
+        endif
+        if v.live_until.value != blank
+          assign stp_until = v.live_until.value | date: '%Y%m%d%H%M' | plus: 0
+          if stp_now > stp_until
+            continue
+          endif
+        endif
+
+        # Arms of a split share a campaign value; only then does the panel
+        # carry an experiment, so a lone arm never splits traffic with itself.
+        assign stp_arms = 0
+        for stp_o in metaobjects.popup_version.values
+          if stp_o.campaign.value == v.campaign.value and stp_o.rank.value == stp_rank
+            assign stp_arms = stp_arms | plus: 1
+          endif
+        endfor
+
+        assign stp_c = v.copy.value
+        assign stp_lc = stp_c[lang_code]
+        assign stp_en = stp_c.en
+
+        assign p_eyebrow = stp_lc.eyebrow | default: stp_en.eyebrow
+        assign p_heading = stp_lc.heading | default: stp_en.heading
+        assign p_body = stp_lc.body | default: stp_en.body
+        assign p_placeholder = stp_lc.placeholder | default: stp_en.placeholder | default: 'Email address'
+        assign p_button = stp_lc.buttonLabel | default: stp_en.buttonLabel | default: 'Notify me'
+        assign p_dismiss = stp_lc.dismissLabel | default: stp_en.dismissLabel | default: 'No thanks'
+        assign p_ph_heading = stp_lc.phHeading | default: stp_en.phHeading | default: 'Be first in line'
+        assign p_ph_body = stp_lc.phBody | default: stp_en.phBody
+        assign p_ph_placeholder = stp_lc.phPlaceholder | default: stp_en.phPlaceholder | default: 'Phone number'
+        assign p_ph_button = stp_lc.phButtonLabel | default: stp_en.phButtonLabel
+        assign p_ph_skip = stp_lc.phSkipLabel | default: stp_en.phSkipLabel | default: 'No thanks, email is fine'
+        assign p_ph_small = stp_lc.phSmallprint | default: stp_en.phSmallprint
+        assign p_ty_eyebrow = stp_lc.tyEyebrow | default: stp_en.tyEyebrow
+        assign p_ty_heading = stp_lc.tyHeading | default: stp_en.tyHeading | default: "You're on the list"
+        assign p_ty_body = stp_lc.tyBody | default: stp_en.tyBody
+        assign p_shop = stp_lc.shopLabel | default: stp_en.shopLabel | default: 'Shop the store'
+
+        assign campaign = v.name.value | default: 'popup' | handleize
+        assign stp_exp = ''
+        if stp_arms > 1
+          assign stp_exp = v.campaign.value | handleize
+        endif
+        assign stp_var = v.arm.value | default: 'a' | handleize
+
+        assign tags = 'newsletter,popup,campaign:' | append: campaign
+        if stp_exp != blank
+          assign tags = tags | append: ',experiment:' | append: stp_exp | append: ',variant:' | append: stp_var
+        endif
+        assign path_tag = path_prefix | default: '/'
+        assign tags = tags | append: ',path:' | append: path_tag | append: ',lang:' | append: lang_code
+        if v.code.value != blank
+          assign tags = tags | append: ',code:' | append: v.code.value
+        endif
+        assign return_url = request.path | append: '?stp=thanks&stc=' | append: campaign
+      -%}
+      <aside
+        class="stp"
+        role="dialog"
+        aria-modal="false"
+        aria-label="{{ p_heading | escape }}"
+        data-stp-panel
+        data-campaign="{{ campaign }}"
+        data-experiment="{{ stp_exp }}"
+        data-variant="{{ stp_var }}"
+        data-weight="{{ v.weight.value }}"
+        data-code="{{ v.code.value | escape }}"
+      >
+        <button type="button" class="stp__close" data-stp-close aria-label="{{ 'accessibility.close' | t }}">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+
+        <div class="stp__content">
+          <div class="stp__state stp__state--signup">
+            {%- if p_eyebrow != blank -%}
+              <p class="stp__eyebrow">{{ p_eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="stp__heading">{{ p_heading | escape }}</h2>
+            {%- if p_body != blank -%}
+              <p class="stp__body">{{ p_body | escape }}</p>
+            {%- endif -%}
+
+            {%- if section.settings.brevo_form_url != blank -%}
+              <form class="stp__form" data-stp-brevo action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
+                <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+                <input
+                  type="email"
+                  name="EMAIL"
+                  class="stp__input"
+                  placeholder="{{ p_placeholder | escape }}"
+                  autocomplete="email"
+                  required
+                >
+                <button type="submit" class="stp__button">{{ p_button | escape }}</button>
+              </form>
+            {%- else -%}
+              {%- form 'customer' -%}
+                <input type="hidden" name="contact[tags]" value="{{ tags | escape }}">
+                <input type="hidden" name="return_to" value="{{ return_url }}">
+                <p class="stp__error" data-stp-error>{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}</p>
+                <input
+                  type="email"
+                  name="contact[email]"
+                  class="stp__input"
+                  placeholder="{{ p_placeholder | escape }}"
+                  autocomplete="email"
+                  required
+                >
+                <button type="submit" class="stp__button">{{ p_button | escape }}</button>
+              {%- endform -%}
+            {%- endif -%}
+
+            <button type="button" class="stp__dismiss" data-stp-close>{{ p_dismiss | escape }}</button>
+          </div>
+
+          {%- if v.phone.value and section.settings.brevo_form_url != blank -%}
+            <div class="stp__state stp__state--phone">
+              <h2 class="stp__heading">{{ p_ph_heading | escape }}</h2>
+              {%- if p_ph_body != blank -%}
+                <p class="stp__body">{{ p_ph_body | escape }}</p>
+              {%- endif -%}
+
+              <form class="stp__form" data-stp-phone-form action="{{ section.settings.brevo_form_url }}" method="post" onsubmit="return false">
+                <p class="stp__error" data-stp-phone-error
+                  data-invalid-text="{{ 'Please enter your number including the country code.' | escape }}"
+                  data-network-text="{{ section.settings.error_text | default: 'Something went wrong — please try again.' | escape }}"
+                >{{ 'Please enter your number including the country code.' | escape }}</p>
+                <input
+                  type="tel"
+                  name="SMS"
+                  class="stp__input"
+                  placeholder="{{ p_ph_placeholder | escape }}"
+                  autocomplete="tel"
+                  data-stp-phone-input
+                >
+                <button type="submit" class="stp__button">{{ p_ph_button | default: "Text me when they're on sale" | escape }}</button>
+              </form>
+
+              <button type="button" class="stp__dismiss" data-stp-phone-skip>{{ p_ph_skip | escape }}</button>
+
+              {%- if p_ph_small != blank -%}
+                <p class="stp__smallprint">{{ p_ph_small | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+          <div class="stp__state stp__state--thanks">
+            {%- if p_ty_eyebrow != blank -%}
+              <p class="stp__eyebrow">{{ p_ty_eyebrow | escape }}</p>
+            {%- endif -%}
+            <h2 class="stp__heading">{{ p_ty_heading | escape }}</h2>
+            {%- if p_ty_body != blank -%}
+              <p class="stp__body">{{ p_ty_body | escape }}</p>
+            {%- endif -%}
+
+            {%- if v.code.value != blank -%}
+              <div class="stp__code-row">
+                <span class="stp__code">{{ v.code.value | escape }}</span>
+                <button type="button" class="stp__copy" data-stp-copy data-copied-label="{{ 'Copied' | escape }}">{{ 'Copy' | escape }}</button>
+              </div>
+            {%- endif -%}
+
+            <a href="{{ routes.all_products_collection_url }}" class="stp__shop">{{ p_shop | escape }} &rarr;</a>
+          </div>
+        </div>
+      </aside>
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- comment -%} stp-admin-end {%- endcomment -%}
+  {%- else -%}
   {%- for block in section.blocks -%}
     {%- liquid
       assign show_block = block.settings.enabled
@@ -516,6 +732,7 @@
       </aside>
     {%- endif -%}
   {%- endfor -%}
+  {%- endif -%}
 </st-popup>
 
 <script>
@@ -619,6 +836,16 @@
       const group = eligible.filter((p) => p.dataset.experiment === first.dataset.experiment);
       let r = this.read('stp:rand');
       if (r === null) { r = String(Math.random()); this.store('stp:rand', r); }
+      // Admin-managed arms carry weights; the same stored rand keeps the
+      // assignment stable. Legacy panels carry none, so the sum is 0 and the
+      // even split below still decides.
+      const weights = group.map((p) => Number(p.dataset.weight) || 0);
+      const total = weights.reduce((a, b) => a + b, 0);
+      if (total > 0) {
+        let x = Number(r) * total;
+        for (let i = 0; i < group.length; i++) { x -= weights[i]; if (x < 0) return group[i]; }
+        return group[group.length - 1];
+      }
       return group[Math.floor(Number(r) * group.length) % group.length];
     }
 
@@ -914,6 +1141,7 @@
   "name": "Popup: Email signup",
   "settings": [
     { "type": "checkbox", "id": "enabled", "label": "Enable popups", "default": true },
+    { "type": "checkbox", "id": "use_admin_popups", "label": "Content from the admin", "default": false, "info": "On: campaign versions come from the Stendig admin's Popups section, and the version blocks below are ignored. Off: the blocks below run the popup exactly as before — this is the instant roll-back." },
     { "type": "header", "content": "Trigger" },
     {
       "type": "select",
