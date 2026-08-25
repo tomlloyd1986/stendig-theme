@@ -19,13 +19,6 @@
     "content": {
       "type": "blog-content",
       "blocks": {
-        "text_DCifJN": {
-          "type": "text",
-          "settings": {
-            "heading": "",
-            "body": "<p>Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.</p>"
-          }
-        },
         "video_HDVCJU": {
           "type": "video",
           "settings": {
@@ -52,11 +45,26 @@
             "lang_h": "ja",
             "video_url_h": ""
           }
+        },
+        "text_DCifJN": {
+          "type": "text",
+          "settings": {
+            "heading": "",
+            "body": "<p>Stendig sheets have a 40 teeth per inch perforation that runs perpendicular to the top of the sheet, two inches down. It's calibrated to achieve the perfect balance between ease of removal and durability.</p><p>Once remove, detached sheets make for excellent wrapping paper</p>"
+          }
+        },
+        "text_fWbt4P": {
+          "type": "text",
+          "settings": {
+            "heading": "Step by step",
+            "body": ""
+          }
         }
       },
       "block_order": [
+        "video_HDVCJU",
         "text_DCifJN",
-        "video_HDVCJU"
+        "text_fWbt4P"
       ],
       "settings": {}
     },
@@ -65,8 +73,8 @@
       "name": "Blog: Step by step",
       "settings": {
         "eyebrow": "Step by step",
-        "width": "ultrawide",
-        "columns": "4",
+        "width": "standard",
+        "columns": "2",
         "image_1": "shopify://shop_images/SC26_4x5_Rip_Instructions_1.jpg",
         "caption_1": "Find the perforation hidden beneath the header, about 1cm / 0.5\" from the bottom.",
         "image_2": "shopify://shop_images/SC26_4x5_Rip_Instructions_2.jpg",
