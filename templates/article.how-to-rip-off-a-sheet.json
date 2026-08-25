@@ -12,13 +12,20 @@
     "header": {
       "type": "blog-header",
       "settings": {
-        "title": "How to rip a sheet off the Stendig",
-        "standfirst": "The trick to getting a perfect tear every time"
+        "title": "Ripping a sheet off the Stendig",
+        "standfirst": "Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly."
       }
     },
     "content": {
       "type": "blog-content",
       "blocks": {
+        "text_DCifJN": {
+          "type": "text",
+          "settings": {
+            "heading": "",
+            "body": "<p>Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.Each sheet is perforated to allow removal at the end of the month. There's a simple but slightly counter-intuitive knack to doing so cleanly.</p>"
+          }
+        },
         "video_HDVCJU": {
           "type": "video",
           "settings": {
@@ -48,6 +55,7 @@
         }
       },
       "block_order": [
+        "text_DCifJN",
         "video_HDVCJU"
       ],
       "settings": {}
@@ -57,8 +65,8 @@
       "name": "Blog: Step by step",
       "settings": {
         "eyebrow": "Step by step",
-        "width": "standard",
-        "columns": "2",
+        "width": "ultrawide",
+        "columns": "4",
         "image_1": "shopify://shop_images/SC26_4x5_Rip_Instructions_1.jpg",
         "caption_1": "Find the perforation hidden beneath the header, about 1cm / 0.5\" from the bottom.",
         "image_2": "shopify://shop_images/SC26_4x5_Rip_Instructions_2.jpg",
