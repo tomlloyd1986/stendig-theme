@@ -3,7 +3,7 @@
   canvas design ("Blog Article Headers", centred direction with
   breadcrumb): a full-width crumb bar (hairline above and below) with
   Journal / category / article title, then a centred 32px Display
-  title, muted standfirst and a short closing rule.
+  title and muted standfirst, running straight into the content.
 
   The crumb builds itself: Journal links to the article's blog, the
   category is the article's first tag that isn't the "pinned" flag
@@ -78,7 +78,7 @@
   }
 
   #shopify-section-{{ section.id }} .blogh {
-    padding: 96px 20px 48px;
+    padding: 96px 20px 32px;
     text-align: center;
   }
   #shopify-section-{{ section.id }} .blogh__title {
@@ -104,16 +104,10 @@
     max-width: 512px;
     margin: 18px auto 0;
   }
-  #shopify-section-{{ section.id }} .blogh__rule {
-    border: none;
-    border-top: 1px solid #e2e2e2;
-    width: 40px;
-    margin: 32px auto 0;
-  }
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .blogh__crumbs { padding: 12px; }
     #shopify-section-{{ section.id }} .blogh {
-      padding: 56px 12px 40px;
+      padding: 56px 12px 24px;
     }
     #shopify-section-{{ section.id }} .blogh__title { font-size: 26px; }
   }
@@ -146,7 +140,6 @@
   {%- if section.settings.standfirst != blank -%}
     <p class="blogh__standfirst">{{ section.settings.standfirst }}</p>
   {%- endif -%}
-  <hr class="blogh__rule">
 </div>
 
 {% schema %}
