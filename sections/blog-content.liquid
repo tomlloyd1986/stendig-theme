@@ -9,6 +9,8 @@
     Images  — 1 to 4 images in a row, at Standard (840px), Wide (1200px)
               or Ultrawide (full width within the page gutters), with an
               optional caption
+    Steps   — numbered 4:5 photo sequence (the sheet-removal guide),
+              four across or two by two, spaced like any media block
     Product — small bordered product card (image, title, price/sold out)
               linking to the product
     Video   — Shopify-hosted upload or YouTube/Vimeo URL, same three
@@ -182,6 +184,60 @@
     width: 32px;
     height: 32px;
   }
+  /* Step by step: numbered photo sequence. No divider, no heading of
+     its own — it is a media block, so it takes .blogc__media's spacing
+     exactly as an image row or a video does. */
+  #shopify-section-{{ section.id }} .blogc__steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+  #shopify-section-{{ section.id }} .blogc__steps--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 10px;
+  }
+  #shopify-section-{{ section.id }} .blogc__step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  #shopify-section-{{ section.id }} .blogc__step-photo {
+    width: 100%;
+    /* The height attribute would otherwise win: base.css never resets
+       image heights, so without this the attribute becomes a hard
+       height and aspect-ratio is ignored. */
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    background: #f3f3f3;
+  }
+  #shopify-section-{{ section.id }} .blogc__step-num {
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+    margin: 0;
+  }
+  #shopify-section-{{ section.id }} .blogc__step-caption {
+    font-family: var(--font-body-family);
+    font-size: 13px;
+    line-height: 19px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgba(18, 18, 18, 0.6);
+    /* net 4px under the number: cell gap 12px minus 8px */
+    margin: -8px 0 0;
+    text-wrap: pretty;
+  }
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .blogc__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px 10px;
+    }
+  }
   #shopify-section-{{ section.id }} .blogc__caption {
     font-family: var(--font-body-family);
     font-size: 13px;
@@ -242,6 +298,12 @@
     /* On a phone the column is the constraint, not the screen height:
        every shape runs edge to edge, even where that makes it tall. */
     #shopify-section-{{ section.id }} .blogc__embed--capped { max-width: 100%; }
+    #shopify-section-{{ section.id }} .blogc__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 10px;
+    }
+    #shopify-section-{{ section.id }} .blogc__step { gap: 10px; }
+    #shopify-section-{{ section.id }} .blogc__step-caption { margin-top: -6px; }
     #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
     /* 3-4 images wrap into two columns on mobile */
     #shopify-section-{{ section.id }} .blogc__media-row.has-many > div {
@@ -361,6 +423,55 @@
               </span>
             </a>
           </div>
+        {%- endif -%}
+
+      {%- when 'steps' -%}
+        {%- liquid
+          # Only steps with a photo render, and the numbering follows what
+          # actually appears — so leaving slot 2 empty gives 1, 2, 3, not
+          # a gap. No eyebrow and no divider: the sequence is a media
+          # block like any other.
+          assign step_total = 0
+          for i in (1..4)
+            assign s_key = 'image_' | append: i
+            if block.settings[s_key] != blank
+              assign step_total = step_total | plus: 1
+            endif
+          endfor
+        -%}
+        {%- if step_total > 0 -%}
+          <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
+            <div class="blogc__steps{% if block.settings.columns == '2' %} blogc__steps--2{% endif %}">
+              {%- assign step_n = 0 -%}
+              {%- for i in (1..4) -%}
+                {%- liquid
+                  assign img_key = 'image_' | append: i
+                  assign cap_key = 'caption_' | append: i
+                  assign step_image = block.settings[img_key]
+                  assign step_caption = block.settings[cap_key]
+                -%}
+                {%- if step_image != blank -%}
+                  {%- assign step_n = step_n | plus: 1 -%}
+                  <div class="blogc__step">
+                    <img
+                      class="blogc__step-photo"
+                      src="{{ step_image | image_url: width: 720 }}"
+                      srcset="{{ step_image | image_url: width: 360 }} 360w, {{ step_image | image_url: width: 540 }} 540w, {{ step_image | image_url: width: 720 }} 720w, {{ step_image | image_url: width: 1080 }} 1080w"
+                      sizes="{% if block.settings.columns == '2' %}(max-width: 749px) calc((100vw - 34px) / 2), {% case block.settings.width %}{% when 'standard' %}375px{% when 'wide' %}515px{% else %}calc((100vw - 50px) / 2){% endcase %}{% else %}(max-width: 989px) calc((100vw - 34px) / 2), {% case block.settings.width %}{% when 'standard' %}190px{% when 'wide' %}260px{% else %}calc((100vw - 70px) / 4){% endcase %}{% endif %}"
+                      alt="{{ step_image.alt | default: step_caption | escape }}"
+                      width="{{ step_image.width }}"
+                      height="{{ step_image.height }}"
+                      loading="lazy"
+                    >
+                    <p class="blogc__step-num">{{ step_n }}.</p>
+                    {%- if step_caption != blank -%}
+                      <p class="blogc__step-caption">{{ step_caption }}</p>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          </figure>
         {%- endif -%}
 
       {%- when 'video' -%}
@@ -566,6 +677,22 @@
         { "type": "text", "id": "caption_3", "label": "Caption 3" },
         { "type": "image_picker", "id": "image_4", "label": "Image 4" },
         { "type": "text", "id": "caption_4", "label": "Caption 4" }
+      ]
+    },
+    {
+      "type": "steps",
+      "name": "Step by step",
+      "settings": [
+        { "type": "select", "id": "width", "label": "Width", "options": [ { "value": "standard", "label": "Standard (760px)" }, { "value": "wide", "label": "Wide (1040px)" }, { "value": "ultrawide", "label": "Ultrawide (full width)" } ], "default": "ultrawide" },
+        { "type": "select", "id": "columns", "label": "Layout", "options": [ { "value": "4", "label": "Four across" }, { "value": "2", "label": "Two by two" } ], "default": "4", "info": "Tablets and phones are always two across. Photos display at 4:5; steps with no photo are skipped and the numbering closes up." },
+        { "type": "image_picker", "id": "image_1", "label": "Photo 1" },
+        { "type": "textarea", "id": "caption_1", "label": "Caption 1" },
+        { "type": "image_picker", "id": "image_2", "label": "Photo 2" },
+        { "type": "textarea", "id": "caption_2", "label": "Caption 2" },
+        { "type": "image_picker", "id": "image_3", "label": "Photo 3" },
+        { "type": "textarea", "id": "caption_3", "label": "Caption 3" },
+        { "type": "image_picker", "id": "image_4", "label": "Photo 4" },
+        { "type": "textarea", "id": "caption_4", "label": "Caption 4" }
       ]
     },
     {

@@ -53,42 +53,32 @@
             "body": "<p>Stendig sheets have a 40 teeth per inch perforation that runs perpendicular to the top of the sheet, two inches down. It's calibrated to achieve the perfect balance between ease of removal and durability.</p><p>Once remove, detached sheets make for excellent wrapping paper</p>"
           }
         },
-        "text_fWbt4P": {
-          "type": "text",
+        "steps_rip": {
+          "type": "steps",
           "settings": {
-            "heading": "Step by step",
-            "body": ""
+            "width": "standard",
+            "columns": "2",
+            "image_1": "shopify://shop_images/SC26_4x5_Rip_Instructions_1.jpg",
+            "caption_1": "Find the perforation hidden beneath the header, about 1cm / 0.5\" from the bottom.",
+            "image_2": "shopify://shop_images/SC26_4x5_Rip_Instructions_2.jpg",
+            "caption_2": "Hold the header steady with one hand, and start a small tear of about 1 cm / ½″ along the perforation",
+            "image_3": "shopify://shop_images/SC26_4x5_Rip_Instructions_3.jpg",
+            "caption_3": "Don’t tear sideways along the perforation - it won’t rip cleanly. Instead, grip the bottom of the sheet, below the rip, and pull straight down.",
+            "image_4": "shopify://shop_images/SC26_4x5_Rip_Instructions_4.jpg",
+            "caption_4": "Keep it taut as it separates. Detached sheets make great wrapping paper."
           }
         }
       },
       "block_order": [
         "video_HDVCJU",
         "text_DCifJN",
-        "text_fWbt4P"
+        "steps_rip"
       ],
       "settings": {}
-    },
-    "blog_rip_steps_khiYwX": {
-      "type": "blog-rip-steps",
-      "name": "Blog: Step by step",
-      "settings": {
-        "eyebrow": "Step by step",
-        "width": "standard",
-        "columns": "2",
-        "image_1": "shopify://shop_images/SC26_4x5_Rip_Instructions_1.jpg",
-        "caption_1": "Find the perforation hidden beneath the header, about 1cm / 0.5\" from the bottom.",
-        "image_2": "shopify://shop_images/SC26_4x5_Rip_Instructions_2.jpg",
-        "caption_2": "Hold the header steady with one hand, and start a small tear of about 1 cm / ½″ along the perforation",
-        "image_3": "shopify://shop_images/SC26_4x5_Rip_Instructions_3.jpg",
-        "caption_3": "Don’t tear sideways along the perforation - it won’t rip cleanly. Instead, grip the bottom of the sheet, below the rip, and pull straight down.",
-        "image_4": "shopify://shop_images/SC26_4x5_Rip_Instructions_4.jpg",
-        "caption_4": "Keep it taut as it separates. Detached sheets make great wrapping paper."
-      }
     }
   },
   "order": [
     "header",
-    "content",
-    "blog_rip_steps_khiYwX"
+    "content"
   ]
 }
