@@ -105,6 +105,24 @@
   if popup_wh == ''
     assign popup_wh = popup_wh_default
   endif
+
+  # OUR name for the market this request resolved to.
+  #
+  # Shopify's path prefix speaks ISO country codes — /en-gb, /en-de, /fr-fr —
+  # while the admin, the warehouses, the price list and the people all say UK
+  # and EU. Comparing an admin's market list against the raw token therefore
+  # missed Britain entirely (token 'gb' against a stored 'uk') and missed every
+  # country inside a grouped market ('de', 'fr', 'it', 'es' against 'eu').
+  # The warehouse entries already carry that mapping — each lists the domains
+  # it serves — so this reads it there rather than keeping a second copy that
+  # could disagree: the handle's head IS our code ('uk-3-pl' -> 'uk'). Canada
+  # has no XX 3PL location and its warehouse is named for the 3PL instead, so
+  # its head is not 'ca'; the raw token still matches it on /en-ca, which is
+  # why both are checked below rather than one replacing the other.
+  assign market_code = ''
+  if popup_wh != ''
+    assign market_code = popup_wh | split: '-' | first
+  endif
 -%}
 
 {%- unless skip -%}
@@ -387,11 +405,25 @@
         endif
 
         # Markets are stored as the admin picked them; the entry must name
-        # the market this request resolved to ('primary' on the root domain).
+        # the market this request resolved to — either by Shopify's own token
+        # ('primary' on the root domain, 'au' on /en-au) or by OUR code for it
+        # ('uk' on /en-gb, 'eu' on /en-de), which the warehouse entries define.
+        # 'all' is the admin saying Everywhere in one word, so a market added
+        # to the store after the version was written is covered rather than
+        # quietly dropped.
         assign stp_mk = false
         if v.markets.value
           for stp_m in v.markets.value
-            if stp_m == market_key
+            assign stp_mm = stp_m | strip | downcase
+            if stp_mm == 'all'
+              assign stp_mk = true
+              break
+            endif
+            if stp_mm == market_key
+              assign stp_mk = true
+              break
+            endif
+            if market_code != '' and stp_mm == market_code
               assign stp_mk = true
               break
             endif
