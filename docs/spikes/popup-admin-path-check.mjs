@@ -47,6 +47,11 @@ async function render(values, over = {}) {
     section: { settings: { brevo_form_url: 'https://sibforms.example/serve/x', error_text: '', use_admin_popups: true } },
     metaobjects: { popup_version: { values } },
     market_key: 'au',
+    // Our name for the visitor's market, which the section resolves from the
+    // warehouse serving it. Equal to the token on /en-au; the cases where it
+    // is NOT equal are the ones this file exists to pin (Britain, and every
+    // country inside the EU market).
+    market_code: 'au',
     lang_code: 'en',
     path_prefix: '/en-au',
     request: { path: '/' },
@@ -77,6 +82,41 @@ const check = (name, ok, extra = '') => {
 {
   const { panels } = await render([entry({ markets: { value: ['us', 'uk'] } })])
   check('market filter drops non-matching versions', panels.length === 0, `${panels.length} panels`)
+}
+
+// 2b. Shopify's ISO token is not our market code, and both are accepted.
+//
+// This is the fault that kept the popup off stendigcalendars.com/en-gb while
+// it ran everywhere else: /en-gb resolves to token 'gb', the admin stores
+// 'uk', and the raw comparison could never hit. The warehouse serving the
+// request is what carries our name for the market, so the section matches on
+// either — and on 'all', which is Everywhere said in one word.
+{
+  const gb = { market_key: 'gb', market_code: 'uk', path_prefix: '/en-gb' }
+  const uk = await render([entry({ markets: { value: ['uk'] } })], gb)
+  check('a UK version shows on /en-gb, where the token says gb', uk.panels.length === 1, `${uk.panels.length} panels`)
+
+  const everywhere = await render([entry({ markets: { value: ['au', 'ca', 'eu', 'hk', 'jp', 'kr', 'nz', 'sg', 'tw', 'uk', 'us', 'primary'] } })], gb)
+  check('an Everywhere version shows on /en-gb', everywhere.panels.length === 1, `${everywhere.panels.length} panels`)
+
+  // A country inside a grouped market: /en-de is served by the EU warehouse.
+  const de = { market_key: 'de', market_code: 'eu', path_prefix: '/en-de' }
+  const eu = await render([entry({ markets: { value: ['eu'] } })], de)
+  check('an EU version shows on /en-de', eu.panels.length === 1, `${eu.panels.length} panels`)
+
+  // Canada has no XX 3PL location, so its warehouse handle does not head 'ca'
+  // — the raw token is what carries it, and must keep working.
+  const ca = { market_key: 'ca', market_code: 'go', path_prefix: '/en-ca' }
+  const canada = await render([entry({ markets: { value: ['ca'] } })], ca)
+  check('a CA version shows on /en-ca, whose warehouse is not named for it', canada.panels.length === 1, `${canada.panels.length} panels`)
+
+  // And targeting still TARGETS: a market not named is still dropped.
+  const miss = await render([entry({ markets: { value: ['us'] } })], gb)
+  check('a US-only version stays off /en-gb', miss.panels.length === 0, `${miss.panels.length} panels`)
+
+  // 'all' covers a market the version was written before.
+  const wild = await render([entry({ markets: { value: ['all'] } })], { market_key: 'ph', market_code: '', path_prefix: '/en-ph' })
+  check("'all' shows on a market nobody enumerated", wild.panels.length === 1, `${wild.panels.length} panels`)
 }
 
 // 3. The live window, in store wall-clock time.
