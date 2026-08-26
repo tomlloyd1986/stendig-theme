@@ -13,9 +13,7 @@
       "type": "home-hero",
       "name": "Hero banner",
       "settings": {
-        "image_desktop": "shopify://shop_images/Home_page_image_desktop.jpg",
-        "image_tablet": "shopify://shop_images/Home_page_image_tablet.jpg",
-        "image_mobile": "shopify://shop_images/Home_page_image_mobile.jpg",
+        "image_desktop": "shopify://shop_images/StendigCalendarsFN0220.jpg",
         "button_label": "DISCOVER 2026",
         "link": "shopify://collections/range"
       }
