@@ -57,6 +57,72 @@
 {% endif %}
 
 {% comment %}
+  OUR name for the market, beside Shopify's own token above.
+
+  The path prefix speaks ISO country codes — /en-gb, /en-de — while the admin,
+  the warehouses and the people all say UK and EU, so a stored market list
+  compared against the raw token misses Britain entirely ('gb' against 'uk')
+  and misses every country inside a grouped market. The `warehouse`
+  metaobjects already carry the mapping — each lists the domains it serves —
+  so this reads it there: the handle's head IS our code ('uk-3-pl' -> 'uk').
+
+  Canada has no XX 3PL location and its warehouse is named for the 3PL
+  instead, so its head is not 'ca' — which is why BOTH this and the raw token
+  are matched below rather than one replacing the other.
+
+  This is a second copy of the derivation in `sections/popup-signup.liquid`,
+  which did it first. A shared snippet cannot assign back to its caller —
+  render is scope-isolated and include is deprecated — so the two are kept in
+  step by hand: a change to either belongs in both.
+{% endcomment %}
+{% assign dd_wh = '' %}
+{% assign dd_wh_default = '' %}
+{% for wh in settings.warehouses %}
+  {% assign dd_h = wh.system.handle | downcase %}
+  {% if wh.is_default.value and dd_wh_default == '' %}
+    {% assign dd_wh_default = dd_h %}
+  {% endif %}
+  {% if wh.domains.value %}
+    {% for dd_d in wh.domains.value %}
+      {% assign dd_dd = dd_d | strip | downcase %}
+      {% if dd_dd == current_subdomain %}
+        {% assign dd_wh = dd_h %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{% if dd_wh == '' %}{% assign dd_wh = dd_wh_default %}{% endif %}
+
+{% comment %}
+  The root domain is the primary market — what the admin calls rest of world.
+  No warehouse head spells it, so it is named here.
+{% endcomment %}
+{% if current_subdomain == 'main' %}
+  {% assign market_code = 'primary' %}
+{% elsif dd_wh != '' %}
+  {% assign market_code = dd_wh | split: '-' | first %}
+{% else %}
+  {% assign market_code = current_subdomain %}
+{% endif %}
+
+{% comment %}
+  Which product this is, in the admin's vocabulary.
+
+  The one place the two catalogues meet. The admin stores 'sc' / 'vc' / 'hs';
+  the storefront knows handles. Matched on the HANDLE rather than the template
+  suffix because a template is a store setting somebody can reassign, while
+  the handle is the product's address and `layout/theme.liquid` already keys
+  off it. A product this does not name gets '' and is offered every option, so
+  a new product on the shop is never silently left with no dispatch date.
+{% endcomment %}
+{% assign product_key = '' %}
+{% case product.handle %}
+  {% when 'stendig-calendar' %}{% assign product_key = 'sc' %}
+  {% when 'v-calendar' %}{% assign product_key = 'vc' %}
+  {% when 'hanging-strips' %}{% assign product_key = 'hs' %}
+{% endcase %}
+
+{% comment %}
   Per-product exclusions (custom.delivery_domain_rule metafield):
   entries of { domain, exclude_date } hide the named dates on that domain
   for this product only. Applies to both data sources below.
@@ -87,7 +153,128 @@
 {% assign final_list = '' %}
 {% assign label_list = '' %}
 
-{% if settings.delivery_date_entries.count > 0 %}
+{% comment %}
+  Source 1: the admin's own document, published as ranked
+  `delivery_date_option` entries.
+
+  Behind `settings.dispatch_from_admin`, which ships OFF: with it off this
+  file behaves exactly as it did, so merging the change puts nothing on the
+  shop. Turning it on is the rollout, and turning it off again is the
+  rollback — seconds, no deploy.
+
+  **Ranks are walked explicitly.** Iteration order is not guaranteed, and
+  `sort: 'rank'` does not fix it: a metaobject field is an object, so sorting
+  on 'rank' sorts the wrapper rather than the number inside it, silently
+  returns the source order, and raises nothing. At a ceiling of a dozen
+  options the nested loop is trivial and relies on no undocumented behaviour.
+{% endcomment %}
+{% assign dd_from_admin = false %}
+{% if settings.dispatch_from_admin and metaobjects.delivery_date_option.values.size > 0 %}
+  {% assign dd_from_admin = true %}
+{% endif %}
+
+{% if dd_from_admin %}
+  {% assign month_keys = 'jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec' | split: ',' %}
+  {% assign months_en = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec' | split: ',' %}
+  {% assign today_num = 'now' | date: '%Y%m%d' | plus: 0 %}
+  {% assign today_mmdd = 'now' | date: '%m%d' | plus: 0 %}
+
+  {% for rank_i in (1..24) %}
+    {% for entry in metaobjects.delivery_date_option.values %}
+      {% if entry.rank.value != rank_i %}{% continue %}{% endif %}
+
+      {% comment %} The window. Both ends are the store's own clock. {% endcomment %}
+      {% if entry.show_on.value != blank %}
+        {% assign show_num = entry.show_on.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num < show_num %}{% continue %}{% endif %}
+      {% endif %}
+      {% if entry.hide_after.value != blank %}
+        {% assign hide_num = entry.hide_after.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num > hide_num %}{% continue %}{% endif %}
+      {% endif %}
+
+      {% comment %}
+        Markets, as an INCLUDE list. Both our code and Shopify's token are
+        matched, because Canada's warehouse head is not 'ca' — see above. An
+        entry with no list at all is offered everywhere rather than nowhere:
+        a field that has not been written yet must not empty the shop.
+      {% endcomment %}
+      {% if entry.markets.value and entry.markets.value.size > 0 %}
+        {% assign dd_ok = false %}
+        {% for dd_m in entry.markets.value %}
+          {% assign dd_mm = dd_m | strip | downcase %}
+          {% if dd_mm == market_code or dd_mm == current_subdomain %}
+            {% assign dd_ok = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+        {% unless dd_ok %}{% continue %}{% endunless %}
+      {% endif %}
+
+      {% comment %}
+        Products. Same rule: an entry with no list applies to everything, and
+        a product this snippet cannot name ('' above) is never filtered out.
+      {% endcomment %}
+      {% if entry.products.value and entry.products.value.size > 0 and product_key != '' %}
+        {% assign dd_pok = false %}
+        {% for dd_p in entry.products.value %}
+          {% assign dd_pp = dd_p | strip | downcase %}
+          {% if dd_pp == product_key %}
+            {% assign dd_pok = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+        {% unless dd_pok %}{% continue %}{% endunless %}
+      {% endif %}
+
+      {% comment %}
+        The value the ORDER carries, and the label a customer reads. The value
+        is always English — per-product exclusion rules match it verbatim and
+        every past order carries it — while the label is localised, or
+        overridden by the entry's own.
+      {% endcomment %}
+      {% assign special = entry.special.value | strip %}
+      {% assign date_string = '' %}
+      {% assign generated_label = '' %}
+
+      {% if special != blank %}
+        {% assign date_string = special %}
+        {% assign special_down = special | downcase %}
+        {% if special_down == 'asap' %}
+          {% assign generated_label = 'delivery.date_options.asap' | t %}
+        {% elsif special_down == 'by xmas' or special_down == 'by christmas' %}
+          {% if today_mmdd > 1225 %}{% continue %}{% endif %}
+          {% assign generated_label = 'delivery.date_options.by_xmas' | t %}
+        {% else %}
+          {% assign generated_label = special %}
+        {% endif %}
+      {% elsif entry.date.value %}
+        {% assign date_num = entry.date.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num > date_num %}{% continue %}{% endif %}
+        {% assign day_num = entry.date.value | date: '%d' | plus: 0 %}
+        {% assign month_index = entry.date.value | date: '%m' | plus: 0 | minus: 1 %}
+        {% assign date_string = day_num | append: ' ' | append: months_en[month_index] %}
+        {% assign month_key = 'delivery.months.' | append: month_keys[month_index] %}
+        {% assign month_translated = month_key | t %}
+        {% assign generated_label = 'delivery.date_label' | t: day: day_num, month: month_translated %}
+      {% else %}
+        {% continue %}
+      {% endif %}
+
+      {% comment %} The per-product metafield still has the last word. {% endcomment %}
+      {% if excluded contains date_string %}{% continue %}{% endif %}
+
+      {% assign custom_label = entry.label.value | default: '' | strip %}
+      {% if custom_label != blank %}
+        {% assign generated_label = custom_label %}
+      {% endif %}
+
+      {% assign final_list = final_list | append: date_string | append: '||' %}
+      {% assign label_list = label_list | append: generated_label | append: '||' %}
+    {% endfor %}
+  {% endfor %}
+
+{% elsif settings.delivery_date_entries.count > 0 %}
   {% comment %}
     Primary source: "Delivery date option" metaobjects picked in theme settings.
     Field keys:
