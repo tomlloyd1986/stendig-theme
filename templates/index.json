@@ -24,7 +24,7 @@
         "tile_qczArC": {
           "type": "tile",
           "settings": {
-            "image": "shopify://shop_images/StendigCalendarsFN0390_f95c4614-b3e3-4e48-abb5-219a70708301.jpg",
+            "image": "shopify://shop_images/StendigCalendarsFN0390_8ddd3351-fd63-4de6-b954-f59344c97781.jpg",
             "caption": "The Stendig Calendar >",
             "link": "shopify://products/stendig-calendar"
           }
@@ -32,7 +32,7 @@
         "tile_gQkExz": {
           "type": "tile",
           "settings": {
-            "image": "shopify://shop_images/StendigCalendarsFN0414.jpg",
+            "image": "shopify://shop_images/StendigCalendarsFN0414_ef8a9b5a-4ca2-417f-80d0-38df61f6fc1c.jpg",
             "caption": "The V Calendar >",
             "link": "shopify://products/v-calendar"
           }
@@ -51,7 +51,7 @@
         "product_9Y6ELa": {
           "type": "product",
           "settings": {
-            "product": "stendig-calendar",
+            "product": "stendig-calendar-2027",
             "sku": "",
             "title": ""
           }
@@ -84,8 +84,8 @@
         "product_jTPGPj": {
           "type": "product",
           "settings": {
-            "product": "v-calendar",
-            "sku": "VC26W",
+            "product": "v-calendar-2026-copy",
+            "sku": "VC27W",
             "title": ""
           }
         },
