@@ -10,7 +10,9 @@
   Merges custom.oos_warehouses (Flow-maintained) and
   custom.oos_warehouses_manual (human-edited, may contain "all") from both
   product and variant. When no metafield is set, falls back to the
-  variant's native availability.
+  variant's native availability — which is the floor either way: a
+  warehouse list says which markets a stocked variant is kept from, never
+  that one Shopify holds to be out of stock everywhere is back on sale.
 {% endcomment %}
 
 {%- liquid
@@ -49,7 +51,9 @@
     endfor
   endif
 
-  if has_meta and current_wh != ''
+  if variant.available == false
+    echo ''
+  elsif has_meta and current_wh != ''
     assign wh_needle = '||' | append: current_wh | append: '||'
     if oos_str contains '||all||'
       echo ''

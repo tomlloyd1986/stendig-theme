@@ -2339,6 +2339,13 @@
         : null;
     };
 
+    // Shopify's own availability is the floor. A warehouse list says which
+    // markets a stocked variant is kept from; it can never put one back on
+    // sale that Shopify holds to be out of stock everywhere. Without this a
+    // single location name that no longer matches — a list Flow wrote before
+    // the locations were renamed, say — reopens sales on an empty shelf.
+    if (window.variantNativeAvailable[variantId] === false) return false;
+
     const autoProduct = norm(window.productOOSWarehouses);
     const autoVariant = norm(window.variantOOSWarehouses[variantId]);
     const manualProduct = norm(window.productOOSManual);

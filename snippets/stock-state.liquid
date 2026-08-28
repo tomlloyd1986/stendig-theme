@@ -9,7 +9,10 @@
   # (the Stendig) carry the lists on their variants with the product
   # level empty, so a product-scoped check also counts as out when every
   # variant's own list says out for this warehouse. When no metafield is
-  # set anywhere, Shopify's native availability decides. 'Last few' uses
+  # set anywhere, Shopify's native availability decides — and it is the
+  # floor either way: a warehouse list says which markets a stocked item
+  # is kept from, never that something Shopify holds to be out of stock
+  # everywhere is back on sale. 'Last few' uses
   # the tracked quantity (per-warehouse counts aren't exposed to Liquid)
   # and only shows when the warehouse says available.
   #
@@ -136,6 +139,10 @@
   assign stock_state = ''
   if wh_lists_set
     if wh_out
+      assign stock_state = 'sold_out'
+    elsif variant and variant.available == false
+      assign stock_state = 'sold_out'
+    elsif variant == blank and product != blank and product.available == false
       assign stock_state = 'sold_out'
     elsif variant
       if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' and variant.inventory_quantity > 0 and variant.inventory_quantity <= 50
