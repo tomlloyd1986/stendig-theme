@@ -357,6 +357,13 @@
     "name": "Delivery Dates",
     "settings": [
       {
+        "type": "checkbox",
+        "id": "dispatch_from_admin",
+        "label": "Dispatch dates from the admin",
+        "default": false,
+        "info": "Off: the buttons come from the picked list below, exactly as they always have. On: they come from the Stendig admin's Shipping › Dispatch dates screen, in the order set there, with its own market and product rules. This is the switch to flip back if anything looks wrong — it takes effect immediately and needs no deploy."
+      },
+      {
         "type": "metaobject_list",
         "id": "delivery_date_entries",
         "label": "Delivery date options",
