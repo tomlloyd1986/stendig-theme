@@ -13,7 +13,7 @@
       "type": "home-hero",
       "name": "Hero banner",
       "settings": {
-        "image_desktop": "shopify://shop_images/StendigCalendarsFN0220.jpg",
+        "image_desktop": "shopify://shop_images/StendigCalendarsFN0216.jpg",
         "button_label": "DISCOVER 2026",
         "link": "shopify://collections/range"
       }
@@ -75,7 +75,7 @@
         "heading": "Massimo Vignelli's original classic",
         "link_label": "Discover the calendar",
         "link": "shopify://products/stendig-calendar",
-        "image": "shopify://shop_images/White_Roll-1_f847f143-18fa-4d5e-a6bf-a411547bc723.jpg"
+        "image": "shopify://shop_images/5x6_Detail_Roll.jpg"
       }
     },
     "home_product_group_h3zpep": {
@@ -126,7 +126,7 @@
         "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
         "link": "shopify://products/v-calendar",
-        "image": "shopify://shop_images/V_Box.jpg"
+        "image": "shopify://shop_images/hf_20260829_085109_aee237f8-726e-40bf-a77b-96ef99e09f28.png"
       }
     },
     "home_instagram_strip_Rx3NWc": {
