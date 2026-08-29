@@ -1585,7 +1585,6 @@
     "date_title": "Lieferdatum",
     "choose_date": "Lieferdatum auswählen",
     "join_waitlist": "Zur Warteliste",
-    "required_message": "Wähle ein Lieferdatum",
     "date_options": {
       "asap": "So schnell wie möglich",
       "by_xmas": "Bis Weihnachten"

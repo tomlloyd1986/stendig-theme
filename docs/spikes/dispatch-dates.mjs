@@ -37,6 +37,15 @@ const entry = (o) => ({
   products: f(o.products ?? []),
 })
 
+/* The real catalogue: one SKU for the Stendig, four colourways for the V
+   Calendar, and HL — not HS — for the strips, which is what the SKUs say. */
+const VARIANTS = {
+  'stendig-calendar': ['SC26'],
+  'v-calendar': ['VC26W', 'VC26R', 'VC26B', 'VC26Y'],
+  'hanging-strips': ['HL06'],
+  'something-new': ['ZZ01'],
+}
+
 /* Named so a wrong head is visibly wrong: the UK's warehouse head is 'uk'
    while its path token is 'gb', which is the mapping this all turns on. */
 const WAREHOUSES = [
@@ -49,19 +58,23 @@ const ENTRIES = [
   /* Deliberately OUT of rank order in the source array: if the walk followed
      the array this would draw By Xmas first, which is the bug `sort: 'rank'`
      silently ships. */
-  entry({ rank: 3, special: 'By Xmas', markets: ['uk'], products: ['sc', 'vc'] }),
-  entry({ rank: 1, special: 'ASAP', label: 'Send now', markets: ['uk', 'eu', 'primary'], products: ['sc', 'vc'] }),
-  entry({ rank: 2, date: '2026-12-07', markets: ['uk', 'eu'], products: ['sc', 'vc'] }),
-  entry({ rank: 4, date: '2026-11-09', markets: ['uk'], products: ['vc'] }),
-  entry({ rank: 5, date: '2026-11-23', markets: ['uk'], products: ['sc'], show_on: '2099-01-01' }),
-  entry({ rank: 6, date: '2026-11-30', markets: ['uk'], products: ['sc'], hide_after: '2000-01-01' }),
+  entry({ rank: 3, special: 'By Xmas', markets: ['uk'], products: ['SC', 'VC'] }),
+  entry({ rank: 1, special: 'ASAP', label: 'Send now', markets: ['uk', 'eu', 'primary'], products: ['SC', 'VC'] }),
+  entry({ rank: 2, date: '2026-12-07', markets: ['uk', 'eu'], products: ['SC', 'VC'] }),
+  entry({ rank: 4, date: '2026-11-09', markets: ['uk'], products: ['VC'] }),
+  entry({ rank: 5, date: '2026-11-23', markets: ['uk'], products: ['SC'], show_on: '2099-01-01' }),
+  entry({ rank: 6, date: '2026-11-30', markets: ['uk'], products: ['SC'], hide_after: '2000-01-01' }),
 ]
 
 const render = (over = {}) =>
   engine.parseAndRender(SNIPPET, {
     routes: { root_url: over.root_url ?? '/en-gb' },
     request: { host: 'stendig.com' },
-    product: { handle: over.handle ?? 'stendig-calendar', metafields: { custom: {} } },
+    product: {
+      handle: over.handle ?? 'stendig-calendar',
+      variants: (VARIANTS[over.handle ?? 'stendig-calendar'] ?? []).map((sku) => ({ sku })),
+      metafields: { custom: {} },
+    },
     settings: {
       dispatch_from_admin: over.on ?? true,
       warehouses: WAREHOUSES,
@@ -94,24 +107,19 @@ check('matches our market name, not the path token', buttons(await render({ root
 check('resolves the bare domain to primary', buttons(await render({ root_url: '/' })), ['ASAP'])
 
 /* 4. Products. The V Calendar gets rank 4, which the Stendig does not. */
-check('filters by product', buttons(await render({ handle: 'v-calendar' })), [
+check('filters by product, by SKU prefix', buttons(await render({ handle: 'v-calendar' })), [
   'ASAP',
   '7 Dec',
   'By Xmas',
   '9 Nov',
 ])
 
-/* 5. A product the snippet cannot name is offered everything rather than
-      nothing — a new product on the shop must not silently lose its picker.
-      "Everything" still means everything the OTHER filters allow: ranks 5 and
-      6 are outside their windows whatever product is asking, which is what
-      this expectation got wrong the first time it was written. */
-check('offers an unknown product every option the window allows', buttons(await render({ handle: 'something-new' })), [
-  'ASAP',
-  '7 Dec',
-  'By Xmas',
-  '9 Nov',
-])
+/* 5. The safety the SKU change buys. A product whose SKUs match no prefix is
+      offered nothing, rather than silently inheriting every dispatch date the
+      season has. It loses the picker, not the sale: with no buttons the field
+      stops being required. Under the old handle matching this product got
+      everything, which is the behaviour being deliberately reversed. */
+check('offers nothing to a product no option names', buttons(await render({ handle: 'something-new' })), [])
 
 /* 6. The window: rank 5 is not shown yet, rank 6 stopped being shown. Neither
       appears above, which is what the two dates are doing in the fixture. */
@@ -145,6 +153,37 @@ check(
   'ignores unranked entries once the admin has published',
   buttons(await render({ entries: [...UNRANKED, ENTRIES[1]] })),
   ['ASAP'],
+)
+
+/* 11. A prefix has to match at the START. 'C' must not match 'SC26', or one
+       family's prefix would quietly pick up another's. */
+check(
+  'matches a prefix at the head of a SKU, not anywhere in it',
+  buttons(await render({ entries: [entry({ rank: 1, special: 'ASAP', markets: ['uk'], products: ['C'] })] })),
+  [],
+)
+
+/* 12. The V Calendar's four colourways are one family: the VC prefix covers
+       every one of them without naming a single SKU. */
+check(
+  'one prefix covers every colourway in a family',
+  buttons(await render({
+    handle: 'v-calendar',
+    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], products: ['VC'] })],
+  })),
+  ['7 Dec'],
+)
+
+/* 13. Uniform: a product with no SKU at all cannot match a prefix either, so
+       it is treated exactly as one whose SKU is unrecognised. One rule, no
+       special case to remember. */
+check(
+  'a product with no SKU is offered nothing an option names',
+  buttons(await render({
+    handle: 'no-sku',
+    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], products: ['SC'] })],
+  })),
+  [],
 )
 
 if (faults.length) {

@@ -421,7 +421,6 @@
     "date_title": "配送日期",
     "choose_date": "选择送货日期",
     "join_waitlist": "加入等候名单",
-    "required_message": "请选择送货日期",
     "date_options": {
       "asap": "尽快",
       "by_xmas": "圣诞节前"

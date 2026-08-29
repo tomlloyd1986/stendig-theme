@@ -2370,36 +2370,22 @@ const deliveryDateWrapper = document.querySelector('.delivery-date-wrapper-custo
 // nothing to click and no message explaining why (addRequiredMessage also
 // no-ops without the wrapper).
 const deliveryDateRequired = Boolean(deliveryDateWrapper) && deliveryDateButtons.length > 0;
-const requiredMessageClass = 'delivery-date-required-message'; 
 const deliveryDateLabel = deliveryDateWrapper ? deliveryDateWrapper.querySelector('.delivery-date-label-custom') : null;
-const requiredDeliveryDateMessage = {{ 'delivery.required_message' | t | json }};
+// One string, not two. The label already reads "Choose a delivery date", so a
+// skipped field turns THAT red rather than inserting a second span saying the
+// same sentence underneath it. `delivery.required_message` is retired.
+const missingClass = 'delivery-date-missing';
 
 function addRequiredMessage() {
-  if (!deliveryDateWrapper) return;
-  let messageSpan = deliveryDateWrapper.querySelector(`.${requiredMessageClass}`);
-  
-  if (!messageSpan) {
-    messageSpan = document.createElement('span');
-    messageSpan.className = requiredMessageClass;
-    messageSpan.textContent = requiredDeliveryDateMessage;
-    messageSpan.style.color = "red"; 
-    messageSpan.style.display = "block";
-    
-    // Insert after the label if it exists, otherwise prepend
-    if (deliveryDateLabel) {
-      deliveryDateLabel.after(messageSpan);
-    } else {
-      deliveryDateWrapper.prepend(messageSpan); 
-    }
-  }
+  if (!deliveryDateLabel) return;
+  deliveryDateLabel.classList.add(missingClass);
+  if (deliveryDateWrapper) deliveryDateWrapper.setAttribute('aria-invalid', 'true');
 }
 
 function removeRequiredMessage() {
-  if (!deliveryDateWrapper) return;
-  const messageSpan = deliveryDateWrapper.querySelector(`.${requiredMessageClass}`);
-  if (messageSpan) {
-    messageSpan.remove();
-  }
+  if (!deliveryDateLabel) return;
+  deliveryDateLabel.classList.remove(missingClass);
+  if (deliveryDateWrapper) deliveryDateWrapper.removeAttribute('aria-invalid');
 }
 
 function setSelectedDate(button, value) {

@@ -421,7 +421,6 @@
     "date_title": "Leveringsdato",
     "choose_date": "Velg leveringsdato",
     "join_waitlist": "Bli med på ventelisten",
-    "required_message": "Velg en leveringsdato",
     "date_options": {
       "asap": "Så snart som mulig",
       "by_xmas": "Innen jul"
