@@ -168,8 +168,25 @@
   returns the source order, and raises nothing. At a ceiling of a dozen
   options the nested loop is trivial and relies on no undocumented behaviour.
 {% endcomment %}
+{% comment %}
+  The switch is not enough on its own: the store ALREADY carries hand-made
+  `delivery_date_option` entries, the ones the picked list below renders. They
+  have no rank — the field did not exist when they were made — so the walk
+  below matches none of them, and a guard that only asked whether any entries
+  exist would hand this file a source it draws nothing from. The picker would
+  empty on the first flip of the switch.
+
+  So the question is whether anything RANKED is published, which is the same
+  as asking whether the admin has published at all.
+{% endcomment %}
+{% assign dd_ranked = 0 %}
+{% for dd_e in metaobjects.delivery_date_option.values %}
+  {% if dd_e.rank.value != blank %}
+    {% assign dd_ranked = dd_ranked | plus: 1 %}
+  {% endif %}
+{% endfor %}
 {% assign dd_from_admin = false %}
-{% if settings.dispatch_from_admin and metaobjects.delivery_date_option.values.size > 0 %}
+{% if settings.dispatch_from_admin and dd_ranked > 0 %}
   {% assign dd_from_admin = true %}
 {% endif %}
 
