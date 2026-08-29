@@ -34,7 +34,7 @@ const entry = (o) => ({
   show_on: f(o.show_on ?? ''),
   hide_after: f(o.hide_after ?? ''),
   markets: f(o.markets ?? []),
-  products: f(o.products ?? []),
+  skus: f(o.skus ?? []),
 })
 
 /* The real catalogue: one SKU for the Stendig, four colourways for the V
@@ -58,12 +58,12 @@ const ENTRIES = [
   /* Deliberately OUT of rank order in the source array: if the walk followed
      the array this would draw By Xmas first, which is the bug `sort: 'rank'`
      silently ships. */
-  entry({ rank: 3, special: 'By Xmas', markets: ['uk'], products: ['SC', 'VC'] }),
-  entry({ rank: 1, special: 'ASAP', label: 'Send now', markets: ['uk', 'eu', 'primary'], products: ['SC', 'VC'] }),
-  entry({ rank: 2, date: '2026-12-07', markets: ['uk', 'eu'], products: ['SC', 'VC'] }),
-  entry({ rank: 4, date: '2026-11-09', markets: ['uk'], products: ['VC'] }),
-  entry({ rank: 5, date: '2026-11-23', markets: ['uk'], products: ['SC'], show_on: '2099-01-01' }),
-  entry({ rank: 6, date: '2026-11-30', markets: ['uk'], products: ['SC'], hide_after: '2000-01-01' }),
+  entry({ rank: 3, special: 'By Xmas', markets: ['uk'], skus: ['SC26', 'VC26W', 'VC26R', 'VC26B', 'VC26Y'] }),
+  entry({ rank: 1, special: 'ASAP', label: 'Send now', markets: ['uk', 'eu', 'primary'], skus: ['SC26', 'VC26W', 'VC26R', 'VC26B', 'VC26Y'] }),
+  entry({ rank: 2, date: '2026-12-07', markets: ['uk', 'eu'], skus: ['SC26', 'VC26W', 'VC26R', 'VC26B', 'VC26Y'] }),
+  entry({ rank: 4, date: '2026-11-09', markets: ['uk'], skus: ['VC26W', 'VC26R', 'VC26B', 'VC26Y'] }),
+  entry({ rank: 5, date: '2026-11-23', markets: ['uk'], skus: ['SC26'], show_on: '2099-01-01' }),
+  entry({ rank: 6, date: '2026-11-30', markets: ['uk'], skus: ['SC26'], hide_after: '2000-01-01' }),
 ]
 
 const render = (over = {}) =>
@@ -107,7 +107,7 @@ check('matches our market name, not the path token', buttons(await render({ root
 check('resolves the bare domain to primary', buttons(await render({ root_url: '/' })), ['ASAP'])
 
 /* 4. Products. The V Calendar gets rank 4, which the Stendig does not. */
-check('filters by product, by SKU prefix', buttons(await render({ handle: 'v-calendar' })), [
+check('filters by product, by whole SKU', buttons(await render({ handle: 'v-calendar' })), [
   'ASAP',
   '7 Dec',
   'By Xmas',
@@ -158,18 +158,19 @@ check(
 /* 11. A prefix has to match at the START. 'C' must not match 'SC26', or one
        family's prefix would quietly pick up another's. */
 check(
-  'matches a prefix at the head of a SKU, not anywhere in it',
-  buttons(await render({ entries: [entry({ rank: 1, special: 'ASAP', markets: ['uk'], products: ['C'] })] })),
+  'a prefix is not a SKU — equality, so SC does not match SC26',
+  buttons(await render({ entries: [entry({ rank: 1, special: 'ASAP', markets: ['uk'], skus: ['SC'] })] })),
   [],
 )
 
-/* 12. The V Calendar's four colourways are one family: the VC prefix covers
-       every one of them without naming a single SKU. */
+/* 12. Naming ONE colourway shows the option on the whole product page — the
+       buttons sit outside the variant chooser, so this is what "per SKU"
+       can and cannot buy. Asserted so nobody reads more precision into it. */
 check(
-  'one prefix covers every colourway in a family',
+  'one colourway shows the option for the whole product',
   buttons(await render({
     handle: 'v-calendar',
-    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], products: ['VC'] })],
+    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], skus: ['VC26W'] })],
   })),
   ['7 Dec'],
 )
@@ -181,7 +182,7 @@ check(
   'a product with no SKU is offered nothing an option names',
   buttons(await render({
     handle: 'no-sku',
-    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], products: ['SC'] })],
+    entries: [entry({ rank: 1, date: '2026-12-07', markets: ['uk'], skus: ['SC26'] })],
   })),
   [],
 )

@@ -118,11 +118,10 @@
 
   Matched on the SKU rather than the handle or the title: a title can be
   edited and the handle changes with it, while a SKU is what the 3PL, the
-  rate engine and the BI pipeline all key off. The admin publishes the stable
-  HEAD of each family — `SC`, `VC`, `HL` — because a real SKU carries a year
-  and a colourway (`SC26`, `VC26W`, `HL06`), so the prefix is the part that
-  survives the season rolling over and covers all four V Calendar colourways
-  at once.
+  rate engine and the BI pipeline all key off. The admin publishes WHOLE SKUs
+  as the store spells them — `SC26`, `VC26W`, `HL06` — read out of the store's
+  own catalogue, so this file needs to know nothing about how they are put
+  together and no prefix rule can go subtly wrong.
 
   Every variant's SKU is collected, not just the selected one: a product page
   offers the same dispatch dates whichever colourway is showing, and reading
@@ -245,29 +244,32 @@
       {% endif %}
 
       {% comment %}
-        Products, by SKU prefix.
+        Products, by whole SKU. Equality, not a prefix: the admin publishes
+        what the store itself spells, so there is nothing to be clever about
+        and no `SC` quietly matching `SCARF01`.
 
-        An entry naming no products applies to everything, as with the
-        markets. An entry that DOES name them applies only where a SKU
-        matches — including when the product has no SKU at all, which cannot
-        match anything. That is the conservative reading and it is uniform: a
-        product nobody configured is offered no dispatch date rather than
-        silently inheriting every one of them. It loses only the picker, not
-        the sale — with no buttons the field stops being required.
+        An entry naming no SKUs applies to everything, as with the markets. An
+        entry that DOES name them applies only where one matches — including
+        when the product has no SKU at all, which cannot match anything. That
+        is the conservative reading and it is uniform: a product nobody
+        configured is offered no dispatch date rather than silently inheriting
+        every one of them. It loses only the picker, not the sale — with no
+        buttons the field stops being required.
+
+        One thing this cannot do: the buttons are one control for the whole
+        product page, drawn outside the variant chooser, so naming a single
+        colourway shows the option whenever ANY variant of that product is on
+        screen. Per-colourway control would be a different change.
       {% endcomment %}
-      {% if entry.products.value and entry.products.value.size > 0 %}
+      {% if entry.skus.value and entry.skus.value.size > 0 %}
         {% assign dd_pok = false %}
-        {% for dd_p in entry.products.value %}
+        {% for dd_p in entry.skus.value %}
           {% assign dd_pp = dd_p | strip | upcase %}
           {% if dd_pp == blank %}{% continue %}{% endif %}
           {% for dd_s in product_skus %}
-            {% if dd_s contains dd_pp %}
-              {% comment %} A prefix, so it has to be at the START. {% endcomment %}
-              {% assign dd_head = dd_s | slice: 0, dd_pp.size %}
-              {% if dd_head == dd_pp %}
-                {% assign dd_pok = true %}
-                {% break %}
-              {% endif %}
+            {% if dd_s == dd_pp %}
+              {% assign dd_pok = true %}
+              {% break %}
             {% endif %}
           {% endfor %}
           {% if dd_pok %}{% break %}{% endif %}
