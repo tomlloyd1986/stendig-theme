@@ -61,6 +61,10 @@
           "settings": {
             "share_label": "Share"
           }
+        },
+        "delivery_dates_qkXRQP": {
+          "type": "delivery_dates",
+          "settings": {}
         }
       },
       "block_order": [
@@ -69,6 +73,7 @@
         "subtitle",
         "price",
         "variant_picker",
+        "delivery_dates_qkXRQP",
         "quantity_selector",
         "buy_buttons",
         "description",
