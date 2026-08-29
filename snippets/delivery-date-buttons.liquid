@@ -1,49 +1,3 @@
-<style>
-  .delivery-date-options-custom {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
-  }
-
-  .delivery-date-label-custom {
-    font-size: 13px;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  /* The field was skipped. The words are the same words — they were always
-     the instruction — so this is emphasis, not information, and nothing is
-     inserted or repeated. */
-  .delivery-date-label-custom.delivery-date-missing {
-    color: #b3261e;
-    font-weight: 500;
-  }
-
-  .delivery-date-button-custom {
-    padding: 1rem 2rem;
-    border: 1px solid #d3d3d3;
-    border-radius: 25px;
-    background: #fff;
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: 0.12s ease;
-  }
-
-  .delivery-date-button-custom:hover {
-    border-color: #000;
-  }
-
-  .delivery-date-button-custom.active-custom {
-    background: #000;
-    color: #fff;
-    border-color: #000;
-  }
-
-  .delivery-date-wrapper-custom {
-    margin-top: 12px;
-  }
-</style>
 
 {% assign current_domain = request.host | downcase | remove: 'www.' %}
 
@@ -415,6 +369,72 @@
 {% endif %}
 
 {% assign final_dates = final_list | split: '||' %}
+
+{% comment %}
+  How many buttons there will actually be.
+
+  Everything below — the wrapper, the LABEL and the required hidden input —
+  hangs off this. Without it a product with no options still printed "Choose a
+  delivery date" over nothing: a heading for a control that is not there, and
+  a required field with no way to satisfy it. Seen on the French Stendig page,
+  where the label stood alone above the quantity box.
+
+  The label is not enough on its own to guard: `final_list` can hold empty
+  segments, so the entries are counted rather than the array measured.
+{% endcomment %}
+{% assign dd_shown = 0 %}
+{% for d in final_dates %}
+  {% if d != '' %}{% assign dd_shown = dd_shown | plus: 1 %}{% endif %}
+{% endfor %}
+
+{% if dd_shown > 0 %}
+<style>
+  .delivery-date-options-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .delivery-date-label-custom {
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* The field was skipped. The words are the same words — they were always
+     the instruction — so this is emphasis, not information, and nothing is
+     inserted or repeated. */
+  .delivery-date-label-custom.delivery-date-missing {
+    color: #b3261e;
+    font-weight: 500;
+  }
+
+  .delivery-date-button-custom {
+    padding: 1rem 2rem;
+    border: 1px solid #d3d3d3;
+    border-radius: 25px;
+    background: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: 0.12s ease;
+  }
+
+  .delivery-date-button-custom:hover {
+    border-color: #000;
+  }
+
+  .delivery-date-button-custom.active-custom {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .delivery-date-wrapper-custom {
+    margin-top: 12px;
+  }
+</style>
+
 {% assign final_labels = label_list | split: '||' %}
 
 <div class="delivery-date-wrapper-custom">
@@ -535,3 +555,4 @@
     required
   >
 </div>
+{% endif %}

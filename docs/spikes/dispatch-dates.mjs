@@ -85,6 +85,13 @@ const render = (over = {}) =>
   })
 
 const buttons = (html) => [...html.matchAll(/data-date="([^"]*)"/g)].map((m) => m[1])
+/* The label, the wrapper and the required input all hang off there being at
+   least one button — see check 14. */
+const chrome = (html) => ({
+  label: html.includes('delivery-date-label-custom'),
+  wrapper: html.includes('delivery-date-wrapper-custom'),
+  required: html.includes('properties[Delivery Date]'),
+})
 const faults = []
 const check = (what, got, want) => {
   const a = JSON.stringify(got)
@@ -186,6 +193,21 @@ check(
   })),
   [],
 )
+
+/* 14. Nothing to choose means nothing drawn — no heading over an empty space,
+       and no required hidden input nobody can satisfy. This shipped wrong: the
+       French Stendig page printed "Choisir une date de livraison" above the
+       quantity box with not one button under it. */
+{
+  const empty = await render({ handle: 'something-new' })
+  const c = chrome(empty)
+  check('draws no buttons for a product no option names', buttons(empty), [])
+  check('draws no label, wrapper or required input with them', [c.label, c.wrapper, c.required], [false, false, false])
+
+  const some = await render()
+  const c2 = chrome(some)
+  check('draws all three when there IS something to choose', [c2.label, c2.wrapper, c2.required], [true, true, true])
+}
 
 if (faults.length) {
   console.error('\ndispatch dates:\n  - ' + faults.join('\n  - '))
