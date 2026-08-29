@@ -237,7 +237,8 @@
         "disabled": false,
         "settings": {}
       }
-    }
+    },
+    "dispatch_from_admin": true
   },
   "presets": {
     "Default": {
