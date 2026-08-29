@@ -129,6 +129,24 @@ check('falls back to the old path with the switch off', buttons(await render({ o
       rather than the shop losing its buttons. */
 check('falls back when the admin has published nothing', buttons(await render({ entries: [] })), ['ASAP'])
 
+/* 9. The one that matters on the day the switch is flipped. The store already
+      holds the hand-made entries the picked list renders, and they carry no
+      rank — so "are there any entries" is TRUE while "is there anything this
+      file can draw" is false. Asking the wrong one empties the picker. */
+const UNRANKED = [
+  { date: f(''), special: f('ASAP'), label: f(''), show_on: f(''), hide_after: f(''), markets: f([]), products: f([]), rank: f(null) },
+  { date: f('2026-12-07'), special: f(''), label: f(''), show_on: f(''), hide_after: f(''), markets: f([]), products: f([]), rank: f(null) },
+]
+check('falls back when the only entries are hand-made and unranked', buttons(await render({ entries: UNRANKED })), ['ASAP'])
+
+/* 10. And once one ranked entry exists, the admin's list wins outright — the
+       unranked ones are not mixed in beside it. */
+check(
+  'ignores unranked entries once the admin has published',
+  buttons(await render({ entries: [...UNRANKED, ENTRIES[1]] })),
+  ['ASAP'],
+)
+
 if (faults.length) {
   console.error('\ndispatch dates:\n  - ' + faults.join('\n  - '))
   process.exit(1)
