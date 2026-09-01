@@ -23,7 +23,15 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .blogc {
-    padding: 0 20px 80px;
+    /* The top padding is this block's own, wherever it lands. On an article
+       it is the gap the Blog header used to hold below itself, moved here so
+       the pair still reads the same; on a product page — where this block
+       follows the recommendations with nothing between them — it is the gap
+       that was missing entirely and the text ran into the component above.
+
+       Coupled to `.blogh`'s bottom padding, which is now 0. The two are
+       checked together in docs/spikes/editorial-spacing.mjs. */
+    padding: 32px 20px 80px;
     max-width: var(--st-page-max, 1440px);
     margin-left: auto;
     margin-right: auto;
@@ -287,7 +295,7 @@
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .blogc { padding: 0 12px 56px; }
+    #shopify-section-{{ section.id }} .blogc { padding: 24px 12px 56px; }
     #shopify-section-{{ section.id }} .blogc__quotewrap {
       margin-top: 48px;
       margin-bottom: 48px;
