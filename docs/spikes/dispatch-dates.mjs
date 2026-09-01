@@ -194,7 +194,20 @@ check(
   [],
 )
 
-/* 14. Nothing to choose means nothing drawn — no heading over an empty space,
+/* 14. The first option arrives already chosen, and the hidden field already
+       carries it — before any JavaScript runs. A required field that starts
+       empty is a red label every shopper meets on arrival, which is what the
+       French page showed on a season with no ASAP button. */
+{
+  const html = await render()
+  const drawn = buttons(html)
+  const active = [...html.matchAll(/class="delivery-date-button-custom active-custom"[^>]*data-date="([^"]*)"/g)].map((m) => m[1])
+  check('marks exactly the first drawn option as chosen', active, [drawn[0]])
+  const value = /id="delivery-date-input-custom"[\s\S]*?value="([^"]*)"/.exec(html)
+  check('fills the hidden field with it server-side', value?.[1], drawn[0])
+}
+
+/* 15. Nothing to choose means nothing drawn — no heading over an empty space,
        and no required hidden input nobody can satisfy. This shipped wrong: the
        French Stendig page printed "Choisir une date de livraison" above the
        quantity box with not one button under it. */

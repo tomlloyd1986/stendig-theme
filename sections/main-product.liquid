@@ -2367,27 +2367,12 @@ const deliveryDateWrapper = document.querySelector('.delivery-date-wrapper-custo
 // the buttons that fill it come from the optional "Delivery dates" block.
 // Without that block there is no way to choose a date, so a date cannot be
 // a condition of buying — otherwise the buy buttons sit there disabled with
-// nothing to click and no message explaining why (addRequiredMessage also
-// no-ops without the wrapper).
+// nothing to click and no way to explain why.
 const deliveryDateRequired = Boolean(deliveryDateWrapper) && deliveryDateButtons.length > 0;
-const deliveryDateLabel = deliveryDateWrapper ? deliveryDateWrapper.querySelector('.delivery-date-label-custom') : null;
-// One string, not two. The label already reads "Choose a delivery date", so a
-// skipped field turns THAT red rather than inserting a second span saying the
-// same sentence underneath it. `delivery.required_message` is retired.
-const missingClass = 'delivery-date-missing';
-
-function addRequiredMessage() {
-  if (!deliveryDateLabel) return;
-  deliveryDateLabel.classList.add(missingClass);
-  if (deliveryDateWrapper) deliveryDateWrapper.setAttribute('aria-invalid', 'true');
-}
-
-function removeRequiredMessage() {
-  if (!deliveryDateLabel) return;
-  deliveryDateLabel.classList.remove(missingClass);
-  if (deliveryDateWrapper) deliveryDateWrapper.removeAttribute('aria-invalid');
-}
-
+// No required-message path at all: the first option is selected before the
+// page is interactive, so "nothing chosen" is not a state this control can be
+// in. It used to turn the label red, which every shopper on a season without
+// an ASAP button saw on arrival.
 function setSelectedDate(button, value) {
   deliveryDateButtons.forEach(b => b.classList.remove("active-custom"));
   if (button) {
@@ -2439,13 +2424,11 @@ function updateButtonVisibilityAndState() {
 
     // --- Manage Required Message Display & Disabled State ---
     if (!isDateSelected) {
-      addRequiredMessage(); 
       // Disable buttons if available but no date is selected
       if (atcBtn) atcBtn.disabled = true;
       if (buyBtn) buyBtn.disabled = true;
       if (paymentBtn) paymentBtn.disabled = true;
     } else {
-      removeRequiredMessage(); 
       // Enable buttons if available AND a date is selected
       if (atcBtn) atcBtn.disabled = false;
       if (buyBtn) buyBtn.disabled = false; 
@@ -2463,7 +2446,6 @@ function updateButtonVisibilityAndState() {
     if (atcBtn) atcBtn.disabled = true;
     if (buyBtn) buyBtn.disabled = true;
     if (paymentBtn) paymentBtn.disabled = true;
-    removeRequiredMessage(); // No need for date selection message if out of stock
   }
 }
 
@@ -2486,14 +2468,20 @@ if (deliveryDateButtons.length) {
             });
           }
 
-// --- Initial Load and ASAP Default Selection ---
+// --- Initial load: the first option is the default ---
 document.addEventListener('DOMContentLoaded', () => {
-  // Find the ASAP button
-  const asapButton = Array.from(deliveryDateButtons).find(btn => btn.dataset.isAsap === 'true');
-  
-  if (asapButton) {
-    // Select ASAP button by default
-    setSelectedDate(asapButton, asapButton.dataset.date);
+  // The FIRST button, not the ASAP one. A season of five dated options has no
+  // ASAP button at all, so the old lookup found nothing and every shopper met
+  // the required-field error before touching anything. Which option is the
+  // default is the admin's decision now — it is whichever it puts first, and
+  // Move position is how that is set.
+  //
+  // The snippet already marks it active and fills its own hidden input; this
+  // is what carries the value into the FORM's input, which lives here rather
+  // than in the snippet and cannot be reached from it.
+  const firstDate = deliveryDateButtons[0];
+  if (firstDate) {
+    setSelectedDate(firstDate, firstDate.dataset.date);
   }
 
   // Run the main check after a short delay

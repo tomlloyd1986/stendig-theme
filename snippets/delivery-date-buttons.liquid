@@ -402,13 +402,6 @@
     display: block;
   }
 
-  /* The field was skipped. The words are the same words — they were always
-     the instruction — so this is emphasis, not information, and nothing is
-     inserted or repeated. */
-  .delivery-date-label-custom.delivery-date-missing {
-    color: #b3261e;
-    font-weight: 500;
-  }
 
   .delivery-date-button-custom {
     padding: 1rem 2rem;
@@ -451,9 +444,25 @@
   {%- endcomment -%}
   <label class="delivery-date-label-custom" id="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
 
+  {% comment %}
+    The first option is chosen before the page is even interactive.
+
+    A dispatch date is required, and the customer has no way to express "no
+    preference" — so an empty field is never a state anybody wants, only one
+    they pass through on the way to picking. The theme used to default to ASAP
+    and go red when there was none; on a season of five dated options there is
+    no ASAP button, so every French shopper met the error before touching
+    anything.
+
+    Marked here as well as in JS so there is no flash of nothing chosen, and
+    so which one is default is the ADMIN's decision: it is whatever sits first
+    in the list, which is what Move position sets.
+  {% endcomment %}
+  {% assign dd_drawn = 0 %}
   <div class="delivery-date-options-custom">
     {% for d in final_dates %}
       {% if d != '' %}
+        {% assign dd_drawn = dd_drawn | plus: 1 %}
         {% assign raw_date = d | strip %}
         {% assign normalized_date = raw_date | downcase %}
         {% assign button_label = raw_date %}
@@ -536,7 +545,7 @@
 
         <button
           type="button"
-          class="delivery-date-button-custom"
+          class="delivery-date-button-custom{% if dd_drawn == 1 %} active-custom{% endif %}"
           data-date="{{ raw_date }}"
           {% if is_asap %}
             data-is-asap="true"
@@ -548,10 +557,16 @@
     {% endfor %}
   </div>
 
+  {%- comment -%} The first drawn value, so the field is filled server-side too. {%- endcomment -%}
+  {% assign dd_first = '' %}
+  {% for d in final_dates %}
+    {% if d != '' and dd_first == '' %}{% assign dd_first = d | strip %}{% endif %}
+  {% endfor %}
   <input
     type="hidden"
     name="properties[Delivery Date]"
     id="delivery-date-input-custom"
+    value="{{ dd_first }}"
     required
   >
 </div>
