@@ -189,7 +189,8 @@
       ],
       "name": "Product: Related items",
       "settings": {
-        "heading": "You may also like"
+        "heading": "You may also like",
+        "image_ratio": "4-5"
       }
     }
   },
