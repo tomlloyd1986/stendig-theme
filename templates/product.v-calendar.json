@@ -154,7 +154,27 @@
           "type": "card",
           "settings": {
             "product": "v-calendar-2026-copy",
-            "variant_sku": "",
+            "variant_sku": "VC27B",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_meDMHR": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27R",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_gzVdUn": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27LB",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -163,7 +183,9 @@
       },
       "block_order": [
         "card_mCphzy",
-        "card_bY7npc"
+        "card_bY7npc",
+        "card_meDMHR",
+        "card_gzVdUn"
       ],
       "name": "Product: Related items",
       "settings": {
