@@ -179,13 +179,24 @@
             "subtitle": "",
             "link": ""
           }
+        },
+        "card_tcgz9t": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
         }
       },
       "block_order": [
         "card_mCphzy",
         "card_bY7npc",
         "card_meDMHR",
-        "card_gzVdUn"
+        "card_gzVdUn",
+        "card_tcgz9t"
       ],
       "name": "Product: Related items",
       "settings": {
