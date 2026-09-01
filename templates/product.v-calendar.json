@@ -106,7 +106,7 @@
           "type": "images",
           "settings": {
             "width": "standard",
-            "image_1": "shopify://shop_images/Four_Vs_23f1f706-5305-41fb-9ce6-7fed9bada729.jpg",
+            "image_1": "shopify://shop_images/StendigCalendarsFN0414_ef8a9b5a-4ca2-417f-80d0-38df61f6fc1c.jpg",
             "caption_1": "",
             "caption_2": "",
             "caption_3": "",
@@ -144,6 +144,7 @@
           "type": "card",
           "settings": {
             "product": "stendig-calendar",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -153,6 +154,7 @@
           "type": "card",
           "settings": {
             "product": "v-calendar",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
