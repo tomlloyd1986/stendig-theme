@@ -26,7 +26,7 @@
           "settings": {
             "image": "shopify://shop_images/StendigCalendarsFN0390_8ddd3351-fd63-4de6-b954-f59344c97781.jpg",
             "caption": "The Stendig Calendar >",
-            "link": "shopify://products/stendig-calendar-2027"
+            "link": "shopify://products/stendig-calendar"
           }
         },
         "tile_gQkExz": {
@@ -51,7 +51,7 @@
         "product_9Y6ELa": {
           "type": "product",
           "settings": {
-            "product": "stendig-calendar-2027",
+            "product": "stendig-calendar",
             "sku": "",
             "title": ""
           }
