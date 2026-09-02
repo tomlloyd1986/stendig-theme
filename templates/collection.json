@@ -50,7 +50,7 @@
         "collection": "",
         "products": [
           "stendig-calendar-2026",
-          "v-calendar",
+          "v-calendar-2026",
           "hanging-strips"
         ],
         "split_variants": true,
@@ -83,7 +83,7 @@
             "source": "custom",
             "collection": "",
             "products": [
-              "v-calendar"
+              "v-calendar-2026"
             ],
             "split_variants": true,
             "view_all_label": "View all",
