@@ -49,8 +49,8 @@
         "source": "custom",
         "collection": "",
         "products": [
-          "stendig-calendar-2027",
-          "v-calendar-2026-copy",
+          "stendig-calendar",
+          "v-calendar",
           "hanging-strips"
         ],
         "split_variants": true,
