@@ -28,7 +28,7 @@
           "settings": {
             "image": "shopify://shop_images/Beth_Davis_Stendig_2026_Detail_02.jpg",
             "caption": "The Stendig Calendar >",
-            "link": "shopify://products/stendig-calendar"
+            "link": "shopify://products/stendig-calendar-2026"
           }
         },
         "tile_gQkExz": {
@@ -53,7 +53,7 @@
         "product_9Y6ELa": {
           "type": "product",
           "settings": {
-            "product": "stendig-calendar",
+            "product": "stendig-calendar-2026",
             "sku": "",
             "title": ""
           }
@@ -76,7 +76,7 @@
         "label": "The Stendig",
         "heading": "Massimo Vignelli's original classic",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/stendig-calendar",
+        "link": "shopify://products/stendig-calendar-2026",
         "image": "shopify://shop_images/White_Roll-1_f847f143-18fa-4d5e-a6bf-a411547bc723.jpg"
       }
     },
