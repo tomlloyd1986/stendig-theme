@@ -92,7 +92,7 @@
         "product_br8Eqk": {
           "type": "product",
           "settings": {
-            "product": "v-calendar",
+            "product": "v-calendar-2026",
             "sku": "VC26R",
             "title": ""
           }
@@ -100,7 +100,7 @@
         "product_JFPCTA": {
           "type": "product",
           "settings": {
-            "product": "v-calendar",
+            "product": "v-calendar-2026",
             "sku": "VC26B",
             "title": ""
           }
@@ -108,7 +108,7 @@
         "product_3HT8WQ": {
           "type": "product",
           "settings": {
-            "product": "v-calendar",
+            "product": "v-calendar-2026",
             "sku": "VC26Y",
             "title": "V Calendar 2026 (Yellow)"
           }
@@ -125,7 +125,7 @@
         "label": "The Stendig",
         "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/v-calendar",
+        "link": "shopify://products/v-calendar-2026",
         "image": "shopify://shop_images/hf_20260829_085109_aee237f8-726e-40bf-a77b-96ef99e09f28.png"
       }
     },
