@@ -1,41 +1,3 @@
-<style>
-  .delivery-date-options-custom {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
-  }
-
-  .delivery-date-label-custom {
-    font-size: 13px;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .delivery-date-button-custom {
-    padding: 1rem 2rem;
-    border: 1px solid #d3d3d3;
-    border-radius: 25px;
-    background: #fff;
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: 0.12s ease;
-  }
-
-  .delivery-date-button-custom:hover {
-    border-color: #000;
-  }
-
-  .delivery-date-button-custom.active-custom {
-    background: #000;
-    color: #fff;
-    border-color: #000;
-  }
-
-  .delivery-date-wrapper-custom {
-    margin-top: 12px;
-  }
-</style>
 
 {% assign current_domain = request.host | downcase | remove: 'www.' %}
 
@@ -55,6 +17,79 @@
     {% assign current_subdomain = host_parts | first %}
   {% endif %}
 {% endif %}
+
+{% comment %}
+  OUR name for the market, beside Shopify's own token above.
+
+  The path prefix speaks ISO country codes — /en-gb, /en-de — while the admin,
+  the warehouses and the people all say UK and EU, so a stored market list
+  compared against the raw token misses Britain entirely ('gb' against 'uk')
+  and misses every country inside a grouped market. The `warehouse`
+  metaobjects already carry the mapping — each lists the domains it serves —
+  so this reads it there: the handle's head IS our code ('uk-3-pl' -> 'uk').
+
+  Canada has no XX 3PL location and its warehouse is named for the 3PL
+  instead, so its head is not 'ca' — which is why BOTH this and the raw token
+  are matched below rather than one replacing the other.
+
+  This is a second copy of the derivation in `sections/popup-signup.liquid`,
+  which did it first. A shared snippet cannot assign back to its caller —
+  render is scope-isolated and include is deprecated — so the two are kept in
+  step by hand: a change to either belongs in both.
+{% endcomment %}
+{% assign dd_wh = '' %}
+{% assign dd_wh_default = '' %}
+{% for wh in settings.warehouses %}
+  {% assign dd_h = wh.system.handle | downcase %}
+  {% if wh.is_default.value and dd_wh_default == '' %}
+    {% assign dd_wh_default = dd_h %}
+  {% endif %}
+  {% if wh.domains.value %}
+    {% for dd_d in wh.domains.value %}
+      {% assign dd_dd = dd_d | strip | downcase %}
+      {% if dd_dd == current_subdomain %}
+        {% assign dd_wh = dd_h %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+{% if dd_wh == '' %}{% assign dd_wh = dd_wh_default %}{% endif %}
+
+{% comment %}
+  The root domain is the primary market — what the admin calls rest of world.
+  No warehouse head spells it, so it is named here.
+{% endcomment %}
+{% if current_subdomain == 'main' %}
+  {% assign market_code = 'primary' %}
+{% elsif dd_wh != '' %}
+  {% assign market_code = dd_wh | split: '-' | first %}
+{% else %}
+  {% assign market_code = current_subdomain %}
+{% endif %}
+
+{% comment %}
+  This product's SKUs, which is how an option says who it applies to.
+
+  Matched on the SKU rather than the handle or the title: a title can be
+  edited and the handle changes with it, while a SKU is what the 3PL, the
+  rate engine and the BI pipeline all key off. The admin publishes WHOLE SKUs
+  as the store spells them — `SC26`, `VC26W`, `HL06` — read out of the store's
+  own catalogue, so this file needs to know nothing about how they are put
+  together and no prefix rule can go subtly wrong.
+
+  Every variant's SKU is collected, not just the selected one: a product page
+  offers the same dispatch dates whichever colourway is showing, and reading
+  only the current variant would change the buttons as somebody clicked
+  between them.
+{% endcomment %}
+{% assign product_skus = '' %}
+{% for dd_v in product.variants %}
+  {% assign dd_s = dd_v.sku | strip | upcase %}
+  {% if dd_s != blank %}
+    {% assign product_skus = product_skus | append: dd_s | append: '||' %}
+  {% endif %}
+{% endfor %}
+{% assign product_skus = product_skus | split: '||' %}
 
 {% comment %}
   Per-product exclusions (custom.delivery_domain_rule metafield):
@@ -87,7 +122,163 @@
 {% assign final_list = '' %}
 {% assign label_list = '' %}
 
-{% if settings.delivery_date_entries.count > 0 %}
+{% comment %}
+  Source 1: the admin's own document, published as ranked
+  `delivery_date_option` entries.
+
+  Behind `settings.dispatch_from_admin`, which ships OFF: with it off this
+  file behaves exactly as it did, so merging the change puts nothing on the
+  shop. Turning it on is the rollout, and turning it off again is the
+  rollback — seconds, no deploy.
+
+  **Ranks are walked explicitly.** Iteration order is not guaranteed, and
+  `sort: 'rank'` does not fix it: a metaobject field is an object, so sorting
+  on 'rank' sorts the wrapper rather than the number inside it, silently
+  returns the source order, and raises nothing. At a ceiling of a dozen
+  options the nested loop is trivial and relies on no undocumented behaviour.
+{% endcomment %}
+{% comment %}
+  The switch is not enough on its own: the store ALREADY carries hand-made
+  `delivery_date_option` entries, the ones the picked list below renders. They
+  have no rank — the field did not exist when they were made — so the walk
+  below matches none of them, and a guard that only asked whether any entries
+  exist would hand this file a source it draws nothing from. The picker would
+  empty on the first flip of the switch.
+
+  So the question is whether anything RANKED is published, which is the same
+  as asking whether the admin has published at all.
+{% endcomment %}
+{% assign dd_ranked = 0 %}
+{% for dd_e in metaobjects.delivery_date_option.values %}
+  {% if dd_e.rank.value != blank %}
+    {% assign dd_ranked = dd_ranked | plus: 1 %}
+  {% endif %}
+{% endfor %}
+{% assign dd_from_admin = false %}
+{% if settings.dispatch_from_admin and dd_ranked > 0 %}
+  {% assign dd_from_admin = true %}
+{% endif %}
+
+{% if dd_from_admin %}
+  {% assign month_keys = 'jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec' | split: ',' %}
+  {% assign months_en = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec' | split: ',' %}
+  {% assign today_num = 'now' | date: '%Y%m%d' | plus: 0 %}
+  {% assign today_mmdd = 'now' | date: '%m%d' | plus: 0 %}
+
+  {% for rank_i in (1..24) %}
+    {% for entry in metaobjects.delivery_date_option.values %}
+      {% if entry.rank.value != rank_i %}{% continue %}{% endif %}
+
+      {% comment %} The window. Both ends are the store's own clock. {% endcomment %}
+      {% if entry.show_on.value != blank %}
+        {% assign show_num = entry.show_on.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num < show_num %}{% continue %}{% endif %}
+      {% endif %}
+      {% if entry.hide_after.value != blank %}
+        {% assign hide_num = entry.hide_after.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num > hide_num %}{% continue %}{% endif %}
+      {% endif %}
+
+      {% comment %}
+        Markets, as an INCLUDE list. Both our code and Shopify's token are
+        matched, because Canada's warehouse head is not 'ca' — see above. An
+        entry with no list at all is offered everywhere rather than nowhere:
+        a field that has not been written yet must not empty the shop.
+      {% endcomment %}
+      {% if entry.markets.value and entry.markets.value.size > 0 %}
+        {% assign dd_ok = false %}
+        {% for dd_m in entry.markets.value %}
+          {% assign dd_mm = dd_m | strip | downcase %}
+          {% if dd_mm == market_code or dd_mm == current_subdomain %}
+            {% assign dd_ok = true %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+        {% unless dd_ok %}{% continue %}{% endunless %}
+      {% endif %}
+
+      {% comment %}
+        Products, by whole SKU. Equality, not a prefix: the admin publishes
+        what the store itself spells, so there is nothing to be clever about
+        and no `SC` quietly matching `SCARF01`.
+
+        An entry naming no SKUs applies to everything, as with the markets. An
+        entry that DOES name them applies only where one matches — including
+        when the product has no SKU at all, which cannot match anything. That
+        is the conservative reading and it is uniform: a product nobody
+        configured is offered no dispatch date rather than silently inheriting
+        every one of them. It loses only the picker, not the sale — with no
+        buttons the field stops being required.
+
+        One thing this cannot do: the buttons are one control for the whole
+        product page, drawn outside the variant chooser, so naming a single
+        colourway shows the option whenever ANY variant of that product is on
+        screen. Per-colourway control would be a different change.
+      {% endcomment %}
+      {% if entry.skus.value and entry.skus.value.size > 0 %}
+        {% assign dd_pok = false %}
+        {% for dd_p in entry.skus.value %}
+          {% assign dd_pp = dd_p | strip | upcase %}
+          {% if dd_pp == blank %}{% continue %}{% endif %}
+          {% for dd_s in product_skus %}
+            {% if dd_s == dd_pp %}
+              {% assign dd_pok = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          {% if dd_pok %}{% break %}{% endif %}
+        {% endfor %}
+        {% unless dd_pok %}{% continue %}{% endunless %}
+      {% endif %}
+
+      {% comment %}
+        The value the ORDER carries, and the label a customer reads. The value
+        is always English — per-product exclusion rules match it verbatim and
+        every past order carries it — while the label is localised, or
+        overridden by the entry's own.
+      {% endcomment %}
+      {% assign special = entry.special.value | strip %}
+      {% assign date_string = '' %}
+      {% assign generated_label = '' %}
+
+      {% if special != blank %}
+        {% assign date_string = special %}
+        {% assign special_down = special | downcase %}
+        {% if special_down == 'asap' %}
+          {% assign generated_label = 'delivery.date_options.asap' | t %}
+        {% elsif special_down == 'by xmas' or special_down == 'by christmas' %}
+          {% if today_mmdd > 1225 %}{% continue %}{% endif %}
+          {% assign generated_label = 'delivery.date_options.by_xmas' | t %}
+        {% else %}
+          {% assign generated_label = special %}
+        {% endif %}
+      {% elsif entry.date.value %}
+        {% assign date_num = entry.date.value | date: '%Y%m%d' | plus: 0 %}
+        {% if today_num > date_num %}{% continue %}{% endif %}
+        {% assign day_num = entry.date.value | date: '%d' | plus: 0 %}
+        {% assign month_index = entry.date.value | date: '%m' | plus: 0 | minus: 1 %}
+        {% assign date_string = day_num | append: ' ' | append: months_en[month_index] %}
+        {% assign month_key = 'delivery.months.' | append: month_keys[month_index] %}
+        {% assign month_translated = month_key | t %}
+        {% assign generated_label = 'delivery.date_label' | t: day: day_num, month: month_translated %}
+      {% else %}
+        {% continue %}
+      {% endif %}
+
+      {% comment %} The per-product metafield still has the last word. {% endcomment %}
+      {% if excluded contains date_string %}{% continue %}{% endif %}
+
+      {% assign custom_label = entry.label.value | default: '' | strip %}
+      {% if custom_label != blank %}
+        {% assign generated_label = custom_label %}
+      {% endif %}
+
+      {% assign final_list = final_list | append: date_string | append: '||' %}
+      {% assign label_list = label_list | append: generated_label | append: '||' %}
+    {% endfor %}
+  {% endfor %}
+
+{% elsif settings.delivery_date_entries.count > 0 %}
   {% comment %}
     Primary source: "Delivery date option" metaobjects picked in theme settings.
     Field keys:
@@ -178,14 +369,100 @@
 {% endif %}
 
 {% assign final_dates = final_list | split: '||' %}
+
+{% comment %}
+  How many buttons there will actually be.
+
+  Everything below — the wrapper, the LABEL and the required hidden input —
+  hangs off this. Without it a product with no options still printed "Choose a
+  delivery date" over nothing: a heading for a control that is not there, and
+  a required field with no way to satisfy it. Seen on the French Stendig page,
+  where the label stood alone above the quantity box.
+
+  The label is not enough on its own to guard: `final_list` can hold empty
+  segments, so the entries are counted rather than the array measured.
+{% endcomment %}
+{% assign dd_shown = 0 %}
+{% for d in final_dates %}
+  {% if d != '' %}{% assign dd_shown = dd_shown | plus: 1 %}{% endif %}
+{% endfor %}
+
+{% if dd_shown > 0 %}
+<style>
+  .delivery-date-options-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .delivery-date-label-custom {
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+
+  .delivery-date-button-custom {
+    padding: 1rem 2rem;
+    border: 1px solid #d3d3d3;
+    border-radius: 25px;
+    background: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: 0.12s ease;
+  }
+
+  .delivery-date-button-custom:hover {
+    border-color: #000;
+  }
+
+  .delivery-date-button-custom.active-custom {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .delivery-date-wrapper-custom {
+    margin-top: 12px;
+  }
+</style>
+
 {% assign final_labels = label_list | split: '||' %}
 
 <div class="delivery-date-wrapper-custom">
-  <label class="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
+  {%- comment -%}
+    One string, not two. This label used to read "Choose Delivery Date" while
+    a second key, `delivery.required_message`, said "Choose a delivery date"
+    in red beneath it the moment somebody skipped the field — the same
+    sentence twice, stacked. The instruction is permanent now and the error
+    turns THIS red, so nothing is inserted and nothing is repeated.
 
+    Colour is not carrying the meaning: the words say what to do whether or
+    not anybody has ignored them. The red is emphasis on an instruction that
+    was already there.
+  {%- endcomment -%}
+  <label class="delivery-date-label-custom" id="delivery-date-label-custom">{{ 'delivery.choose_date' | t }}</label>
+
+  {% comment %}
+    The first option is chosen before the page is even interactive.
+
+    A dispatch date is required, and the customer has no way to express "no
+    preference" — so an empty field is never a state anybody wants, only one
+    they pass through on the way to picking. The theme used to default to ASAP
+    and go red when there was none; on a season of five dated options there is
+    no ASAP button, so every French shopper met the error before touching
+    anything.
+
+    Marked here as well as in JS so there is no flash of nothing chosen, and
+    so which one is default is the ADMIN's decision: it is whatever sits first
+    in the list, which is what Move position sets.
+  {% endcomment %}
+  {% assign dd_drawn = 0 %}
   <div class="delivery-date-options-custom">
     {% for d in final_dates %}
       {% if d != '' %}
+        {% assign dd_drawn = dd_drawn | plus: 1 %}
         {% assign raw_date = d | strip %}
         {% assign normalized_date = raw_date | downcase %}
         {% assign button_label = raw_date %}
@@ -268,7 +545,7 @@
 
         <button
           type="button"
-          class="delivery-date-button-custom"
+          class="delivery-date-button-custom{% if dd_drawn == 1 %} active-custom{% endif %}"
           data-date="{{ raw_date }}"
           {% if is_asap %}
             data-is-asap="true"
@@ -280,10 +557,17 @@
     {% endfor %}
   </div>
 
+  {%- comment -%} The first drawn value, so the field is filled server-side too. {%- endcomment -%}
+  {% assign dd_first = '' %}
+  {% for d in final_dates %}
+    {% if d != '' and dd_first == '' %}{% assign dd_first = d | strip %}{% endif %}
+  {% endfor %}
   <input
     type="hidden"
     name="properties[Delivery Date]"
     id="delivery-date-input-custom"
+    value="{{ dd_first }}"
     required
   >
 </div>
+{% endif %}

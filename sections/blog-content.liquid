@@ -23,7 +23,15 @@
 
 {% style %}
   #shopify-section-{{ section.id }} .blogc {
-    padding: 0 20px 80px;
+    /* The top padding is this block's own, wherever it lands. On an article
+       it is the gap the Blog header used to hold below itself, moved here so
+       the pair still reads the same; on a product page — where this block
+       follows the recommendations with nothing between them — it is the gap
+       that was missing entirely and the text ran into the component above.
+
+       Coupled to `.blogh`'s bottom padding, which is now 0. The two are
+       checked together in docs/spikes/editorial-spacing.mjs. */
+    padding: 32px 20px 80px;
     max-width: var(--st-page-max, 1440px);
     margin-left: auto;
     margin-right: auto;
@@ -287,7 +295,7 @@
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-{{ section.id }} .blogc { padding: 0 12px 56px; }
+    #shopify-section-{{ section.id }} .blogc { padding: 24px 12px 56px; }
     #shopify-section-{{ section.id }} .blogc__quotewrap {
       margin-top: 48px;
       margin-bottom: 48px;
@@ -476,39 +484,68 @@
 
       {%- when 'video' -%}
         {%- liquid
-          # Language overrides: each slot lists the language codes it
-          # serves; when the storefront language matches one, that slot's
-          # video replaces the default. A matched slot with nothing in it
-          # is ignored. Width, shape, autoplay and caption stay shared —
-          # the caption is a text setting, translatable the usual way.
+          # Overrides: each slot lists the codes it serves, and when this
+          # request matches one that slot's video replaces the default.
+          # Width, shape, autoplay and caption stay shared — the caption is a
+          # text setting, translatable the usual way.
+          #
+          # A code is either a LANGUAGE ('en', 'da, sv') or a whole LOCALE
+          # ('en-us'). The locale exists because two markets can share a
+          # language: /en-us and /en-ca are both English, so the language
+          # alone cannot tell them apart, and a US-only cut had nowhere to go.
           assign v_video = block.settings.video
           assign v_url = block.settings.video_url
           assign v_lang = localization.language.iso_code | downcase
-          assign v_slots = 'a,b,c,d,e,f,g,h' | split: ','
-          for s in v_slots
-            assign lang_key = 'lang_' | append: s
-            assign v_codes = block.settings[lang_key]
-            if v_codes == blank
-              continue
-            endif
-            assign v_hit = false
-            assign v_list = v_codes | downcase | split: ','
-            for l in v_list
-              assign l_t = l | strip
-              if l_t == v_lang
-                assign v_hit = true
-                break
-              endif
-            endfor
-            if v_hit
-              assign vid_key = 'video_' | append: s
-              assign url_key = 'video_url_' | append: s
-              if block.settings[vid_key] != blank or block.settings[url_key] != blank
-                assign v_video = block.settings[vid_key]
-                assign v_url = block.settings[url_key]
-              endif
+
+          # The locale as the URL spells it: '/en-us' -> 'en-us'. On the root
+          # domain there is no country in the path, so the language is the
+          # whole of it and the two passes below collapse into one.
+          assign v_locale = v_lang
+          if routes.root_url != '/'
+            assign v_locale = routes.root_url | remove_first: '/' | downcase
+          endif
+
+          # TWO passes, locale before language, so the more specific slot wins
+          # whatever order the slots are in. Single-pass, a slot listing 'en'
+          # higher up would take /en-us before the slot that names it — and
+          # the person who filled that slot in would have no way to see why.
+          assign v_targets = v_locale | append: '||' | append: v_lang | split: '||'
+          assign v_slots = 'a,b,c,d,e,f,g,h,i,j' | split: ','
+          assign v_done = false
+          for t in v_targets
+            if v_done
               break
             endif
+            for s in v_slots
+              assign lang_key = 'lang_' | append: s
+              assign v_codes = block.settings[lang_key]
+              if v_codes == blank
+                continue
+              endif
+              assign v_hit = false
+              assign v_list = v_codes | downcase | split: ','
+              for l in v_list
+                assign l_t = l | strip
+                if l_t == t
+                  assign v_hit = true
+                  break
+                endif
+              endfor
+              if v_hit
+                assign vid_key = 'video_' | append: s
+                assign url_key = 'video_url_' | append: s
+                # Only a slot with something IN it ends the search. An empty
+                # 'en-us' slot falls through to 'en' and then to the default,
+                # rather than stopping at itself and showing the default — the
+                # fallback the settings promise, one step at a time.
+                if block.settings[vid_key] != blank or block.settings[url_key] != blank
+                  assign v_video = block.settings[vid_key]
+                  assign v_url = block.settings[url_key]
+                  assign v_done = true
+                  break
+                endif
+              endif
+            endfor
           endfor
         -%}
         <figure class="blogc__media blogc__w-{{ block.settings.width }}" style="margin-inline: auto;" {{ block.shopify_attributes }}>
@@ -724,7 +761,7 @@
         { "type": "checkbox", "id": "autoplay", "label": "Autoplay loop (muted)", "default": false, "info": "Shopify-hosted videos only." },
         { "type": "text", "id": "caption", "label": "Caption" },
         { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Optional, and only for YouTube/Vimeo — those players choose their own thumbnail at whatever size they measure the frame to be, which looks soft on a large frame. A still uploaded here is sharp at any size and holds the player back until clicked. Uploaded videos take their poster from the video itself. Shared across languages." },
-        { "type": "header", "content": "Per-language videos", "info": "Each language below falls back to the video above until you give it one of its own. The code is editable — a slot can serve several languages (\"da, sv\") or a different one entirely." },
+        { "type": "header", "content": "Per-language and per-market videos", "info": "Each slot below falls back to the video above until you give it one of its own. The codes are editable. A slot can serve a language (\"en\"), several (\"da, sv\"), or one market on its own (\"en-us\") — write the locale exactly as the URL does. A market slot wins over the language slot for the same visitor, so \"en\" can hold the video everyone else sees while \"en-us\" holds the American cut." },
         { "type": "text", "id": "lang_a", "label": "English — language codes", "default": "en" },
         { "type": "video", "id": "video_a", "label": "English — video" },
         { "type": "video_url", "id": "video_url_a", "label": "English — URL", "accept": ["youtube", "vimeo"] },
@@ -748,7 +785,13 @@
         { "type": "video_url", "id": "video_url_g", "label": "Korean — URL", "accept": ["youtube", "vimeo"] },
         { "type": "text", "id": "lang_h", "label": "Japanese — language codes", "default": "ja" },
         { "type": "video", "id": "video_h", "label": "Japanese — video" },
-        { "type": "video_url", "id": "video_url_h", "label": "Japanese — URL", "accept": ["youtube", "vimeo"] }
+        { "type": "video_url", "id": "video_url_h", "label": "Japanese — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_i", "label": "United States — codes", "default": "en-us", "info": "A market rather than a language: this beats the English slot for anyone on /en-us and leaves every other English market alone. Write the locale exactly as the URL does." },
+        { "type": "video", "id": "video_i", "label": "United States — video" },
+        { "type": "video_url", "id": "video_url_i", "label": "United States — URL", "accept": ["youtube", "vimeo"] },
+        { "type": "text", "id": "lang_j", "label": "Canada — codes", "default": "en-ca" },
+        { "type": "video", "id": "video_j", "label": "Canada — video" },
+        { "type": "video_url", "id": "video_url_j", "label": "Canada — URL", "accept": ["youtube", "vimeo"] }
       ]
     }
   ],

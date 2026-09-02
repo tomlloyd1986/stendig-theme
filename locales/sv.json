@@ -421,7 +421,6 @@
     "date_title": "Leveransdatum",
     "choose_date": "Välj leveransdatum",
     "join_waitlist": "Gå med i väntelistan",
-    "required_message": "Välj ett leveransdatum",
     "date_options": {
       "asap": "Så snart som möjligt",
       "by_xmas": "Före jul"

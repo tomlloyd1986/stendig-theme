@@ -1,9 +1,11 @@
 {% comment %}
   Product: Related items — native rebuild of the PageFly "You may also
   like" row on the product pages: a Display-Light heading above up to four
-  clickable cards, each a square (1:1) image with a 14px title and a
-  one-line subtitle beneath ("Hanging Strips — Fix your Stendig to the
-  walls, without nails").
+  clickable cards, each an image with a 14px title and a one-line
+  subtitle beneath ("Hanging Strips — Fix your Stendig to the walls,
+  without nails"). The image shape is the section's own choice of 1:1 or
+  4:5 — the same toggle the collection grids carry, and defaulting to
+  1:1 here because that is the shape this row has always drawn.
   Cards take an optional product pick (supplies the link automatically)
   or a custom link. An optional Variant SKU narrows the card to one
   variant — its image, its ?variant= link, its colour appended to the
@@ -59,18 +61,31 @@
     position: relative;
     display: block;
   }
+  {%- comment -%}
+    Both boxes take the SAME ratio. An empty card holds the row's shape
+    while the picture it is waiting for is chosen, so a placeholder that
+    kept 1:1 while its neighbours went portrait would leave a step in a
+    row whose whole job is to line four things up.
+
+    The test is for '4-5', not for '1-1', and that direction is
+    load-bearing. Every product template already carries this section
+    with no image_ratio stored, so an unset value has to land on the
+    square this row has always drawn — testing the other way would turn
+    every live product page portrait if the stored value were ever
+    missing rather than defaulted.
+  {%- endcomment -%}
   #shopify-section-{{ section.id }} .prel__card img {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: {% if section.settings.image_ratio == '4-5' %}4 / 5{% else %}1 / 1{% endif %};
     object-fit: cover;
     object-position: center center;
   }
   #shopify-section-{{ section.id }} .prel__placeholder {
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: {% if section.settings.image_ratio == '4-5' %}4 / 5{% else %}1 / 1{% endif %};
     background: #f3f3f3;
   }
   #shopify-section-{{ section.id }} .prel__title {
@@ -224,6 +239,17 @@
   "max_blocks": 8,
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "4-5", "label": "4:5 (portrait)" },
+        { "value": "1-1", "label": "1:1 (square)" }
+      ],
+      "default": "1-1",
+      "info": "Applies to every card in this section."
+    },
     { "type": "paragraph", "content": "Only the first 4 eligible cards show. A card pointing at the product (or variant) currently being viewed hides itself, and the next card fills its place — so cards 5–8 act as backups." }
   ],
   "blocks": [
@@ -233,7 +259,7 @@
       "settings": [
         { "type": "product", "id": "product", "label": "Product", "info": "Optional. Supplies the link, image and title unless overridden below." },
         { "type": "text", "id": "variant_sku", "label": "Variant SKU", "info": "Optional. Points the card at one variant of the product above: its image, a link straight to it, and its colour added to the title (e.g. SC26R for the red V Calendar)." },
-        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional override. Displays at 1:1 (square)." },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Optional override. Cropped to the section's image aspect ratio." },
         { "type": "text", "id": "title", "label": "Title", "info": "Optional override." },
         { "type": "text", "id": "subtitle", "label": "Subtitle", "placeholder": "Fix your Stendig to the walls, without nails" },
         { "type": "url", "id": "link", "label": "Link", "info": "Optional override of the product's link." }

@@ -423,9 +423,8 @@
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
     "date_title": "Delivery Date",
-    "choose_date": "Choose Delivery Date",
+    "choose_date": "Choose a delivery date",
     "join_waitlist": "Join waitlist",
-    "required_message": "Choose a delivery date",
     "date_options": {
       "asap": "ASAP",
       "by_xmas": "By Xmas"

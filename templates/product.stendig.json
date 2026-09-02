@@ -41,6 +41,10 @@
             "picker_type": "button"
           }
         },
+        "delivery_dates_qkXRQP": {
+          "type": "delivery_dates",
+          "settings": {}
+        },
         "quantity_selector": {
           "type": "quantity_selector",
           "settings": {}
@@ -69,6 +73,7 @@
         "subtitle",
         "price",
         "variant_picker",
+        "delivery_dates_qkXRQP",
         "quantity_selector",
         "buy_buttons",
         "description",
@@ -181,8 +186,28 @@
         "card_K8JR7e": {
           "type": "card",
           "settings": {
-            "product": "v-calendar-2026",
+            "product": "v-calendar-2026-copy",
             "variant_sku": "",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_r9YWah": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27LB",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_6VcGrx": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27R",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -191,11 +216,14 @@
       },
       "block_order": [
         "card_mNUtrG",
-        "card_K8JR7e"
+        "card_K8JR7e",
+        "card_r9YWah",
+        "card_6VcGrx"
       ],
       "name": "Product: Related items",
       "settings": {
-        "heading": "You may also like"
+        "heading": "You may also like",
+        "image_ratio": "4-5"
       }
     }
   },

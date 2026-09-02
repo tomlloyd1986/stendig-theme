@@ -13,9 +13,7 @@
       "type": "home-hero",
       "name": "Hero banner",
       "settings": {
-        "image_desktop": "shopify://shop_images/Home_page_image_desktop.jpg",
-        "image_tablet": "shopify://shop_images/Home_page_image_tablet.jpg",
-        "image_mobile": "shopify://shop_images/Home_page_image_mobile.jpg",
+        "image_desktop": "shopify://shop_images/StendigCalendarsFN0220_e5fd5693-b15d-4530-bbf5-9a17c956d8d3.jpg",
         "button_label": "DISCOVER 2026",
         "link": "shopify://collections/range"
       }
@@ -26,17 +24,17 @@
         "tile_qczArC": {
           "type": "tile",
           "settings": {
-            "image": "shopify://shop_images/Beth_Davis_Stendig_2026_Detail_02.jpg",
+            "image": "shopify://shop_images/StendigCalendarsFN0390_8ddd3351-fd63-4de6-b954-f59344c97781.jpg",
             "caption": "The Stendig Calendar >",
-            "link": "shopify://products/stendig-calendar-2026"
+            "link": "shopify://products/stendig-calendar-2027"
           }
         },
         "tile_gQkExz": {
           "type": "tile",
           "settings": {
-            "image": "shopify://shop_images/Four_Vs_23f1f706-5305-41fb-9ce6-7fed9bada729.jpg",
+            "image": "shopify://shop_images/StendigCalendarsFN0414_ef8a9b5a-4ca2-417f-80d0-38df61f6fc1c.jpg",
             "caption": "The V Calendar >",
-            "link": "shopify://products/v-calendar-2026"
+            "link": "shopify://products/v-calendar-2026-copy"
           }
         }
       },
@@ -53,7 +51,7 @@
         "product_9Y6ELa": {
           "type": "product",
           "settings": {
-            "product": "stendig-calendar-2026",
+            "product": "stendig-calendar-2027",
             "sku": "",
             "title": ""
           }
@@ -76,8 +74,8 @@
         "label": "The Stendig",
         "heading": "Massimo Vignelli's original classic",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/stendig-calendar-2026",
-        "image": "shopify://shop_images/White_Roll-1_f847f143-18fa-4d5e-a6bf-a411547bc723.jpg"
+        "link": "shopify://products/stendig-calendar-2027",
+        "image": "shopify://shop_images/5x6_Detail_Roll.jpg"
       }
     },
     "home_product_group_h3zpep": {
@@ -86,8 +84,8 @@
         "product_jTPGPj": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26W",
+            "product": "v-calendar-2026-copy",
+            "sku": "VC27W",
             "title": ""
           }
         },
@@ -127,8 +125,8 @@
         "label": "The Stendig",
         "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/v-calendar-2026",
-        "image": "shopify://shop_images/V_Box.jpg"
+        "link": "shopify://products/v-calendar-2026-copy",
+        "image": "shopify://shop_images/hf_20260829_085109_aee237f8-726e-40bf-a77b-96ef99e09f28.png"
       }
     },
     "home_instagram_strip_Rx3NWc": {

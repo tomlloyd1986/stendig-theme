@@ -78,7 +78,17 @@
   }
 
   #shopify-section-{{ section.id }} .blogh {
-    padding: 96px 20px 32px;
+    /* No bottom padding: the gap below this header belongs to the Editorial
+       content block that always follows it, which now carries it as its own
+       TOP padding. Moved rather than added, so an article's spacing is
+       unchanged — see docs/spikes/editorial-spacing.mjs, which adds the two
+       numbers up and fails if either drifts on its own.
+
+       The reason it moved: the same block sits under the product
+       recommendations on the Stendig and V Calendar pages, where there is no
+       header above it and it had nothing between itself and the component
+       above. */
+    padding: 96px 20px 0;
     text-align: center;
   }
   #shopify-section-{{ section.id }} .blogh__title {
@@ -107,7 +117,7 @@
   @media screen and (max-width: 749px) {
     #shopify-section-{{ section.id }} .blogh__crumbs { padding: 12px; }
     #shopify-section-{{ section.id }} .blogh {
-      padding: 56px 12px 24px;
+      padding: 56px 12px 0;
     }
     #shopify-section-{{ section.id }} .blogh__title { font-size: 26px; }
   }

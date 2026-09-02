@@ -15,7 +15,7 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "The 2026 Collection"
+            "heading": "The 2027 Collection"
           }
         },
         "text": {
@@ -45,12 +45,12 @@
     "grid": {
       "type": "curated-product-grid",
       "settings": {
-        "image_ratio": "1-1",
+        "image_ratio": "4-5",
         "source": "custom",
         "collection": "",
         "products": [
-          "stendig-calendar-2026",
-          "v-calendar-2026",
+          "stendig-calendar-2027",
+          "v-calendar-2026-copy",
           "hanging-strips"
         ],
         "split_variants": true,

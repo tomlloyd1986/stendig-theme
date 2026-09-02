@@ -421,7 +421,6 @@
     "date_title": "Toimituspäivä",
     "choose_date": "Valitse toimituspäivä",
     "join_waitlist": "Liity odotuslistalle",
-    "required_message": "Valitse toimituspäivä",
     "date_options": {
       "asap": "Mahdollisimman pian",
       "by_xmas": "Jouluun mennessä"

@@ -106,7 +106,7 @@
           "type": "images",
           "settings": {
             "width": "standard",
-            "image_1": "shopify://shop_images/Four_Vs_23f1f706-5305-41fb-9ce6-7fed9bada729.jpg",
+            "image_1": "shopify://shop_images/StendigCalendarsFN0414_ef8a9b5a-4ca2-417f-80d0-38df61f6fc1c.jpg",
             "caption_1": "",
             "caption_2": "",
             "caption_3": "",
@@ -143,7 +143,8 @@
         "card_mCphzy": {
           "type": "card",
           "settings": {
-            "product": "stendig-calendar-2026",
+            "product": "stendig-calendar-2027",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -152,7 +153,38 @@
         "card_bY7npc": {
           "type": "card",
           "settings": {
-            "product": "v-calendar-2026",
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27B",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_meDMHR": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27R",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_gzVdUn": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "VC27LB",
+            "title": "",
+            "subtitle": "",
+            "link": ""
+          }
+        },
+        "card_tcgz9t": {
+          "type": "card",
+          "settings": {
+            "product": "v-calendar-2026-copy",
+            "variant_sku": "",
             "title": "",
             "subtitle": "",
             "link": ""
@@ -161,11 +193,15 @@
       },
       "block_order": [
         "card_mCphzy",
-        "card_bY7npc"
+        "card_bY7npc",
+        "card_meDMHR",
+        "card_gzVdUn",
+        "card_tcgz9t"
       ],
       "name": "Product: Related items",
       "settings": {
-        "heading": "You may also like"
+        "heading": "You may also like",
+        "image_ratio": "4-5"
       }
     }
   },

@@ -1587,7 +1587,6 @@
     "date_title": "Fecha de entrega",
     "choose_date": "Elige fecha de entrega",
     "join_waitlist": "Unirse a la lista de espera",
-    "required_message": "Elige una fecha de entrega",
     "date_options": {
       "asap": "Lo antes posible",
       "by_xmas": "Para Navidad"
