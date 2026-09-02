@@ -26,7 +26,7 @@
           "settings": {
             "image": "shopify://shop_images/StendigCalendarsFN0390_8ddd3351-fd63-4de6-b954-f59344c97781.jpg",
             "caption": "The Stendig Calendar >",
-            "link": "shopify://products/stendig-calendar-2027"
+            "link": "shopify://products/stendig-calendar"
           }
         },
         "tile_gQkExz": {
@@ -34,7 +34,7 @@
           "settings": {
             "image": "shopify://shop_images/StendigCalendarsFN0414_ef8a9b5a-4ca2-417f-80d0-38df61f6fc1c.jpg",
             "caption": "The V Calendar >",
-            "link": "shopify://products/v-calendar-2026-copy"
+            "link": "shopify://products/v-calendar"
           }
         }
       },
@@ -51,7 +51,7 @@
         "product_9Y6ELa": {
           "type": "product",
           "settings": {
-            "product": "stendig-calendar-2027",
+            "product": "stendig-calendar",
             "sku": "",
             "title": ""
           }
@@ -84,32 +84,32 @@
         "product_jTPGPj": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026-copy",
-            "sku": "VC27W",
+            "product": "v-calendar",
+            "sku": "VC27LB",
             "title": ""
           }
         },
         "product_br8Eqk": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26R",
+            "product": "v-calendar",
+            "sku": "VC27R",
             "title": ""
           }
         },
         "product_JFPCTA": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26B",
+            "product": "v-calendar",
+            "sku": "VC27B",
             "title": ""
           }
         },
         "product_3HT8WQ": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26Y",
+            "product": "v-calendar",
+            "sku": "VC27DB",
             "title": "V Calendar 2026 (Yellow)"
           }
         }
