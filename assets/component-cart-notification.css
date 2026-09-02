@@ -335,9 +335,18 @@ html.cart-drawer-open body {
   cursor: pointer;
 }
 
+/* Focus is a hairline under the text, not a box round it.
+
+   A <select> counts as keyboard-focusable in every browser, so it matches
+   :focus-visible even when it was opened with the mouse — the ring the
+   theme draws on keyboard focus appeared the moment a colour was chosen
+   and sat there until the next click. A box on a control that has no
+   border of its own reads as a mistake. The underline is still a visible
+   focus for somebody tabbing through the drawer; box-shadow rather than
+   border-bottom so nothing moves when it appears. */
 .drawer-upsell__variant-select:focus-visible {
-  outline: 0.2rem solid rgb(var(--color-foreground));
-  outline-offset: 0.2rem;
+  outline: 0;
+  box-shadow: 0 1px 0 0 rgb(var(--color-foreground));
 }
 
 .drawer-upsell__add {
