@@ -207,5 +207,27 @@ const check = (name, ok, extra = '') => {
   )
 }
 
+// 9. Chinese collapses onto one language slot.
+//
+//    Shopify ships Chinese as zh-TW (and zh-CN); our copy object and the
+//    campaign's language branch both key on the bare two-letter code, so a
+//    raw iso_code found no 'zh' copy and no 'zh' branch -- English popup,
+//    English email, and a Brevo record saying zh-tw. The assign is read out
+//    of the section itself so the pin cannot drift away from the source.
+{
+  const line = section.split('\n').find((l) => l.trim().startsWith('assign lang_code ='))
+  if (!line) throw new Error('lang_code assign not found')
+  const probe = `{% liquid\n${line.trim()}\n%}{{ lang_code }}`
+  const resolve = (iso) => engine.parseAndRender(probe, { localization: { language: { iso_code: iso } } })
+  check('zh-TW resolves to the zh slot', (await resolve('zh-TW')) === 'zh', await resolve('zh-TW'))
+  check('zh-CN resolves to the same slot', (await resolve('zh-CN')) === 'zh', await resolve('zh-CN'))
+  check('a plain code is untouched', (await resolve('ko')) === 'ko', await resolve('ko'))
+
+  // …and the copy object, which is keyed 'zh', is what a Chinese visitor gets.
+  const zh = entry({ copy: { value: { en: entry({}).copy.value.en, zh: { heading: '\u552e\u5b8c' } } } })
+  const { html } = await render([zh], { lang_code: 'zh' })
+  check('the zh copy renders for a Chinese visitor', html.includes('\u552e\u5b8c'))
+}
+
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks pass')
 process.exit(failed ? 1 : 0)

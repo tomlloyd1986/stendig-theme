@@ -33,7 +33,14 @@
     assign wl_on = true
   endif
 
-  assign lang_code = localization.language.iso_code | downcase
+  # Chinese ships as zh-TW (and zh-CN), but our own copy and the campaign
+  # branch are keyed by the bare two-letter code -- 'zh' is one slot and
+  # both scripts collapse onto it by design. Left as 'zh-tw' every Chinese
+  # visitor fell through to English copy AND was written to Brevo with
+  # LANGUAGE='zh-tw', which the campaign's language branch does not match
+  # either, so the email was English too. Same normalisation as the cart
+  # stamp in layout/theme.liquid.
+  assign lang_code = localization.language.iso_code | downcase | split: '-' | first
   assign path_prefix = routes.root_url
   assign market_key = 'primary'
   if path_prefix != '/'
@@ -413,6 +420,7 @@
       document.addEventListener('keydown', this.onKeydown);
 
       this.convertSoldOutButton();
+      this.watchVariantChanges();
 
       if (this.dataset.designMode === 'true') {
         this.onSectionSelect = (e) => { if (e.target.contains(this)) this.open(null); };
@@ -423,19 +431,86 @@
     disconnectedCallback() {
       document.removeEventListener('click', this.onDocClick, true);
       document.removeEventListener('keydown', this.onKeydown);
+      document.removeEventListener('change', this.onVariantChange, true);
+      document.removeEventListener('shopify:section:load', this.onSectionLoad);
+      clearTimeout(this.reconvertTimer);
       if (this.onSectionSelect) document.removeEventListener('shopify:section:select', this.onSectionSelect);
     }
 
     /* Dawn's disabled sold-out submit becomes a live trigger; the
        page's dedicated waitlist button carries data-waitlist-trigger
-       in its own markup (main-product.liquid). */
+       in its own markup (main-product.liquid).
+
+       The conversion is REVERSIBLE, and has to be. A disabled button fires
+       no click, so claiming one means stripping `disabled` and making it
+       type="button" -- and done once at page load that was permanent. On a
+       product whose FIRST variant is sold out and second is not (every
+       Stendig season: Black gone, Red in stock) the customer picked the
+       live variant, the theme restored the buy buttons, and the capture-
+       phase listener still owned the click: Add to cart opened the waitlist
+       modal instead, with no way to buy the thing that was in stock.
+
+       So: skip a form that already has its own dedicated trigger, and
+       restore-then-reconvert on every variant change, which is the only
+       moment availability can move. */
     convertSoldOutButton() {
       document.querySelectorAll('.product-form__submit[disabled], .product-form__submit[aria-disabled="true"]').forEach((btn) => {
+        const form = btn.closest('form[action*="/cart/add"]') || btn.closest('product-info, .product, .section');
+        // The product page renders its own waitlist button beside a plain
+        // sold-out one and swaps the pair against the buy buttons itself
+        // (updateButtonVisibilityAndState). Converting its submit as well is
+        // redundant there, and it is what stole the click.
+        if (form && form.querySelector('.custom-join-waitlist-btns [data-waitlist-trigger]')) return;
+        if (btn.dataset.stwConverted !== undefined) return;
+        // Snapshot what the theme rendered, all three attributes: restoring
+        // only `type` left a sold-out button enabled, which is a submit the
+        // cart would refuse rather than a waitlist.
+        btn.dataset.stwConverted = JSON.stringify({
+          type: btn.getAttribute('type'),
+          disabled: btn.hasAttribute('disabled'),
+          ariaDisabled: btn.getAttribute('aria-disabled'),
+        });
         btn.removeAttribute('disabled');
         btn.setAttribute('aria-disabled', 'false');
         btn.setAttribute('type', 'button');
         btn.setAttribute('data-waitlist-trigger', '');
       });
+    }
+
+    /* Put every converted button back exactly as the theme rendered it, so
+       whatever the variant change decides next starts from the truth. */
+    restoreConvertedButtons() {
+      document.querySelectorAll('.product-form__submit[data-stw-converted]').forEach((btn) => {
+        let was = {};
+        try { was = JSON.parse(btn.dataset.stwConverted) || {}; } catch (e) {}
+        if (was.type) btn.setAttribute('type', was.type);
+        else btn.removeAttribute('type');
+        if (was.disabled) btn.setAttribute('disabled', '');
+        if (was.ariaDisabled) btn.setAttribute('aria-disabled', was.ariaDisabled);
+        else btn.removeAttribute('aria-disabled');
+        btn.removeAttribute('data-waitlist-trigger');
+        delete btn.dataset.stwConverted;
+      });
+    }
+
+    /* A variant change is the only thing that moves availability. Dawn fires
+       `change` on the variant inputs and re-renders the button, so undo the
+       conversion, let the theme decide, then look again. */
+    watchVariantChanges() {
+      this.onVariantChange = (e) => {
+        if (!e.target.closest || !e.target.closest('form[action*="/cart/add"], variant-radios, variant-selects, product-info')) return;
+        this.restoreConvertedButtons();
+        // After the theme's own re-render, which the product page also waits
+        // ~150ms for (main-product.liquid).
+        clearTimeout(this.reconvertTimer);
+        this.reconvertTimer = setTimeout(() => this.convertSoldOutButton(), 250);
+      };
+      document.addEventListener('change', this.onVariantChange, true);
+
+      // A section re-render replaces the button outright, so its converted
+      // state goes with it; look again at the fresh markup.
+      this.onSectionLoad = () => this.convertSoldOutButton();
+      document.addEventListener('shopify:section:load', this.onSectionLoad);
     }
 
     currentSku(trigger) {

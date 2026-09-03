@@ -12,6 +12,12 @@ bare domain → `main`):
   warehouse availability and the waitlist buttons.
 - `snippets/product-card.liquid` — stock pills (built subfolder-aware).
 - `snippets/delivery-date-buttons.liquid` — per-market date hiding.
+- `snippets/cart-notification-content.liquid` — the cross-sell in the add-to-cart
+  drawer. It read the warehouse off `request.host`, so every market resolved to
+  `main`: the suggestion was checked against the international shelf, which
+  offered a Korean customer strips that are out of stock in Korea and withheld
+  from the ten markets that had them anything `main` had run out of. Its rule
+  `domains` filter was mismatched the same way.
 
 ## Still to do
 
