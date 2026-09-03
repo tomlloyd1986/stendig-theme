@@ -6,11 +6,18 @@
   - variant: {Object} the variant to check
   - parent: {Object} the variant's product
   - current_wh: {String} current warehouse location name, lowercased ('' = none)
+  - wh_open: {Boolean} optional; the warehouse entry's "Sell regardless of
+    stock" is ticked, so this market ignores the out-of-stock lists
 
   Merges custom.oos_warehouses (Flow-maintained) and
   custom.oos_warehouses_manual (human-edited, may contain "all") from both
   product and variant. When no metafield is set, falls back to the
   variant's native availability.
+
+  wh_open answers only the warehouse match, never "all": Flow keeps writing
+  the automatic list from live inventory, so a market opening preorders has
+  to overrule it, but "all" is a person deliberately stopping sales
+  everywhere and outranks a per-market switch.
 {% endcomment %}
 
 {%- liquid
@@ -53,6 +60,8 @@
     assign wh_needle = '||' | append: current_wh | append: '||'
     if oos_str contains '||all||'
       echo ''
+    elsif wh_open
+      echo 'true'
     elsif oos_str contains wh_needle
       echo ''
     else

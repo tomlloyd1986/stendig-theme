@@ -349,7 +349,7 @@
         "id": "warehouses",
         "label": "Warehouses",
         "metaobject_type": "warehouse",
-        "info": "Select every Warehouse entry (create them under Content > Metaobjects > Warehouse). Each entry maps a Shopify location name to the storefront domains it serves; products/variants list out-of-stock location names in their custom.oos_warehouses metafield. When no entries are selected, the legacy market_availability JSON drives the waitlist buttons."
+        "info": "Select every Warehouse entry (create them under Content > Metaobjects > Warehouse). Each entry maps a Shopify location name to the storefront domains it serves; products/variants list out-of-stock location names in their custom.oos_warehouses metafield. When no entries are selected, the legacy market_availability JSON drives the waitlist buttons. Each entry also carries \"Sell regardless of stock\": tick it to offer the buy buttons in that market whatever the out-of-stock lists say — for opening preorders where Shopify cannot see the stock. Flow keeps updating the lists; the market just stops reading them. Untick it once the goods land."
       }
     ]
   },
