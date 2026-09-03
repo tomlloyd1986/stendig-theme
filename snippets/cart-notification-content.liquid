@@ -44,7 +44,10 @@
       for d in wh.domains.value
         assign dd = d | strip | downcase
         if dd == domain_code or dd == host_clean
+          # Cleared and reset together — see stock-state.liquid. Two entries
+          # claiming one market must not split the location from the tick.
           assign current_wh = wh_loc
+          assign wh_open = false
           if wh.sell_regardless.value
             assign wh_open = true
           endif

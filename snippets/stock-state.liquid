@@ -54,7 +54,15 @@
       for wh_d in wh.domains.value
         assign wh_dd = wh_d | strip | downcase
         if wh_dd == wh_mk
+          # Both are reassigned together, and wh_open is cleared first
+          # rather than only ever raised. Two entries can claim one market
+          # — Canada briefly had two, one made by hand and one by the rates
+          # app — and the last match wins the location name. If the flag
+          # merely accumulated, the location could come from one entry and
+          # the permission to sell from the other: a market selling on a
+          # tick belonging to a warehouse it is not reading.
           assign wh_current = wh_loc
+          assign wh_open = false
           if wh.sell_regardless.value
             assign wh_open = true
           endif
