@@ -88,7 +88,10 @@
               # Same market/language/path capture as the signup popup, so
               # every newsletter contact carries them (tags + Brevo fields).
               assign nl_path = routes.root_url
-              assign nl_lang = localization.language.iso_code | downcase
+              # Chinese ships as zh-TW/zh-CN and our copy and campaign branch are
+              # keyed by the bare code, so both collapse onto 'zh'. See the
+              # note in sections/popup-signup.liquid.
+              assign nl_lang = localization.language.iso_code | downcase | split: '-' | first
               assign nl_market = 'primary'
               if nl_path != '/'
                 assign nl_market = nl_path | remove_first: '/' | split: '-' | last | downcase

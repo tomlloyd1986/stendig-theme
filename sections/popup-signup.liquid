@@ -43,7 +43,14 @@
     assign skip = true
   endif
 
-  assign lang_code = localization.language.iso_code | downcase
+  # Chinese ships as zh-TW (and zh-CN), but our own copy and the campaign
+  # branch are keyed by the bare two-letter code -- 'zh' is one slot and
+  # both scripts collapse onto it by design. Left as 'zh-tw' every Chinese
+  # visitor fell through to English copy AND was written to Brevo with
+  # LANGUAGE='zh-tw', which the campaign's language branch does not match
+  # either, so the email was English too. Same normalisation as the cart
+  # stamp in layout/theme.liquid.
+  assign lang_code = localization.language.iso_code | downcase | split: '-' | first
   assign path_prefix = routes.root_url
 
   # Market key derived from the subfolder ('/en-au' -> 'au'); the root

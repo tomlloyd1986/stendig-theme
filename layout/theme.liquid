@@ -251,7 +251,7 @@
               var segs = path.replace(/^\//, '').split('-');
               mkt = segs[segs.length - 1].toLowerCase();
             }
-            var lang = {{ localization.language.iso_code | downcase | json }};
+            var lang = {{ localization.language.iso_code | downcase | split: '-' | first | json }};
             if (path) {
               var lseg = path.replace(/^\//, '').split('-')[0];
               if (lseg) lang = lseg;

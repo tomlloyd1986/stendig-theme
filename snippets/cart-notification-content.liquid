@@ -17,12 +17,25 @@
 {% endcomment %}
 
 {%- liquid
+  # Which market's shelf answers "is this in stock". Markets moved from
+  # subdomains to subfolders, so the code comes from the URL prefix
+  # ("/en-kr" -> "kr") and the bare domain is the primary market. Read off
+  # request.host, as this did, every market resolved to 'main' and the
+  # cross-sell was answered for the international shelf: strips out of stock
+  # in Korea were offered to a Korean customer, and strips out of stock on
+  # 'main' were withheld from the ten markets that had them. A legacy
+  # subdomain hostname still resolves, so an old rule keeps working if such a
+  # domain is hit. Same resolution as stock-state.liquid and
+  # delivery-date-buttons.liquid.
   assign host_clean = request.host | downcase | remove: 'www.'
-  assign host_parts = host_clean | split: '.'
-  if host_parts.size == 2
-    assign domain_code = 'main'
+  assign domain_code = 'main'
+  if routes.root_url != '/'
+    assign domain_code = routes.root_url | remove_first: '/' | split: '-' | last | downcase
   else
-    assign domain_code = host_parts | first
+    assign host_parts = host_clean | split: '.'
+    if host_parts.size > 2
+      assign domain_code = host_parts | first
+    endif
   endif
 
   assign current_wh = ''
