@@ -23,8 +23,18 @@
   # literal percent-brace sequence would terminate this liquid tag early
   # at tokenization.
 
+  # wh_open: the warehouse serving this market has "Sell regardless of
+  # stock" ticked (the warehouse entry's sell_regardless field). Read here,
+  # beside the location name, because it is a property of the same entry.
+  # It is the one thing that can say "in" when Flow's list says "out":
+  # Flow rewrites custom.oos_warehouses from live inventory and keeps
+  # doing so, so an override has to live somewhere Flow never writes.
+  # Canada needed it first — its stock sits in GoBolt's app, so Shopify
+  # sees none and the market could not open preorders.
   assign wh_current = ''
   assign wh_default = ''
+  assign wh_open = false
+  assign wh_default_open = false
   assign wh_mk = 'main'
   if routes.root_url != '/'
     assign wh_mk = routes.root_url | remove_first: '/' | split: '-' | last | downcase
@@ -36,18 +46,25 @@
     endif
     if wh.is_default.value and wh_default == ''
       assign wh_default = wh_loc
+      if wh.sell_regardless.value
+        assign wh_default_open = true
+      endif
     endif
     if wh.domains.value
       for wh_d in wh.domains.value
         assign wh_dd = wh_d | strip | downcase
         if wh_dd == wh_mk
           assign wh_current = wh_loc
+          if wh.sell_regardless.value
+            assign wh_open = true
+          endif
         endif
       endfor
     endif
   endfor
   if wh_current == ''
     assign wh_current = wh_default
+    assign wh_open = wh_default_open
   endif
 
   assign oos_l_ap = product.metafields.custom.oos_warehouses.value
@@ -62,12 +79,18 @@
     assign wh_lists_set = true
   endif
 
+  # wh_all tracks the manual list's 'all' separately from an ordinary
+  # warehouse match, because a market's "sell regardless" may not override
+  # it: 'all' is somebody deliberately stopping sales everywhere, and a
+  # per-market preorder switch is a smaller statement than that.
   assign wh_out = false
+  assign wh_all = false
   if wh_lists_set
     for w in oos_l_mp
       assign wq = w | strip | downcase
       if wq == 'all'
         assign wh_out = true
+        assign wh_all = true
       elsif wh_current != '' and wq == wh_current
         assign wh_out = true
       endif
@@ -76,6 +99,7 @@
       assign wq = w | strip | downcase
       if wq == 'all'
         assign wh_out = true
+        assign wh_all = true
       elsif wh_current != '' and wq == wh_current
         assign wh_out = true
       endif
@@ -113,6 +137,7 @@
           assign wq = w | strip | downcase
           if wq == 'all'
             assign pv_is_out = true
+            assign wh_all = true
           elsif wh_current != '' and wq == wh_current
             assign pv_is_out = true
           endif
@@ -132,6 +157,14 @@
       endif
     endif
   endunless
+
+  # The override, applied once every list has been read. Flow keeps writing
+  # custom.oos_warehouses from live inventory and this does not stop it —
+  # the market simply stops listening to it. So when the goods land and the
+  # tick comes off, the list is already correct and there is nothing to undo.
+  if wh_open and wh_all == false
+    assign wh_out = false
+  endif
 
   assign stock_state = ''
   if wh_lists_set

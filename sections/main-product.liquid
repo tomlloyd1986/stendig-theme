@@ -2297,6 +2297,27 @@
   {%- endfor %}
   window.defaultWarehouse = {{ default_warehouse | json }} || null;
 
+  {% comment %}
+    Warehouses with "Sell regardless of stock" ticked, by location name.
+    A market in here ignores the out-of-stock lists and offers the buy
+    buttons — the switch for opening preorders where Shopify cannot see
+    the stock. Canada is the case it was built for: its inventory lives in
+    GoBolt's own app, so Shopify reads zero and Flow marks it out however
+    much is on the way.
+
+    It does NOT stop Flow, and is not meant to. Flow carries on rewriting
+    custom.oos_warehouses from live inventory; this market just stops
+    listening. Untick it when the goods land and the list is already right.
+  {% endcomment %}
+  window.openWarehouses = {
+    {%- for wh in settings.warehouses -%}
+      {%- assign wh_location = wh.location.value | strip | downcase -%}
+      {%- if wh_location != blank and wh.sell_regardless.value %}
+    {{ wh_location | json }}: true,
+      {%- endif -%}
+    {%- endfor %}
+  };
+
   window.currentWarehouse = (function() {
     // Markets moved from subdomains (au.stendigcalendars.com) to
     // subfolders (/en-au/...): resolve by the subfolder's market suffix
@@ -2348,6 +2369,13 @@
     if (manual.includes('all')) return false;
 
     if (!window.currentWarehouse) return null;
+
+    // "Sell regardless of stock" on this market's warehouse entry. Checked
+    // after 'all' and before the lists: 'all' is a deliberate stop
+    // everywhere and outranks it, but Flow's per-warehouse list does not —
+    // opening preorders means overruling exactly that list.
+    if (window.openWarehouses && window.openWarehouses[window.currentWarehouse]) return true;
+
     if (autoProduct === null && autoVariant === null && manualProduct === null && manualVariant === null) return null;
 
     const oos = (autoProduct || []).concat(autoVariant || []).concat(manual);

@@ -27,6 +27,8 @@
 
   assign current_wh = ''
   assign default_wh = ''
+  assign wh_open = false
+  assign default_wh_open = false
   for wh in settings.warehouses
     assign wh_loc = wh.location.value | strip | downcase
     if wh_loc == blank
@@ -34,18 +36,25 @@
     endif
     if wh.is_default.value and default_wh == ''
       assign default_wh = wh_loc
+      if wh.sell_regardless.value
+        assign default_wh_open = true
+      endif
     endif
     if wh.domains.value
       for d in wh.domains.value
         assign dd = d | strip | downcase
         if dd == domain_code or dd == host_clean
           assign current_wh = wh_loc
+          if wh.sell_regardless.value
+            assign wh_open = true
+          endif
         endif
       endfor
     endif
   endfor
   if current_wh == ''
     assign current_wh = default_wh
+    assign wh_open = default_wh_open
   endif
 -%}
 
@@ -120,7 +129,7 @@
       assign avail_ids = ''
       for variant in sp.variants
         capture v_ok
-          render 'warehouse-variant-available', variant: variant, parent: sp, current_wh: current_wh
+          render 'warehouse-variant-available', variant: variant, parent: sp, current_wh: current_wh, wh_open: wh_open
         endcapture
         if v_ok contains 'true'
           assign avail_ids = avail_ids | append: variant.id | append: ','
