@@ -43,9 +43,16 @@ if (!metaBlock) throw new Error('colorOptionMeta is no longer where this spike l
 const colourOption = (productOptions) =>
   new Function('productOptions', `${metaBlock[0]}; return colorOptionMeta`)(productOptions)
 
+const aliasBlock = /const COLOUR_ALIASES = \{[\s\S]*?\n  \};/.exec(src)
+if (!aliasBlock) throw new Error('COLOUR_ALIASES is no longer where this spike looks for it')
+const canonBlock = /const canonicalColour = \(value\) => \{[\s\S]*?\n  \};/.exec(src)
+if (!canonBlock) throw new Error('canonicalColour is no longer where this spike looks for it')
 const thumbBlock = /const updateThumbnails = \(targetProduct, colorValue\) => \{[\s\S]*?\n  \};/.exec(src)
 if (!thumbBlock) throw new Error('updateThumbnails is no longer where this spike looks for it')
-const updateThumbnails = new Function(`${thumbBlock[0]}; return updateThumbnails`)()
+
+const prelude = `${aliasBlock[0]}\n${canonBlock[0]}`
+const canonicalColour = new Function(`${prelude}; return canonicalColour`)()
+const updateThumbnails = new Function(`${prelude}\n${thumbBlock[0]}; return updateThumbnails`)()
 
 /* ---------- the smallest DOM these two actually touch ---------- */
 
@@ -102,14 +109,15 @@ const ALTS = ['Stendig Red front', 'Stendig Red detail', 'Stendig Black front']
   else ok('the matching colourway is filtered to, as it always did')
 }
 
-/* The translated value against untranslated alt text. Nothing matches, and the
-   page must not end up with no pictures. */
+/* The translated value against untranslated alt text — the case that hid every
+   image. It now names the colourway and filters to it, exactly as English does:
+   two red photographs out of three, not none and not all. */
 {
   const { el, items } = productEl(ALTS)
   updateThumbnails(el, 'Rot')
   if (shown(items) === 0) faults.push('a translated colour value hid EVERY image — the page has no pictures at all')
-  else if (shown(items) !== ALTS.length) faults.push(`nothing matched, so every image shows; ${shown(items)} of ${ALTS.length} did`)
-  else ok('a value in a language the alt text does not speak shows every image, never none')
+  else if (shown(items) !== 2) faults.push(`"Rot" filters to the two red photographs; ${shown(items)} of ${ALTS.length} were shown`)
+  else ok('a translated value filters to its own colourway, like English does')
 }
 
 /* No colour selected at all: unchanged, everything shows. */
@@ -127,6 +135,64 @@ const ALTS = ['Stendig Red front', 'Stendig Red detail', 'Stendig Black front']
   updateThumbnails(el, 'Yellow')
   if (shown(items) !== ALTS.length) faults.push(`a colourway with no images of its own shows the rest; ${shown(items)} shown`)
   else ok('a colourway with no photographs of its own shows the product’s, not a blank gallery')
+}
+
+/* ---------- 3. every value the shop actually shows ---------- */
+/* Taken from the live product pages, one screenshot per storefront. These are
+   the strings the filter is handed; each has to name its colourway. */
+const LIVE = {
+  en: { 'Red': 'red', 'Double Blue': 'double blue', 'Light Blue': 'light blue', 'Black': 'black', 'White': 'white' },
+  fr: { 'Rouge': 'red', 'Bleu double': 'double blue', 'Bleu clair': 'light blue', 'Noir': 'black', 'Blanc': 'white' },
+  de: { 'Rot': 'red', 'Doppelblau': 'double blue', 'Hellblau': 'light blue', 'Schwarz': 'black', 'Weiß': 'white' },
+  it: { 'Rosso': 'red', 'Blu doppio': 'double blue', 'Azzurro': 'light blue', 'Nero': 'black', 'Bianco': 'white' },
+  es: { 'Rojo': 'red', 'Doble azul': 'double blue', 'Azul claro': 'light blue', 'Negro': 'black', 'Blanco': 'white' },
+  ja: { '赤': 'red', 'ダブルブルー': 'double blue', 'ライトブルー': 'light blue', '黒': 'black', '白': 'white' },
+  ko: { '빨간색': 'red', '더블 블루': 'double blue', '라이트 블루': 'light blue', '검은색': 'black', '하얀색': 'white' },
+  'zh-TW': { '紅色的': 'red', '雙藍色': 'double blue', '淺藍色': 'light blue', '黑色的': 'black', '白色的': 'white' },
+}
+for (const [lang, values] of Object.entries(LIVE)) {
+  for (const [shown, want] of Object.entries(values)) {
+    const got = canonicalColour(shown)
+    if (got !== want) faults.push(`${lang}: "${shown}" names ${JSON.stringify(want)}, but resolved to ${JSON.stringify(got)}`)
+  }
+}
+ok(`every colourway on all ${Object.keys(LIVE).length} storefronts names its English word`)
+
+/* The one pair that can collide: both blues carry the word for "blue" in most
+   of these languages, so a loose match must never answer one with the other. */
+for (const [lang, values] of Object.entries(LIVE)) {
+  const dbl = Object.keys(values).find((k) => values[k] === 'double blue')
+  const lgt = Object.keys(values).find((k) => values[k] === 'light blue')
+  if (canonicalColour(dbl) === canonicalColour(lgt))
+    faults.push(`${lang}: "${dbl}" and "${lgt}" resolved to the same colourway`)
+}
+ok('the two blues are never confused for one another')
+
+/* A value carrying a season or a suffix still names its colourway. */
+for (const [shown, want] of [['Rot – 2027', 'red'], ['Bleu double (2027)', 'double blue'], ['Light Blue 2027', 'light blue']]) {
+  const got = canonicalColour(shown)
+  if (got !== want) faults.push(`a suffixed value must still name its colourway: "${shown}" gave ${JSON.stringify(got)}`)
+}
+ok('a value carrying a season or a suffix still names its colourway')
+
+/* And the filter end to end: a German shopper picking Hellblau sees the light
+   blue photographs, which is the whole point. */
+{
+  const alts = ['V Calendar Light Blue front', 'V Calendar Light Blue detail', 'V Calendar Double Blue front', 'V Calendar Red front']
+  const { el, items } = productEl(alts)
+  updateThumbnails(el, 'Hellblau')
+  const visible = items.filter((i) => i.style.display !== 'none').length
+  if (visible !== 2) faults.push(`Hellblau shows the two light blue photographs; ${visible} of ${alts.length} were shown`)
+  else ok('a German shopper picking Hellblau sees the light blue photographs, not all four')
+}
+
+/* An unlisted colourway still degrades to the whole gallery rather than none. */
+{
+  const { el, items } = productEl(['V Calendar Red front'])
+  updateThumbnails(el, 'Türkis')
+  if (items.filter((i) => i.style.display !== 'none').length !== 1)
+    faults.push('a colourway nobody has listed must still show the gallery, not empty it')
+  else ok('a colourway nobody has listed shows the gallery rather than emptying it')
 }
 
 if (faults.length) {

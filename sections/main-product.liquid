@@ -3791,13 +3791,68 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   })();
 
+  /* The colourway a translated option value names.
+   *
+   * Media alt text is typed once, in English, in Shopify's media library; the
+   * option value is translated on every storefront but the English ones. So
+   * "Rot" had to be matched against an alt saying "Red", and was not — the
+   * filter hid every image instead.
+   *
+   * Alt text COULD be translated in Shopify instead, but that is a translation
+   * per image per language, redone every season as photographs are replaced,
+   * and silently wrong the moment one is missed. This is seven lines that need
+   * touching only when a colourway is added.
+   *
+   * The vocabulary comes from the alias lists the variant-disabling block used
+   * (further up this file, long since commented out). What it never had is
+   * Japanese and both of the 2027 blues, which is most of what is needed here.
+   *
+   * The keys are the English words the alt text actually uses. Matching is
+   * EXACT before it is loose, and the loose pass runs longest-alias-first, so
+   * "bleu double" cannot be answered by "bleu" — the two blues are the one
+   * pair in this list that can collide. */
+  const COLOUR_ALIASES = {
+    "red": ["rouge", "rot", "rosso", "rossa", "rojo", "roja", "赤", "빨간색", "紅色的", "rød", "rood"],
+    "white": ["blanc", "blanche", "weiß", "weiss", "bianco", "bianca", "blanco", "blanca", "白", "하얀색", "白色的", "wit", "hvid"],
+    "black": ["noir", "noire", "schwarz", "nero", "nera", "negro", "negra", "黒", "黑", "검은색", "黑色的", "sort", "zwart"],
+    "double blue": ["bleu double", "doppelblau", "blu doppio", "doble azul", "ダブルブルー", "더블 블루", "雙藍色"],
+    "light blue": ["bleu clair", "hellblau", "azzurro", "azul claro", "ライトブルー", "라이트 블루", "淺藍色"],
+    "yellow": ["jaune", "gelb", "giallo", "gialla", "amarillo", "amarilla", "黄", "노란색", "黃色的", "gul", "geel"]
+  };
+
+  const canonicalColour = (value) => {
+    const v = (value || "").trim().toLowerCase();
+    if (!v) return "";
+    const pairs = Object.keys(COLOUR_ALIASES).map((k) => [k, COLOUR_ALIASES[k]]);
+    for (const [canonical, aliases] of pairs) {
+      if (v === canonical || aliases.indexOf(v) !== -1) return canonical;
+    }
+    /* A value carrying a suffix — "Rot – 2027" — still names its colourway.
+       Longest first, or "Bleu double" is answered by nothing and "Bleu clair"
+       by whichever blue happened to be listed first. */
+    const loose = [];
+    for (const [canonical, aliases] of pairs) {
+      loose.push([canonical, canonical]);
+      for (const a of aliases) loose.push([a, canonical]);
+    }
+    loose.sort((a, b) => b[0].length - a[0].length);
+    for (const [needle, canonical] of loose) {
+      if (v.includes(needle)) return canonical;
+    }
+    /* A colourway nobody has listed: matched on its own words, as before. The
+       no-match guard below is what stops that emptying the gallery. */
+    return v;
+  };
+
   const updateThumbnails = (targetProduct, colorValue) => {
     if (!targetProduct) return;
 
     const prdThumbnails = targetProduct.querySelectorAll(
       ".product__media-wrapper .product__media-item"
     );
-    const selectedColor = (colorValue || "").trim().toLowerCase();
+    /* Resolved to the English word the alt text uses, so a translated value
+       matches the photographs it names. */
+    const selectedColor = canonicalColour(colorValue);
 
     const altOf = (curImg) =>
       (curImg.dataset.mediaAlt || curImg.querySelector("img")?.alt || "")
