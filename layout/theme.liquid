@@ -236,14 +236,23 @@
                - CART attributes, which an order placed through the cart or the
                  add-to-cart drawer carries; and
                - hidden LINE ITEM properties on every product form, which is
-                 all an EXPRESS checkout carries. Buy it now, Shop Pay, PayPal,
-                 Apple Pay and Google Pay build a checkout straight from the
-                 product form and never touch the cart, so a cart attribute
-                 cannot exist on one of those orders however well it was
-                 written. Buy it now is on every product template, drawn as a
-                 full-width button under Add to cart, so this was never a rare
-                 route — it is why some orders reached Brevo with a market, a
-                 language and a path while others arrived bare.
+                 all an EXPRESS checkout carries. The branded wallet buttons
+                 under the product form — Shop Pay, PayPal, Apple Pay, Google
+                 Pay, rendered by the payment_button filter inside
+                 .custom-payment-btn — build a checkout straight from that form
+                 and never touch the cart, so a cart attribute cannot exist on
+                 one of those orders however well it was written. Dynamic
+                 checkout is on in all four product templates, so this was
+                 never a rare route: it is why some orders reached Brevo with a
+                 market, a language and a path while others arrived bare.
+
+                 (The theme's own "Buy it now" text button beside them is NOT
+                 that route today. It carries class ctm-buy-btn while the
+                 handler that proxies it to the wallet button looks for
+                 ctm_buy_it_now, which nothing carries — so, being a bare
+                 <button> inside the form, it submits as an ordinary add to
+                 cart. That is a separate defect; the wallet button beside it
+                 is the express route either way.)
 
              The properties also settle a race the attributes have on their
              own: an attribute only sticks to a cart that HAS ITEMS, so the

@@ -29,14 +29,22 @@ Two carriers, because neither one reaches every order.
 
 ## Why one carrier was not enough
 
-Buy it now, Shop Pay, PayPal, Apple Pay and Google Pay build a checkout
-straight from the product form. They never touch the cart, so a cart attribute
-cannot exist on one of those orders however well it was written. Buy it now is
-enabled on every product template and drawn as a full-width button directly
-under Add to cart, so this is not a rare route: **every express-checkout order
-reached Brevo with no market, no language and no path**, while every order that
-went through the cart was fine. That is the "some but not all" the markers were
-missing on.
+The branded wallet buttons under the product form — Shop Pay, PayPal, Apple
+Pay, Google Pay, rendered by `{{ form | payment_button }}` inside
+`.custom-payment-btn` — build a checkout straight from that form. They never
+touch the cart, so a cart attribute cannot exist on one of those orders however
+well it was written. Dynamic checkout is enabled in all four product templates,
+so this is not a rare route: **every express-checkout order reached Brevo with
+no market, no language and no path**, while every order that went through the
+cart was fine. That is the "some but not all" the markers were missing on.
+
+> The theme's own **"Buy it now"** text button beside them is not that route
+> today, and this is worth fixing separately. It carries class `ctm-buy-btn`,
+> while the handler meant to proxy it to the wallet button
+> (`sections/main-product.liquid`) looks for `ctm_buy_it_now` — a class nothing
+> carries. Being a bare `<button>` inside the product form it therefore submits
+> as an ordinary add to cart, so the button labelled Buy it now opens the cart
+> drawer instead of checkout.
 
 The properties fix a second, smaller hole at the same time. A cart attribute
 only sticks to a cart that has items, so the first write has to wait for the
