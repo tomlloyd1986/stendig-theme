@@ -3752,11 +3752,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const productOptions = {{ product.options_with_values | json }};
+  /* Which option is the colourway.
+   *
+   * The name is TRANSLATED on every storefront but the English ones — "Farbe",
+   * "カラー", "顏色" — so a search for "color"/"colour" found nothing, the whole
+   * block returned early, and the thumbnails were never filtered at all on any
+   * translated page. English worked, so it looked correct wherever it was
+   * checked.
+   *
+   * So the name is tried first (it still reads best where it works, and picks
+   * the right option on a product that has several), and a product with EXACTLY
+   * ONE option falls back to that option whatever it is called. One option is
+   * the shape every product here has — the schema note above says as much — and
+   * the fallback is deliberately not "the first of several": on a product with
+   * Size first, that would filter the images by size.
+   *
+   * `product.options_with_values.first.name` is the same reading the
+   * variant-disabling block above already relies on for the same reason. */
   const colorOptionMeta = (() => {
-    const match = productOptions.find((option) => {
-      const name = option.name.toLowerCase();
+    const named = productOptions.find((option) => {
+      const name = (option.name || "").toLowerCase();
       return name.includes("color") || name.includes("colour");
     });
+    const match = named || (productOptions.length === 1 ? productOptions[0] : null);
 
     if (match) {
       return {
@@ -3780,15 +3798,34 @@ document.addEventListener('DOMContentLoaded', () => {
       ".product__media-wrapper .product__media-item"
     );
     const selectedColor = (colorValue || "").trim().toLowerCase();
+
+    const altOf = (curImg) =>
+      (curImg.dataset.mediaAlt || curImg.querySelector("img")?.alt || "")
+        .trim()
+        .toLowerCase();
+
+    /* The alt text is typed once in Shopify's media library and is almost never
+     * translated; the option VALUE is, wherever somebody has translated it. So
+     * on such a storefront "rot" matches no alt saying "red" and the filter
+     * hides EVERY image — a product page with no pictures at all, which is a
+     * worse failure than not filtering.
+     *
+     * Matching cannot be fixed from here: nothing in Liquid gives the value in
+     * the language the alt was written in. What can be fixed is the way it
+     * fails. Nothing matched means the two vocabularies do not meet, so show
+     * the lot — the pictures are all of this product, just not narrowed. */
+    const anyMatch =
+      !selectedColor ||
+      Array.prototype.some.call(prdThumbnails, (curImg) =>
+        altOf(curImg).includes(selectedColor)
+      );
+
     let firstVisible = false;
 
     prdThumbnails.forEach((curImg) => {
-      const mediaAlt =
-        (curImg.dataset.mediaAlt ||
-          curImg.querySelector("img")?.alt ||
-          "").trim().toLowerCase();
+      const mediaAlt = altOf(curImg);
 
-      const isMatch = selectedColor ? mediaAlt.includes(selectedColor) : true;
+      const isMatch = anyMatch ? mediaAlt.includes(selectedColor) : true;
 
       if (isMatch) {
         curImg.style.display = "block";
