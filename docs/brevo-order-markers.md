@@ -4,9 +4,29 @@ A contact in Brevo carries `MARKET`, `LANGUAGE` and `PATH`. On a **signup**
 they are filled by the form itself — the popup, the waitlist and the footer
 newsletter all POST them to Brevo alongside the email address.
 
-On an **order** they arrive a longer way round: the theme writes them onto the
-order, Shopify Flow reads them off it, and Flow updates the contact in Brevo.
-That is the path that was losing them.
+On an **order** they have to arrive a longer way round: the theme writes them
+onto the order, Shopify Flow reads them off it, and Flow updates the contact in
+Brevo. That is the path that was losing them.
+
+**Whether that Flow exists has not been confirmed from here.** The only record
+of it in this repo is one sentence in `layout/theme.liquid` saying the
+attributes are written "for Shopify Flow to forward to Brevo" — a statement of
+intent by whoever wrote the stamping code, not proof that the workflow was
+built. Check before editing anything: **Shopify admin → Apps → Flow →
+Workflows**, looking for one on Order created or Order paid that sends to
+`api.brevo.com`.
+
+If it is there, edit it. Two workflows writing the same three attributes race
+each other and whichever finishes last wins, which is a fault nothing on the
+contact would explain.
+
+If it is NOT there, then no order has ever set these, and the contacts that DO
+carry markers got them from a **signup form** rather than from a purchase — the
+popup, the waitlist and the footer all POST them directly. That reading fits
+the same "some but not all" symptom exactly: everyone who signed up before they
+bought is marked, everyone who only ever bought is bare. Either way the theme
+change stands and the workflow below is what completes it; only "edit" versus
+"create" changes.
 
 ## What the theme puts on an order
 
@@ -54,10 +74,11 @@ wait for.
 
 ## What Shopify Flow has to do
 
-The Flow that forwards these to Brevo reads the cart attributes today. It needs
-to fall back to the line item's when the order's own are empty. Until it does,
-express-checkout orders keep arriving bare — the theme is writing the markers,
-but nothing is picking them up.
+A Flow that forwards these to Brevo can only have been reading the cart
+attributes, because until now they were the only carrier. It needs to fall back
+to the line item's when the order's own are empty. Until it does — or until the
+workflow exists at all — express-checkout orders keep arriving bare: the theme
+is writing the markers, but nothing is picking them up.
 
 The basket is read FIRST and the line only as a fallback, in that order and not
 the other way round. The basket's attributes say where the shopper was when
@@ -69,8 +90,9 @@ through a product form.
 
 ### The workflow
 
-**Trigger** — Order created (or Order paid, whichever the existing Flow uses;
-leave it as it is).
+**Trigger** — Order created. If a workflow is already there, leave its trigger
+as it is; Order paid is equally fine, and switching it changes when contacts
+update for no gain.
 
 **Condition** — `Order → Email` *is not empty*. An order with no email address
 has no contact to update, and Brevo refuses the call.
