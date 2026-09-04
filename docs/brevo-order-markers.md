@@ -55,16 +55,85 @@ wait for.
 ## What Shopify Flow has to do
 
 The Flow that forwards these to Brevo reads the cart attributes today. It needs
-to fall back to the line item's when the order's own are empty — take the first
-line that has them, since every line on an order carries the same three:
+to fall back to the line item's when the order's own are empty. Until it does,
+express-checkout orders keep arriving bare — the theme is writing the markers,
+but nothing is picking them up.
 
-```
-order.customAttributes        → if empty, use
-order.lineItems[0].customAttributes
+The basket is read FIRST and the line only as a fallback, in that order and not
+the other way round. The basket's attributes say where the shopper was when
+they checked out; a line's say where they were when they added THAT item, which
+stops being the same thing the moment somebody changes language mid-visit. The
+basket is also the only one of the two that a line the drawer's cross-sell
+added carries at all, because that add posts straight to the cart rather than
+through a product form.
+
+### The workflow
+
+**Trigger** — Order created (or Order paid, whichever the existing Flow uses;
+leave it as it is).
+
+**Condition** — `Order → Email` *is not empty*. An order with no email address
+has no contact to update, and Brevo refuses the call.
+
+**Action** — Send HTTP request.
+
+| | |
+|---|---|
+| Method | `POST` |
+| URL | `https://api.brevo.com/v3/contacts` |
+| Headers | `api-key: <your Brevo v3 API key>`, `content-type: application/json`, `accept: application/json` |
+
+### The body, to paste in whole
+
+```liquid
+{%- assign st_path = '' -%}
+{%- assign st_market = '' -%}
+{%- assign st_lang = '' -%}
+{%- assign found = false -%}
+
+{%- comment -%} 1. The basket's own attributes — an order that went through the cart or the drawer. {%- endcomment -%}
+{%- for a in order.customAttributes -%}
+  {%- if a.key == '_st_market' and a.value != blank -%}{%- assign st_market = a.value -%}{%- assign found = true -%}{%- endif -%}
+  {%- if a.key == '_st_lang' and a.value != blank -%}{%- assign st_lang = a.value -%}{%- endif -%}
+  {%- if a.key == '_st_path' and a.value != blank -%}{%- assign st_path = a.value -%}{%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} 2. Nothing on the basket — an express checkout. Read it off the line instead. {%- endcomment -%}
+{%- unless found -%}
+  {%- for li in order.lineItems -%}
+    {%- for a in li.customAttributes -%}
+      {%- if a.key == '_st_market' and a.value != blank -%}{%- assign st_market = a.value -%}{%- assign found = true -%}{%- endif -%}
+      {%- if a.key == '_st_lang' and a.value != blank -%}{%- assign st_lang = a.value -%}{%- endif -%}
+      {%- if a.key == '_st_path' and a.value != blank -%}{%- assign st_path = a.value -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endunless -%}
+
+{%- assign contact_email = order.email -%}
+{%- if contact_email == blank -%}{%- assign contact_email = order.customer.email -%}{%- endif -%}
+{%- if found -%}
+{"email":{{ contact_email | json }},"updateEnabled":true,"attributes":{"MARKET":{{ st_market | json }},"LANGUAGE":{{ st_lang | json }},"PATH":{{ st_path | json }}}}
+{%- else -%}
+{"email":{{ contact_email | json }},"updateEnabled":true}
+{%- endif -%}
 ```
 
-Until Flow reads the second one, express-checkout orders keep arriving bare —
-the theme is writing the markers, but nothing is picking them up.
+Three things in there are deliberate, and each one is a way this can go wrong:
+
+- **An order carrying nothing sends no attributes at all.** A POS sale, a draft
+  order, or a basket built before this shipped has none of the three. Sending
+  them as empty strings would wipe whatever the contact already had — the
+  markers a signup put there months ago included. The `found` flag is what
+  stops that: with nothing to say, the call says nothing.
+- **`PATH` is sent even when it is empty**, as long as something else was
+  found. That is the primary market, where an empty path is the right answer.
+- **`updateEnabled: true`** makes this a create-or-update. Brevo's own Shopify
+  integration has usually created the contact by the time this runs; the flag
+  is what stops the call failing when it has not.
+
+If Flow rejects the `json` filter, the three values are all our own — `de`,
+`en`, `/en-de` — so plain quotes work: `"MARKET":"{{ st_market }}"`. Keep
+`json` on the email, which is the one field a stranger supplies.
 
 ## Reading a blank PATH
 
@@ -86,8 +155,14 @@ or a page builder), what the cart write carries, and that a slow add is still
 caught.
 
 ```sh
-cd docs/spikes && npm i jsdom && node market-stamp.mjs
+cd docs/spikes && npm i jsdom liquidjs
+node market-stamp.mjs        # the theme's half — what lands on the order
+node brevo-flow-body.mjs     # the Flow's half — read out of the block above
 ```
+
+`brevo-flow-body.mjs` renders the Liquid block in **this file** against every
+shape of order the store produces, so the pin cannot drift away from the text
+that is actually pasted in.
 
 What it cannot prove is Shopify's own behaviour — that a hidden line item
 property survives an express checkout. That is the same behaviour the
