@@ -1,10 +1,10 @@
 /**
  * Renders the Shopify Flow request body OUT OF THE DOC — the ```liquid block
- * in docs/brevo-order-markers.md, which is the text that gets pasted into the
- * Flow action — against every shape of order the store produces.
+ * under "The whole body, after the insert" in docs/brevo-order-markers.md,
+ * which is the text the live Flow action holds — against every shape of order
+ * the store produces.
  *
- * The doc is the source, so the pin cannot drift away from what is actually
- * pasted in.
+ * The doc is the source, so the pin cannot drift away from what is running.
  *
  * ESM resolves packages from the file's own directory, so liquidjs has to be
  * reachable from here:
@@ -12,26 +12,30 @@
  *
  * liquidjs is not Shopify Liquid and Flow is not either of them; what this
  * proves is that every branch renders valid JSON carrying the right values —
- * in particular that an order carrying nothing sends no attributes at all
- * rather than blanking the ones the contact already has.
+ * above all that adding the line-item fallback changes ONLY the express
+ * checkouts and leaves every other order exactly as it was.
  */
 import { Liquid } from 'liquidjs'
 import { readFileSync } from 'node:fs'
 
 const doc = readFileSync(new URL('../brevo-order-markers.md', import.meta.url), 'utf8')
-const open = doc.indexOf('```liquid')
+const heading = doc.indexOf('### The whole body, after the insert')
+if (heading < 0) throw new Error('the whole-body section is not in the doc')
+const open = doc.indexOf('```liquid', heading)
 const close = doc.indexOf('```', open + 9)
 if (open < 0 || close < 0) throw new Error('the liquid block is not in the doc')
 const tpl = doc.slice(open + '```liquid'.length, close)
 
 const engine = new Liquid()
-// Shopify's own filter, which Flow has and liquidjs does not.
-engine.registerFilter('json', (v) => JSON.stringify(v === undefined || v === null ? '' : v))
+// Shopify's own filter, which Flow has and liquidjs does not. nil renders as
+// `null` exactly as Shopify's does — the one weakness the doc writes down.
+engine.registerFilter('json', (v) => JSON.stringify(v === undefined || v === null ? null : v))
 
 const attr = (key, value) => ({ key, value })
 const stamped = (path, market, lang) =>
-  path ? [attr('_st_path', path), attr('_st_market', market), attr('_st_lang', lang)]
-       : [attr('_st_market', market), attr('_st_lang', lang)]
+  path
+    ? [attr('_st_path', path), attr('_st_market', market), attr('_st_lang', lang)]
+    : [attr('_st_market', market), attr('_st_lang', lang)]
 
 let failed = 0
 const check = (name, ok, extra = '') => {
@@ -39,88 +43,102 @@ const check = (name, ok, extra = '') => {
   if (!ok) failed++
 }
 
-async function body(order) {
+async function sent(order) {
   const out = (await engine.parseAndRender(tpl, { order })).trim()
-  return { out, json: JSON.parse(out) }
+  const json = JSON.parse(out)
+  const a = json.attributes || {}
+  return { json, market: a.MARKET, lang: a.LANGUAGE, path: a.PATH, silent: a.MARKET === undefined }
 }
 
-// 1. Through the cart, on a subfolder market. The ordinary case, unchanged.
+// 1. Through the cart. The case that already worked, which the insert must
+//    leave alone — it is every order the shop has been getting right.
 {
-  const { json } = await body({
+  const de = await sent({
     email: 'h@x.co.uk',
     customAttributes: stamped('/en-de', 'de', 'en'),
     lineItems: [{ customAttributes: stamped('/en-de', 'de', 'en') }],
   })
-  check('a cart order carries all three', JSON.stringify(json.attributes) === JSON.stringify({ MARKET: 'de', LANGUAGE: 'en', PATH: '/en-de' }), JSON.stringify(json))
+  check('a cart order still carries all three', de.market === 'de' && de.lang === 'en' && de.path === '/en-de', JSON.stringify(de.json))
+
+  const home = await sent({
+    email: 'h@x.co.uk',
+    customAttributes: stamped('', 'primary', 'en'),
+    lineItems: [{ customAttributes: [] }],
+  })
+  check('a cart order on the bare domain is unchanged', home.market === 'primary' && home.path === '', JSON.stringify(home.json))
 }
 
 // 2. An express checkout: nothing on the basket, everything on the line. The
-//    case the whole change exists for.
+//    case the whole change exists for, and the one that sent nothing before.
 {
-  const { json } = await body({
+  const de = await sent({
     email: 'h@x.co.uk',
     customAttributes: [],
     lineItems: [{ customAttributes: stamped('/en-de', 'de', 'en') }],
   })
-  check('an express order is read off the line', json.attributes && json.attributes.MARKET === 'de' && json.attributes.PATH === '/en-de', JSON.stringify(json))
-}
+  check('an express order is read off the line', de.market === 'de' && de.path === '/en-de', JSON.stringify(de.json))
 
-// 3. The primary market, either way in: no path anywhere, and an empty PATH is
-//    the right answer rather than a missing one.
-{
-  const cart = await body({ email: 'h@x.co.uk', customAttributes: stamped('', 'primary', 'en'), lineItems: [{ customAttributes: [] }] })
-  const express = await body({ email: 'h@x.co.uk', customAttributes: [], lineItems: [{ customAttributes: stamped('', 'primary', 'en') }] })
-  check('the primary market sends an empty path, not a missing one', cart.json.attributes.PATH === '' && cart.json.attributes.MARKET === 'primary', JSON.stringify(cart.json))
-  check('…by either route', express.json.attributes.PATH === '' && express.json.attributes.MARKET === 'primary', JSON.stringify(express.json))
-}
-
-// 4. The basket wins where the two disagree — somebody who changed language
-//    mid-visit checked out on the second one.
-{
-  const { json } = await body({
+  const home = await sent({
     email: 'h@x.co.uk',
-    customAttributes: stamped('/fr-ch', 'ch', 'fr'),
-    lineItems: [{ customAttributes: stamped('/en-ch', 'ch', 'en') }],
+    customAttributes: [],
+    lineItems: [{ customAttributes: stamped('', 'primary', 'en') }],
   })
-  check('the basket is what checkout said', json.attributes.LANGUAGE === 'fr' && json.attributes.PATH === '/fr-ch', JSON.stringify(json))
+  check('an express order on the bare domain says primary, path empty', home.market === 'primary' && home.path === '', JSON.stringify(home.json))
 }
 
-// 5. A line the drawer's cross-sell added carries nothing — it posts straight
+// 3. A line the drawer's cross-sell added carries nothing — it posts straight
 //    to the cart rather than through a product form. Another line answers.
 {
-  const { json } = await body({
+  const kr = await sent({
     email: 'h@x.co.uk',
     customAttributes: [],
     lineItems: [{ customAttributes: [] }, { customAttributes: stamped('/en-kr', 'kr', 'en') }],
   })
-  check('a bare line does not stop the next one answering', json.attributes.MARKET === 'kr', JSON.stringify(json))
+  check('a bare line does not stop the next one answering', kr.market === 'kr', JSON.stringify(kr.json))
 }
 
-// 6. An order carrying nothing at all — a POS sale, a draft order, a basket
-//    built before this shipped. It must send NO attributes: empty strings
-//    would wipe the markers a signup put on the contact months ago.
+// 4. The basket wins where the two disagree — somebody changed language
+//    mid-visit, and checkout is what they meant.
 {
-  const { json } = await body({ email: 'h@x.co.uk', customAttributes: [], lineItems: [{ customAttributes: [] }] })
-  check('an unstamped order blanks nothing', !('attributes' in json), JSON.stringify(json))
-  check('…and still names the contact', json.email === 'h@x.co.uk' && json.updateEnabled === true, JSON.stringify(json))
-}
-
-// 7. The email falls back to the customer's, and is JSON-escaped — the one
-//    field on this request a stranger supplies.
-{
-  const { json } = await body({
-    email: '',
-    customer: { email: 'h@x.co.uk' },
-    customAttributes: stamped('/en-de', 'de', 'en'),
-    lineItems: [],
+  const ch = await sent({
+    email: 'h@x.co.uk',
+    customAttributes: stamped('/fr-ch', 'ch', 'fr'),
+    lineItems: [{ customAttributes: stamped('/en-ch', 'ch', 'en') }],
   })
-  check("an order with no email uses the customer's", json.email === 'h@x.co.uk', JSON.stringify(json))
-  const odd = await body({
+  check('the basket is what checkout said', ch.lang === 'fr' && ch.path === '/fr-ch', JSON.stringify(ch.json))
+}
+
+// 5. An order carrying nothing at all — a POS sale, a draft order, a basket
+//    built before this shipped. It must send an EMPTY attributes object:
+//    values would wipe the markers a signup put on the contact months ago.
+{
+  const bare = await sent({ email: 'h@x.co.uk', customAttributes: [], lineItems: [{ customAttributes: [] }] })
+  check('an unstamped order blanks nothing', bare.silent && Object.keys(bare.json.attributes).length === 0, JSON.stringify(bare.json))
+  check('…and still names the contact', bare.json.email === 'h@x.co.uk' && bare.json.updateEnabled === true, JSON.stringify(bare.json))
+}
+
+// 6. An email with quotes in it is the one field a stranger supplies, and the
+//    json filter is what keeps the body parseable.
+{
+  const odd = await sent({
     email: '"quoted"@x.co.uk',
     customAttributes: stamped('/en-de', 'de', 'en'),
     lineItems: [],
   })
-  check('an email with quotes in it still parses', odd.json.email === '"quoted"@x.co.uk', odd.out)
+  check('an email with quotes in it still parses', odd.json.email === '"quoted"@x.co.uk', JSON.stringify(odd.json))
+}
+
+// 7. The weakness the doc writes down rather than fixes: an order with no
+//    email renders null, and Brevo refuses it. Pinned so it stays KNOWN — if
+//    this ever starts passing, the fallback went in and the doc should say so.
+{
+  const none = await sent({
+    email: null,
+    customer: { email: 'h@x.co.uk' },
+    customAttributes: stamped('/en-de', 'de', 'en'),
+    lineItems: [],
+  })
+  check('an order with no email still sends null — known, and guarded by the condition', none.json.email === null, JSON.stringify(none.json))
 }
 
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks pass')

@@ -8,25 +8,10 @@ On an **order** they have to arrive a longer way round: the theme writes them
 onto the order, Shopify Flow reads them off it, and Flow updates the contact in
 Brevo. That is the path that was losing them.
 
-**Whether that Flow exists has not been confirmed from here.** The only record
-of it in this repo is one sentence in `layout/theme.liquid` saying the
-attributes are written "for Shopify Flow to forward to Brevo" — a statement of
-intent by whoever wrote the stamping code, not proof that the workflow was
-built. Check before editing anything: **Shopify admin → Apps → Flow →
-Workflows**, looking for one on Order created or Order paid that sends to
-`api.brevo.com`.
-
-If it is there, edit it. Two workflows writing the same three attributes race
-each other and whichever finishes last wins, which is a fault nothing on the
-contact would explain.
-
-If it is NOT there, then no order has ever set these, and the contacts that DO
-carry markers got them from a **signup form** rather than from a purchase — the
-popup, the waitlist and the footer all POST them directly. That reading fits
-the same "some but not all" symptom exactly: everyone who signed up before they
-bought is marked, everyone who only ever bought is bare. Either way the theme
-change stands and the workflow below is what completes it; only "edit" versus
-"create" changes.
+The workflow is real and was read on 4 Sep 2026: **Order → Send HTTP request →
+`https://api.brevo.com/v3/contacts`**, with a Liquid body that loops
+`order.customAttributes`. It was correct for every order that went through the
+cart and blind to every order that did not.
 
 ## What the theme puts on an order
 
@@ -74,11 +59,11 @@ wait for.
 
 ## What Shopify Flow has to do
 
-A Flow that forwards these to Brevo can only have been reading the cart
-attributes, because until now they were the only carrier. It needs to fall back
-to the line item's when the order's own are empty. Until it does — or until the
-workflow exists at all — express-checkout orders keep arriving bare: the theme
-is writing the markers, but nothing is picking them up.
+The workflow already reads `order.customAttributes` and sends `MARKET`,
+`LANGUAGE` and `PATH` to Brevo. **One block is missing: the fallback to the
+line item's attributes when the order's own are empty.** That is the whole
+change — the endpoint, the attribute names, the values and the empty-order
+branch are all already right.
 
 The basket is read FIRST and the line only as a fallback, in that order and not
 the other way round. The basket's attributes say where the shopper was when
@@ -88,74 +73,99 @@ basket is also the only one of the two that a line the drawer's cross-sell
 added carries at all, because that add posts straight to the cart rather than
 through a product form.
 
-### The workflow
+### The block to insert
 
-**Trigger** — Order created. If a workflow is already there, leave its trigger
-as it is; Order paid is equally fine, and switching it changes when contacts
-update for no gain.
-
-**Condition** — `Order → Email` *is not empty*. An order with no email address
-has no contact to update, and Brevo refuses the call.
-
-**Action** — Send HTTP request.
-
-| | |
-|---|---|
-| Method | `POST` |
-| URL | `https://api.brevo.com/v3/contacts` |
-| Headers | `api-key: <your Brevo v3 API key>`, `content-type: application/json`, `accept: application/json` |
-
-### The body, to paste in whole
+Directly after the existing `{% endfor %}` that closes the
+`order.customAttributes` loop, and before the `{% if mkt != "" %}` that opens
+the JSON:
 
 ```liquid
-{%- assign st_path = '' -%}
-{%- assign st_market = '' -%}
-{%- assign st_lang = '' -%}
-{%- assign found = false -%}
-
-{%- comment -%} 1. The basket's own attributes — an order that went through the cart or the drawer. {%- endcomment -%}
-{%- for a in order.customAttributes -%}
-  {%- if a.key == '_st_market' and a.value != blank -%}{%- assign st_market = a.value -%}{%- assign found = true -%}{%- endif -%}
-  {%- if a.key == '_st_lang' and a.value != blank -%}{%- assign st_lang = a.value -%}{%- endif -%}
-  {%- if a.key == '_st_path' and a.value != blank -%}{%- assign st_path = a.value -%}{%- endif -%}
-{%- endfor -%}
-
-{%- comment -%} 2. Nothing on the basket — an express checkout. Read it off the line instead. {%- endcomment -%}
-{%- unless found -%}
-  {%- for li in order.lineItems -%}
-    {%- for a in li.customAttributes -%}
-      {%- if a.key == '_st_market' and a.value != blank -%}{%- assign st_market = a.value -%}{%- assign found = true -%}{%- endif -%}
-      {%- if a.key == '_st_lang' and a.value != blank -%}{%- assign st_lang = a.value -%}{%- endif -%}
-      {%- if a.key == '_st_path' and a.value != blank -%}{%- assign st_path = a.value -%}{%- endif -%}
-    {%- endfor -%}
-  {%- endfor -%}
-{%- endunless -%}
-
-{%- assign contact_email = order.email -%}
-{%- if contact_email == blank -%}{%- assign contact_email = order.customer.email -%}{%- endif -%}
-{%- if found -%}
-{"email":{{ contact_email | json }},"updateEnabled":true,"attributes":{"MARKET":{{ st_market | json }},"LANGUAGE":{{ st_lang | json }},"PATH":{{ st_path | json }}}}
-{%- else -%}
-{"email":{{ contact_email | json }},"updateEnabled":true}
-{%- endif -%}
+{% comment %} Nothing on the basket means an express checkout — Shop Pay, PayPal,
+   Apple Pay, Google Pay — which never touches the cart. Read it off the line. {% endcomment %}
+{% if mkt == "" %}
+{% for li in order.lineItems %}
+{% for a in li.customAttributes %}
+{% if a.key == "_st_market" %}{% assign mkt = a.value %}{% endif %}
+{% if a.key == "_st_path" %}{% assign path = a.value %}{% endif %}
+{% if a.key == "_st_lang" %}{% assign lang = a.value %}{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
 ```
 
-Three things in there are deliberate, and each one is a way this can go wrong:
+Nothing else in the workflow changes. Its trigger, its condition, its headers
+and its `"attributes": {}` branch all stay as they are — an empty attributes
+object sets no keys, so an order carrying nothing already leaves the contact's
+existing markers alone, which is the right behaviour and was there before this.
 
-- **An order carrying nothing sends no attributes at all.** A POS sale, a draft
-  order, or a basket built before this shipped has none of the three. Sending
-  them as empty strings would wipe whatever the contact already had — the
-  markers a signup put there months ago included. The `found` flag is what
-  stops that: with nothing to say, the call says nothing.
-- **`PATH` is sent even when it is empty**, as long as something else was
-  found. That is the primary market, where an empty path is the right answer.
-- **`updateEnabled: true`** makes this a create-or-update. Brevo's own Shopify
-  integration has usually created the contact by the time this runs; the flag
-  is what stops the call failing when it has not.
+### The whole body, after the insert
 
-If Flow rejects the `json` filter, the three values are all our own — `de`,
-`en`, `/en-de` — so plain quotes work: `"MARKET":"{{ st_market }}"`. Keep
-`json` on the email, which is the one field a stranger supplies.
+This is what the action holds once the block is in. `brevo-flow-body.mjs`
+renders THIS text, so what is proved is what is live.
+
+```liquid
+{% assign mkt = "" %}{% assign path = "" %}{% assign lang = "" %}
+{% for a in order.customAttributes %}
+{% if a.key == "_st_market" %}{% assign mkt = a.value %}{% endif %}
+{% if a.key == "_st_path" %}{% assign path = a.value %}{% endif %}
+{% if a.key == "_st_lang" %}{% assign lang = a.value %}{% endif %}
+{% endfor %}
+{% comment %} Nothing on the basket means an express checkout — Shop Pay, PayPal,
+   Apple Pay, Google Pay — which never touches the cart. Read it off the line. {% endcomment %}
+{% if mkt == "" %}
+{% for li in order.lineItems %}
+{% for a in li.customAttributes %}
+{% if a.key == "_st_market" %}{% assign mkt = a.value %}{% endif %}
+{% if a.key == "_st_path" %}{% assign path = a.value %}{% endif %}
+{% if a.key == "_st_lang" %}{% assign lang = a.value %}{% endif %}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if mkt != "" %}
+{
+  "email": {{ order.email | json }},
+  "updateEnabled": true,
+  "attributes": {
+    "MARKET": {{ mkt | json }},
+    "LANGUAGE": {{ lang | json }},
+    "PATH": {{ path | json }}
+  }
+}
+{% else %}
+{
+  "email": {{ order.email | json }},
+  "updateEnabled": true,
+  "attributes": {}
+}
+{% endif %}
+```
+
+### What it does and does not change
+
+| Order | Before | After |
+|---|---|---|
+| Cart checkout, `/en-de` | `de` / `en` / `/en-de` | unchanged |
+| Cart checkout, bare domain | `primary` / `en` / `""` | unchanged |
+| **Express checkout, `/en-de`** | **nothing sent** | **`de` / `en` / `/en-de`** |
+| **Express checkout, bare domain** | **nothing sent** | **`primary` / `en` / `""`** |
+| **Express, first line a bare cross-sell** | **nothing sent** | **read off the next line** |
+| POS sale, draft order, pre-change basket | nothing sent | unchanged |
+| Basket and line disagree | basket wins | unchanged |
+
+### One weakness left, deliberately
+
+`order.email` is sent as-is. On the rare order with no email address — a
+phone-only checkout — it renders `null` and Brevo refuses the call. Adding
+
+```liquid
+{% assign contact_email = order.email %}
+{% if contact_email == blank %}{% assign contact_email = order.customer.email %}{% endif %}
+```
+
+and sending `contact_email` fixes it, but it is a second edit to a live
+workflow for a case that has not been seen. Guard it with the workflow's
+condition instead — `Order → Email` *is not empty* — if it is not there
+already.
 
 ## Reading a blank PATH
 
