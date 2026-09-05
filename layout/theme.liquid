@@ -178,6 +178,9 @@
       {% comment %} Brevo tracker — carries the popup/newsletter signup
          attributes (MARKET, LANGUAGE, PATH, POPUP_*) to Brevo via
          identify calls. client_key is public by design. {% endcomment %}
+      {%- comment -%} Which storefront this visitor is on, defined once for
+         the cart stamp below and for all three signup forms. {%- endcomment -%}
+      {%- render 'market-context' -%}
       <script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
       <script>
         window.Brevo = window.Brevo || [];
@@ -273,25 +276,15 @@
              below against a scripted DOM; keep them where they are. */
           /* st-market-stamp-start */
           (function () {
-            /* The URL the visitor is on is the ground truth. routes.root_url
-               normally matches it, but if it ever fails to reflect the market
-               prefix the stamp would silently read as the primary market, so
-               a prefix in the path wins over the Liquid value. */
-            var path = {{ routes.root_url | json }};
-            if (path === '/') path = '';
-            var seg = (window.location.pathname.split('/')[1] || '').toLowerCase();
-            if (/^[a-z]{2}-[a-z0-9]{2,}$/.test(seg)) path = '/' + seg;
-
-            var mkt = 'primary';
-            if (path) {
-              var segs = path.replace(/^\//, '').split('-');
-              mkt = segs[segs.length - 1].toLowerCase();
-            }
-            var lang = {{ localization.language.iso_code | downcase | split: '-' | first | json }};
-            if (path) {
-              var lseg = path.replace(/^\//, '').split('-')[0];
-              if (lseg) lang = lseg;
-            }
+            /* snippets/market-context.liquid holds the resolution — the URL
+               as the ground truth, routes.root_url behind it. It used to
+               live here, and the three signup forms each carried a version
+               that trusted routes.root_url alone; one function is what stops
+               the four drifting apart again. */
+            var ctx = window.STMarket();
+            var path = ctx.path;
+            var mkt = ctx.market;
+            var lang = ctx.language;
             var stamp = { _st_path: path, _st_market: mkt, _st_lang: lang };
             var keys = ['_st_path', '_st_market', '_st_lang'];
 
