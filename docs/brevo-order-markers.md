@@ -167,6 +167,55 @@ workflow for a case that has not been seen. Guard it with the workflow's
 condition instead — `Order → Email` *is not empty* — if it is not there
 already.
 
+## Where a SIGNUP's markers come from, and how they went wrong too
+
+An order is not the only way these reach Brevo. The popup, the waitlist and
+the footer newsletter each POST `MARKET`, `LANGUAGE` and `PATH` to Brevo
+alongside the email address, and until 5 Sep 2026 all three worked out the
+storefront a different way from the cart stamp: **`routes.root_url` alone**.
+
+The cart stamp has never trusted that value — its own comment says a
+root_url that fails to carry the market prefix "would silently read as the
+primary market", and it takes the prefix off the URL instead. Nobody carried
+that guard back to the three forms, so where the value fails a signup files
+`MARKET: primary`, `LANGUAGE: en` and no path: **a Berlin shopper on `/en-de`
+recorded as an international one, with nothing on the contact to say
+otherwise.**
+
+`snippets/market-context.liquid` is now the one answer — `window.STMarket()`,
+rendered in the head, called by the cart stamp and by all three forms. Four
+copies of one question is how they came to disagree.
+
+### Telling a real 'primary' from a lost one
+
+They look identical on the contact, so read the page instead. Open the market
+in a browser and view source:
+
+```
+https://stendigcalendars.com/en-de/
+```
+
+Search for `data-market=`. The popup prints its answer on its own root
+element, beside `data-language` and `data-path-prefix`.
+
+- `data-market="de"` — `routes.root_url` is fine, and a contact logged
+  `primary` really was on the international site.
+- `data-market="primary"` on a `/en-de` page — that is the failure, and the
+  resolver above is what closes it for the Brevo attributes.
+
+**`LANGUAGE` is the field that stays honest either way.** It comes from
+`localization.language.iso_code`, which does not depend on `routes.root_url`,
+so a contact logged `en` was on an ENGLISH page whatever happened to the
+market — the bare domain or `/en-de`, never `/de-de`.
+
+### What the resolver cannot reach
+
+The popup's own **targeting** picks which version to show in Liquid, at render
+time, from the same `routes.root_url`. Where that value is wrong the visitor
+sees the wrong popup and no script running afterwards can undo it. If the
+source check above shows `primary` on a subfolder, that is the next thing to
+fix and it is a bigger change than this one.
+
 ## Reading a blank PATH
 
 `PATH` is empty **on purpose** on the primary market: Brevo templates build

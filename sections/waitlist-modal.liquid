@@ -580,9 +580,12 @@
       // immune to the tracker-vs-form contact-creation race). Brevo maps
       // them when matching fields exist on the form.
       fd.append('POPUP_CAMPAIGN', 'waitlist');
-      fd.append('MARKET', this.dataset.market || '');
-      fd.append('LANGUAGE', this.dataset.language || '');
-      fd.append('PATH', this.dataset.pathPrefix || '');
+      /* The storefront comes from the shared resolver, not from the data
+         attributes — see snippets/market-context.liquid and the popup. */
+      const ctx = window.STMarket ? window.STMarket() : null;
+      fd.append('MARKET', (ctx ? ctx.market : this.dataset.market) || '');
+      fd.append('LANGUAGE', (ctx ? ctx.language : this.dataset.language) || '');
+      fd.append('PATH', (ctx ? ctx.path : this.dataset.pathPrefix) || '');
       fd.append('WAITLIST_SKUS', this.mergedSkus(email));
       if (this.geoCountry) fd.append('COUNTRY', this.geoCountry);
       fetch(this.form.action, { method: 'POST', body: fd, mode: 'no-cors' }).then(() => {
