@@ -109,8 +109,7 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "VC27DB",
-            "title": "V Calendar 2026 (Yellow)"
+            "sku": "VC27DB"
           }
         }
       },
@@ -122,7 +121,7 @@
       ],
       "name": "Home: Product group",
       "settings": {
-        "label": "The Stendig",
+        "label": "The V",
         "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
         "link": "shopify://products/v-calendar",
