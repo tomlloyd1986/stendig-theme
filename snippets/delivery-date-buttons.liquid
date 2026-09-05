@@ -408,6 +408,13 @@
     border: 1px solid #d3d3d3;
     border-radius: 25px;
     background: #fff;
+    /* Stated, not left to the browser. A <button> with no colour of its own
+       falls back to the UA's default button text, which desktop resolves to
+       black and iOS resolves to the system blue — so every unpicked date read
+       as a link on a phone while the picked one, which sets its colour below,
+       stayed white. The Colour pills above are <label>s and inherit the page,
+       which is why they were never affected and this went unseen on a Mac. */
+    color: #000;
     font-size: 1.4rem;
     cursor: pointer;
     transition: 0.12s ease;
