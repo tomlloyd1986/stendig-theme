@@ -21,6 +21,12 @@
  * fixed is how it fails — nothing matching means the two vocabularies do not
  * meet, so every picture shows.
  *
+ * A press on any slide opens the LIGHTBOX — a second list of every photograph,
+ * rendered by product-media — and that list stood outside the filter: a Red
+ * page narrowed to its red photographs opened a lightbox that scrolled through
+ * every colourway's. It takes the same answer now, item for item, and this
+ * checks that it does.
+ *
  * The functions are lifted out of the section VERBATIM rather than retyped, so
  * this tests what ships. Not liquidjs: the code under test is the JavaScript
  * inside the section, and its Liquid inputs are supplied here.
@@ -60,11 +66,36 @@ const media = (alt) => ({
   dataset: { mediaAlt: alt },
   style: {},
   classList: { add() {}, remove() {} },
+  matches: () => false,
   querySelector: () => null,
 })
-const productEl = (alts) => {
+/* A lightbox item is the img itself (product-media renders one per media),
+   carrying data-media-alt like a slide — or, on a page cached from before it
+   did, only its alt. */
+const boxImage = (alt, attr) => ({
+  dataset: attr ? { mediaAlt: alt } : {},
+  alt,
+  style: {},
+  classList: { add() {}, remove() {} },
+  matches: (sel) => sel === 'img',
+  querySelector: () => null,
+})
+/* updateThumbnails reaches the lightbox the way the theme pairs them: the
+   slide's opener names its modal (data-modal) and document.querySelector finds
+   it — so document is the one global the fake has to supply. */
+const modals = new Map()
+globalThis.document = { querySelector: (sel) => modals.get(sel) || null }
+let modalCount = 0
+const productEl = (alts, { lightbox = null, attr = true } = {}) => {
   const items = alts.map(media)
-  return { el: { querySelectorAll: () => items }, items }
+  const box = lightbox ? lightbox.map((alt) => boxImage(alt, attr)) : []
+  const key = `#ProductModal-${++modalCount}`
+  if (lightbox) modals.set(key, { querySelectorAll: () => box })
+  const el = {
+    querySelectorAll: () => items,
+    querySelector: () => (lightbox ? { dataset: { modal: key } } : null),
+  }
+  return { el, items, box }
 }
 const shown = (items) => items.filter((i) => i.style.display !== 'none').length
 
@@ -195,8 +226,78 @@ ok('a value carrying a season or a suffix still names its colourway')
   else ok('a colourway nobody has listed shows the gallery rather than emptying it')
 }
 
+/* ---------- 4. the lightbox shows what the gallery shows ---------- */
+/* The same three photographs, in the gallery and in the lightbox a slide
+   opens. Red narrows both to the two red ones — not the gallery to two and
+   the lightbox to all three, which is the fault this section is about. */
+{
+  const { el, items, box } = productEl(ALTS, { lightbox: ALTS })
+  updateThumbnails(el, 'Red')
+  const visible = box.filter((i) => i.style.display !== 'none')
+  if (visible.length !== 2) faults.push(`the lightbox shows the two red photographs like the gallery; ${visible.length} of ${box.length} were shown`)
+  else if (visible.some((i) => !i.alt.toLowerCase().includes('red'))) faults.push('the lightbox still shows a photograph of another colourway')
+  else ok('the lightbox is narrowed to the same photographs as the gallery')
+  if (shown(items) !== 2) faults.push('narrowing the lightbox changed what the gallery shows')
+
+  /* Shown is CLEARED, never forced to block: below 750px the lightbox shows
+     only the photograph pressed (:not(.active) is hidden), and an inline
+     block on every match would put them all on screen at once. */
+  if (visible.some((i) => i.style.display !== '')) faults.push('a matching lightbox photograph is forced to block, which on a phone shows every match at once')
+  else ok('a matching lightbox photograph is left to the stylesheet, so a phone still shows one at a time')
+}
+
+/* A translated value narrows the lightbox through the same English word. */
+{
+  const { el, box } = productEl(ALTS, { lightbox: ALTS })
+  updateThumbnails(el, 'Rot')
+  const visible = box.filter((i) => i.style.display !== 'none').length
+  if (visible !== 2) faults.push(`"Rot" narrows the lightbox to the two red photographs; ${visible} of ${box.length} were shown`)
+  else ok('a translated value narrows the lightbox as it does the gallery')
+}
+
+/* A page cached from before product-media carried data-media-alt: the img's
+   own alt is read instead, so the lightbox is still narrowed. */
+{
+  const { el, box } = productEl(ALTS, { lightbox: ALTS, attr: false })
+  updateThumbnails(el, 'Red')
+  const visible = box.filter((i) => i.style.display !== 'none').length
+  if (visible !== 2) faults.push(`a lightbox item without data-media-alt is read off its alt; ${visible} of ${box.length} were shown`)
+  else ok('a lightbox item carrying only its alt is still narrowed')
+}
+
+/* The vocabulary guard holds for the lightbox as well: nothing matching shows
+   the lot in both, never a gallery of three and a lightbox of none. */
+{
+  const { el, items, box } = productEl(ALTS, { lightbox: ALTS })
+  updateThumbnails(el, 'Yellow')
+  if (shown(items) !== ALTS.length || shown(box) !== ALTS.length)
+    faults.push('a colourway with no photographs must show the lot in the lightbox as in the gallery')
+  else ok('a colourway with no photographs shows the whole lightbox, as it does the gallery')
+}
+
+/* Changing colourway puts the hidden ones back: what Black hid, Red shows. */
+{
+  const { el, box } = productEl(ALTS, { lightbox: ALTS })
+  updateThumbnails(el, 'Black')
+  updateThumbnails(el, 'Red')
+  const visible = box.filter((i) => i.style.display !== 'none').map((i) => i.alt)
+  if (visible.length !== 2 || visible.some((a) => !a.includes('Red'))) faults.push(`switching back to Red must show the red photographs again; got ${JSON.stringify(visible)}`)
+  else ok('switching colourway shows the newly chosen photographs in the lightbox again')
+}
+
+/* A product with no lightbox at all — nothing to open — still filters its
+   gallery rather than throwing on the modal it does not have. */
+{
+  const { el, items } = productEl(ALTS)
+  let threw = null
+  try { updateThumbnails(el, 'Red') } catch (e) { threw = e }
+  if (threw) faults.push(`a page with no lightbox must still filter the gallery; it threw: ${threw.message}`)
+  else if (shown(items) !== 2) faults.push('a page with no lightbox no longer filters the gallery')
+  else ok('a page with no lightbox still filters its gallery')
+}
+
 if (faults.length) {
   console.error('\nvariant images by locale:\n  - ' + faults.join('\n  - '))
   process.exit(1)
 }
-console.log('\nvariant images: the colourway filter works in every language, and never empties the gallery')
+console.log('\nvariant images: the colourway filter works in every language, never empties the gallery, and narrows the lightbox with it')
