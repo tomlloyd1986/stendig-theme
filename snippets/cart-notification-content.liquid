@@ -227,7 +227,7 @@
 
 {%- comment -%} xsell-rule-end {%- endcomment -%}
 
-<!-- cross-sell: source={{ cs_source }} rules={{ cs_pool | size }} [{% for r in cs_pool %}{{ r.system.handle }}{% unless forloop.last %} {% endunless %}{% endfor %}] matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
+<!-- cross-sell: source={{ cs_source }} rules={{ cs_pool | size }} [{% for r in cs_pool %}{{ r.system.handle }}{% if r.priority.value %}#{{ r.priority.value }}{% endif %},{% endfor %}] matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
 
 
 <div class="cart-drawer__scroll">
