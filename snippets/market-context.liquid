@@ -1,0 +1,55 @@
+{%- comment -%}
+  Which storefront this visitor is on, answered ONCE for everything that
+  reports it: the cart stamp in layout/theme.liquid and the three signup
+  forms (popup-signup, waitlist-modal, footer).
+
+  There were four copies of this, and they did not agree. The cart stamp
+  treats the URL as the ground truth and falls back to routes.root_url;
+  the three forms trusted routes.root_url alone. So on any page where that
+  value fails to carry the market prefix, a signup reported market
+  'primary', language 'en' and no path — a German shopper filed as an
+  international one, with nothing on the record to say otherwise.
+
+  window.STMarket() is that answer:
+
+    { market: 'de', language: 'en', path: '/en-de' }
+    { market: 'primary', language: 'en', path: '' }   ← the bare domain
+
+  PATH is '' and not '/' on the primary market so Brevo templates can build
+  URLs as domain + PATH + /page for every contact, and MARKET is what tells
+  a bare-domain visitor from one nothing recorded — never the path.
+
+  Chinese ships as zh-TW/zh-CN while our copy and every campaign branch are
+  keyed by the bare code, so both collapse onto 'zh'.
+
+  It is rendered in the head, before any section that calls it.
+
+  What this CANNOT reach: the popup's own targeting, which picks the
+  version to show in Liquid at render time from the same routes.root_url.
+  Where that value is wrong the visitor sees the wrong popup, and no script
+  running afterwards can undo it.
+{%- endcomment -%}
+<script>
+  window.STMarket = window.STMarket || function () {
+    /* The URL the visitor is on is the ground truth. routes.root_url
+       normally matches it, but where it fails to reflect the market prefix
+       the answer would silently read as the primary market, so a prefix in
+       the path wins over the Liquid value. */
+    var path = {{ routes.root_url | json }};
+    if (path === '/') path = '';
+    var seg = (window.location.pathname.split('/')[1] || '').toLowerCase();
+    if (/^[a-z]{2}-[a-z0-9]{2,}$/.test(seg)) path = '/' + seg;
+
+    var market = 'primary';
+    if (path) {
+      var segs = path.replace(/^\//, '').split('-');
+      market = segs[segs.length - 1].toLowerCase();
+    }
+    var language = {{ localization.language.iso_code | downcase | split: '-' | first | json }};
+    if (path) {
+      var lseg = path.replace(/^\//, '').split('-')[0];
+      if (lseg) language = lseg;
+    }
+    return { market: market, language: language, path: path };
+  };
+</script>

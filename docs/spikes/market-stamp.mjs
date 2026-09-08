@@ -28,9 +28,14 @@ const end = theme.indexOf('/* st-market-stamp-end */')
 if (start < 0 || end < 0) throw new Error('markers not found')
 const block = theme.slice(start, end)
 
-// The two Liquid outputs the block reads. Everything else in it is plain JS.
+// The shared resolver the stamp — and all three signup forms — call. It is
+// rendered in the head, so it runs before the block does.
+const snippet = readFileSync(new URL('../../snippets/market-context.liquid', import.meta.url), 'utf8')
+const resolver = snippet.slice(snippet.indexOf('<script>') + 8, snippet.indexOf('</script>'))
+
+// The two Liquid outputs the resolver reads. Everything else is plain JS.
 const script = (rootUrl, isoCode) =>
-  block
+  (resolver + '\n' + block)
     .replace('{{ routes.root_url | json }}', JSON.stringify(rootUrl))
     .replace("{{ localization.language.iso_code | downcase | split: '-' | first | json }}", JSON.stringify(isoCode))
 
@@ -182,6 +187,40 @@ async function run({ rootUrl = '/', iso = 'en', url = 'https://stendigcalendars.
   check('a slow add is still caught by a later rung', writes.length > 0, `${writes.length} writes`)
   check('the write carries the market', writes.length > 0 && writes[0].attributes._st_market === 'de', JSON.stringify(writes[0]))
   check('two reads never overlap', !overlapped)
+}
+
+// 8. The failure the signup forms used to have, and the one this snippet
+//    exists to stop: routes.root_url renders as '/' on a market subfolder.
+//    The three forms read that value ALONE, so a Berlin shopper on /en-de
+//    filed as market 'primary' with no path — indistinguishable on the
+//    contact from somebody who really was on the international site.
+{
+  const { window, props } = await run({
+    rootUrl: '/',                                            // the value that lied
+    iso: 'en',
+    url: 'https://stendigcalendars.com/en-de/products/v-calendar',
+  })
+  const p = props()
+  check('a lying root_url does not become the primary market', p._st_market === 'de' && p._st_path === '/en-de', JSON.stringify(p))
+  const ctx = window.STMarket()
+  check('the resolver every signup form now calls says the same', ctx.market === 'de' && ctx.path === '/en-de' && ctx.language === 'en', JSON.stringify(ctx))
+}
+
+// 9. …and the bare domain still resolves to primary, because sometimes
+//    'primary' is simply the truth: an international shopper in English.
+{
+  const { window } = await run({ rootUrl: '/', iso: 'en', url: 'https://stendigcalendars.com/products/v-calendar' })
+  const ctx = window.STMarket()
+  check('the bare domain is still primary, in English, with no path', ctx.market === 'primary' && ctx.language === 'en' && ctx.path === '', JSON.stringify(ctx))
+}
+
+// 10. The language does NOT come from routes.root_url, so it is the one field
+//     that stays true when that value fails — which is what says a contact
+//     logged 'en' was on an ENGLISH page, never on /de-de.
+{
+  const { window } = await run({ rootUrl: '/', iso: 'de', url: 'https://stendigcalendars.com/de-de/products/v-calendar' })
+  const ctx = window.STMarket()
+  check('a German-language page says de however root_url renders', ctx.language === 'de' && ctx.market === 'de', JSON.stringify(ctx))
 }
 
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks pass')

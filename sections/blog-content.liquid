@@ -313,7 +313,16 @@
     #shopify-section-{{ section.id }} .blogc__step { gap: 10px; }
     #shopify-section-{{ section.id }} .blogc__step-caption { margin-top: -6px; }
     #shopify-section-{{ section.id }} .blogc__media-row { gap: 8px; }
-    /* 3-4 images wrap into two columns on mobile */
+    /* A pair stacks on a phone. Side by side each photograph is half a
+       phone's width, which is too small to read a room in — the same
+       reasoning as .blogc__embed--capped above: on a phone the column is
+       the constraint, not the screen height. Three or four still wrap
+       into two columns: that row is a contact sheet rather than a
+       picture, and stacked it would be a screen and a half of scrolling.
+       The sizes attribute on each image follows this split. */
+    #shopify-section-{{ section.id }} .blogc__media-row > div {
+      flex: 1 1 100%;
+    }
     #shopify-section-{{ section.id }} .blogc__media-row.has-many > div {
       flex: 1 1 calc(50% - 4px);
     }
@@ -384,7 +393,7 @@
                     <img
                       src="{{ img | image_url: width: 1200 }}"
                       srcset="{{ img | image_url: width: 550 }} 550w, {{ img | image_url: width: 840 }} 840w, {{ img | image_url: width: 1200 }} 1200w, {{ img | image_url: width: 1680 }} 1680w, {{ img | image_url: width: 2048 }} 2048w"
-                      sizes="(max-width: 749px) {% if img_count == 1 %}100vw{% else %}50vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 760 | divided_by: img_count }}px{% when 'wide' %}{{ 1040 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
+                      sizes="(max-width: 749px) {% if img_count > 2 %}50vw{% else %}100vw{% endif %}, {% case block.settings.width %}{% when 'standard' %}{{ 760 | divided_by: img_count }}px{% when 'wide' %}{{ 1040 | divided_by: img_count }}px{% else %}{{ 100 | divided_by: img_count }}vw{% endcase %}"
                       width="{{ img.width }}"
                       height="{{ img.height }}"
                       alt="{{ img.alt | default: img_caption | escape }}"

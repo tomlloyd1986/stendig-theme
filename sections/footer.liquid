@@ -171,10 +171,16 @@
                 (function () {
                   var KEY = 'st:nl:pending';
                   var BREVO_URL = {{ section.settings.brevo_form_url | json }};
+                  /* The storefront comes from the shared resolver where it is
+                     available; the Liquid values behind it are what this form
+                     used alone, and routes.root_url losing the market prefix is
+                     what filed a German shopper as an international one. See
+                     snippets/market-context.liquid. */
+                  var ctx = window.STMarket ? window.STMarket() : null;
                   var attrs = {
-                    MARKET: {{ nl_market | json }},
-                    LANGUAGE: {{ nl_lang | json }},
-                    PATH: {{ nl_path | json }}
+                    MARKET: ctx ? ctx.market : {{ nl_market | json }},
+                    LANGUAGE: ctx ? ctx.language : {{ nl_lang | json }},
+                    PATH: ctx ? ctx.path : {{ nl_path | json }}
                   };
                   var form = document.getElementById('ContactFooter');
 

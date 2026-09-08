@@ -337,7 +337,7 @@
         "id": "cross_sell_rules",
         "label": "Cross-sell rules",
         "metaobject_type": "cross_sell_rule",
-        "info": "Rules for the suggestion shown in the add-to-cart drawer, in priority order — the first matching rule wins. Create rules under Content > Metaobjects > Cross-sell rule. A rule is skipped when its product is already in the cart or is out of stock in the current domain's warehouse."
+        "info": "NOT NORMALLY NEEDED. The drawer reads every ACTIVE Cross-sell rule entry on its own (Content > Metaobjects > Cross-sell rule) — saving one makes it live, and its Status turns it off. Order comes from the entry's priority field, lowest first. This list is only a fallback, used when the metaobject definition has no storefront access; anything selected here is ignored while entries are readable."
       }
     ]
   },

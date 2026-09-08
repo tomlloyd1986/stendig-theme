@@ -110,7 +110,7 @@
             <li
               class="product__media-item {% if product.options_by_name['Colour'] %}product__media-none {% else %}product__media-itemBlk{% endif %} grid__item slider__slide{% if media.media_type == 'model' %} product__media-item--full{% endif %}{% if section.settings.hide_variants and variant_images contains media.src %} product__media-item--variant{% endif %}"
               data-media-id="{{ section.id }}-{{ media.id }}"
-              data-media-alt="{{ media.alt }}"
+              data-media-alt="{{ media.alt | escape }}"
               data-media-type="{{ media.media_type }}"
             >
               {% render 'product-thumbnail',
@@ -128,7 +128,7 @@
               <li
                 class="product__media-item {% if product.options_by_name['Colour'] %}product__media-none {% else %}product__media-itemBlk{% endif %} grid__item slider__slide{% if media.media_type == 'model' %} product__media-item--full{% endif %}{% if section.settings.hide_variants and variant_images contains media.src %} product__media-item--variant{% endif %}"
                 data-media-id="{{ section.id }}-{{ media.id }}"
-                data-media-alt="{{ media.alt }}"
+                data-media-alt="{{ media.alt | escape }}"
                 data-media-type="{{ media.media_type }}"
                 data-variant-id="{{ variantId }}"
               >
@@ -3850,14 +3850,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const prdThumbnails = targetProduct.querySelectorAll(
       ".product__media-wrapper .product__media-item"
     );
+
+    /* The LIGHTBOX holds the same photographs a second time: `product-modal`
+     * further up this file renders every media item through product-media,
+     * and a press on any slide opens it. It stood outside this filter, so a
+     * Red page whose gallery had been narrowed to five photographs opened a
+     * lightbox that scrolled through all twenty-six — the twenty-one it had
+     * just hidden included. The slide's own opener says which modal it opens
+     * (`data-modal` on modal-opener, the attribute ModalOpener reads), so the
+     * pairing is the theme's own rather than a second guess at it. */
+    const opener = targetProduct.querySelector(
+      ".product__media-wrapper modal-opener[data-modal]"
+    );
+    const modal = opener && document.querySelector(opener.dataset.modal);
+    const lightbox = modal
+      ? modal.querySelectorAll(".product-media-modal__content > [data-media-id]")
+      : [];
+
     /* Resolved to the English word the alt text uses, so a translated value
        matches the photographs it names. */
     const selectedColor = canonicalColour(colorValue);
 
-    const altOf = (curImg) =>
-      (curImg.dataset.mediaAlt || curImg.querySelector("img")?.alt || "")
-        .trim()
-        .toLowerCase();
+    /* A slide and a lightbox item both carry data-media-alt (product-media
+       renders it on the lightbox's). A lightbox photograph IS the img, where
+       a slide wraps one, so the fallback reads whichever this is. */
+    const altOf = (el) => {
+      const img = el.matches("img") ? el : el.querySelector("img");
+      return (el.dataset.mediaAlt || img?.alt || "").trim().toLowerCase();
+    };
 
     /* The alt text is typed once in Shopify's media library and is almost never
      * translated; the option VALUE is, wherever somebody has translated it. So
@@ -3874,15 +3894,15 @@ document.addEventListener('DOMContentLoaded', () => {
       Array.prototype.some.call(prdThumbnails, (curImg) =>
         altOf(curImg).includes(selectedColor)
       );
+    /* One answer for both lists, decided on the gallery: the lightbox holds
+       the same photographs, so it cannot be narrowed where the gallery is not. */
+    const isMatch = (el) =>
+      anyMatch ? altOf(el).includes(selectedColor) : true;
 
     let firstVisible = false;
 
     prdThumbnails.forEach((curImg) => {
-      const mediaAlt = altOf(curImg);
-
-      const isMatch = anyMatch ? mediaAlt.includes(selectedColor) : true;
-
-      if (isMatch) {
+      if (isMatch(curImg)) {
         curImg.style.display = "block";
         if (!firstVisible) {
           curImg.classList.add("display-block");
@@ -3894,6 +3914,16 @@ document.addEventListener('DOMContentLoaded', () => {
         curImg.style.display = "none";
         curImg.classList.remove("display-block");
       }
+    });
+
+    /* The lightbox takes the same answer, CLEARED rather than set to block: on
+     * a phone it shows only the photograph that was pressed
+     * (`.product-media-modal__content > *:not(.active)` is hidden below 750px)
+     * and an inline block on every match would put them all on screen at
+     * once. Hidden is hidden at any width; shown is whatever the stylesheet
+     * says at this one. */
+    lightbox.forEach((el) => {
+      el.style.display = isMatch(el) ? "" : "none";
     });
   };
 
