@@ -9,6 +9,11 @@
  */
 {
   "general": {
+    "slider": {
+      "of": "of",
+      "next_slide": "Slide right",
+      "previous_slide": "Slide left"
+    },
     "password_page": {
       "login_form_heading": "Enter store using password:",
       "login_password_button": "Enter using password",
@@ -67,6 +72,7 @@
     }
   },
   "newsletter": {
+    "error": "Something went wrong — please try again.",
     "label": "Email",
     "success": "Thanks for subscribing",
     "button_label": "Subscribe"
@@ -86,12 +92,18 @@
     "of": "of",
     "next_slide": "Slide right",
     "previous_slide": "Slide left",
+    "breadcrumb": "Breadcrumb",
     "loading": "Loading...",
     "total_reviews": "total reviews",
     "star_reviews_info": "{{ rating_value }} out of {{ rating_max }} stars"
   },
   "blogs": {
+    "journal": {
+      "pinned": "Pinned",
+      "older": "Older articles"
+    },
     "article": {
+      "video": "Video",
       "blog": "Blog",
       "read_more_title": "Read more: {{ title }}",
       "comments": {
@@ -121,6 +133,10 @@
       "on_sale": "Sale",
       "product_variants": "Product variants",
       "media": {
+        "gallery_viewer": "Gallery Viewer",
+        "load_image": "Load image {{ index }} in gallery view",
+        "load_model": "Load 3D Model {{ index }} in gallery view",
+        "load_video": "Play video {{ index }} in gallery view",
         "open_featured_media": "Open featured media in gallery view",
         "open_media": "Open media {{ index }} in gallery view",
         "play_model": "Play 3D Viewer",
@@ -230,6 +246,10 @@
     "header": {
       "announcement": "Announcement",
       "menu": "Menu",
+      "collection": "Collection",
+      "browse_collection": "Browse the collection",
+      "resources": "Resources",
+      "browse_journal": "Browse the journal",
       "cart_count": {
         "one": "{{ count }} item",
         "other": "{{ count }} items"
@@ -284,6 +304,12 @@
     },
     "video": {
       "load_video": "Load video: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "From the press"
+    },
+    "grouped_grid": {
+      "view_all": "View all"
     }
   },
   "localization": {
