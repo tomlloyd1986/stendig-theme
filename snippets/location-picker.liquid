@@ -219,6 +219,24 @@
     line-height: 2.1rem;
     color: rgba(var(--color-foreground), 0.55);
   }
+  /* Two levels, one shown at a time. "Rest of world" is a row like the
+     others with an arrow at its end; the way back is a row above the
+     second level, muted, with the arrow the other way. */
+  .st-location__list[data-level="all"] .st-location__level--rest { display: none; }
+  .st-location__list[data-level="rest"] .st-location__level--all { display: none; }
+  .st-location__more,
+  .st-location__back {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .st-location__back {
+    justify-content: flex-start;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+  .st-location__back:hover { color: rgb(var(--color-foreground)); text-decoration: none; }
+  .st-location__glyph { font-size: 1.4rem; line-height: 2.1rem; }
 </style>
 
 <st-location-picker class="st-location">
@@ -283,6 +301,8 @@
         const open = e.target.closest('[data-location-open]');
         if (open) { e.preventDefault(); this.setOpen(!this.classList.contains('is-open'), open); return; }
         if (e.target.closest('[data-location-close]')) { this.setOpen(false); return; }
+        const level = e.target.closest('[data-location-level]');
+        if (level) { StLocationPicker.setLevel(level.closest('[data-location-list]'), level.dataset.locationLevel); return; }
         const country = e.target.closest('[data-location-pick]');
         if (country) { this.choose(this.countryInput, country.dataset.locationPick); return; }
         const language = e.target.closest('[data-location-pick-language]');
@@ -315,10 +335,34 @@
         // The close control takes focus after the slide, so a reader lands
         // on the dialogue rather than on the page behind it.
         if (this.closeButton) setTimeout(() => this.closeButton.focus(), 400);
-      } else if (this.opener && typeof this.opener.focus === 'function') {
-        this.opener.focus();
+      } else {
+        if (this.opener && typeof this.opener.focus === 'function') this.opener.focus();
         this.opener = null;
+        // Closed, the drawer's list goes back to its first level with the
+        // filter cleared — after the slide, so nothing changes in view.
+        setTimeout(() => this.querySelectorAll('[data-location-list]').forEach((l) => StLocationPicker.reset(l)), 400);
       }
+    }
+
+    /* Which level shows. Into the rest of the world, the filter takes
+       focus, since typing is how that list is read; back out, the row that
+       opened it takes focus again. */
+    static setLevel(list, level) {
+      if (!list) return;
+      list.dataset.level = level;
+      const more = list.querySelector('[data-location-level="rest"]');
+      if (more) more.setAttribute('aria-expanded', level === 'rest' ? 'true' : 'false');
+      const target = level === 'rest' ? list.querySelector('[data-location-filter]') : more;
+      if (target) target.focus();
+    }
+
+    static reset(list) {
+      if (!list) return;
+      list.dataset.level = 'all';
+      const more = list.querySelector('[data-location-level="rest"]');
+      if (more) more.setAttribute('aria-expanded', 'false');
+      const field = list.querySelector('[data-location-filter]');
+      if (field) { field.value = ''; StLocationPicker.filter(list, ''); }
     }
 
     /* A choice is a form submission and a page load; Shopify answers with

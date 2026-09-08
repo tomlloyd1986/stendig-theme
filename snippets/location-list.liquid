@@ -2,47 +2,104 @@
   The country list the location picker shows — rendered twice, once in the
   desktop drawer and once inside the mobile menu, so the two never drift.
 
-  Every country Shopify offers is here: the store serves 215 of them across
-  its markets, most through the International market. A list that long is
-  read by typing, so a filter sits above it; the filter is JavaScript's and
-  the list is complete without it. A country is a BUTTON rather than a link:
-  the click sets the localization form's country and submits it, and there
-  is no page a link could honestly point at. What the row prints is
-  Shopify's own name for the country, in the language the visitor is
-  reading — the same word the footer's selector would use.
+  TWO LEVELS, on the owner's word (8 Sep 2026): "I don't want every country
+  in the world listed." The store sells to 215 countries, most of them
+  through the International market, and a list of 215 is not a choice, it
+  is a scroll. So the first level is the countries the owner names —
+  Theme settings → Location picker → "Countries listed by name", the
+  countries of the eleven markets plus Mexico, Norway and Switzerland — and
+  one row more, "Rest of world", which opens the second level: every other
+  country, with a filter above it because that is the long one. Where the
+  visitor's own country is a rest-of-world one, the row says so beside the
+  words, and carries the current mark, so they can see where they are
+  without opening it.
+
+  A country is a BUTTON rather than a link: the click sets the localization
+  form's country and submits it, and there is no page a link could honestly
+  point at. What the row prints is Shopify's own name for the country, in
+  the language the visitor is reading. With the setting left empty the
+  first level is every country and there is no second — the shape the
+  picker had before the rule.
 
   Accepts: suffix — a short word making the ids unique per render.
 {% endcomment %}
 {%- liquid
   assign suffix = suffix | default: 'list'
   assign current_iso = localization.country.iso_code
+  assign named_raw = settings.location_named_countries | default: '' | upcase | strip_newlines | replace: ' ', ''
+  assign named = named_raw | split: ','
+  assign rest_count = 0
+  assign current_in_rest = false
+  if named_raw != ''
+    for c in localization.available_countries
+      unless named contains c.iso_code
+        assign rest_count = rest_count | plus: 1
+        if c.iso_code == current_iso
+          assign current_in_rest = true
+        endif
+      endunless
+    endfor
+  endif
 -%}
-<div class="st-location__list" data-location-list>
-  <label class="st-location__filter" for="StLocationFilter-{{ suffix }}">
-    <span class="visually-hidden">{{ 'localization.find_country' | t }}</span>
-    <input
-      type="search"
-      id="StLocationFilter-{{ suffix }}"
-      class="st-location__filter-input"
-      placeholder="{{ 'localization.find_country' | t }}"
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="off"
-      spellcheck="false"
-      data-location-filter
-    >
-  </label>
-  <ul class="st-location__countries list-unstyled" role="list">
+<div class="st-location__list" data-location-list data-level="all">
+  <ul class="st-location__countries st-location__level st-location__level--all" role="list">
     {%- for c in localization.available_countries -%}
-      <li class="st-location__item" data-location-item data-name="{{ c.name | downcase | escape }} {{ c.iso_code | downcase }}">
+      {%- if named_raw == '' or named contains c.iso_code -%}
+        <li class="st-location__item">
+          <button
+            type="button"
+            class="st-location__country{% if c.iso_code == current_iso %} is-current{% endif %}"
+            data-location-pick="{{ c.iso_code }}"
+            {% if c.iso_code == current_iso %}aria-current="true"{% endif %}
+          >{{ c.name }}</button>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if rest_count > 0 -%}
+      <li class="st-location__item">
         <button
           type="button"
-          class="st-location__country{% if c.iso_code == current_iso %} is-current{% endif %}"
-          data-location-pick="{{ c.iso_code }}"
-          {% if c.iso_code == current_iso %}aria-current="true"{% endif %}
-        >{{ c.name }}</button>
+          class="st-location__country st-location__more{% if current_in_rest %} is-current{% endif %}"
+          data-location-level="rest"
+          aria-expanded="false"
+          aria-controls="StLocationRest-{{ suffix }}"
+          {% if current_in_rest %}aria-current="true"{% endif %}
+        ><span>{{ 'localization.rest_of_world' | t }}{% if current_in_rest %} &middot; {{ localization.country.name }}{% endif %}</span><span class="st-location__glyph" aria-hidden="true">&rarr;</span></button>
       </li>
-    {%- endfor -%}
+    {%- endif -%}
   </ul>
-  <p class="st-location__none" data-location-none hidden>{{ 'localization.no_match' | t }}</p>
+  {%- if rest_count > 0 -%}
+    <div class="st-location__level st-location__level--rest" id="StLocationRest-{{ suffix }}">
+      <button type="button" class="st-location__country st-location__back" data-location-level="all"><span class="st-location__glyph" aria-hidden="true">&larr;</span>{{ 'localization.all_locations' | t }}</button>
+      <label class="st-location__filter" for="StLocationFilter-{{ suffix }}">
+        <span class="visually-hidden">{{ 'localization.find_country' | t }}</span>
+        <input
+          type="search"
+          id="StLocationFilter-{{ suffix }}"
+          class="st-location__filter-input"
+          placeholder="{{ 'localization.find_country' | t }}"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          data-location-filter
+        >
+      </label>
+      <ul class="st-location__countries" role="list">
+        {%- for c in localization.available_countries -%}
+          {%- unless named contains c.iso_code -%}
+            <li class="st-location__item" data-location-item data-name="{{ c.name | downcase | escape }} {{ c.iso_code | downcase }}">
+              <button
+                type="button"
+                class="st-location__country{% if c.iso_code == current_iso %} is-current{% endif %}"
+                data-location-pick="{{ c.iso_code }}"
+                {% if c.iso_code == current_iso %}aria-current="true"{% endif %}
+              >{{ c.name }}</button>
+            </li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+      <p class="st-location__none" data-location-none hidden>{{ 'localization.no_match' | t }}</p>
+    </div>
+  {%- endif -%}
 </div>

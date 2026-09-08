@@ -12,8 +12,9 @@
  * button carrying its code, and exactly one carries aria-current; the two
  * renders of the list (drawer, menu) get distinct ids; and the bar's
  * trigger and the menu's row both say the same words. The list is asserted
- * at the store's real size — 215 countries — because that is the number
- * the design was not drawn for and the filter exists because of.
+ * at the store's real size — 215 countries — in its two levels: the named
+ * ones and "Rest of world" first, the other 193 behind it with the filter,
+ * and a visitor from a rest-of-world country told so on that row.
  *
  * THE BROWSER (Chromium, the rendered fragments plus the theme's own CSS):
  * the trigger opens the drawer and the drawer is the cart drawer's 480px;
@@ -33,10 +34,15 @@ const failures = []
 const check = (ok, msg) => { if (!ok) failures.push(msg) }
 
 // ---------- the store's countries, at the store's size ----------
-const NAMED = ['Australia','Austria','Belgium','Canada','Denmark','Finland','France','Germany','Hong Kong SAR','Ireland','Italy','Japan','Netherlands','New Zealand','Singapore','South Korea','Spain','Sweden','Switzerland','Taiwan','United Kingdom','United States']
-const ISO = { 'United Kingdom': 'GB', 'United States': 'US', Switzerland: 'CH', Sweden: 'SE', Ireland: 'IE' }
+// The named ones are what the setting lists (the eleven markets plus Mexico,
+// Norway and Switzerland, here a representative 22); the rest of the world
+// is a few real names the filter can be asked for, and fillers to 215.
+const NAMED = { AU: 'Australia', AT: 'Austria', BE: 'Belgium', CA: 'Canada', DK: 'Denmark', FI: 'Finland', FR: 'France', DE: 'Germany', HK: 'Hong Kong SAR', IE: 'Ireland', IT: 'Italy', JP: 'Japan', NL: 'Netherlands', NZ: 'New Zealand', SG: 'Singapore', KR: 'South Korea', ES: 'Spain', SE: 'Sweden', CH: 'Switzerland', TW: 'Taiwan', GB: 'United Kingdom', US: 'United States' }
+const REST = { IN: 'India', ID: 'Indonesia', IS: 'Iceland', IL: 'Israel', ZA: 'South Africa', SA: 'Saudi Arabia', BR: 'Brazil' }
+const NAMED_SETTING = Object.keys(NAMED).join(', ')
 const countries = []
-for (const n of NAMED) countries.push({ name: n, iso_code: ISO[n] || n.slice(0, 2).toUpperCase(), currency: { iso_code: 'XXX' } })
+for (const [iso, name] of Object.entries(NAMED)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' } })
+for (const [iso, name] of Object.entries(REST)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' } })
 for (let i = countries.length; i < 215; i++) countries.push({ name: `Country ${String(i).padStart(3, '0')}`, iso_code: `Z${i}`, currency: { iso_code: 'XXX' } })
 countries.sort((a, b) => a.name.localeCompare(b.name))
 const UK = { name: 'United Kingdom', iso_code: 'GB', currency: { iso_code: 'GBP' } }
@@ -49,13 +55,13 @@ const CH_LANGS = [{ iso_code: 'de', endonym_name: 'Deutsch' }, EN, { iso_code: '
 // read, `render` included. liquidjs's render is scope-isolated, so the
 // engine is made per store state with those as globals — the harness's
 // concession, not the theme's.
-const mk = (localization, settings = { enable_location_picker: true }) => {
+const mk = (localization, settings = { enable_location_picker: true, location_named_countries: NAMED_SETTING }) => {
   const engine = new Liquid({ root: [new URL('../../snippets/', import.meta.url).pathname], extname: '.liquid', strictFilters: false, globals: { localization, settings, section: { id: 'header' } } })
   tune(engine)
   return engine
 }
 const tune = (engine) => {
-const STRINGS = { 'localization.location': 'Location', 'localization.change_location': 'Change location', 'localization.find_country': 'Find your country', 'localization.no_match': 'No country matches that', 'localization.language_label': 'Language', 'accessibility.close': 'Close', 'general.search.search': 'Search' }
+const STRINGS = { 'localization.location': 'Location', 'localization.change_location': 'Change location', 'localization.find_country': 'Find your country', 'localization.no_match': 'No country matches that', 'localization.language_label': 'Language', 'accessibility.close': 'Close', 'general.search.search': 'Search', 'localization.rest_of_world': 'Rest of world', 'localization.all_locations': 'All locations' }
 engine.registerFilter('t', (k) => STRINGS[k] ?? k)
 engine.registerTag('form', {
   parse(token, remainTokens) {
@@ -112,6 +118,28 @@ check(chLangs === 4, `Switzerland offers ${chLangs} languages, not 4`)
 check(/class="st-location__language is-current"[^>]*lang="de"[^>]*aria-current="true"[^>]*>Deutsch</.test(drawerCH), 'the current language is not the one marked')
 const picks = (drawerUK.match(/data-location-pick="/g) || []).length
 check(picks === 215, `the drawer lists ${picks} countries, not the store's 215`)
+// Two levels: the named ones and one row more; everything else behind it.
+// Read off the MARKUP: the snippet's own stylesheet and script name these
+// classes and attributes too, and a first draft counted the script's
+// selector as a 194th country.
+const markup = (html) => html.slice(html.indexOf('<st-location-picker'), html.indexOf('</st-location-picker>'))
+const levelAll = /st-location__level--all[\s\S]*?<\/ul>/.exec(markup(drawerUK))[0]
+const levelRest = /st-location__level--rest[\s\S]*$/.exec(markup(drawerUK))[0]
+const named = (levelAll.match(/data-location-pick="/g) || []).length
+check(named === 22, `the first level names ${named} countries, not the setting's 22`)
+check(/data-location-level="rest"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world/.test(levelAll), 'the first level has no "Rest of world" row')
+check((levelRest.match(/data-location-item/g) || []).length === 193, 'the rest of the world is not the other 193')
+check(!levelAll.includes('data-location-filter') && levelRest.includes('data-location-filter'), 'the filter belongs to the long level only')
+check(levelRest.includes('data-location-level="all"') && levelRest.includes('All locations'), 'the second level has no way back')
+// A visitor whose own country is a rest-of-world one is told so on the row.
+const inLoc = { ...ukLoc, country: { name: 'India', iso_code: 'IN', currency: { iso_code: 'INR' } } }
+const drawerIN = await render('location-picker', inLoc)
+check(drawerIN.includes('India (INR)'), 'the heading does not name India')
+check(/st-location__more is-current[^>]*aria-current="true"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world &middot; India/.test(drawerIN), 'the Rest of world row does not carry India as current')
+check((markup(drawerIN).match(/aria-current="true"/g) || []).length === 2, 'India should be current in its own row and on the Rest of world row, nowhere else')
+// The setting left empty is the flat list, and no second level.
+const flat = await mk(ukLoc, { enable_location_picker: true, location_named_countries: '' }).renderFile('location-picker', {})
+check((markup(flat).match(/data-location-pick="/g) || []).length === 215 && !markup(flat).includes('data-location-level="rest"'), 'an empty setting should list every country with no Rest of world')
 check((drawerUK.match(/aria-current="true"/g) || []).length === 1, 'exactly one country should be current')
 check(/is-current"[^>]*data-location-pick="GB"/.test(drawerUK), 'the current country is not the United Kingdom')
 check(drawerUK.includes('id="StLocationFilter-drawer"') && rowUK.includes('id="StLocationFilter-menu"'), 'the two lists share an id')
@@ -120,7 +148,7 @@ check(/<span class="st-location__label">Location:<\/span> United Kingdom</.test(
 check(/<span class="st-location__label">Location:<\/span> United Kingdom</.test(rowUK), 'the menu row does not read the same words as the bar')
 check(rowUK.includes('aria-controls="StMobileLocation-header"') && rowUK.includes('id="StMobileLocation-header"'), "the menu row's fold is not wired to its panel")
 check(!rowUK.includes('class="st-location__languages') && rowCH.includes('st-location__languages--menu'), 'the menu shows a language row where it should not, or hides it where it should')
-const off = await mk(ukLoc, { enable_location_picker: false }).parseAndRender(triggerSrc, {})
+const off = await mk(ukLoc, { enable_location_picker: false, location_named_countries: NAMED_SETTING }).parseAndRender(triggerSrc, {})
 check(!off.includes('st-location__toggle'), 'the theme setting does not switch the trigger off')
 const one = await mk({ ...ukLoc, available_countries: [UK] }).parseAndRender(triggerSrc, {})
 check(!one.includes('st-location__toggle'), 'a store selling to one country still shows a picker')
@@ -174,33 +202,47 @@ try {
   check(head.size === '40px', `the heading is ${head.size}, not the theme's 40px h0`)
   const rowBox = await desktop.locator('.st-location__drawer [data-location-pick="GB"]').boundingBox()
   check(rowBox.height >= 44, `a country row is ${rowBox.height}px tall — under a finger's 44`)
-  // typing narrows, clearing restores
+  // The first level: the named countries and Rest of world, no filter in view.
+  const drawerList = desktop.locator('.st-location__drawer [data-location-list]')
+  check(await drawerList.locator('.st-location__level--all [data-location-pick]').count() === 22, 'the first level does not show the 22 named countries')
+  check(!(await desktop.locator('#StLocationFilter-drawer').isVisible()), 'the filter shows before the long list is opened')
+  const more = drawerList.locator('[data-location-level="rest"]')
+  const moreBox = await more.boundingBox()
+  check(moreBox.height >= 44, `the Rest of world row is ${moreBox.height}px tall`)
+  await more.click()
+  check(await drawerList.getAttribute('data-level') === 'rest', 'Rest of world did not open the second level')
+  check(await desktop.evaluate(() => document.activeElement.id === 'StLocationFilter-drawer'), 'the filter did not take focus when the long list opened')
+  check(!(await drawerList.locator('.st-location__level--all').isVisible()), 'the first level is still in view under the second')
+  // typing narrows, clearing restores — on the long level, where the filter is
   const filter = desktop.locator('#StLocationFilter-drawer')
-  await filter.fill('sw')
+  await filter.fill('ind')
   const shown = await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').allInnerTexts()
-  check(shown.length === 2 && shown.includes('Sweden') && shown.includes('Switzerland'), `"sw" shows ${JSON.stringify(shown)}`)
+  check(shown.length === 2 && shown.includes('India') && shown.includes('Indonesia'), `"ind" shows ${JSON.stringify(shown)}`)
   await filter.fill('s')
   const ess = await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').allInnerTexts()
-  check(ess.includes('Sweden') && ess.includes('Spain') && !ess.includes('Australia') && !ess.includes('Austria'), `one letter matches the start of a word, not anywhere in it: "s" shows ${JSON.stringify(ess)}`)
-  await filter.fill('kingdom')
-  const kingdom = await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').allInnerTexts()
-  check(kingdom.length === 1 && kingdom[0] === 'United Kingdom', `"kingdom" shows ${JSON.stringify(kingdom)}`)
-  await filter.fill('united')
-  const united = await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').allInnerTexts()
-  check(united.length === 2, `"united" shows ${JSON.stringify(united)}`)
+  check(ess.includes('South Africa') && ess.includes('Saudi Arabia') && !ess.includes('Israel') && !ess.includes('Iceland'), `one letter matches the start of a word, not anywhere in it: "s" shows ${JSON.stringify(ess)}`)
+  await filter.fill('africa')
+  const africa = await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').allInnerTexts()
+  check(africa.length === 1 && africa[0] === 'South Africa', `"africa" shows ${JSON.stringify(africa)}`)
   await filter.fill('zzzz')
   check(await desktop.locator('.st-location__drawer [data-location-none]').isVisible(), 'no match shows no note')
   await filter.fill('')
-  check(await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').count() === 215, 'clearing the filter did not restore every country')
-  // choosing submits the form with that country
-  await desktop.locator('.st-location__drawer [data-location-pick="CH"]').click()
-  check(await desktop.evaluate(() => window.__submitted) === 'CH', 'choosing a country did not submit it')
+  check(await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').count() === 193, 'clearing the filter did not restore the whole rest of the world')
+  // and back
+  await drawerList.locator('[data-location-level="all"]').click()
+  check(await drawerList.getAttribute('data-level') === 'all', 'the way back did not return to the first level')
+  check(await desktop.evaluate(() => document.activeElement.dataset.locationLevel === 'rest'), 'focus did not return to the Rest of world row')
+  await more.click()
+  // choosing submits the form with that country — from the long level too
+  await desktop.locator('.st-location__drawer [data-location-pick="BR"]').click()
+  check(await desktop.evaluate(() => window.__submitted) === 'BR', 'choosing a country did not submit it')
   // Escape closes and hands focus back
   await desktop.keyboard.press('Escape')
   await desktop.waitForTimeout(500)
   check(!(await desktop.locator('st-location-picker').evaluate((el) => el.classList.contains('is-open'))), 'Escape did not close the drawer')
   check(await desktop.evaluate(() => document.activeElement.classList.contains('st-location__toggle')), 'focus did not return to the trigger')
   check(await desktop.locator('.st-location__drawer').evaluate((el) => getComputedStyle(el).visibility) === 'hidden', 'the closed drawer is still reachable')
+  check(await drawerList.getAttribute('data-level') === 'all', 'closing the drawer did not return the list to its first level')
 
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
   await phone.setContent(page_html(390))
@@ -219,9 +261,10 @@ try {
   check((await row.locator('[data-glyph]').innerText()) === '−', 'the glyph did not turn to −')
   await phone.locator('.st-mmenu__acc').first().click()
   check(await phone.locator('#StMobileResources-header').evaluate((el) => el.classList.contains('is-open')), 'Resources stopped opening')
-  await phone.locator('#StLocationFilter-menu').fill('ire')
-  const ire = await phone.locator('#StMobileLocation-header [data-location-item]:not([hidden])').allInnerTexts()
-  check(ire.length === 1 && ire[0] === 'Ireland', `"ire" in the menu shows ${JSON.stringify(ire)}`)
+  await phone.locator('#StMobileLocation-header [data-location-level="rest"]').click()
+  await phone.locator('#StLocationFilter-menu').fill('ice')
+  const ice = await phone.locator('#StMobileLocation-header [data-location-item]:not([hidden])').allInnerTexts()
+  check(ice.length === 1 && ice[0] === 'Iceland', `"ice" in the menu shows ${JSON.stringify(ice)}`)
 } finally {
   await browser.close()
 }
