@@ -224,6 +224,14 @@
           inherit from the header.
         {%- endcomment -%}
         {%- render 'cart-notification' -%}
+        {%- comment -%}
+          The location picker's drawer, for the same reason as the cart's:
+          position: fixed only means fixed outside the sticky header's
+          transform. The header renders its trigger; the drawer lives here.
+        {%- endcomment -%}
+        {%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}
+          {%- render 'location-picker' -%}
+        {%- endif -%}
 
         <script>
           /* Stamp the browsed market context onto the ORDER, so Brevo learns

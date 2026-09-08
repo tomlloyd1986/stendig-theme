@@ -1,0 +1,359 @@
+{% comment %}
+  The location picker: a drawer that says which country the visitor is
+  shopping as, and lets them change it.
+
+  Modelled on the cart drawer, and shares its box exactly — 48rem wide on
+  the right, the hairline, the shadow, the 0.4s ease, the "Close ✕" row —
+  because a second drawer that moved differently from the first would read
+  as a second kind of thing. The big line under the header is the country
+  and its currency in the Display face at the theme's h0, the way the mobile
+  menu's own headline is set; then the languages this market can be read in,
+  where there is more than one; then the country list, shared with the
+  mobile menu (snippets/location-list.liquid).
+
+  WHY IT IS RENDERED FROM layout/theme.liquid, NOT THE HEADER. The sticky
+  header hides itself with a transform, and a transform turns its subtree's
+  position: fixed into containment — the cart drawer learned this the hard
+  way (see the note above its render call). The header renders only the
+  trigger; this snippet renders beside the cart drawer, where nothing
+  transforms it.
+
+  WHAT CHOOSING DOES. One Shopify `localization` form carries a country
+  and a language; a country click sets `country_code` and submits, a
+  language click sets `language_code` and submits, and Shopify answers with
+  the right market's URL and remembers the choice. That memory is also what
+  overrides Shopify's automatic market redirect: once a visitor has chosen
+  here, the redirect leaves them where they chose. Nothing is stored by the
+  theme itself.
+{% endcomment %}
+{%- liquid
+  assign country = localization.country
+  assign language = localization.language
+  assign languages = localization.available_languages
+-%}
+<style>
+  /* Trigger — the header's "Location: United Kingdom". The label is muted,
+     the country is the full ink; while the drawer is open it underlines,
+     as the Resources trigger does while its dropdown is open. */
+  .st-location__label { color: rgba(var(--color-foreground), 0.55); }
+  .st-location__toggle[aria-expanded="true"] {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  @media screen and (max-width: 749px) {
+    /* On a phone the picker lives in the menu; the bar keeps to [logo] [Cart] [Menu] */
+    .st-location__toggle { display: none; }
+  }
+
+  /* Overlay and drawer: the cart drawer's, to the value. */
+  .st-location__overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+    transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 9998;
+  }
+  .st-location.is-open .st-location__overlay { opacity: 1; pointer-events: auto; }
+  .st-location__drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    height: 100dvh;
+    width: min(48rem, 100vw);
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(var(--color-background));
+    color: rgb(var(--color-foreground));
+    font-size: 1.4rem;
+    border-left: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    box-shadow: -1.6rem 0 4rem rgba(0, 0, 0, 0.08);
+    transform: translateX(100%);
+    /* Parked off-screen it is also invisible to the tab order and to
+       readers — visibility, not display, so the slide still animates. */
+    visibility: hidden;
+    will-change: transform;
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.4s;
+    z-index: 9999;
+  }
+  .st-location.is-open .st-location__drawer {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s;
+  }
+  html.st-location-open,
+  html.st-location-open body { overflow: hidden; }
+
+  .st-location__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.8rem 2.4rem;
+    border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
+    flex-shrink: 0;
+  }
+  /* Title and Close are one matched pair; the doubled class out-specifies
+     base.css's h2 rule, which would set the Display face on the title. */
+  .st-location__header .st-location__heading,
+  .st-location__header .st-location__close {
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: rgb(var(--color-foreground));
+    margin: 0;
+  }
+  .st-location__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .st-location__close .icon { width: 0.9rem; height: 0.9rem; }
+
+  .st-location__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 2.4rem 4rem;
+  }
+  /* The country you are, at the theme's h0 in the Display face. */
+  .st-location__current {
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 4rem;
+    line-height: 1.3;
+    letter-spacing: 0.06rem;
+    font-weight: 400;
+    color: rgb(var(--color-foreground));
+    margin: 4rem 0 0;
+  }
+  .st-location__languages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 2.4rem;
+    margin-top: 1.2rem;
+  }
+  .st-location__language {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+  .st-location__language:hover,
+  .st-location__language.is-current {
+    color: rgb(var(--color-foreground));
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  .st-location__rule {
+    border: none;
+    border-top: 1px solid #e2e2e2;
+    margin: 2.8rem 0 0.8rem;
+  }
+
+  /* The list — shared with the mobile menu, so these rules are not scoped
+     to the drawer. */
+  .st-location__filter { display: block; margin: 0 0 0.8rem; }
+  .st-location__filter-input {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #e2e2e2;
+    border-radius: 0;
+    padding: 1.2rem 0;
+    margin: 0;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    color: rgb(var(--color-foreground));
+    outline: none;
+  }
+  .st-location__filter-input::placeholder { color: rgba(var(--color-foreground), 0.55); }
+  .st-location__filter-input:focus { border-bottom-color: rgb(var(--color-foreground)); }
+  .st-location__filter-input::-webkit-search-decoration,
+  .st-location__filter-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+  .st-location__countries { list-style: none; margin: 0; padding: 0; }
+  /* 1.2rem above and below 2.1rem of type is a 45px row: a finger's target. */
+  .st-location__country {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 1.2rem 0;
+    margin: 0;
+    cursor: pointer;
+    font-family: var(--font-body-family);
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    letter-spacing: 0;
+    color: rgb(var(--color-foreground));
+  }
+  .st-location__country:hover,
+  .st-location__country.is-current {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 1px;
+  }
+  .st-location__none {
+    margin: 0;
+    padding: 1.2rem 0;
+    font-size: 1.4rem;
+    line-height: 2.1rem;
+    color: rgba(var(--color-foreground), 0.55);
+  }
+</style>
+
+<st-location-picker class="st-location">
+  {%- form 'localization', id: 'StLocationForm', class: 'st-location__form' -%}
+    <input type="hidden" name="country_code" value="{{ country.iso_code }}" data-location-country>
+    <input type="hidden" name="language_code" value="{{ language.iso_code }}" data-location-language>
+  {%- endform -%}
+
+  <div class="st-location__overlay" data-location-close></div>
+  <div
+    class="st-location__drawer"
+    id="StLocationDrawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="StLocationHeading"
+    aria-hidden="true"
+  >
+    <div class="st-location__header">
+      <h2 class="st-location__heading" id="StLocationHeading">{{ 'localization.change_location' | t }}</h2>
+      <button type="button" class="st-location__close focus-inset" data-location-close aria-label="{{ 'accessibility.close' | t }}">
+        {{ 'accessibility.close' | t }}
+        <svg class="icon icon-close" aria-hidden="true" focusable="false"><use href="#icon-close"></svg>
+      </button>
+    </div>
+    <div class="st-location__body">
+      <p class="st-location__current">{{ country.name }} ({{ country.currency.iso_code }})</p>
+      {%- if languages.size > 1 -%}
+        <div class="st-location__languages" role="group" aria-label="{{ 'localization.language_label' | t }}">
+          {%- for l in languages -%}
+            <button
+              type="button"
+              class="st-location__language{% if l.iso_code == language.iso_code %} is-current{% endif %}"
+              lang="{{ l.iso_code }}"
+              data-location-pick-language="{{ l.iso_code }}"
+              {% if l.iso_code == language.iso_code %}aria-current="true"{% endif %}
+            >{{ l.endonym_name | capitalize }}</button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      <hr class="st-location__rule">
+      {%- render 'location-list', suffix: 'drawer' -%}
+    </div>
+  </div>
+</st-location-picker>
+
+<script>
+  /* One element runs every part of the picker — the header's trigger, the
+     drawer, and the copy of the list inside the mobile menu — by listening
+     on the document rather than on itself, since the mobile list is not its
+     descendant. Delegation is also what lets the header re-render (the
+     theme editor does) without the trigger going dead. */
+  class StLocationPicker extends HTMLElement {
+    connectedCallback() {
+      this.drawer = this.querySelector('.st-location__drawer');
+      this.form = this.querySelector('form');
+      this.countryInput = this.querySelector('[data-location-country]');
+      this.languageInput = this.querySelector('[data-location-language]');
+      this.closeButton = this.querySelector('.st-location__close');
+      this.opener = null;
+
+      this.onClick = (e) => {
+        const open = e.target.closest('[data-location-open]');
+        if (open) { e.preventDefault(); this.setOpen(!this.classList.contains('is-open'), open); return; }
+        if (e.target.closest('[data-location-close]')) { this.setOpen(false); return; }
+        const country = e.target.closest('[data-location-pick]');
+        if (country) { this.choose(this.countryInput, country.dataset.locationPick); return; }
+        const language = e.target.closest('[data-location-pick-language]');
+        if (language) { this.choose(this.languageInput, language.dataset.locationPickLanguage); }
+      };
+      this.onInput = (e) => {
+        const field = e.target.closest('[data-location-filter]');
+        if (field) StLocationPicker.filter(field.closest('[data-location-list]'), field.value);
+      };
+      this.onKeydown = (e) => { if (e.key === 'Escape' && this.classList.contains('is-open')) this.setOpen(false); };
+      document.addEventListener('click', this.onClick);
+      document.addEventListener('input', this.onInput);
+      document.addEventListener('keydown', this.onKeydown);
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener('click', this.onClick);
+      document.removeEventListener('input', this.onInput);
+      document.removeEventListener('keydown', this.onKeydown);
+      document.documentElement.classList.remove('st-location-open');
+    }
+
+    setOpen(open, opener) {
+      this.classList.toggle('is-open', open);
+      this.drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.documentElement.classList.toggle('st-location-open', open);
+      document.querySelectorAll('[data-location-open]').forEach((t) => t.setAttribute('aria-expanded', open ? 'true' : 'false'));
+      if (open) {
+        this.opener = opener || document.activeElement;
+        // The close control takes focus after the slide, so a reader lands
+        // on the dialogue rather than on the page behind it.
+        if (this.closeButton) setTimeout(() => this.closeButton.focus(), 400);
+      } else if (this.opener && typeof this.opener.focus === 'function') {
+        this.opener.focus();
+        this.opener = null;
+      }
+    }
+
+    /* A choice is a form submission and a page load; Shopify answers with
+       the market's own URL. The input is set, never the URL — Shopify owns
+       which subfolder a country lives under. */
+    choose(input, value) {
+      if (!input || !this.form || !value) return;
+      input.value = value;
+      this.form.submit();
+    }
+
+    /* Match on what a person would type: the START of any word in the
+       country's name, or its two-letter code — "united" finds both Kingdom
+       and States, "kingdom" finds the one, "gb" too. Not a substring: one
+       letter typed is the first letter of a name, and "s" as a substring
+       showed Australia and Austria ahead of Sweden. Rows are hidden, never
+       removed, so clearing the field restores the whole list. */
+    static matches(name, query) {
+      const q = (query || '').trim().toLowerCase();
+      if (!q) return true;
+      const words = (name || '').toLowerCase().split(/[\s\-–—'’(),./]+/).filter(Boolean);
+      return words.some((w) => w.startsWith(q));
+    }
+
+    static filter(list, query) {
+      if (!list) return;
+      let shown = 0;
+      list.querySelectorAll('[data-location-item]').forEach((item) => {
+        const hit = StLocationPicker.matches(item.dataset.name, query);
+        item.hidden = !hit;
+        if (hit) shown += 1;
+      });
+      const none = list.querySelector('[data-location-none]');
+      if (none) none.hidden = shown > 0;
+    }
+  }
+  if (!customElements.get('st-location-picker')) customElements.define('st-location-picker', StLocationPicker);
+</script>

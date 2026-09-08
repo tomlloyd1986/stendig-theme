@@ -290,7 +290,11 @@
     "country_label": "Country/region",
     "language_label": "Language",
     "update_language": "Update language",
-    "update_country": "Update country/region"
+    "update_country": "Update country/region",
+    "location": "Location",
+    "change_location": "Change location",
+    "find_country": "Find your country",
+    "no_match": "No country matches that"
   },
   "customer": {
     "account": {

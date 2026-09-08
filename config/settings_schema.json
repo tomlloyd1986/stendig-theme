@@ -378,5 +378,17 @@
         "default": "<p>ASAP</p>"
       }
     ]
+  },
+  {
+    "name": "Location picker",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_location_picker",
+        "label": "Show the location picker",
+        "default": true,
+        "info": "\"Location: United Kingdom\" in the header on desktop, and a Location row at the foot of the mobile menu. Opens a drawer listing every country the store sells to, with the languages the current market can be read in. Choosing one is what overrides Shopify's automatic market redirect for that visitor."
+      }
+    ]
   }
 ]
