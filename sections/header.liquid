@@ -301,6 +301,31 @@
     text-underline-offset: 0.3em;
     text-decoration-thickness: 1px;
   }
+  /* The Location row: the body face at the sub-links' 14px, not the menu
+     rows' 24px Display — it states where you are rather than offering a
+     place to go, and it is the same words the desktop bar shows. 12px above
+     and below 21px of type keeps it a 45px tap. */
+  .st-mmenu__locrow {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 12px 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body-family);
+    font-size: 14px;
+    line-height: 21px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: #121212;
+  }
+  .st-mmenu__glyph--small { font-size: 14px; line-height: 21px; }
+  .st-mmenu__location { padding: 4px 0 12px; }
+  .st-location__languages--menu { margin: 0 0 8px; }
 
   /* Menu toggle: "Menu" swaps to a ✕ while open (mobile only element) */
   .st-mmenu__toggle-close { display: none; line-height: 0; }
@@ -406,6 +431,23 @@
       </nav>
 
     <div class="st-header__utility">
+      {%- comment -%}
+        Location — "Location: United Kingdom", the muted label and the
+        country. Opens the picker drawer, which layout/theme.liquid renders
+        beside the cart drawer (a fixed drawer cannot live inside the sticky
+        header; see the note below the markup). Desktop only: on a phone the
+        same choice is a row at the foot of the menu panel.
+      {%- endcomment -%}
+      {%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}
+        <button
+          type="button"
+          class="st-header__link st-location__toggle focus-inset"
+          aria-expanded="false"
+          aria-haspopup="dialog"
+          aria-controls="StLocationDrawer"
+          data-location-open
+        ><span class="st-location__label">{{ 'localization.location' | t }}:</span> {{ localization.country.name }}</button>
+      {%- endif -%}
       {%- comment -%}
         Resources dropdown trigger (desktop only). With a journal URL set it
         is a real link: hover or keyboard focus opens the dropdown, clicking
@@ -557,6 +599,37 @@
         </div>
       {%- endif -%}
       <button type="button" class="st-mmenu__row st-mmenu__searchrow">{{ 'general.search.search' | t }}</button>
+      {%- comment -%}
+        Location, at the foot of the menu: the same "Location: United Kingdom"
+        the desktop bar shows, at the sub-link size rather than the menu
+        rows' — it says where you are, it is not a place to go. Opens in
+        place, the way Resources does, onto the same list the drawer shows.
+      {%- endcomment -%}
+      {%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}
+        <hr class="st-mmenu__rule">
+        <button
+          type="button"
+          class="st-mmenu__locrow st-mmenu__acc"
+          aria-expanded="false"
+          aria-controls="StMobileLocation-{{ section.id }}"
+        ><span><span class="st-location__label">{{ 'localization.location' | t }}:</span> {{ localization.country.name }}</span><span class="st-mmenu__glyph st-mmenu__glyph--small" aria-hidden="true" data-glyph>+</span></button>
+        <div class="st-mmenu__sub st-mmenu__location" id="StMobileLocation-{{ section.id }}">
+          {%- if localization.available_languages.size > 1 -%}
+            <div class="st-location__languages st-location__languages--menu" role="group" aria-label="{{ 'localization.language_label' | t }}">
+              {%- for l in localization.available_languages -%}
+                <button
+                  type="button"
+                  class="st-location__language{% if l.iso_code == localization.language.iso_code %} is-current{% endif %}"
+                  lang="{{ l.iso_code }}"
+                  data-location-pick-language="{{ l.iso_code }}"
+                  {% if l.iso_code == localization.language.iso_code %}aria-current="true"{% endif %}
+                >{{ l.endonym_name | capitalize }}</button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- render 'location-list', suffix: 'menu' -%}
+        </div>
+      {%- endif -%}
     </div>
   </st-nav-menus>
 </{% if section.settings.enable_sticky_header %}sticky-header{% else %}div{% endif %}>
@@ -672,8 +745,10 @@
       this.resToggle = root.querySelector('.st-resources__toggle');
       this.menuPanel = this.querySelector('.st-mmenu');
       this.menuToggle = root.querySelector('.st-mmenu__toggle');
-      this.acc = this.querySelector('.st-mmenu__acc');
-      this.sub = this.querySelector('.st-mmenu__sub');
+      // Every fold in the panel — Resources, and Location beneath it — each
+      // paired with its own panel by aria-controls. querySelector took only
+      // the first, and a second fold added below it opened nothing.
+      this.accs = Array.from(this.querySelectorAll('.st-mmenu__acc'));
       this.searchRow = this.querySelector('.st-mmenu__searchrow');
       this.searchSummary = root.querySelector('.st-header__search summary');
       this.desktop = window.matchMedia('(min-width: 750px)');
@@ -694,16 +769,18 @@
       if (this.menuToggle && this.menuPanel) {
         this.menuToggle.addEventListener('click', () => this.setMenu(!this.menuPanel.classList.contains('is-open')));
       }
-      if (this.acc && this.sub) {
+      this.accs.forEach((acc) => {
+        const sub = document.getElementById(acc.getAttribute('aria-controls'));
+        if (!sub) return;
         // Instant expand/collapse — no animation, like the rest of the theme
-        this.acc.addEventListener('click', () => {
-          const open = !this.sub.classList.contains('is-open');
-          this.sub.classList.toggle('is-open', open);
-          this.acc.setAttribute('aria-expanded', open ? 'true' : 'false');
-          const glyph = this.acc.querySelector('[data-glyph]');
+        acc.addEventListener('click', () => {
+          const open = !sub.classList.contains('is-open');
+          sub.classList.toggle('is-open', open);
+          acc.setAttribute('aria-expanded', open ? 'true' : 'false');
+          const glyph = acc.querySelector('[data-glyph]');
           if (glyph) glyph.textContent = open ? '−' : '+';
         });
-      }
+      });
       if (this.searchRow) {
         this.searchRow.addEventListener('click', () => {
           this.setMenu(false);
@@ -943,6 +1020,10 @@
       "id": "menu_label",
       "label": "Mobile menu button label",
       "default": "Menu"
+    },
+    {
+      "type": "paragraph",
+      "content": "The location picker (\"Location: United Kingdom\" here, a row at the foot of the mobile menu) is switched on under Theme settings → Location picker."
     },
     {
       "type": "header",

@@ -14,7 +14,7 @@
       "name": "Hero banner",
       "settings": {
         "image_desktop": "shopify://shop_images/StendigCalendarsFN0220_e5fd5693-b15d-4530-bbf5-9a17c956d8d3.jpg",
-        "button_label": "DISCOVER 2026",
+        "button_label": "DISCOVER 2027",
         "link": "shopify://collections/range"
       }
     },
@@ -74,7 +74,7 @@
         "label": "The Stendig",
         "heading": "Massimo Vignelli's original classic",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/stendig-calendar-2026",
+        "link": "shopify://products/stendig-calendar",
         "image": "shopify://shop_images/5x6_Detail_Roll.jpg"
       }
     },
@@ -85,32 +85,31 @@
           "type": "product",
           "settings": {
             "product": "v-calendar",
-            "sku": "VC27W",
+            "sku": "VC27LB",
             "title": ""
           }
         },
         "product_br8Eqk": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26R",
+            "product": "v-calendar",
+            "sku": "VC27R",
             "title": ""
           }
         },
         "product_JFPCTA": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26B",
+            "product": "v-calendar",
+            "sku": "VC27B",
             "title": ""
           }
         },
         "product_3HT8WQ": {
           "type": "product",
           "settings": {
-            "product": "v-calendar-2026",
-            "sku": "VC26Y",
-            "title": "V Calendar 2026 (Yellow)"
+            "product": "v-calendar",
+            "sku": "VC27DB"
           }
         }
       },
@@ -122,10 +121,10 @@
       ],
       "name": "Home: Product group",
       "settings": {
-        "label": "The Stendig",
+        "label": "The V",
         "heading": "A modern reinvention, reimagined for a smaller format",
         "link_label": "Discover the calendar",
-        "link": "shopify://products/v-calendar-2026",
+        "link": "shopify://products/v-calendar",
         "image": "shopify://shop_images/hf_20260829_085109_aee237f8-726e-40bf-a77b-96ef99e09f28.png"
       }
     },

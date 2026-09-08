@@ -2,9 +2,12 @@
   Renders the body of the add-to-cart drawer: current cart contents, an
   optional cross-sell suggestion, and the checkout actions.
 
-  Cross-sell rules are "cross_sell_rule" metaobjects picked (in priority
-  order) in Theme settings > Cart Cross-sell. The first rule that matches
-  wins. A rule matches when:
+  Cross-sell rules are the "cross_sell_rule" metaobjects themselves — every
+  ACTIVE entry, no theme step. Saving a rule is what makes it live, and its
+  Status is what turns it off. (The theme setting is kept as a fallback for a
+  definition without storefront access; see the region below.) Order comes
+  from an optional `priority` number, lowest first, and the first rule that
+  matches wins. A rule matches when:
   - its suggested product is not already in the cart
   - its domain list is empty or contains the current subdomain code
   - its "cart contains" list is empty or one of those products is in the cart
@@ -17,12 +20,25 @@
 {% endcomment %}
 
 {%- liquid
+  # Which market's shelf answers "is this in stock". Markets moved from
+  # subdomains to subfolders, so the code comes from the URL prefix
+  # ("/en-kr" -> "kr") and the bare domain is the primary market. Read off
+  # request.host, as this did, every market resolved to 'main' and the
+  # cross-sell was answered for the international shelf: strips out of stock
+  # in Korea were offered to a Korean customer, and strips out of stock on
+  # 'main' were withheld from the ten markets that had them. A legacy
+  # subdomain hostname still resolves, so an old rule keeps working if such a
+  # domain is hit. Same resolution as stock-state.liquid and
+  # delivery-date-buttons.liquid.
   assign host_clean = request.host | downcase | remove: 'www.'
-  assign host_parts = host_clean | split: '.'
-  if host_parts.size == 2
-    assign domain_code = 'main'
+  assign domain_code = 'main'
+  if routes.root_url != '/'
+    assign domain_code = routes.root_url | remove_first: '/' | split: '-' | last | downcase
   else
-    assign domain_code = host_parts | first
+    assign host_parts = host_clean | split: '.'
+    if host_parts.size > 2
+      assign domain_code = host_parts | first
+    endif
   endif
 
   assign current_wh = ''
@@ -44,7 +60,10 @@
       for d in wh.domains.value
         assign dd = d | strip | downcase
         if dd == domain_code or dd == host_clean
+          # Cleared and reset together — see stock-state.liquid. Two entries
+          # claiming one market must not split the location from the tick.
           assign current_wh = wh_loc
+          assign wh_open = false
           if wh.sell_regardless.value
             assign wh_open = true
           endif
@@ -58,12 +77,72 @@
   endif
 -%}
 
+{%- comment -%} xsell-rule-start
+  Everything to the end marker is WHICH RULE WINS, and nothing else — no
+  markup. `docs/spikes/cross-sell-rule-check.mjs` renders exactly this region
+  in liquidjs against scripted rules and carts.
+{%- endcomment -%}
 {%- assign cs_rule = false -%}
 {%- assign cs_product = false -%}
 {%- assign cs_available_ids = '' -%}
 
+{%- liquid
+  # WHERE THE RULES COME FROM.
+  #
+  # They used to come from a theme setting — a metaobject_list somebody had to
+  # add each new rule to in Theme settings > Cart Cross-sell. Creating the
+  # entry under Content > Metaobjects did nothing on its own, which is a step
+  # that is easy to half-do and impossible to see the absence of: the rule
+  # looks finished, says Active, and never shows.
+  #
+  # So the rules are read straight off the metaobjects, as the popup versions
+  # already are. The definition's publishable capability then means what it
+  # says on the entry: ACTIVE entries are what `values` returns, so Status IS
+  # the switch and a rule is live the moment it is saved.
+  #
+  # The setting stays as a FALLBACK, for one reason: `metaobjects.<type>` only
+  # answers where the definition has storefront access, and a definition that
+  # has not been granted it returns nothing at all. Falling back means the
+  # worst case is the behaviour we already had rather than a cart drawer that
+  # silently stopped suggesting anything. The comment below says which source
+  # was used, so which one is in play is readable from outside.
+  assign cs_pool = metaobjects.cross_sell_rule.values
+  assign cs_source = 'metaobjects'
+  if cs_pool == blank or cs_pool.size == 0
+    assign cs_pool = settings.cross_sell_rules
+    assign cs_source = 'setting'
+  endif
+-%}
+
 {%- if cart != empty -%}
-  {%- for rule in settings.cross_sell_rules -%}
+  {%- comment -%}
+    First match wins, so ORDER matters. The setting's order was the priority;
+    a metaobject list has no order of its own, so an optional `priority`
+    number on the entry carries it — 1 first. The walk is one pass per rank
+    and a final pass for everything unranked, which is how the popup section
+    orders its versions, and for the same reason: Liquid cannot sort on a
+    field inside a metaobject.
+
+    With no `priority` field on the definition every rule is unranked and the
+    order is whatever Shopify hands back. That is fine while no two rules can
+    match one basket; add the field the day two can.
+  {%- endcomment -%}
+  {%- for cs_pass in (1..13) -%}
+  {%- for rule in cs_pool -%}
+    {%- if cs_rule != false -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      assign cs_pri = rule.priority.value | default: 0 | plus: 0
+      if cs_pass == 13
+        # the last pass takes everything nobody ranked
+        if cs_pri > 0
+          continue
+        endif
+      else
+        if cs_pri != cs_pass
+          continue
+        endif
+      endif
+    -%}
     {%- assign sp = rule.suggested_product.value -%}
     {%- if sp == blank -%}{%- continue -%}{%- endif -%}
 
@@ -143,9 +222,12 @@
     {%- assign cs_available_ids = avail_ids -%}
     {%- break -%}
   {%- endfor -%}
+  {%- endfor -%}
 {%- endif -%}
 
-<!-- cross-sell: rules={{ settings.cross_sell_rules | size }} matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
+{%- comment -%} xsell-rule-end {%- endcomment -%}
+
+<!-- cross-sell: source={{ cs_source }} rules={{ cs_pool | size }} [{% for r in cs_pool %}{{ r.system.handle }}{% if r.priority.value %}#{{ r.priority.value }}{% endif %},{% endfor %}] matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
 
 
 <div class="cart-drawer__scroll">

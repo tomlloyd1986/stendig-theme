@@ -161,6 +161,34 @@ if (beforeField.trim() !== 'sold_out') {
   ok('deployed before the field exists: unchanged, no error')
 }
 
+/* ---------- 6. two entries claiming one market ---------- */
+/* Real, not hypothetical: Canada carried two Warehouse entries at once —
+   one made by hand and one created by the rates app — with only one of
+   them holding the ca domain. The last match must win BOTH the location
+   name and the tick, never one from each entry. Checked in both orders,
+   because a bug here would show in one order and hide in the other. */
+const dup = (openFirst) => [
+  wh('UK 3PL', ['main'], { def: true }),
+  wh('GoBolt YYZ5', ['ca'], { open: openFirst }),
+  wh('CA 3PL (GoBolt YYZ5)', ['ca'], { open: !openFirst }),
+]
+for (const openFirst of [true, false]) {
+  /* Flow has marked the SECOND entry's location out. The second entry is
+     the last match, so it owns the market — and its own tick decides. */
+  const out = await engine.parseAndRender(read('snippets/stock-state.liquid'), {
+    product: product({ auto: ['ca 3pl (gobolt yyz5)'] }),
+    variant: null,
+    settings: { warehouses: dup(openFirst) },
+    routes: { root_url: '/en-ca' },
+  })
+  const got = out.trim()
+  const want = openFirst ? 'sold_out' : ''
+  if (got !== want) {
+    faults.push(`two entries for ca, tick on the ${openFirst ? 'first' : 'second'}: got ${JSON.stringify(got)}, wanted ${JSON.stringify(want)} — the location and the tick must come from the same entry`)
+  }
+}
+ok('two entries claiming one market: the last one wins both its name and its tick')
+
 if (faults.length) {
   console.error('\nsell regardless:\n  - ' + faults.join('\n  - '))
   process.exit(1)

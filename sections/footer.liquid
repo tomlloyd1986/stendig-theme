@@ -88,7 +88,10 @@
               # Same market/language/path capture as the signup popup, so
               # every newsletter contact carries them (tags + Brevo fields).
               assign nl_path = routes.root_url
-              assign nl_lang = localization.language.iso_code | downcase
+              # Chinese ships as zh-TW/zh-CN and our copy and campaign branch are
+              # keyed by the bare code, so both collapse onto 'zh'. See the
+              # note in sections/popup-signup.liquid.
+              assign nl_lang = localization.language.iso_code | downcase | split: '-' | first
               assign nl_market = 'primary'
               if nl_path != '/'
                 assign nl_market = nl_path | remove_first: '/' | split: '-' | last | downcase
@@ -168,10 +171,16 @@
                 (function () {
                   var KEY = 'st:nl:pending';
                   var BREVO_URL = {{ section.settings.brevo_form_url | json }};
+                  /* The storefront comes from the shared resolver where it is
+                     available; the Liquid values behind it are what this form
+                     used alone, and routes.root_url losing the market prefix is
+                     what filed a German shopper as an international one. See
+                     snippets/market-context.liquid. */
+                  var ctx = window.STMarket ? window.STMarket() : null;
                   var attrs = {
-                    MARKET: {{ nl_market | json }},
-                    LANGUAGE: {{ nl_lang | json }},
-                    PATH: {{ nl_path | json }}
+                    MARKET: ctx ? ctx.market : {{ nl_market | json }},
+                    LANGUAGE: ctx ? ctx.language : {{ nl_lang | json }},
+                    PATH: ctx ? ctx.path : {{ nl_path | json }}
                   };
                   var form = document.getElementById('ContactFooter');
 

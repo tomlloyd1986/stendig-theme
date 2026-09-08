@@ -36,6 +36,7 @@
       "eu",
       "go-bolt-yyz-5"
     ],
+    "dispatch_from_admin": true,
     "delivery_dates": "<p>ASAP</p>",
     "checkout_logo_image": "shopify://shop_images/Website_Logo_PNG2_7b3307a6-12c6-4bd2-825a-c74ea5f11d06.png",
     "checkout_logo_size": "small",
@@ -107,7 +108,7 @@
           "96c3fad1-effd-47b9-8fb5-68395a8596b0": {
             "type": "link_list",
             "settings": {
-              "heading": "Policies",
+              "heading": "Helpful links",
               "menu": "footer-menu-3"
             }
           },
@@ -188,7 +189,7 @@
         ],
         "settings": {
           "enabled": true,
-          "use_admin_popups": false,
+          "use_admin_popups": true,
           "trigger_mode": "delay_scroll",
           "delay_seconds": 3,
           "scroll_percent": 30,
@@ -237,8 +238,7 @@
         "disabled": false,
         "settings": {}
       }
-    },
-    "dispatch_from_admin": true
+    }
   },
   "presets": {
     "Default": {

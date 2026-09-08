@@ -337,7 +337,7 @@
         "id": "cross_sell_rules",
         "label": "Cross-sell rules",
         "metaobject_type": "cross_sell_rule",
-        "info": "Rules for the suggestion shown in the add-to-cart drawer, in priority order — the first matching rule wins. Create rules under Content > Metaobjects > Cross-sell rule. A rule is skipped when its product is already in the cart or is out of stock in the current domain's warehouse."
+        "info": "NOT NORMALLY NEEDED. The drawer reads every ACTIVE Cross-sell rule entry on its own (Content > Metaobjects > Cross-sell rule) — saving one makes it live, and its Status turns it off. Order comes from the entry's priority field, lowest first. This list is only a fallback, used when the metaobject definition has no storefront access; anything selected here is ignored while entries are readable."
       }
     ]
   },
@@ -376,6 +376,18 @@
         "label": "Global Delivery Date Options (legacy)",
         "info": "Comma-separated list, used only when no metaobject dates are selected above. Example: ASAP, 1 dec, 10 dec, 24 nov, By Xmas",
         "default": "<p>ASAP</p>"
+      }
+    ]
+  },
+  {
+    "name": "Location picker",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_location_picker",
+        "label": "Show the location picker",
+        "default": true,
+        "info": "\"Location: United Kingdom\" in the header on desktop, and a Location row at the foot of the mobile menu. Opens a drawer listing every country the store sells to, with the languages the current market can be read in. Choosing one is what overrides Shopify's automatic market redirect for that visitor."
       }
     ]
   }

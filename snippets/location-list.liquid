@@ -1,0 +1,48 @@
+{% comment %}
+  The country list the location picker shows — rendered twice, once in the
+  desktop drawer and once inside the mobile menu, so the two never drift.
+
+  Every country Shopify offers is here: the store serves 215 of them across
+  its markets, most through the International market. A list that long is
+  read by typing, so a filter sits above it; the filter is JavaScript's and
+  the list is complete without it. A country is a BUTTON rather than a link:
+  the click sets the localization form's country and submits it, and there
+  is no page a link could honestly point at. What the row prints is
+  Shopify's own name for the country, in the language the visitor is
+  reading — the same word the footer's selector would use.
+
+  Accepts: suffix — a short word making the ids unique per render.
+{% endcomment %}
+{%- liquid
+  assign suffix = suffix | default: 'list'
+  assign current_iso = localization.country.iso_code
+-%}
+<div class="st-location__list" data-location-list>
+  <label class="st-location__filter" for="StLocationFilter-{{ suffix }}">
+    <span class="visually-hidden">{{ 'localization.find_country' | t }}</span>
+    <input
+      type="search"
+      id="StLocationFilter-{{ suffix }}"
+      class="st-location__filter-input"
+      placeholder="{{ 'localization.find_country' | t }}"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+      data-location-filter
+    >
+  </label>
+  <ul class="st-location__countries list-unstyled" role="list">
+    {%- for c in localization.available_countries -%}
+      <li class="st-location__item" data-location-item data-name="{{ c.name | downcase | escape }} {{ c.iso_code | downcase }}">
+        <button
+          type="button"
+          class="st-location__country{% if c.iso_code == current_iso %} is-current{% endif %}"
+          data-location-pick="{{ c.iso_code }}"
+          {% if c.iso_code == current_iso %}aria-current="true"{% endif %}
+        >{{ c.name }}</button>
+      </li>
+    {%- endfor -%}
+  </ul>
+  <p class="st-location__none" data-location-none hidden>{{ 'localization.no_match' | t }}</p>
+</div>
