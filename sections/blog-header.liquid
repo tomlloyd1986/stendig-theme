@@ -124,7 +124,7 @@
 {% endstyle %}
 
 {%- if article != blank and blog != blank -%}
-  <nav class="blogh__crumbbar" aria-label="Breadcrumb">
+  <nav class="blogh__crumbbar" aria-label="{{ 'accessibility.breadcrumb' | t }}">
     <ol class="blogh__crumbs">
       <li>
         <a class="blogh__crumb" href="{{ blog.url }}">{{ blog.title | escape }}</a>

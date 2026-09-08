@@ -145,7 +145,8 @@
               {%- endcomment -%}
               {%- if section.settings.brevo_form_url != blank -%}
                 <h3 class="newsletter-form__message newsletter-form__message--success form__message" data-nl-success hidden>{% render 'icon-success' %}{{ 'newsletter.success' | t }}</h3>
-                <small class="newsletter-form__message form__message" data-nl-error hidden>{% render 'icon-error' %}{{ section.settings.newsletter_error_text | default: 'Something went wrong — please try again.' | escape }}</small>
+                {%- assign newsletter_error_default = 'newsletter.error' | t -%}
+                <small class="newsletter-form__message form__message" data-nl-error hidden>{% render 'icon-error' %}{{ section.settings.newsletter_error_text | default: newsletter_error_default | escape }}</small>
               {%- endif -%}
 
               <script>
