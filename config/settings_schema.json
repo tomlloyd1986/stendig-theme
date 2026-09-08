@@ -388,6 +388,13 @@
         "label": "Show the location picker",
         "default": true,
         "info": "\"Location: United Kingdom\" in the header on desktop, and a Location row at the foot of the mobile menu. Opens a drawer listing every country the store sells to, with the languages the current market can be read in. Choosing one is what overrides Shopify's automatic market redirect for that visitor."
+      },
+      {
+        "type": "textarea",
+        "id": "location_named_countries",
+        "label": "Countries listed by name",
+        "default": "AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, IE, IT, JP, KR, LT, LU, LV, MT, MX, MY, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, TW, US",
+        "info": "Two-letter country codes, comma-separated. These appear in the picker's own list; every other country the store sells to sits under \"Rest of world\", one step further in. As set: the countries of the eleven markets plus Mexico, Norway and Switzerland. Leave empty to list every country."
       }
     ]
   }

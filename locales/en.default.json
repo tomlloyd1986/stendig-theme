@@ -294,7 +294,9 @@
     "location": "Location",
     "change_location": "Change location",
     "find_country": "Find your country",
-    "no_match": "No country matches that"
+    "no_match": "No country matches that",
+    "rest_of_world": "Rest of world",
+    "all_locations": "All locations"
   },
   "customer": {
     "account": {
