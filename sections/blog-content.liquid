@@ -605,7 +605,8 @@
               elsif v_url.type == 'vimeo'
                 assign v_src = 'https://player.vimeo.com/video/' | append: v_url.id
               endif
-              assign v_title = block.settings.caption | default: 'Video'
+              assign v_default = 'blogs.article.video' | t
+              assign v_title = block.settings.caption | default: v_default
             -%}
             <div
               class="blogc__embed{% if v_num != blank %} blogc__embed--capped{% endif %}"

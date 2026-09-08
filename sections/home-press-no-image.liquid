@@ -117,7 +117,8 @@
   </div>
 
   {%- if section.blocks.size > 0 -%}
-    <div class="press__pubs" role="group" aria-label="{{ section.settings.eyebrow | default: 'From the press' | escape }}">
+    {%- assign press_default = 'sections.press.eyebrow' | t -%}
+<div class="press__pubs" role="group" aria-label="{{ section.settings.eyebrow | default: press_default | escape }}">
       {%- for block in section.blocks -%}
         <button
           type="button"
