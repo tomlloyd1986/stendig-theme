@@ -453,7 +453,7 @@
           aria-haspopup="dialog"
           aria-controls="StLocationDrawer"
           data-location-open
-        ><span class="st-location__label">{{ 'localization.location' | t }}:</span> {{ localization.country.name }}</button>
+        ><span class="st-location__label">{{ 'localization.location' | t }}:</span> <span data-location-name>{{ localization.country.name }}</span></button>
       {%- endif -%}
       {%- comment -%}
         Resources dropdown trigger (desktop only). With a journal URL set it
@@ -619,7 +619,7 @@
           class="st-mmenu__locrow st-mmenu__acc"
           aria-expanded="false"
           aria-controls="StMobileLocation-{{ section.id }}"
-        ><span><span class="st-location__label">{{ 'localization.location' | t }}:</span> {{ localization.country.name }}</span><span class="st-mmenu__glyph st-mmenu__glyph--small" aria-hidden="true" data-glyph>+</span></button>
+        ><span><span class="st-location__label">{{ 'localization.location' | t }}:</span> <span data-location-name>{{ localization.country.name }}</span></span><span class="st-mmenu__glyph st-mmenu__glyph--small" aria-hidden="true" data-glyph>+</span></button>
         <div class="st-mmenu__sub st-mmenu__location" id="StMobileLocation-{{ section.id }}">
           {%- if localization.available_languages.size > 1 -%}
             <div class="st-location__languages st-location__languages--menu" role="group" aria-label="{{ 'localization.language_label' | t }}">

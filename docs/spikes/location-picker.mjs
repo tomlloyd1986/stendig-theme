@@ -23,6 +23,16 @@
  * phone the menu's SECOND fold opens — the accordion used to bind only the
  * first, so Location beneath Resources would have opened nothing.
  *
+ * AND THE VISITOR'S OWN COUNTRY. On a store that serves many countries
+ * Shopify renders the market's primary one — Ireland for everyone on the
+ * European store — until the visitor says otherwise. The picker asks
+ * Shopify's suggestion endpoint (stubbed here) and adopts the answer only
+ * when it is on the SAME store: Portugal on the European store becomes
+ * Portugal everywhere the country is printed, with one post and no reload,
+ * and is remembered; the United States on the European store is left alone,
+ * and not asked about twice in a session; India on the International store
+ * lands on the Rest of world row, which says so.
+ *
  *   npm i --no-save liquidjs playwright jsdom && node docs/spikes/location-picker.mjs
  */
 import { readFileSync } from 'node:fs'
@@ -37,13 +47,19 @@ const check = (ok, msg) => { if (!ok) failures.push(msg) }
 // The named ones are what the setting lists (the eleven markets plus Mexico,
 // Norway and Switzerland, here a representative 22); the rest of the world
 // is a few real names the filter can be asked for, and fillers to 215.
-const NAMED = { AU: 'Australia', AT: 'Austria', BE: 'Belgium', CA: 'Canada', DK: 'Denmark', FI: 'Finland', FR: 'France', DE: 'Germany', HK: 'Hong Kong SAR', IE: 'Ireland', IT: 'Italy', JP: 'Japan', NL: 'Netherlands', NZ: 'New Zealand', SG: 'Singapore', KR: 'South Korea', ES: 'Spain', SE: 'Sweden', CH: 'Switzerland', TW: 'Taiwan', GB: 'United Kingdom', US: 'United States' }
+const NAMED = { AU: 'Australia', AT: 'Austria', BE: 'Belgium', CA: 'Canada', DK: 'Denmark', FI: 'Finland', FR: 'France', DE: 'Germany', HK: 'Hong Kong SAR', IE: 'Ireland', IT: 'Italy', JP: 'Japan', NL: 'Netherlands', NZ: 'New Zealand', SG: 'Singapore', KR: 'South Korea', ES: 'Spain', PT: 'Portugal', SE: 'Sweden', CH: 'Switzerland', TW: 'Taiwan', GB: 'United Kingdom', US: 'United States' }
+const N = Object.keys(NAMED).length
 const REST = { IN: 'India', ID: 'Indonesia', IS: 'Iceland', IL: 'Israel', ZA: 'South Africa', SA: 'Saudi Arabia', BR: 'Brazil' }
 const NAMED_SETTING = Object.keys(NAMED).join(', ')
 const countries = []
-for (const [iso, name] of Object.entries(NAMED)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' } })
-for (const [iso, name] of Object.entries(REST)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' } })
-for (let i = countries.length; i < 215; i++) countries.push({ name: `Country ${String(i).padStart(3, '0')}`, iso_code: `Z${i}`, currency: { iso_code: 'XXX' } })
+// Each country belongs to a market: the EU members to one, the rest of the
+// named ones to a market of their own, and the rest of the world to the
+// International market — the shape Shopify's country.market gives.
+const EU = ['AT', 'BE', 'DK', 'FI', 'FR', 'DE', 'IE', 'IT', 'NL', 'PT', 'ES', 'SE']
+const marketOf = (iso) => (EU.includes(iso) ? 'eu' : NAMED[iso] ? iso.toLowerCase() : 'international')
+for (const [iso, name] of Object.entries(NAMED)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' }, market: { handle: marketOf(iso) } })
+for (const [iso, name] of Object.entries(REST)) countries.push({ name, iso_code: iso, currency: { iso_code: 'XXX' }, market: { handle: 'international' } })
+for (let i = countries.length; i < 215; i++) countries.push({ name: `Country ${String(i).padStart(3, '0')}`, iso_code: `Z${i}`, currency: { iso_code: 'XXX' }, market: { handle: 'international' } })
 countries.sort((a, b) => a.name.localeCompare(b.name))
 const UK = { name: 'United Kingdom', iso_code: 'GB', currency: { iso_code: 'GBP' } }
 const CH = { name: 'Switzerland', iso_code: 'CH', currency: { iso_code: 'CHF' } }
@@ -97,8 +113,10 @@ const triggerSrc = between("{%- if settings.enable_location_picker and localizat
 const rowSrc = between("{%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}\n        <hr", '    </div>\n  </st-nav-menus>')
 const menuCss = /<style>([\s\S]*?)<\/style>/.exec(header)[1].replace(/\{\{[^}]*\}\}/g, 'shopify-section-header').replace(/\{%[^%]*%\}/g, '')
 
-const ukLoc = { country: UK, language: EN, available_languages: [EN], available_countries: countries }
-const chLoc = { country: CH, language: CH_LANGS[0], available_languages: CH_LANGS, available_countries: countries }
+const ukLoc = { country: UK, language: EN, available_languages: [EN], available_countries: countries, market: { handle: 'gb' } }
+const IE = { name: 'Ireland', iso_code: 'IE', currency: { iso_code: 'EUR' } }
+const euLoc = { country: IE, language: EN, available_languages: [EN], available_countries: countries, market: { handle: 'eu' } }
+const chLoc = { country: CH, language: CH_LANGS[0], available_languages: CH_LANGS, available_countries: countries, market: { handle: 'ch' } }
 
 const [drawerUK, drawerCH, triggerUK, rowUK, rowCH] = await Promise.all([
   render('location-picker', ukLoc), render('location-picker', chLoc),
@@ -108,35 +126,40 @@ const [drawerUK, drawerCH, triggerUK, rowUK, rowCH] = await Promise.all([
 ])
 
 // ---------- Liquid assertions ----------
-check(drawerUK.includes('United Kingdom (GBP)'), 'the drawer does not name the country and its currency')
+const HEADING = (name, cur) => new RegExp(`<span data-location-name>${name}</span> \\(${cur}\\)`)
+check(HEADING('United Kingdom', 'GBP').test(drawerUK), 'the drawer does not name the country and its currency')
 // Markup, not the string: the drawer's own stylesheet names the class too,
 // and the first draft of this check failed a correct render on that.
 check(!drawerUK.includes('class="st-location__languages'), 'a one-language market grew a language row')
-check(drawerCH.includes('Switzerland (CHF)'), 'the Swiss drawer does not read Switzerland (CHF)')
+check(HEADING('Switzerland', 'CHF').test(drawerCH), 'the Swiss drawer does not read Switzerland (CHF)')
 const chLangs = (drawerCH.match(/data-location-pick-language="/g) || []).length
 check(chLangs === 4, `Switzerland offers ${chLangs} languages, not 4`)
 check(/class="st-location__language is-current"[^>]*lang="de"[^>]*aria-current="true"[^>]*>Deutsch</.test(drawerCH), 'the current language is not the one marked')
-const picks = (drawerUK.match(/data-location-pick="/g) || []).length
+// Read off the MARKUP: the snippet's script names these attributes too.
+const markup = (html) => html.slice(html.indexOf('<st-location-picker'), html.indexOf('</st-location-picker>'))
+const picks = (markup(drawerUK).match(/data-location-pick="/g) || []).length
 check(picks === 215, `the drawer lists ${picks} countries, not the store's 215`)
 // Two levels: the named ones and one row more; everything else behind it.
-// Read off the MARKUP: the snippet's own stylesheet and script name these
-// classes and attributes too, and a first draft counted the script's
-// selector as a 194th country.
-const markup = (html) => html.slice(html.indexOf('<st-location-picker'), html.indexOf('</st-location-picker>'))
+// (N named in the harness; the store's own setting names 41.)
 const levelAll = /st-location__level--all[\s\S]*?<\/ul>/.exec(markup(drawerUK))[0]
 const levelRest = /st-location__level--rest[\s\S]*$/.exec(markup(drawerUK))[0]
 const named = (levelAll.match(/data-location-pick="/g) || []).length
-check(named === 22, `the first level names ${named} countries, not the setting's 22`)
+check(named === N, `the first level names ${named} countries, not the setting's ${N}`)
 check(/data-location-level="rest"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world/.test(levelAll), 'the first level has no "Rest of world" row')
-check((levelRest.match(/data-location-item/g) || []).length === 193, 'the rest of the world is not the other 193')
+check((levelRest.match(/data-location-item/g) || []).length === 215 - N, `the rest of the world is not the other ${215 - N}`)
 check(!levelAll.includes('data-location-filter') && levelRest.includes('data-location-filter'), 'the filter belongs to the long level only')
 check(levelRest.includes('data-location-level="all"') && levelRest.includes('All locations'), 'the second level has no way back')
 // A visitor whose own country is a rest-of-world one is told so on the row.
 const inLoc = { ...ukLoc, country: { name: 'India', iso_code: 'IN', currency: { iso_code: 'INR' } } }
 const drawerIN = await render('location-picker', inLoc)
-check(drawerIN.includes('India (INR)'), 'the heading does not name India')
-check(/st-location__more is-current[^>]*aria-current="true"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world &middot; India/.test(drawerIN), 'the Rest of world row does not carry India as current')
+check(HEADING('India', 'INR').test(drawerIN), 'the heading does not name India')
+check(/st-location__more is-current[^>]*aria-current="true"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world<span data-location-rest-name> &middot; India</.test(drawerIN), 'the Rest of world row does not carry India as current')
 check((markup(drawerIN).match(/aria-current="true"/g) || []).length === 2, 'India should be current in its own row and on the Rest of world row, nowhere else')
+// The script's handholds: the element knows its country and market, every
+// row knows its market, and the name is addressable wherever it is printed.
+check(/<st-location-picker[^>]*data-country="GB"[^>]*data-market="gb"/.test(drawerUK), 'the picker does not carry its country and market')
+check(/data-location-pick="IE"[^>]*data-market="eu"/.test(drawerUK) && /data-location-pick="IN"[^>]*data-market="international"/.test(drawerUK), 'the rows do not carry their markets')
+check((markup(drawerUK).match(/data-location-name/g) || []).length === 1 && triggerUK.includes('data-location-name') && rowUK.includes('data-location-name'), 'the country name is not addressable in the heading, the trigger and the menu row')
 // The setting left empty is the flat list, and no second level.
 const flat = await mk(ukLoc, { enable_location_picker: true, location_named_countries: '' }).renderFile('location-picker', {})
 check((markup(flat).match(/data-location-pick="/g) || []).length === 215 && !markup(flat).includes('data-location-level="rest"'), 'an empty setting should list every country with no Rest of world')
@@ -144,8 +167,9 @@ check((drawerUK.match(/aria-current="true"/g) || []).length === 1, 'exactly one 
 check(/is-current"[^>]*data-location-pick="GB"/.test(drawerUK), 'the current country is not the United Kingdom')
 check(drawerUK.includes('id="StLocationFilter-drawer"') && rowUK.includes('id="StLocationFilter-menu"'), 'the two lists share an id')
 check(drawerUK.includes('name="country_code" value="GB"') && drawerUK.includes('name="language_code" value="en"'), 'the form does not carry the current country and language')
-check(/<span class="st-location__label">Location:<\/span> United Kingdom</.test(triggerUK), 'the bar trigger does not read "Location: United Kingdom"')
-check(/<span class="st-location__label">Location:<\/span> United Kingdom</.test(rowUK), 'the menu row does not read the same words as the bar')
+const WORDS = /<span class="st-location__label">Location:<\/span> <span data-location-name>United Kingdom<\/span>/
+check(WORDS.test(triggerUK), 'the bar trigger does not read "Location: United Kingdom"')
+check(WORDS.test(rowUK), 'the menu row does not read the same words as the bar')
 check(rowUK.includes('aria-controls="StMobileLocation-header"') && rowUK.includes('id="StMobileLocation-header"'), "the menu row's fold is not wired to its panel")
 check(!rowUK.includes('class="st-location__languages') && rowCH.includes('st-location__languages--menu'), 'the menu shows a language row where it should not, or hides it where it should')
 const off = await mk(ukLoc, { enable_location_picker: false, location_named_countries: NAMED_SETTING }).parseAndRender(triggerSrc, {})
@@ -181,6 +205,8 @@ ${drawerUK}
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+  // Shopify's suggestion is a network call; here it answers "where you are".
+  await desktop.addInitScript(() => { window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({ detected_values: { country: { handle: 'GB' } } }) }) })
   await desktop.setContent(page_html(1440))
   await desktop.evaluate(() => { document.querySelector('form').submit = () => { window.__submitted = new FormData(document.querySelector('form')).get('country_code') } })
   const trigger = desktop.locator('.st-location__toggle')
@@ -204,7 +230,7 @@ try {
   check(rowBox.height >= 44, `a country row is ${rowBox.height}px tall — under a finger's 44`)
   // The first level: the named countries and Rest of world, no filter in view.
   const drawerList = desktop.locator('.st-location__drawer [data-location-list]')
-  check(await drawerList.locator('.st-location__level--all [data-location-pick]').count() === 22, 'the first level does not show the 22 named countries')
+  check(await drawerList.locator('.st-location__level--all [data-location-pick]').count() === N, `the first level does not show the ${N} named countries`)
   check(!(await desktop.locator('#StLocationFilter-drawer').isVisible()), 'the filter shows before the long list is opened')
   const more = drawerList.locator('[data-location-level="rest"]')
   const moreBox = await more.boundingBox()
@@ -227,7 +253,7 @@ try {
   await filter.fill('zzzz')
   check(await desktop.locator('.st-location__drawer [data-location-none]').isVisible(), 'no match shows no note')
   await filter.fill('')
-  check(await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').count() === 193, 'clearing the filter did not restore the whole rest of the world')
+  check(await desktop.locator('.st-location__drawer [data-location-item]:not([hidden])').count() === 215 - N, 'clearing the filter did not restore the whole rest of the world')
   // and back
   await drawerList.locator('[data-location-level="all"]').click()
   check(await drawerList.getAttribute('data-level') === 'all', 'the way back did not return to the first level')
@@ -244,7 +270,73 @@ try {
   check(await desktop.locator('.st-location__drawer').evaluate((el) => getComputedStyle(el).visibility) === 'hidden', 'the closed drawer is still reachable')
   check(await drawerList.getAttribute('data-level') === 'all', 'closing the drawer did not return the list to its first level')
 
+  // ---- the visitor's own country, on a store that serves many ----
+  // Rendered as Ireland on the European store; Shopify's suggestion says
+  // Portugal, which is on the same store — so the page becomes Portugal's
+  // without a reload, and says so everywhere the country is printed.
+  const [drawerEU, triggerEU, rowEU] = await Promise.all([render('location-picker', euLoc), mk(euLoc).parseAndRender(triggerSrc, {}), mk(euLoc).parseAndRender(rowSrc, {})])
+  const stubbed = (html, suggested) => html.replace('<script>', `<script>
+      window.__posts = []; window.__asked = 0;
+      window.fetch = (url, opts) => {
+        if (String(url).includes('browsing_context_suggestions')) { window.__asked += 1; return Promise.resolve({ ok: true, json: () => Promise.resolve({ detected_values: { country: { handle: ${JSON.stringify(suggested)}, name: 'x' } } }) }) }
+        if (opts && opts.method === 'POST') { window.__posts.push(Object.fromEntries(opts.body.entries())); return Promise.resolve({ ok: true, type: 'opaqueredirect' }) }
+        return Promise.reject(new Error('unexpected fetch ' + url))
+      }
+    </script><script>`)
+  const euPage = (suggested) => stubbed(page_html(1440).replace(triggerUK, triggerEU).replace(rowUK, rowEU).replace(drawerUK, drawerEU), suggested)
+  const nameAll = (p) => p.$$eval('[data-location-name]', (ns) => ns.map((n) => n.textContent.trim()))
+  // These pages read storage, and a page written with setContent sits on a
+  // blank origin where the browser refuses it (the picker's own guard hides
+  // that; the checks below must not). So they are served from an origin.
+  const load = async (p, html) => {
+    p.__html = html
+    if (!p.__routed) { await p.route('https://stendig.test/**', (r) => r.fulfill({ body: p.__html, contentType: 'text/html' })); p.__routed = true }
+    await p.goto('https://stendig.test/')
+  }
+
+  const eu = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
+  await load(eu, euPage('PT'))
+  await eu.waitForTimeout(300)
+  check((await eu.evaluate(() => window.__asked)) === 1, 'the suggestion was not asked for once')
+  const posts = await eu.evaluate(() => window.__posts)
+  check(posts.length === 1 && posts[0].country_code === 'PT', `expected one post setting PT, got ${JSON.stringify(posts)}`)
+  const names = await nameAll(eu)
+  check(names.length === 3 && names.every((n) => n === 'Portugal'), `after adoption the names read ${JSON.stringify(names)}`)
+  check(await eu.$eval('.st-location__current', (el) => el.textContent.replace(/\s+/g, ' ').trim()) === 'Portugal (EUR)', 'the heading did not become Portugal (EUR)')
+  const currents = await eu.$$eval('[data-location-pick][aria-current="true"]', (bs) => bs.map((b) => b.dataset.locationPick))
+  check(currents.length === 2 && currents.every((c) => c === 'PT'), `current marks after adoption: ${JSON.stringify(currents)}`)
+  check(await eu.$eval('[data-location-country]', (i) => i.value) === 'PT', 'the form still carries Ireland')
+  check(await eu.evaluate(() => localStorage.getItem('st-location')) === 'PT', 'the adoption was not remembered')
+  // Asked again on a fresh load, it stays quiet: settled.
+  await load(eu, euPage('PT'))
+  await eu.waitForTimeout(200)
+  check((await eu.evaluate(() => window.__asked)) === 0, 'a settled visitor was asked again')
+
+  // A visitor whose country is on ANOTHER store is left alone.
+  await eu.evaluate(() => { localStorage.clear(); sessionStorage.clear() })
+  await load(eu, euPage('US'))
+  await eu.waitForTimeout(300)
+  check((await eu.evaluate(() => window.__posts.length)) === 0, 'a country on another store was adopted')
+  check((await nameAll(eu)).every((n) => n === 'Ireland'), 'the names changed for a country on another store')
+  check((await eu.evaluate(() => localStorage.getItem('st-location'))) === null, 'a refusal was remembered as a settlement')
+  // …and not asked twice in one session.
+  await load(eu, euPage('US'))
+  await eu.waitForTimeout(200)
+  check((await eu.evaluate(() => window.__asked)) === 0, 'the same session asked twice')
+
+  // A rest-of-world country on the same store: the row says so.
+  const usLoc = { ...ukLoc, market: { handle: 'international' }, country: { name: 'United States', iso_code: 'US', currency: { iso_code: 'USD' } } }
+  countries.find((c) => c.iso_code === 'US').market.handle = 'international'
+  const [drawerUS, triggerUS, rowUS] = await Promise.all([render('location-picker', usLoc), mk(usLoc).parseAndRender(triggerSrc, {}), mk(usLoc).parseAndRender(rowSrc, {})])
+  const us = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
+  await load(us, stubbed(page_html(1440).replace(triggerUK, triggerUS).replace(rowUK, rowUS).replace(drawerUK, drawerUS), 'IN'))
+  await us.waitForTimeout(300)
+  const restRow = await us.$eval('.st-location__drawer [data-location-level="rest"]', (b) => ({ text: b.textContent.replace(/\s+/g, ' ').trim(), current: b.getAttribute('aria-current') }))
+  check(restRow.text.startsWith('Rest of world · India') && restRow.current === 'true', `the Rest of world row reads "${restRow.text}" (current: ${restRow.current})`)
+  check(await us.$eval('[data-location-country]', (i) => i.value) === 'IN', 'India was not adopted on the International store')
+
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
+  await phone.addInitScript(() => { window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({ detected_values: { country: { handle: 'GB' } } }) }) })
   await phone.setContent(page_html(390))
   check(!(await phone.locator('.st-location__toggle').isVisible()), 'the bar trigger shows on a phone')
   await phone.locator('.st-mmenu__toggle').click()
