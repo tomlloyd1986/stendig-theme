@@ -218,7 +218,8 @@
           {%- if is_pinned or category != '' -%}
             <p class="jrn__label">
               {%- if is_pinned -%}
-                <span class="jrn__pin">{{ section.settings.pinned_label | default: 'Pinned' | escape }}</span>
+                {%- assign pinned_default = 'blogs.journal.pinned' | t -%}
+                <span class="jrn__pin">{{ section.settings.pinned_label | default: pinned_default | escape }}</span>
                 {%- if category != '' %} &middot; {{ category | escape }}{% endif -%}
               {%- else -%}
                 {{ category | escape }}
@@ -237,7 +238,7 @@
 
   {%- if paginate.pages > 1 -%}
     {%- assign current_str = paginate.current_page | append: '' -%}
-    <nav role="navigation" aria-label="Pagination">
+    <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
       <hr class="jrn__rule">
       <div class="jrn__pages">
         {%- for part in paginate.parts -%}
@@ -251,7 +252,8 @@
           {%- endif -%}
         {%- endfor -%}
         {%- if paginate.next -%}
-          <a href="{{ paginate.next.url }}" class="jrn__older">{{ section.settings.older_label | default: 'Older articles' | escape }} &rarr;</a>
+          {%- assign older_default = 'blogs.journal.older' | t -%}
+          <a href="{{ paginate.next.url }}" class="jrn__older">{{ section.settings.older_label | default: older_default | escape }} &rarr;</a>
         {%- endif -%}
       </div>
     </nav>

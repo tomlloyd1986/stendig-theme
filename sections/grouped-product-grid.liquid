@@ -102,7 +102,8 @@
           <h2 class="gpg__heading">{{ block.settings.heading | escape }}</h2>
           {%- if section.settings.show_view_all and view_all_url != blank -%}
             <a href="{{ view_all_url }}" class="gpg__view-all">
-              {{ block.settings.view_all_label | default: 'View all' | escape }}
+              {%- assign view_all_default = 'sections.grouped_grid.view_all' | t -%}
+              {{ block.settings.view_all_label | default: view_all_default | escape }}
             </a>
           {%- endif -%}
         </div>

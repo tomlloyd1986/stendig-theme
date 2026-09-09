@@ -415,6 +415,13 @@
 
       {%- liquid
         assign collection_url = section.settings.collection_url | default: routes.all_products_collection_url
+        # A label nobody has typed falls back to the locale file, never to
+        # an English literal: a literal here shows in every language.
+        assign collection_default = 'sections.header.collection' | t
+        assign mobile_collection_default = 'sections.header.browse_collection' | t
+        assign menu_default = 'sections.header.menu' | t
+        assign resources_default = 'sections.header.resources' | t
+        assign journal_default = 'sections.header.browse_journal' | t
         assign has_resources = false
         if section.settings.resources_menu != blank and section.settings.resources_menu.links.size > 0
           assign has_resources = true
@@ -427,7 +434,7 @@
 
       {%- comment -%} Collection — a plain link, deliberately not a dropdown {%- endcomment -%}
       <nav class="st-header__nav">
-        <a href="{{ collection_url }}" class="st-header__link st-header__collection focus-inset">{{ section.settings.collection_label | default: 'Collection' | escape }}</a>
+        <a href="{{ collection_url }}" class="st-header__link st-header__collection focus-inset">{{ section.settings.collection_label | default: collection_default | escape }}</a>
       </nav>
 
     <div class="st-header__utility">
@@ -461,7 +468,7 @@
             class="st-header__link st-resources__toggle focus-inset"
             aria-expanded="false"
             aria-controls="StResources-{{ section.id }}"
-          >{{ section.settings.resources_label | default: 'Resources' | escape }}</a>
+          >{{ section.settings.resources_label | default: resources_default | escape }}</a>
         {%- else -%}
           <button
             type="button"
@@ -469,7 +476,7 @@
             aria-expanded="false"
             aria-haspopup="true"
             aria-controls="StResources-{{ section.id }}"
-          >{{ section.settings.resources_label | default: 'Resources' | escape }}</button>
+          >{{ section.settings.resources_label | default: resources_default | escape }}</button>
         {%- endif -%}
       {%- endif -%}
       {%- comment -%} Search — text trigger, hidden on mobile {%- endcomment -%}
@@ -550,9 +557,9 @@
         class="st-header__link st-mmenu__toggle focus-inset"
         aria-expanded="false"
         aria-controls="StMobileMenu-{{ section.id }}"
-        aria-label="{{ section.settings.menu_label | default: 'Menu' | escape }}"
-        data-label="{{ section.settings.menu_label | default: 'Menu' | escape }}"
-      ><span class="st-mmenu__toggle-open">{{ section.settings.menu_label | default: 'Menu' | escape }}</span><span class="st-mmenu__toggle-close" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l14 14M15 1L1 15" stroke="currentColor" stroke-width="1"/></svg></span></button>
+        aria-label="{{ section.settings.menu_label | default: menu_default | escape }}"
+        data-label="{{ section.settings.menu_label | default: menu_default | escape }}"
+      ><span class="st-mmenu__toggle-open">{{ section.settings.menu_label | default: menu_default | escape }}</span><span class="st-mmenu__toggle-close" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 1l14 14M15 1L1 15" stroke="currentColor" stroke-width="1"/></svg></span></button>
     </div>
   </header>
 
@@ -572,13 +579,13 @@
         {%- endif -%}
         {%- if section.settings.journal_url != blank -%}
           {%- if has_resources -%}<hr class="st-resources__rule">{%- endif -%}
-          <a href="{{ section.settings.journal_url }}" class="st-resources__link">{{ section.settings.journal_label | default: 'Browse the journal' | escape }} &rarr;</a>
+          <a href="{{ section.settings.journal_url }}" class="st-resources__link">{{ section.settings.journal_label | default: journal_default | escape }} &rarr;</a>
         {%- endif -%}
       </div>
     {%- endif -%}
 
     <div class="st-mmenu" id="StMobileMenu-{{ section.id }}">
-      <a href="{{ collection_url }}" class="st-mmenu__collection">{{ section.settings.mobile_collection_label | default: 'Browse the collection' | escape }}</a>
+      <a href="{{ collection_url }}" class="st-mmenu__collection">{{ section.settings.mobile_collection_label | default: mobile_collection_default | escape }}</a>
       <hr class="st-mmenu__rule">
       {%- if show_resources -%}
         <button
@@ -586,7 +593,7 @@
           class="st-mmenu__row st-mmenu__acc"
           aria-expanded="false"
           aria-controls="StMobileResources-{{ section.id }}"
-        ><span>{{ section.settings.resources_label | default: 'Resources' | escape }}</span><span class="st-mmenu__glyph" aria-hidden="true" data-glyph>+</span></button>
+        ><span>{{ section.settings.resources_label | default: resources_default | escape }}</span><span class="st-mmenu__glyph" aria-hidden="true" data-glyph>+</span></button>
         <div class="st-mmenu__sub" id="StMobileResources-{{ section.id }}">
           {%- if has_resources -%}
             {%- for link in section.settings.resources_menu.links -%}
@@ -594,7 +601,7 @@
             {%- endfor -%}
           {%- endif -%}
           {%- if section.settings.journal_url != blank -%}
-            <a href="{{ section.settings.journal_url }}" class="st-mmenu__sublink st-mmenu__journal">{{ section.settings.journal_label | default: 'Browse the journal' | escape }} &rarr;</a>
+            <a href="{{ section.settings.journal_url }}" class="st-mmenu__sublink st-mmenu__journal">{{ section.settings.journal_label | default: journal_default | escape }} &rarr;</a>
           {%- endif -%}
         </div>
       {%- endif -%}
