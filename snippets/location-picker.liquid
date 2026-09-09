@@ -258,6 +258,7 @@
   data-country="{{ country.iso_code }}"
   data-market="{{ localization.market.handle }}"
   data-suggest="/browsing_context_suggestions.json?country%5Benabled%5D=true"
+  data-rest-label="{{ 'localization.rest_of_world' | t | escape }}"
 >
   {%- form 'localization', id: 'StLocationForm', class: 'st-location__form' -%}
     <input type="hidden" name="country_code" value="{{ country.iso_code }}" data-location-country>
@@ -281,7 +282,7 @@
       </button>
     </div>
     <div class="st-location__body">
-      <p class="st-location__current"><span data-location-name>{{ country.name }}</span> ({{ country.currency.iso_code }})</p>
+      <p class="st-location__current"><span data-location-name>{%- render 'location-name' -%}</span> ({{ country.currency.iso_code }})</p>
       {%- if languages.size > 1 -%}
         <div class="st-location__languages" role="group" aria-label="{{ 'localization.language_label' | t }}">
           {%- for l in languages -%}
@@ -378,8 +379,16 @@
         });
     }
 
+    /* A country adopted from a suggestion is named the same way the page
+       named the one it was rendered with (snippets/location-name.liquid):
+       by its own name where the store lists it, and "Rest of world" where
+       it does not — being on the rest-of-world level IS that test. Adopting
+       India would otherwise put "Location: India" in a bar whose list files
+       India under Rest of world. */
     relabel(iso, name) {
-      document.querySelectorAll('[data-location-name]').forEach((n) => { n.textContent = name; });
+      const inRestAnywhere = !!document.querySelector(`.st-location__level--rest [data-location-pick="${iso}"]`);
+      const label = inRestAnywhere && this.dataset.restLabel ? this.dataset.restLabel : name;
+      document.querySelectorAll('[data-location-name]').forEach((n) => { n.textContent = label; });
       document.querySelectorAll('[data-location-pick]').forEach((b) => {
         const current = b.dataset.locationPick === iso;
         b.classList.toggle('is-current', current);

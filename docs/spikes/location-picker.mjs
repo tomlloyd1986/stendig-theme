@@ -149,10 +149,17 @@ check(/data-location-level="rest"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world/.t
 check((levelRest.match(/data-location-item/g) || []).length === 215 - N, `the rest of the world is not the other ${215 - N}`)
 check(!levelAll.includes('data-location-filter') && levelRest.includes('data-location-filter'), 'the filter belongs to the long level only')
 check(levelRest.includes('data-location-level="all"') && levelRest.includes('All locations'), 'the second level has no way back')
-// A visitor whose own country is a rest-of-world one is told so on the row.
-const inLoc = { ...ukLoc, country: { name: 'India', iso_code: 'IN', currency: { iso_code: 'INR' } } }
-const drawerIN = await render('location-picker', inLoc)
-check(HEADING('India', 'INR').test(drawerIN), 'the heading does not name India')
+// A visitor whose own country is a rest-of-world one — which is EVERY
+// visitor to the bare domain, where Shopify hands the theme the market's
+// primary country. The words are the market's, not that country's; the
+// country is said on the Rest of world row, where somebody checks.
+const inLoc = { ...ukLoc, market: { handle: 'international' }, country: { name: 'India', iso_code: 'IN', currency: { iso_code: 'INR' } } }
+const [drawerIN, triggerIN, rowIN] = await Promise.all([render('location-picker', inLoc), mk(inLoc).parseAndRender(triggerSrc, {}), mk(inLoc).parseAndRender(rowSrc, {})])
+check(HEADING('Rest of world', 'INR').test(drawerIN), 'the heading of a rest-of-world visitor does not read "Rest of world (INR)"')
+check(!markup(drawerIN).includes('<span data-location-name>India'), 'the heading names the country rather than the market')
+const REST_WORDS = /<span class="st-location__label">Location:<\/span> <span data-location-name>Rest of world<\/span>/
+check(REST_WORDS.test(triggerIN), 'the bar names a rest-of-world country instead of "Rest of world"')
+check(REST_WORDS.test(rowIN), 'the menu row names a rest-of-world country instead of "Rest of world"')
 check(/st-location__more is-current[^>]*aria-current="true"[^>]*>(?:(?!<\/button>)[\s\S])*Rest of world<span data-location-rest-name> &middot; India</.test(drawerIN), 'the Rest of world row does not carry India as current')
 check((markup(drawerIN).match(/aria-current="true"/g) || []).length === 2, 'India should be current in its own row and on the Rest of world row, nowhere else')
 // The script's handholds: the element knows its country and market, every
@@ -160,6 +167,14 @@ check((markup(drawerIN).match(/aria-current="true"/g) || []).length === 2, 'Indi
 check(/<st-location-picker[^>]*data-country="GB"[^>]*data-market="gb"/.test(drawerUK), 'the picker does not carry its country and market')
 check(/data-location-pick="IE"[^>]*data-market="eu"/.test(drawerUK) && /data-location-pick="IN"[^>]*data-market="international"/.test(drawerUK), 'the rows do not carry their markets')
 check((markup(drawerUK).match(/data-location-name/g) || []).length === 1 && triggerUK.includes('data-location-name') && rowUK.includes('data-location-name'), 'the country name is not addressable in the heading, the trigger and the menu row')
+check(markup(drawerIN).includes(`data-rest-label="Rest of world"`), 'the picker does not carry the words the script relabels with')
+// location-name.liquid and location-list.liquid read the same setting in
+// two places. They must not drift: whatever the bar calls the visitor, the
+// list must file the visitor's country under the matching level.
+for (const [label, iso, drawer] of [['United Kingdom', 'GB', drawerUK], ['Rest of world', 'IN', drawerIN]]) {
+  const inRest = new RegExp(`st-location__level--rest[\\s\\S]*data-location-pick="${iso}"`).test(markup(drawer))
+  check(inRest === (label === 'Rest of world'), `the bar says "${label}" while the list files ${iso} on the ${inRest ? 'rest-of-world' : 'named'} level`)
+}
 // The setting left empty is the flat list, and no second level.
 const flat = await mk(ukLoc, { enable_location_picker: true, location_named_countries: '' }).renderFile('location-picker', {})
 check((markup(flat).match(/data-location-pick="/g) || []).length === 215 && !markup(flat).includes('data-location-level="rest"'), 'an empty setting should list every country with no Rest of world')
@@ -170,6 +185,9 @@ check(drawerUK.includes('name="country_code" value="GB"') && drawerUK.includes('
 const WORDS = /<span class="st-location__label">Location:<\/span> <span data-location-name>United Kingdom<\/span>/
 check(WORDS.test(triggerUK), 'the bar trigger does not read "Location: United Kingdom"')
 check(WORDS.test(rowUK), 'the menu row does not read the same words as the bar')
+// The contrast the whole rule rests on: a NAMED country keeps its name in
+// the same three places a rest-of-world one reads "Rest of world".
+check(HEADING('United Kingdom', 'GBP').test(drawerUK), 'a named country stopped being named in the heading')
 check(rowUK.includes('aria-controls="StMobileLocation-header"') && rowUK.includes('id="StMobileLocation-header"'), "the menu row's fold is not wired to its panel")
 check(!rowUK.includes('class="st-location__languages') && rowCH.includes('st-location__languages--menu'), 'the menu shows a language row where it should not, or hides it where it should')
 const off = await mk(ukLoc, { enable_location_picker: false, location_named_countries: NAMED_SETTING }).parseAndRender(triggerSrc, {})
@@ -334,6 +352,9 @@ try {
   const restRow = await us.$eval('.st-location__drawer [data-location-level="rest"]', (b) => ({ text: b.textContent.replace(/\s+/g, ' ').trim(), current: b.getAttribute('aria-current') }))
   check(restRow.text.startsWith('Rest of world · India') && restRow.current === 'true', `the Rest of world row reads "${restRow.text}" (current: ${restRow.current})`)
   check(await us.$eval('[data-location-country]', (i) => i.value) === 'IN', 'India was not adopted on the International store')
+  // Adopted, it is still called by the market: the bar must not say "India"
+  // while the list beneath it files India under Rest of world.
+  check((await nameAll(us)).every((n) => n === 'Rest of world'), `after adopting a rest-of-world country the names read ${JSON.stringify(await nameAll(us))}`)
 
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 } })
   await phone.addInitScript(() => { window.fetch = () => Promise.resolve({ ok: true, json: () => Promise.resolve({ detected_values: { country: { handle: 'GB' } } }) }) })

@@ -1,0 +1,31 @@
+{% comment %}
+  What the picker CALLS this visitor's location — the words printed in the
+  header's trigger, in the mobile menu's row, and in the drawer's heading.
+
+  It is the country's name where the store lists that country by name, and
+  "Rest of world" where it does not. The bare domain's market carries every
+  country the eleven markets do not, and Shopify hands the theme that
+  market's PRIMARY country as the current one — "Bermuda", which named a
+  place nobody was and told a visitor nothing about what they were being
+  charged. The market is the honest answer there: one currency, one set of
+  prices, one shipping zone, and its name in the picker's own list is
+  "Rest of world" (the owner's word, 9 Sep 2026). The country is still
+  said, where it is known, on the Rest of world ROW inside the drawer —
+  "Rest of world · India" — which is where somebody checks.
+
+  Which countries are named is `settings.location_named_countries`, read
+  here exactly as snippets/location-list.liquid reads it: the two must
+  agree, or the bar would name a country the list files under Rest of
+  world. `docs/spikes/location-picker.mjs` pins them together.
+
+  Renders nothing but the words, so it can sit inside any element.
+{% endcomment %}
+{%- liquid
+  assign named_raw = settings.location_named_countries | default: '' | upcase | strip_newlines | replace: ' ', ''
+  assign named = named_raw | split: ','
+  if named_raw == '' or named contains localization.country.iso_code
+    echo localization.country.name
+  else
+    echo 'localization.rest_of_world' | t
+  endif
+-%}
