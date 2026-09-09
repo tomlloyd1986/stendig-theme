@@ -56,6 +56,13 @@ pushing: a header change reaches more than the header.
   drawer becomes horizontal page scroll. The cart drawer and the location
   picker both render from `layout/theme.liquid`; the header renders only
   their triggers.
+- **On a market that serves many countries, `localization.country` is the
+  market's PRIMARY country until the visitor chooses** — Ireland for every
+  visitor on `/en-eu`. The Markets redirect picks the store, never the
+  country within it. The location picker asks Shopify's
+  `/browsing_context_suggestions.json` for the visitor's country and adopts
+  it only when it is in the same market (`country.market.handle` against
+  `localization.market.handle`).
 - **A market is resolved from the subfolder suffix, not the market**
   (`/en-de` → `de`, `/fr-ch` → `ch`, the bare domain → `main`), through
   `snippets/market-context.liquid`. Ask it; do not re-derive it.

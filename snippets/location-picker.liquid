@@ -23,8 +23,22 @@
   language click sets `language_code` and submits, and Shopify answers with
   the right market's URL and remembers the choice. That memory is also what
   overrides Shopify's automatic market redirect: once a visitor has chosen
-  here, the redirect leaves them where they chose. Nothing is stored by the
-  theme itself.
+  here, the redirect leaves them where they chose.
+
+  WHICH COUNTRY, ON A STORE THAT SERVES MANY. `localization.country` is the
+  market's PRIMARY country until the visitor says otherwise — Ireland for
+  everyone on /en-eu, whether they are in Lisbon or Dublin. The Markets
+  redirect puts a visitor on the right store; it never says which country
+  within it. So the script asks Shopify's own
+  `/browsing_context_suggestions.json` once per session, and where the
+  answer is a different country IN THE SAME MARKET (each row carries its
+  market's handle; the element carries the current one), it posts the same
+  form from the page — no reload — so Shopify sets its cookie, and relabels
+  the trigger, the menu row, the heading and the current marks. A country
+  in ANOTHER market is left alone: which store a visitor is on is the
+  redirect's decision and the visitor's, not this script's. Once a country
+  has been adopted, or the visitor has chosen one here, `st-location` in
+  localStorage says so and the question is not asked again.
 {% endcomment %}
 {%- liquid
   assign country = localization.country
@@ -239,7 +253,12 @@
   .st-location__glyph { font-size: 1.4rem; line-height: 2.1rem; }
 </style>
 
-<st-location-picker class="st-location">
+<st-location-picker
+  class="st-location"
+  data-country="{{ country.iso_code }}"
+  data-market="{{ localization.market.handle }}"
+  data-suggest="/browsing_context_suggestions.json?country%5Benabled%5D=true"
+>
   {%- form 'localization', id: 'StLocationForm', class: 'st-location__form' -%}
     <input type="hidden" name="country_code" value="{{ country.iso_code }}" data-location-country>
     <input type="hidden" name="language_code" value="{{ language.iso_code }}" data-location-language>
@@ -262,7 +281,7 @@
       </button>
     </div>
     <div class="st-location__body">
-      <p class="st-location__current">{{ country.name }} ({{ country.currency.iso_code }})</p>
+      <p class="st-location__current"><span data-location-name>{{ country.name }}</span> ({{ country.currency.iso_code }})</p>
       {%- if languages.size > 1 -%}
         <div class="st-location__languages" role="group" aria-label="{{ 'localization.language_label' | t }}">
           {%- for l in languages -%}
@@ -316,7 +335,75 @@
       document.addEventListener('click', this.onClick);
       document.addEventListener('input', this.onInput);
       document.addEventListener('keydown', this.onKeydown);
+      this.suggest();
     }
+
+    /* Ask Shopify which country this visitor is in, and where it is a
+       different country on the SAME store, adopt it. Asked once per
+       session, and never once a country has been settled — by this, or by
+       the visitor choosing one. A failure of any kind is silence: the page
+       is correct as rendered, only less specific. */
+    suggest() {
+      if (StLocationPicker.stored('localStorage', 'st-location')) return;
+      if (StLocationPicker.stored('sessionStorage', 'st-location-checked')) return;
+      if (!this.dataset.suggest || !this.dataset.market) return;
+      fetch(this.dataset.suggest, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((body) => {
+          StLocationPicker.store('sessionStorage', 'st-location-checked', '1');
+          const iso = body && body.detected_values && body.detected_values.country && body.detected_values.country.handle;
+          if (!iso || iso === this.dataset.country) return;
+          const row = document.querySelector(`[data-location-pick="${iso}"]`);
+          // Not sold to, or sold to from another store: not this script's call.
+          if (!row || row.dataset.market !== this.dataset.market) return;
+          return this.adopt(iso, row.textContent.trim());
+        })
+        .catch(() => {});
+    }
+
+    /* The same form the visitor would submit, posted from the page so the
+       page stays: Shopify sets its localization cookie on the response and
+       every later page is rendered for that country. Only the words on
+       this page need changing by hand. */
+    adopt(iso, name) {
+      if (!this.form) return;
+      const body = new FormData(this.form);
+      body.set('country_code', iso);
+      return fetch(this.form.action, { method: 'POST', body, credentials: 'same-origin', redirect: 'manual' })
+        .then(() => {
+          if (this.countryInput) this.countryInput.value = iso;
+          this.dataset.country = iso;
+          this.relabel(iso, name);
+          StLocationPicker.store('localStorage', 'st-location', iso);
+        });
+    }
+
+    relabel(iso, name) {
+      document.querySelectorAll('[data-location-name]').forEach((n) => { n.textContent = name; });
+      document.querySelectorAll('[data-location-pick]').forEach((b) => {
+        const current = b.dataset.locationPick === iso;
+        b.classList.toggle('is-current', current);
+        if (current) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+      });
+      document.querySelectorAll('[data-location-list]').forEach((list) => {
+        const more = list.querySelector('[data-location-level="rest"]');
+        if (!more) return;
+        const inRest = !!list.querySelector(`.st-location__level--rest [data-location-pick="${iso}"]`);
+        more.classList.toggle('is-current', inRest);
+        if (inRest) more.setAttribute('aria-current', 'true'); else more.removeAttribute('aria-current');
+        const tail = more.querySelector('[data-location-rest-name]');
+        if (tail) tail.textContent = inRest ? ` \u00b7 ${name}` : '';
+      });
+    }
+
+    /* Storage can be absent or refused (private windows, blocked site
+       data), and the refusal is thrown on READING `window.localStorage`
+       itself — so the store is named and resolved inside the guard. Passed
+       in as a value it was read at the call site, outside any try, and a
+       visitor whose browser refused storage could not choose a country:
+       the throw came before the form was submitted. */
+    static stored(name, key) { try { return window[name].getItem(key); } catch (e) { return null; } }
+    static store(name, key, value) { try { window[name].setItem(key, value); } catch (e) { /* then we ask again next time */ } }
 
     disconnectedCallback() {
       document.removeEventListener('click', this.onClick);
@@ -371,6 +458,9 @@
     choose(input, value) {
       if (!input || !this.form || !value) return;
       input.value = value;
+      // A choice made here settles the question for good; the suggestion
+      // is only ever for a visitor who has not chosen.
+      StLocationPicker.store('localStorage', 'st-location', this.countryInput ? this.countryInput.value : value);
       this.form.submit();
     }
 
