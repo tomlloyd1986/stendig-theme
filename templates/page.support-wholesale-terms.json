@@ -1,0 +1,136 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "support-page",
+      "blocks": {
+        "clause_01": {
+          "type": "question",
+          "settings": {
+            "question": "1. Orders and acceptance",
+            "answer": "<p>1.1 All orders are subject to acceptance by Stendig in writing (including by email). A binding contract is formed only upon Stendig's written acceptance or dispatch of the Products, whichever is earlier.</p><p>1.2 Stendig may decline any order at its sole discretion, including where the Retailer is in breach of these Terms or has outstanding unpaid invoices.</p><p>1.3 Minimum order quantities, lead times, and product availability are as stated by Stendig at the time of order.</p>"
+          }
+        },
+        "clause_02": {
+          "type": "question",
+          "settings": {
+            "question": "2. Prices and payment",
+            "answer": "<p>2.1 Prices are as stated on the applicable invoice and exclude VAT, duties, and shipping unless expressly stated otherwise.</p><p>2.2 Payment terms are specified on each invoice and may vary between Retailers and between orders. Time for payment is of the essence.</p><p>2.3 All payments must be made in the currency stated on the invoice, in cleared funds, without set-off or deduction.</p><p>2.4 Late payments accrue interest at 4% above the Bank of England base rate, calculated daily, in addition to Stendig's rights under the Late Payment of Commercial Debts (Interest) Act 1998.</p><p>2.5 Stendig may suspend deliveries or withhold further orders while any invoice remains overdue.</p>"
+          }
+        },
+        "clause_03": {
+          "type": "question",
+          "settings": {
+            "question": "3. Delivery, title and risk",
+            "answer": "<p>3.1 Delivery terms (Incoterms) are as stated on the invoice. In the absence of a stated term, delivery is Ex Works (EXW) Stendig's nominated warehouse.</p><p>3.2 Risk in the Products passes to the Retailer on delivery in accordance with the applicable Incoterm.</p><p>3.3 Title to the Products does not pass to the Retailer until Stendig has received payment in full of all sums owed by the Retailer on any account. Until title passes, the Retailer must store the Products separately, clearly identified as Stendig's property, and insured against loss or damage.</p><p>3.4 Delivery dates are estimates. Stendig is not liable for delays caused by events beyond its reasonable control.</p>"
+          }
+        },
+        "clause_04": {
+          "type": "question",
+          "settings": {
+            "question": "4. Permitted resale channels",
+            "answer": "<p>4.1 The Retailer may resell Products only to end consumers for their personal use.</p><p>4.2 The Retailer must not, without Stendig's prior written consent:</p><p>(a) resell, supply, or distribute Products to any other retailer, reseller, wholesaler, distributor, trade buyer, or intermediary;</p><p>(b) list, offer, advertise, or sell Products on any third-party online marketplace, platform, or aggregator, including but not limited to Amazon, eBay, Etsy, Walmart Marketplace, Wayfair, Faire (other than authorised wholesale purchasing from Stendig), TikTok Shop, Instagram Shop, Facebook Marketplace, AbeBooks, Depop, Vinted, or any successor or equivalent platform;</p><p>(c) sell Products via any website other than the Retailer's own primary e-commerce website operated under the Retailer's own brand and domain;</p><p>(d) export or transship Products outside the Territory (as defined in clause 6.1), save for passive sales to end consumers permitted under clause 6.3.</p><p>4.3 The Retailer must take reasonable steps to ensure that its customers do not on-sell Products in breach of clause 4.2, including by declining bulk orders that suggest commercial resale intent.</p><p>4.4 Breach of clause 4.2 is a material breach. Stendig may, in addition to any other remedies, immediately suspend deliveries, cancel outstanding orders, terminate the supply relationship, and require the Retailer to remove any non-compliant listings within 48 hours of notice.</p>"
+          }
+        },
+        "clause_05": {
+          "type": "question",
+          "settings": {
+            "question": "5. Minimum advertised price",
+            "answer": "<p>5.1 The Retailer must not advertise, promote, or display Products at a price below the Minimum Advertised Price (\"MAP\") notified by Stendig in writing from time to time.</p><p>5.2 MAP applies to all advertising and public-facing display, including website listings, paid media, email marketing, social media, print, and in-store signage. It does not restrict the price at which the Retailer ultimately sells the Products at the point of sale.</p><p>5.3 Short-term promotional exceptions (for example, Black Friday) require Stendig's prior written consent.</p><p>5.4 Repeated or unremedied breaches of MAP entitle Stendig to suspend or terminate supply under clause 4.4.</p>"
+          }
+        },
+        "clause_06": {
+          "type": "question",
+          "settings": {
+            "question": "6. Territory",
+            "answer": "<p>6.1 \"Territory\" means the country in which the delivery address for the Retailer's orders is located, as shown on Stendig's invoice. Where Stendig has delivered Products to the Retailer at addresses in more than one country, the Territory comprises each of those countries. Where Stendig and the Retailer have agreed a different territory in writing, that written agreement prevails.</p><p>6.2 The Retailer must not actively market or sell Products to customers outside the Territory, including by directing advertising at customers outside the Territory, operating websites or website versions targeted at other countries (for example by country-specific domain, currency, or language not commonly used in the Territory), or otherwise soliciting customers outside the Territory.</p><p>6.3 Passive sales are permitted. The Retailer may fulfil unsolicited orders from end consumers located outside the Territory that are placed via its primary website, subject to clauses 4 and 5.</p><p>6.4 The Retailer must not move Products outside the Territory for storage, fulfilment, or distribution (including to any third-party warehouse or fulfilment centre) without Stendig's prior written consent.</p>"
+          }
+        },
+        "clause_07": {
+          "type": "question",
+          "settings": {
+            "question": "7. Intellectual property and brand usage",
+            "answer": "<p>7.1 All intellectual property in the Products, including the \"Stendig\", \"Stendig Calendars\", and \"Tipo Designs\" names, logos, designs, photography, copy, and packaging (\"Stendig IP\"), remains the exclusive property of Stendig (or its licensors).</p><p>7.2 Stendig grants the Retailer a non-exclusive, non-transferable, revocable licence to use Stendig IP solely for the purpose of marketing and reselling the Products in accordance with these Terms, and only for marketing directed at the Territory and sales permitted under clause 6.</p><p>7.3 The Retailer must:</p><p>(a) use only Stendig-supplied or Stendig-approved imagery, copy, and brand assets;</p><p>(b) not alter, crop, overlay, or modify any Stendig IP without prior written consent;</p><p>(c) not register or apply to register any domain name, trademark, social media handle, or business name incorporating \"Stendig\", \"Tipo Designs\", or any confusingly similar mark;</p><p>(d) not use Stendig IP in a manner that is misleading, disparaging, or inconsistent with the brand's positioning;</p><p>(e) cease all use of Stendig IP on termination of the supply relationship, save for the sell-through of remaining lawfully purchased stock.</p><p>7.4 The Retailer must promptly notify Stendig of any suspected infringement of Stendig IP or any unauthorised resale of Products that comes to its attention.</p>"
+          }
+        },
+        "clause_08": {
+          "type": "question",
+          "settings": {
+            "question": "8. Returns, faults and warranty",
+            "answer": "<p>8.1 The Retailer must inspect Products on delivery and notify Stendig in writing of any shortage, damage in transit, or visible defect within 7 days of delivery. Failing such notification, the Products are deemed accepted.</p><p>8.2 Stendig warrants that Products will, at the time of delivery, conform to their published specification and be free from material manufacturing defects.</p><p>8.3 Returns are accepted for faulty or non-conforming Products only. Stendig does not accept returns for change of mind, overstock, end-of-season, or any other commercial reason.</p><p>8.4 For valid faulty-goods claims, Stendig will at its option replace the Products, issue a credit note, or refund the price paid. This is the Retailer's sole remedy for defective Products.</p><p>8.5 No returns may be made without a Returns Authorisation issued by Stendig in writing. Unauthorised returns will be refused or returned at the Retailer's cost.</p><p>8.6 Save as set out in this clause 8 and as required by law, all warranties, conditions, and other terms implied by statute or common law are excluded to the fullest extent permitted.</p>"
+          }
+        },
+        "clause_09": {
+          "type": "question",
+          "settings": {
+            "question": "9. Compliance and conduct",
+            "answer": "<p>9.1 The Retailer must comply with all laws applicable to its business, including consumer protection, advertising, data protection, and tax laws.</p><p>9.2 The Retailer must not make any representation or give any warranty in respect of the Products beyond those given by Stendig.</p>"
+          }
+        },
+        "clause_10": {
+          "type": "question",
+          "settings": {
+            "question": "10. Limitation of liability",
+            "answer": "<p>10.1 Nothing in these Terms limits or excludes liability for death or personal injury caused by negligence, fraud, or any other liability that cannot be limited or excluded by law.</p><p>10.2 Subject to clause 10.1, Stendig's total aggregate liability arising out of or in connection with these Terms (whether in contract, tort, breach of statutory duty, or otherwise) is limited to the price paid by the Retailer for the Products giving rise to the claim.</p><p>10.3 Subject to clause 10.1, Stendig is not liable for any loss of profit, loss of revenue, loss of business, loss of goodwill, loss of anticipated savings, or any indirect or consequential loss.</p>"
+          }
+        },
+        "clause_11": {
+          "type": "question",
+          "settings": {
+            "question": "11. Termination",
+            "answer": "<p>11.1 Stendig may terminate the supply relationship (and cancel any unfulfilled orders) immediately on written notice if the Retailer:</p><p>(a) commits a material breach of these Terms (including any breach of clauses 4, 5, 6, or 7) and fails to remedy it within 14 days of written notice (or, where the breach is incapable of remedy, immediately);</p><p>(b) fails to pay any sum when due and the failure continues for 14 days after notice;</p><p>(c) becomes insolvent, enters administration or liquidation, or is the subject of equivalent proceedings.</p><p>11.2 Termination does not affect any rights or remedies that have accrued before termination. Clauses 7, 8, 10, 11, and 13 survive termination.</p><p>11.3 In addition to its rights under clause 11.1, either party may terminate the supply relationship for any reason or no reason on 30 days' written notice to the other. On termination under this clause, Stendig will fulfil any orders already accepted in writing prior to the notice date, and the Retailer may sell through any Products lawfully purchased before termination subject to clauses 4, 5, 6, and 7.</p>"
+          }
+        },
+        "clause_12": {
+          "type": "question",
+          "settings": {
+            "question": "12. Confidentiality",
+            "answer": "<p>Each party must keep confidential all non-public information disclosed by the other party (including pricing, trade terms, and product roadmaps) and use it only for the purpose of performing these Terms.</p>"
+          }
+        },
+        "clause_13": {
+          "type": "question",
+          "settings": {
+            "question": "13. General",
+            "answer": "<p>13.1 Entire agreement. These Terms, together with the applicable invoice, constitute the entire agreement between the parties.</p><p>13.2 Variation. Stendig may update these Terms from time to time. Updated Terms apply to all orders placed after the Retailer is notified.</p><p>13.3 Assignment. The Retailer may not assign or transfer its rights without Stendig's prior written consent.</p><p>13.4 No partnership. Nothing in these Terms creates a partnership, agency, or joint venture between the parties.</p><p>13.5 Notices. Notices must be in writing and sent to the address or email on the invoice (for the Retailer) or to <a href=\"mailto:hello@stendigcalendars.com\">hello@stendigcalendars.com</a> (for Stendig).</p><p>13.6 Third party rights. A person who is not a party has no rights under the Contracts (Rights of Third Parties) Act 1999.</p><p>13.7 Governing law and jurisdiction. These Terms and any dispute arising out of or in connection with them are governed by the laws of England and Wales. The parties submit to the exclusive jurisdiction of the courts of England and Wales.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "clause_01",
+        "clause_02",
+        "clause_03",
+        "clause_04",
+        "clause_05",
+        "clause_06",
+        "clause_07",
+        "clause_08",
+        "clause_09",
+        "clause_10",
+        "clause_11",
+        "clause_12",
+        "clause_13"
+      ],
+      "settings": {
+        "sidebar_heading": "Support",
+        "menu": "support",
+        "title": "Wholesale terms of sale",
+        "intro": "<p>Version 1.0  |  Effective date: [EFFECTIVE DATE]</p><p>These Terms of Sale (\"Terms\") govern all sales of Stendig Calendars products (\"Products\") by Tipo Designs Ltd (\"Stendig\", \"we\", \"us\") to the retailer named on the relevant invoice (\"Retailer\", \"you\"). By placing an order, accepting delivery, or paying any invoice, the Retailer agrees to these Terms. Any conflicting terms proposed by the Retailer (including in purchase orders) are expressly rejected unless agreed in writing by Stendig.</p><p>Tipo Designs Ltd, trading as Stendig Calendars, 47 Keeling House, Claredale St, London, E2 6PG, United Kingdom, Company No. 12172308.</p>",
+        "contact_prefix": "Questions about these terms?",
+        "contact_label": "Get in touch with us",
+        "contact_url": ""
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
