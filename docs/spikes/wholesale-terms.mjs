@@ -18,9 +18,11 @@
  *   itself heavily ("a material breach of clauses 4, 5, 6, or 7", "the
  *   Territory as defined in clause 6.1"); a citation pointing at nothing
  *   means a clause was lost or renumbered.
- * - The one deliberately unfinished thing — the effective date — is still
- *   visibly marked, and nothing ELSE is left in square brackets, which is
- *   how the drafting placeholders in the source are written.
+ * - The effective date is a real date. It was published as a marked
+ *   placeholder while it was outstanding and was settled on 10 Sep 2026;
+ *   the check is now that NO drafting placeholder survives at all, square
+ *   brackets being how the source writes them. Terms whose effective date
+ *   reads as a blank are terms nobody can say governed a given order.
  * - The signature block is absent. It belongs on the copy a retailer signs,
  *   not on a public page, and a signature line nobody can sign reads as a
  *   broken form.
@@ -88,9 +90,13 @@ for (const ref of [...cited].sort()) {
   if (clause && sub) check(new RegExp(`(?:^|\\s)${top}\\.${sub}\\s`).test(textOf(clause.answer)), `the text cites clause ${ref}, which does not exist inside clause ${top}`)
 }
 
-// The one unfinished thing is marked, and it is the only one.
-check(main.settings.intro.includes('[EFFECTIVE DATE]'), 'the effective date is no longer visibly marked as outstanding')
-const brackets = [...whole.matchAll(/\[([^\]]{1,60})\]/g)].map((m) => m[1]).filter((b) => b !== 'EFFECTIVE DATE')
+// The effective date is settled, and no placeholder survives anywhere.
+// It identifies the VERSION — which terms governed which order — so a blank
+// or an unparseable date is worse here than on a page that merely informs.
+const dated = /Version\s+[\d.]+\s*\|\s*Effective date:\s*(\d{1,2}(?:st|nd|rd|th)\s+[A-Z][a-z]+,\s+\d{4})/.exec(textOf(main.settings.intro))
+check(Boolean(dated), `the intro does not carry a version and a real effective date: "${textOf(main.settings.intro).slice(0, 80)}"`)
+if (dated) check(!Number.isNaN(Date.parse(dated[1].replace(/(st|nd|rd|th)/, ''))), `"${dated[1]}" is not a date a reader could act on`)
+const brackets = [...whole.matchAll(/\[([^\]]{1,60})\]/g)].map((m) => m[1])
 check(brackets.length === 0, `drafting placeholders left in the published text: ${JSON.stringify(brackets)}`)
 check(/mailto:[\w.+-]+@/.test(clauses[12].answer), 'the notices address in clause 13 is not a mailto link')
 
@@ -162,7 +168,7 @@ try {
 
   const title = await page.locator('.sup__title').innerText()
   check(title.trim() === 'Wholesale terms of sale', `the page is titled "${title}"`)
-  check((await page.locator('.sup__intro').innerText()).includes('[EFFECTIVE DATE]'), 'the outstanding effective date is not visible on the page')
+  check((await page.locator('.sup__intro').innerText()).includes(dated ? dated[1] : '\u0000'), 'the effective date is not visible on the page')
 
   // On a phone the sidebar goes and the contract keeps the full width.
   await page.setViewportSize({ width: 390, height: 844 })
