@@ -46,10 +46,39 @@ const check = (ok, msg) => { if (!ok) failures.push(msg) }
 const OWN_COPY = new Set(['sections/popup-signup.liquid', 'sections/waitlist-modal.liquid'])
 const files = []
 for (const dir of ['sections', 'snippets', 'layout']) for (const f of readdirSync(new URL(dir + '/', root))) if (f.endsWith('.liquid')) files.push(`${dir}/${f}`)
+/* A region that is not markup cannot hold copy. A CSS comment naming
+   `<button>` would otherwise open a match that runs to the next REAL
+   `</button>` and report the prose between the two as baked-in English —
+   which is what the first run of this sweep did. Each such region is blanked
+   rather than removed, so every offset after it still names its own line. */
+const blank = (m) => m.replace(/[^\n]/g, ' ')
+const markupOnly = (src) => src
+  .replace(/\{%-?\s*(comment|schema|javascript|style|stylesheet)\s*-?%\}[\s\S]*?\{%-?\s*end\1\s*-?%\}/g, blank)
+  .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, blank)
+  .replace(/<!--[\s\S]*?-->/g, blank)
+
 const literals = []
 const keys = new Set()
 for (const f of files) {
   const src = read(f)
+  /* A BUTTON'S OWN TEXT. The product page's "Buy it now" was a bare text node
+     inside a <button> — not a `| default:` fallback and not an aria-label, so
+     neither sweep below could see it. It read English on every storefront
+     while a translation app patched it in the browser afterwards, which is
+     exactly the arrangement that makes a literal survive unnoticed. Whatever
+     is left once the Liquid and the tags are taken out is copy no translation
+     can reach. */
+  if (!OWN_COPY.has(f)) {
+    for (const m of markupOnly(src).matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)) {
+      const text = m[1]
+        .replace(/\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\}/g, '')
+        .replace(/<[^>]*>/g, '')
+        .replace(/&[a-z#0-9]+;/gi, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+      if (/[A-Za-z]{3,}/.test(text)) literals.push(`${f}:${src.slice(0, m.index).split('\n').length} button text ${JSON.stringify(text.slice(0, 40))}`)
+    }
+  }
   src.split('\n').forEach((line, i) => {
     if (!OWN_COPY.has(f)) {
       for (const m of line.matchAll(/\|\s*default:\s*'([A-Z][^']{2,60})'/g)) literals.push(`${f}:${i + 1} default '${m[1]}'`)
