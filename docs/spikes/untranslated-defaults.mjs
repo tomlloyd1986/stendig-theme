@@ -30,7 +30,12 @@
  * `t` answering in another language, and both arrows' labels reading that
  * language — the markup reaches the filter, not a literal.
  *
- * Before the change this reported twenty-three literals; it must.
+ * AND A KEY ONLY THE ENGLISH FILE CARRIES reads English on every other
+ * storefront. Twenty-six do today, the location picker's own words among
+ * them. They are listed in the check and the list may only get SHORTER.
+ *
+ * Before the first change this reported twenty-three literals, and before the
+ * second one baked-in button; it must.
  *
  *   npm i --no-save liquidjs && node docs/spikes/untranslated-defaults.mjs
  */
@@ -98,6 +103,76 @@ const has = (key) => key.split('.').reduce((o, k) => (o && typeof o === 'object'
 const missing = [...keys].filter((k) => !k.startsWith('shopify.') && !has(k)).sort()
 check(missing.length === 0, `keys the theme asks \`t\` for that locales/en.default.json does not carry (these print "Translation missing" on the site):\n    ${missing.join('\n    ')}`)
 
+// ---------- a key the published languages do not carry reads English ----------
+/* A key in `locales/en.default.json` and nowhere else is English on every
+   storefront but this one, unless somebody has translated it in
+   Website › Translations — which stores a Shopify translation record that
+   overrides the theme's own file either way, so a value here never takes the
+   decision away from that screen.
+ *
+ * Twenty-six of them are English on the live German site TODAY, the location
+ * picker's own words among them: "Change location", "Rest of world", "Find
+ * your country" and "All locations" all read in English on /de-eu, which is
+ * the very copy the owner reported missing from Translations on 8 Sep 2026.
+ * They are listed because they are known and because the list must only ever
+ * get SHORTER: a key not on it fails this spike, so the next label added to
+ * the theme cannot quietly join them. Take one off the list when it is
+ * translated, in the locale files or on that screen.
+ *
+ * `products.product.buy_it_now` is deliberately NOT on it. It carries the
+ * shop's own live wording, lifted out of the T Lab app before the app was
+ * removed, so that taking the app away changes nothing a customer reads. */
+const PUBLISHED = ['de', 'fr', 'it', 'es', 'ko', 'zh-TW']
+const ENGLISH_ON_EVERY_STOREFRONT = new Set([
+  'accessibility.breadcrumb',
+  'blogs.article.video',
+  'blogs.journal.older',
+  'blogs.journal.pinned',
+  'general.slider.next_slide',
+  'general.slider.of',
+  'general.slider.previous_slide',
+  'localization.all_locations',
+  'localization.change_location',
+  'localization.find_country',
+  'localization.location',
+  'localization.no_match',
+  'localization.rest_of_world',
+  'newsletter.error',
+  'products.product.media.gallery_viewer',
+  'products.product.media.load_image',
+  'products.product.media.load_model',
+  'products.product.media.load_video',
+  'products.product.stock_last_few',
+  'products.product.stock_sold_out',
+  'sections.grouped_grid.view_all',
+  'sections.header.browse_collection',
+  'sections.header.browse_journal',
+  'sections.header.collection',
+  'sections.header.resources',
+  'sections.press.eyebrow',
+])
+/* Resolved by PATH and never off a flattened map: a COUNT is stored as a
+   pluralisation object (`{ one, other }`), which flattening splits into
+   `…count.one` and leaves the key itself looking absent — seven of Dawn's
+   own read that way on the first run of this check. */
+const at = (o, key) => key.split('.').reduce((x, k) => (x && typeof x === 'object' ? x[k] : undefined), o)
+const strip = (p) => JSON.parse(read(p).replace(/^\s*\/\*[\s\S]*?\*\//, ''))
+const untranslated = []
+const stale = new Set(ENGLISH_ON_EVERY_STOREFRONT)
+for (const lang of PUBLISHED) {
+  const have = strip(`locales/${lang}.json`)
+  for (const k of keys) {
+    if (k.startsWith('shopify.') || !has(k)) continue
+    if (at(have, k) !== undefined) continue
+    if (ENGLISH_ON_EVERY_STOREFRONT.has(k)) { stale.delete(k); continue }
+    untranslated.push(`${lang} has no ${k} (English on that storefront: ${JSON.stringify(at(locale, k))})`)
+  }
+}
+check(untranslated.length === 0, `a key the theme asks \`t\` for is missing from a published language's locale file, and is not on the recorded list:\n    ${untranslated.join('\n    ')}`)
+/* The list only gets shorter. A key on it that every language now carries has
+   been translated, and leaving it listed would hide the next one. */
+check(stale.size === 0, `these keys are on the English-on-every-storefront list but every published language carries them now — take them off the list:\n    ${[...stale].join('\n    ')}`)
+
 // ---------- the Liquid ----------
 const engine = new Liquid({ root: [new URL('snippets/', root).pathname], extname: '.liquid', strictFilters: false, strictVariables: false })
 engine.registerFilter('t', (k) => ({ 'accessibility.previous_slide': 'Nach links', 'accessibility.next_slide': 'Nach rechts' })[k] ?? `[${k}]`)
@@ -120,4 +195,4 @@ if (failures.length) {
   console.error('untranslated-defaults: FAIL\n  - ' + failures.join('\n  - '))
   process.exit(1)
 }
-console.log(`untranslated-defaults: no English baked into the Liquid outside the pop-up and the waitlist; every key \`t\` names is in the locale file (${keys.size} keys); the arrows read the locale file`)
+console.log(`untranslated-defaults: no English baked into the Liquid outside the pop-up and the waitlist; every key \`t\` names is in the locale file (${keys.size} keys); the arrows read the locale file; ${ENGLISH_ON_EVERY_STOREFRONT.size} keys read English on every non-English storefront and every one of them is on the recorded list`)
