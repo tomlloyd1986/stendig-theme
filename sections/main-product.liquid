@@ -563,7 +563,7 @@
 
                       {%- if block.settings.show_dynamic_checkout -%}
                           <button class="product-form__submit ctm-buy-btn button button--full-width button--primary">
-                            Buy it now
+                            {{ 'products.product.buy_it_now' | t }}
                           </button>
                           <div class="custom-payment-btn">
                             {{ form | payment_button }}

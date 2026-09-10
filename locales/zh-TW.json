@@ -1344,6 +1344,7 @@
   "products": {
     "product": {
       "add_to_cart": "加入購物車",
+      "buy_it_now": "立即購買",
       "description": "說明",
       "on_sale": "銷售額",
       "product_variants": "產品子類",

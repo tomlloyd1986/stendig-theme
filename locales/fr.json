@@ -1344,6 +1344,7 @@
   "products": {
     "product": {
       "add_to_cart": "Ajouter au panier",
+      "buy_it_now": "Achetez-le maintenant",
       "description": "Description",
       "on_sale": "Vente",
       "product_variants": "Variantes de produits",

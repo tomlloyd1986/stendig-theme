@@ -1344,6 +1344,7 @@
   "products": {
     "product": {
       "add_to_cart": "Aggiungi al carrello",
+      "buy_it_now": "Acquistalo ora",
       "description": "Descrizione",
       "on_sale": "Vendita",
       "product_variants": "Varianti di prodotto",
