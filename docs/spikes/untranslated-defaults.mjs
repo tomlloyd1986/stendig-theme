@@ -18,9 +18,12 @@
  * THE SWEEP (the fault is a literal in the source, so the proof is a read
  * of the source): no `| default: 'English…'` and no `aria-label="English"`
  * anywhere in sections/, snippets/ or layout/ — except the pop-up and the
- * waitlist, whose copy comes per language from the popup register and whose
- * literals are the fallback behind THAT, said here so nobody sweeps them by
- * mistake. And every key a `t` names is in `locales/en.default.json`: a key
+ * waitlist, whose copy is written in the admin rather than in this file and
+ * whose literals are the fallback behind THAT, said here so nobody sweeps
+ * them by mistake. (The POP-UP's own languages are Shopify's translations of
+ * its entry's fields since 11 Sep 2026 — `popup-copy-fields.mjs` — so the
+ * storefront serves them and these literals stand only where nobody wrote
+ * the line at all. The waitlist's are still theme-editor settings.) And every key a `t` names is in `locales/en.default.json`: a key
  * the file lacks prints as "Translation missing" on the live site, which
  * is worse than the English it replaced. Keys under `shopify.` are the one
  * exception: Shopify's own system translations, in every language, which
