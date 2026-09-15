@@ -398,8 +398,11 @@
     so the two compare as numbers without either converting. Edges are as
     fresh as the page cache, so treat them as minute-ish, not second-exact.
 
-    Copy is one JSON field carrying every language; each line falls back to
-    English PER FIELD, exactly as the admin's preview renders it.
+    Copy is a FIELD PER LINE on the entry, and Shopify serves each one in the
+    request's own language: the admin registers every other language as a
+    translation of that field on each settled save. A line nobody translated
+    comes back as its English, which is the same fallback the JSON field used
+    to do by hand.
   {%- endcomment -%}
   {%- liquid
     assign stp_now = 'now' | date: '%Y%m%d%H%M' | plus: 0
@@ -462,26 +465,35 @@
           endif
         endfor
 
-        assign stp_c = v.copy.value
-        assign stp_lc = stp_c[lang_code]
-        assign stp_en = stp_c.en
-
-        assign p_eyebrow = stp_lc.eyebrow | default: stp_en.eyebrow
-        assign p_heading = stp_lc.heading | default: stp_en.heading
-        assign p_body = stp_lc.body | default: stp_en.body
-        assign p_placeholder = stp_lc.placeholder | default: stp_en.placeholder | default: 'Email address'
-        assign p_button = stp_lc.buttonLabel | default: stp_en.buttonLabel | default: 'Notify me'
-        assign p_dismiss = stp_lc.dismissLabel | default: stp_en.dismissLabel | default: 'No thanks'
-        assign p_ph_heading = stp_lc.phHeading | default: stp_en.phHeading | default: 'Be first in line'
-        assign p_ph_body = stp_lc.phBody | default: stp_en.phBody
-        assign p_ph_placeholder = stp_lc.phPlaceholder | default: stp_en.phPlaceholder | default: 'Phone number'
-        assign p_ph_button = stp_lc.phButtonLabel | default: stp_en.phButtonLabel
-        assign p_ph_skip = stp_lc.phSkipLabel | default: stp_en.phSkipLabel | default: 'No thanks, email is fine'
-        assign p_ph_small = stp_lc.phSmallprint | default: stp_en.phSmallprint
-        assign p_ty_eyebrow = stp_lc.tyEyebrow | default: stp_en.tyEyebrow
-        assign p_ty_heading = stp_lc.tyHeading | default: stp_en.tyHeading | default: "You're on the list"
-        assign p_ty_body = stp_lc.tyBody | default: stp_en.tyBody
-        assign p_shop = stp_lc.shopLabel | default: stp_en.shopLabel | default: 'Shop the store'
+        # stp-copy-start — the spike renders exactly this region
+        # (docs/spikes/popup-copy-fields.mjs).
+        # Each line is its OWN FIELD on the entry, and every other language is
+        # a Shopify TRANSLATION of that field — registered by the admin on
+        # every settled save, the way a cross-sell rule's headline already is.
+        # So the storefront serves the right words by itself: there is no
+        # language to look up here and no per-field English fallback to write,
+        # because an untranslated field comes back as its English by Shopify's
+        # own rule. It replaced one `copy` json field holding all eight
+        # languages, which Shopify could not translate and which therefore
+        # appeared nowhere in Website › Translations however long anybody
+        # waited (11 Sep 2026).
+        assign p_eyebrow = v.eyebrow.value
+        assign p_heading = v.heading.value
+        assign p_body = v.body.value
+        assign p_placeholder = v.placeholder.value | default: 'Email address'
+        assign p_button = v.button_label.value | default: 'Notify me'
+        assign p_dismiss = v.dismiss_label.value | default: 'No thanks'
+        assign p_ph_heading = v.ph_heading.value | default: 'Be first in line'
+        assign p_ph_body = v.ph_body.value
+        assign p_ph_placeholder = v.ph_placeholder.value | default: 'Phone number'
+        assign p_ph_button = v.ph_button_label.value
+        assign p_ph_skip = v.ph_skip_label.value | default: 'No thanks, email is fine'
+        assign p_ph_small = v.ph_smallprint.value
+        assign p_ty_eyebrow = v.ty_eyebrow.value
+        assign p_ty_heading = v.ty_heading.value | default: "You're on the list"
+        assign p_ty_body = v.ty_body.value
+        assign p_shop = v.shop_label.value | default: 'Shop the store'
+        # stp-copy-end
 
         assign campaign = v.name.value | default: 'popup' | handleize
         assign stp_exp = ''

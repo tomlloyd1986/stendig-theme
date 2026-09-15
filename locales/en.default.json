@@ -261,7 +261,7 @@
       "caption": "Cart items",
       "remove_title": "Remove {{ title }}",
       "subtotal": "Subtotal",
-      "new_subtotal": "New subtotal",
+      "new_subtotal": "New subtotal:",
       "note": "Order special instructions",
       "checkout": "Check out",
       "empty": "Your cart is empty",
@@ -300,7 +300,7 @@
     },
     "collection_template": {
       "empty": "No products found",
-      "title": "Collection",
+      "title": "Collection:",
       "use_fewer_filters_html": "Use fewer filters or <a class=\"{{ class }}\" href=\"{{ link }}\">clear all</a>"
     },
     "video": {
@@ -318,7 +318,7 @@
     "language_label": "Language",
     "update_language": "Update language",
     "update_country": "Update country/region",
-    "location": "Location",
+    "location": "Location:",
     "change_location": "Change location",
     "find_country": "Find your country",
     "no_match": "No country matches that",
@@ -455,7 +455,7 @@
   },
   "delivery": {
     "date_label": "{{ day }} {{ month }}",
-    "date_title": "Delivery Date",
+    "date_title": "Delivery Date:",
     "choose_date": "Choose a delivery date",
     "join_waitlist": "Join waitlist",
     "date_options": {

@@ -262,7 +262,7 @@
           {%- endunless -%}
           {%- assign dd_prop = item.properties['Delivery Date'] -%}
           {%- if dd_prop != blank -%}
-            <p class="cart-drawer__item-meta">{{ 'delivery.date_title' | t }}: {{ dd_prop | escape }}</p>
+            <p class="cart-drawer__item-meta">{{ 'delivery.date_title' | t }} {{ dd_prop | escape }}</p>
           {%- endif -%}
           <div class="cart-drawer__item-qty">
             <button type="button" class="cart-drawer__qty-btn" data-qty-change="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}">&minus;</button>

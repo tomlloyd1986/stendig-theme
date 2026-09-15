@@ -229,7 +229,7 @@
           <h3 class="jrn__story-title">{{ article.title | escape }}</h3>
           <p class="jrn__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 28 }}</p>
           {%- if section.settings.show_dates -%}
-            <p class="jrn__date">{{ article.published_at | date: '%B %-d, %Y' }}</p>
+            <p class="jrn__date">{{ article.published_at | time_tag: format: 'date' }}</p>
           {%- endif -%}
         </a>
       {%- endfor -%}
