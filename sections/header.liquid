@@ -824,6 +824,7 @@
       document.removeEventListener('keydown', this.onKeydown);
       document.removeEventListener('focusin', this.onFocusIn);
       if (this.headerWrapper && this.onWrapperLeave) this.headerWrapper.removeEventListener('mouseleave', this.onWrapperLeave);
+      if (this.onResize) window.removeEventListener('resize', this.onResize);
       document.body.classList.remove('overflow-hidden', 'st-menu-open');
     }
 
@@ -833,8 +834,28 @@
       if (this.resToggle) this.resToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
+    // The panel hangs from the header's foot. `top: 100%` says that only while
+    // the header is in the wrapper's flow: on the home page, below 990px,
+    // mw.style.css takes the header out of it (position: absolute, so it can
+    // sit over the hero), the wrapper collapses to nothing, and the panel
+    // opened at the top of the window — over the logo and the ✕ that closes
+    // it. So the foot is MEASURED: the header's own bottom within the wrapper,
+    // which on every other page is exactly what 100% already was.
+    placeMenu() {
+      const bar = this.headerWrapper && this.headerWrapper.querySelector('header');
+      if (!bar || !this.menuPanel) return;
+      this.menuPanel.style.top = (bar.offsetTop + bar.offsetHeight) + 'px';
+    }
+
     setMenu(open) {
       if (!this.menuPanel) return;
+      if (open) {
+        this.placeMenu();
+        if (!this.onResize) {
+          this.onResize = () => { if (this.menuPanel.classList.contains('is-open')) this.placeMenu(); };
+          window.addEventListener('resize', this.onResize);
+        }
+      }
       this.menuPanel.classList.toggle('is-open', open);
       if (this.menuToggle) {
         this.menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
