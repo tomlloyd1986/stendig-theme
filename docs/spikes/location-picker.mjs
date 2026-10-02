@@ -110,7 +110,7 @@ const render = (file, localization) => mk(localization).renderFile(file, {})
 const header = read('sections/header.liquid')
 const between = (a, b) => { const i = header.indexOf(a); const j = header.indexOf(b, i); if (i < 0 || j < 0) throw new Error(`fragment not found: ${a}`); return header.slice(i, j) }
 const triggerSrc = between("{%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}\n        <button", '{%- comment -%}\n        Resources dropdown trigger')
-const rowSrc = between("{%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}\n        <hr", '    </div>\n  </st-nav-menus>')
+const rowSrc = between("{%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}\n        <button\n          type=\"button\"\n          class=\"st-mmenu__locrow", '    </div>\n  </st-nav-menus>')
 const menuCss = /<style>([\s\S]*?)<\/style>/.exec(header)[1].replace(/\{\{[^}]*\}\}/g, 'shopify-section-header').replace(/\{%[^%]*%\}/g, '')
 
 const ukLoc = { country: UK, language: EN, available_languages: [EN], available_countries: countries, market: { handle: 'gb' } }
@@ -364,7 +364,9 @@ try {
   const row = phone.locator('.st-mmenu__locrow')
   check(await row.isVisible(), 'the menu has no Location row')
   const rowStyle = await row.evaluate((el) => ({ size: getComputedStyle(el).fontSize, h: el.getBoundingClientRect().height }))
-  check(rowStyle.size === '14px', `the menu row is ${rowStyle.size}, not the sub-links' 14px`)
+  // One size since 2 Oct 2026 (docs/spikes/mobile-menu-one-size.mjs): the
+  // Location row is set like every other row of the menu.
+  check(rowStyle.size === '18px', `the menu row is ${rowStyle.size}, not the menu's one 18px`)
   check(rowStyle.h >= 44, `the menu row is ${rowStyle.h}px tall — under a finger's 44`)
   const order = await phone.evaluate(() => Array.from(document.querySelectorAll('.st-mmenu > *')).map((n) => n.className.split(' ')[0]))
   check(order[order.length - 1] === 'st-mmenu__sub' && order[order.length - 2] === 'st-mmenu__locrow', `Location is not at the foot of the menu: ${order.join(' › ')}`)

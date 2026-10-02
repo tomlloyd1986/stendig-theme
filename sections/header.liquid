@@ -240,91 +240,71 @@
     right: 0;
     background: #fff;
     border-bottom: 1px solid #e2e2e2;
-    padding: 32px 12px 40px;
+    padding: 8px 12px 16px;
     display: none;
   }
   .st-mmenu.is-open { display: block; }
-  .st-mmenu__collection {
-    display: block;
+  /* ONE SIZE, in the site's own heading face. The owner, 2 Oct 2026: "I don't
+     really like the design of the mobile menu - especially the different font
+     sizes" — it read 32px / 24px / 14px, with a change of face and ink at each
+     step. From the options drawn they picked "A, 18px, with the same letter
+     spacing as on site": every row — the collection, the folds, Search,
+     Location and the links inside a fold — is 18px/24px Display at
+     letter-spacing 0, which is what every heading on the site is set at. What
+     tells a row from its children is the INK, never the size. A hairline
+     closes each row (there is no rule of its own between groups any more),
+     and a 56px row is a thumb's tap. docs/spikes/mobile-menu-one-size.mjs. */
+  .st-mmenu__collection,
+  .st-mmenu__row,
+  .st-mmenu__locrow {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 56px;
+    box-sizing: border-box;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #e2e2e2;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
     font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
-    font-size: 32px;
-    line-height: 38px;
+    font-size: 18px;
+    line-height: 24px;
     font-weight: 400;
     letter-spacing: 0;
     color: #000;
     text-decoration: none;
-    padding: 8px 0;
   }
-  .st-mmenu__rule {
-    border: none;
-    border-top: 1px solid #e2e2e2;
-    margin: 28px 0;
-  }
-  .st-mmenu__row {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: baseline;
-    background: none;
-    border: none;
-    margin: 0;
-    padding: 8px 0;
-    cursor: pointer;
-    text-align: left;
-    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
-    font-size: 24px;
-    line-height: 30px;
-    font-weight: 400;
-    letter-spacing: 0;
-    color: rgba(18, 18, 18, 0.55);
-  }
-  .st-mmenu__glyph {
-    font-family: var(--font-body-family);
-    font-size: 16px;
-    line-height: 1;
-  }
-  .st-mmenu__sub { display: none; padding: 8px 0 12px; }
+  /* An open fold and its children are one block: the row's line goes and the
+     children's foot carries it instead. */
+  .st-mmenu__acc[aria-expanded="true"] { border-bottom-color: transparent; }
+  .st-mmenu__glyph { font: inherit; }
+  .st-mmenu__sub { display: none; padding: 0 0 12px; border-bottom: 1px solid #e2e2e2; }
   .st-mmenu__sub.is-open { display: block; }
   .st-mmenu__sublink {
     display: block;
-    font-family: var(--font-body-family);
-    font-size: 14px;
-    line-height: 21px;
+    font-family: "Neue Haas Grotesk Display", var(--font-heading-family), sans-serif;
+    font-size: 18px;
+    line-height: 24px;
     font-weight: 400;
     letter-spacing: 0;
-    color: #121212;
+    color: rgba(18, 18, 18, 0.55);
     text-decoration: none;
-    padding: 8px 0;
+    padding: 10px 0;
   }
   .st-mmenu__journal {
     text-decoration: underline;
     text-underline-offset: 0.3em;
     text-decoration-thickness: 1px;
   }
-  /* The Location row: the body face at the sub-links' 14px, not the menu
-     rows' 24px Display — it states where you are rather than offering a
-     place to go, and it is the same words the desktop bar shows. 12px above
-     and below 21px of type keeps it a 45px tap. */
-  .st-mmenu__locrow {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: baseline;
-    background: none;
-    border: none;
-    margin: 0;
-    padding: 12px 0;
-    cursor: pointer;
-    text-align: left;
-    font-family: var(--font-body-family);
-    font-size: 14px;
-    line-height: 21px;
-    font-weight: 400;
-    letter-spacing: 0;
-    color: #121212;
-  }
-  .st-mmenu__glyph--small { font-size: 14px; line-height: 21px; }
-  .st-mmenu__location { padding: 4px 0 12px; }
+  /* Location is the last row, so the panel's own edge closes it — and its
+     list beneath it. The "Location:" label keeps the faint ink the desktop
+     bar gives it (snippets/location-picker.liquid). */
+  .st-mmenu__locrow { border-bottom: none; }
+  .st-mmenu__location { padding: 4px 0 12px; border-bottom: none; }
   .st-location__languages--menu { margin: 0 0 8px; }
 
   /* Menu toggle: "Menu" swaps to a ✕ while open (mobile only element) */
@@ -364,8 +344,8 @@
     .st-header__search summary { display: none; }
     .st-header__search details:not([open]) { display: none; }
     #shopify-section-{{ section.id }} .header > *:first-child { margin-right: auto; }
-    /* ✕ takes the right edge while the menu is open */
-    body.st-menu-open .st-header__cart { display: none; }
+    /* The cart stays on the bar while the menu is open (2 Oct 2026, on the
+       drawn option the owner picked): the ✕ stands beside it, as Menu did. */
   }
 </style>
 
@@ -586,7 +566,6 @@
 
     <div class="st-mmenu" id="StMobileMenu-{{ section.id }}">
       <a href="{{ collection_url }}" class="st-mmenu__collection">{{ section.settings.mobile_collection_label | default: mobile_collection_default | escape }}</a>
-      <hr class="st-mmenu__rule">
       {%- if show_resources -%}
         <button
           type="button"
@@ -608,18 +587,17 @@
       <button type="button" class="st-mmenu__row st-mmenu__searchrow">{{ 'general.search.search' | t }}</button>
       {%- comment -%}
         Location, at the foot of the menu: the same "Location: United Kingdom"
-        the desktop bar shows, at the sub-link size rather than the menu
-        rows' — it says where you are, it is not a place to go. Opens in
-        place, the way Resources does, onto the same list the drawer shows.
+        the desktop bar shows, a row like the others (one size since
+        2 Oct 2026). Opens in place, the way Resources does, onto the same
+        list the drawer shows.
       {%- endcomment -%}
       {%- if settings.enable_location_picker and localization.available_countries.size > 1 -%}
-        <hr class="st-mmenu__rule">
         <button
           type="button"
           class="st-mmenu__locrow st-mmenu__acc"
           aria-expanded="false"
           aria-controls="StMobileLocation-{{ section.id }}"
-        ><span><span class="st-location__label">{{ 'localization.location' | t }}:</span> <span data-location-name>{%- render 'location-name' -%}</span></span><span class="st-mmenu__glyph st-mmenu__glyph--small" aria-hidden="true" data-glyph>+</span></button>
+        ><span><span class="st-location__label">{{ 'localization.location' | t }}:</span> <span data-location-name>{%- render 'location-name' -%}</span></span><span class="st-mmenu__glyph" aria-hidden="true" data-glyph>+</span></button>
         <div class="st-mmenu__sub st-mmenu__location" id="StMobileLocation-{{ section.id }}">
           {%- if localization.available_languages.size > 1 -%}
             <div class="st-location__languages st-location__languages--menu" role="group" aria-label="{{ 'localization.language_label' | t }}">
