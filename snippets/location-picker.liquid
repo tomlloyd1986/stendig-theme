@@ -449,6 +449,18 @@
       const more = list.querySelector('[data-location-level="rest"]');
       if (more) more.setAttribute('aria-expanded', level === 'rest' ? 'true' : 'false');
       const target = level === 'rest' ? list.querySelector('[data-location-filter]') : more;
+      // The list sits in a box that scrolls — the phone menu since it was
+      // made to (8 Oct 2026), and the drawer's body. Rest of world is reached
+      // from far down the first level, and the level that replaces it is
+      // shorter above the fold, so the scroll the person arrived with could
+      // leave "← All locations" behind the bar. Only ever UP, and only when
+      // the list's own top has gone above the box's: a list already in view
+      // stays where it is.
+      const port = list.closest('.st-mmenu, .st-location__body');
+      if (port) {
+        const over = list.getBoundingClientRect().top - port.getBoundingClientRect().top;
+        if (over < 0) port.scrollTop += over;
+      }
       if (target) target.focus();
     }
 
