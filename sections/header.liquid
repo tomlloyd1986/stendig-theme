@@ -816,7 +816,14 @@
       document.removeEventListener('keydown', this.onKeydown);
       document.removeEventListener('focusin', this.onFocusIn);
       if (this.headerWrapper && this.onWrapperLeave) this.headerWrapper.removeEventListener('mouseleave', this.onWrapperLeave);
-      if (this.onResize) window.removeEventListener('resize', this.onResize);
+      if (this.onResize) {
+        window.removeEventListener('resize', this.onResize);
+        if (window.visualViewport) {
+          window.visualViewport.removeEventListener('resize', this.onResize);
+          window.visualViewport.removeEventListener('scroll', this.onResize);
+        }
+      }
+      if (this.section && this.onSlid) this.section.removeEventListener('transitionend', this.onSlid);
       document.body.classList.remove('overflow-hidden', 'st-menu-open');
     }
 
@@ -837,15 +844,23 @@
       const bar = this.headerWrapper && this.headerWrapper.querySelector('header');
       if (!bar || !this.menuPanel) return;
       this.menuPanel.style.top = (bar.offsetTop + bar.offsetHeight) + 'px';
-      // …and it ends at the window's foot. The body is locked while the menu
-      // is open, so a fold taller than what is left beneath the bar (the
-      // Location list) could not be reached at all; held to that room the
-      // panel scrolls inside itself (its rule says so). The window's own
-      // height is read rather than 100vh, which on a phone is the window
-      // WITHOUT the browser's bars and would put the last rows under them —
-      // and a resize (the bars folding away, the keyboard rising for the
-      // country search) reads it again.
-      const room = window.innerHeight - bar.getBoundingClientRect().bottom;
+      // …and it ends at the foot of what can be SEEN. The body is locked while
+      // the menu is open, so a fold taller than what is left beneath the bar
+      // (the Location list) could not be reached at all; held to that room
+      // the panel scrolls inside itself (its rule says so).
+      //
+      // The foot is the VISUAL viewport's where there is one. Tapping Rest of
+      // world focuses the country search and raises the keyboard, and on a
+      // phone the keyboard shrinks the visual viewport alone — innerHeight
+      // does not move and the window fires no resize — so read off the window
+      // the panel kept a height the keyboard covered, and the tail of the
+      // list could not be scrolled up from under it. Neither is 100vh, which
+      // on a phone is the window without the browser's bars. setMenu()
+      // listens to both viewports, so the bars folding away, a turn of the
+      // phone and the keyboard each measure it again.
+      const vv = window.visualViewport;
+      const foot = vv ? vv.offsetTop + vv.height : window.innerHeight;
+      const room = foot - bar.getBoundingClientRect().bottom;
       this.menuPanel.style.maxHeight = Math.max(0, Math.round(room)) + 'px';
     }
 
@@ -856,7 +871,26 @@
         if (!this.onResize) {
           this.onResize = () => { if (this.menuPanel.classList.contains('is-open')) this.placeMenu(); };
           window.addEventListener('resize', this.onResize);
+          // the keyboard, and a pan while it is up (see placeMenu)
+          if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', this.onResize);
+            window.visualViewport.addEventListener('scroll', this.onResize);
+          }
+          // A Menu press that lands while the sticky header is still sliding
+          // back into view (base.css: .animate, 0.15s) measures a bar that is
+          // part-way down, and the panel runs past the window by the rest of
+          // the slide. Measured again once the slide has finished.
+          this.section = document.getElementById(this.dataset.header);
+          if (this.section) {
+            this.onSlid = (e) => { if (e.target === this.section && e.propertyName === 'transform') this.onResize(); };
+            this.section.addEventListener('transitionend', this.onSlid);
+          }
         }
+      } else {
+        // Shut, it forgets where it was scrolled to: opened again it starts
+        // at Browse the collection rather than somewhere down the countries
+        // with every row of the menu itself out of sight.
+        this.menuPanel.scrollTop = 0;
       }
       this.menuPanel.classList.toggle('is-open', open);
       if (this.menuToggle) {
