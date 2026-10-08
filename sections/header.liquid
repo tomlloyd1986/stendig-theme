@@ -233,6 +233,16 @@
   /* ===== Mobile menu panel =====
      Full width under the header. The collection link is the only full-
      strength item; Resources and Search read as secondary (muted Display). */
+  /* The panel SCROLLS INSIDE ITSELF. The page is locked while the menu is
+     open (body.overflow-hidden), so a fold taller than what is left of the
+     window — Location's forty-odd countries, and the whole list behind Rest
+     of world — was simply cut at the window's foot with no way down (the
+     owner, 8 Oct 2026: "You cant scroll down this location list on mobile").
+     placeMenu() holds the panel to the room beneath the bar (max-height,
+     measured: the bar's height and the window's both move), and the panel
+     carries its own scroll. overscroll-behavior keeps a scroll that reaches
+     the panel's end from chaining into the locked page; overflow-x is said
+     because an auto on one axis makes the other auto too. */
   .st-mmenu {
     position: absolute;
     top: 100%;
@@ -241,6 +251,10 @@
     background: #fff;
     border-bottom: 1px solid #e2e2e2;
     padding: 8px 12px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
     display: none;
   }
   .st-mmenu.is-open { display: block; }
@@ -823,6 +837,16 @@
       const bar = this.headerWrapper && this.headerWrapper.querySelector('header');
       if (!bar || !this.menuPanel) return;
       this.menuPanel.style.top = (bar.offsetTop + bar.offsetHeight) + 'px';
+      // …and it ends at the window's foot. The body is locked while the menu
+      // is open, so a fold taller than what is left beneath the bar (the
+      // Location list) could not be reached at all; held to that room the
+      // panel scrolls inside itself (its rule says so). The window's own
+      // height is read rather than 100vh, which on a phone is the window
+      // WITHOUT the browser's bars and would put the last rows under them —
+      // and a resize (the bars folding away, the keyboard rising for the
+      // country search) reads it again.
+      const room = window.innerHeight - bar.getBoundingClientRect().bottom;
+      this.menuPanel.style.maxHeight = Math.max(0, Math.round(room)) + 'px';
     }
 
     setMenu(open) {
