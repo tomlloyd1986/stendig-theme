@@ -318,7 +318,21 @@
      list beneath it. The "Location:" label keeps the faint ink the desktop
      bar gives it (snippets/location-picker.liquid). */
   .st-mmenu__locrow { border-bottom: none; }
-  .st-mmenu__location { padding: 4px 0 12px; border-bottom: none; }
+  /* …and the open list ends with room for Safari's address bar. On a
+     current iPhone the bar floats OVER the bottom of the page rather than
+     below it, and the page — this panel included — runs on underneath it,
+     so the list's last rows (Rest of world, and Zimbabwe on the level
+     behind it) stood behind the bar with no further to scroll (the owner,
+     9 Oct 2026: "rest of the world is hidden behind the address bar on
+     phones"). Measured off the owner's own screenshot, the bar and its fade
+     cover the bottom 109px; 100px here and the panel's own 16 put the last
+     row clear of it. Nothing on the page reports the bar's height (the
+     viewport does not opt into the safe area, and Safari 26's readings
+     disagree), so it is a figure; where a browser has no bar over the page
+     it is a little air at the end of a list that is always longer than the
+     screen. Only the Location list, because it is the only fold that runs
+     past the window. docs/spikes/mobile-menu-scrolls.mjs. */
+  .st-mmenu__location { padding: 4px 0 100px; border-bottom: none; }
   .st-location__languages--menu { margin: 0 0 8px; }
 
   /* Menu toggle: "Menu" swaps to a ✕ while open (mobile only element) */
