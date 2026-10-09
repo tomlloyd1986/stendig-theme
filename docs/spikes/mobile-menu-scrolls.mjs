@@ -21,7 +21,11 @@
  *   - With Location open, the list runs past the window (or nothing here could
  *     fail) and the panel ends EXACTLY at the window's foot — a ceiling and a
  *     floor, because a cap typed as 100vh less a guessed bar passes a ceiling.
- *   - A wheel over the panel brings the last country into the window, the ✕
+ *   - A wheel over the panel brings the last country into the window, and
+ *     clear of Safari's floating address bar, which on a current iPhone sits
+ *     over the bottom 109px of the page (measured off the owner's own
+ *     screenshot; the owner, 9 Oct 2026: "rest of the world is hidden behind
+ *     the address bar on phones"), at both ends of the list; the ✕
  *     stays put; a second wheel from the panel's end does not move the page —
  *     asked again on a page with NO body lock, the browser that ignores it,
  *     which is the only way overscroll-behavior is under test at all.
@@ -57,6 +61,7 @@ let failures = 0
 const check = (ok, msg) => { if (!ok) { failures++; console.log('FAIL', msg) } }
 const W = 780
 const KEYBOARD = 336
+const SAFARI_BAR = 109
 
 // The panel's own stylesheet, Liquid stripped first (a `%}` inside a rule
 // otherwise ends it early); the toggle's rules and the desk's
@@ -205,6 +210,12 @@ try {
     })
     check(after.scrollTop > 0, `on ${where} you can't scroll down the location list: the panel stayed at the top and the last country stands ${Math.round(before.lastBottom - W)}px below the window's foot`)
     check(after.lastBottom <= W + 0.5, `on ${where} the last country is still ${Math.round(after.lastBottom - W)}px below the window's foot after scrolling`)
+    // Safari's floating address bar: on a current iPhone it sits OVER the
+    // bottom of the page, and the bar with its fade covers the bottom
+    // 109px (measured off the owner's screenshot, 8 Oct 2026). With
+    // the list scrolled to its end, its last row must stand clear of that.
+    const restRow = await p.evaluate(() => document.querySelector('.st-location__more').getBoundingClientRect().bottom)
+    check(restRow <= W - SAFARI_BAR, `on ${where} rest of the world is hidden behind the address bar on phones: scrolled to the end, it ends ${Math.round(W - restRow)}px above the screen's foot and the bar covers the bottom ${SAFARI_BAR}px`)
     check(await hit(p, '.st-mmenu__toggle'), `on ${where} the ✕ is not where it was once the list is scrolled`)
 
     await p.click('.st-mmenu__toggle')
@@ -275,6 +286,16 @@ try {
         return { back: document.querySelector('.st-location__back').getBoundingClientRect().top, top: panel.getBoundingClientRect().top }
       })
       if (back.back < back.top - 0.5) hidden.push(`${named} (${Math.round(back.top - back.back)}px behind the bar)`)
+      // and the far end of the rest of the world clears Safari's bar too
+      if (named === 8) {
+        const tail = await p.evaluate(() => {
+          const panel = document.querySelector('.st-mmenu')
+          panel.scrollTop = panel.scrollHeight
+          const rows = document.querySelectorAll('.st-location__level--rest [data-location-pick]')
+          return rows[rows.length - 1].getBoundingClientRect().bottom
+        })
+        check(tail <= W - SAFARI_BAR, `on ${where} the last country behind Rest of world is hidden behind the address bar: scrolled to the end, it ends ${Math.round(W - tail)}px above the screen's foot and the bar covers the bottom ${SAFARI_BAR}px`)
+      }
       await p.close()
     }
     check(hidden.length === 0, `on ${where} Rest of world tapped from the foot of the list leaves "← All locations" behind the bar with ${hidden.join(', ')} named countries`)
