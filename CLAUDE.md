@@ -24,6 +24,12 @@ theme-editor edits back to whichever branch that theme is connected to
   newer editor commit is the owner's current intent; do not "fix" it from
   the other side.
 
+## Words
+
+Speak as normal English as possible, both in chat with the owner and in
+any copy written for the store: everyday words, short sentences, no jargon,
+nothing clever. The owner's instruction, 17 Oct 2026.
+
 ## Verification
 
 There is no test runner. A change is proved by a spike in `docs/spikes/`,
