@@ -2350,6 +2350,25 @@
     {% endfor %}
   };
 
+  {% comment %}
+    The admin's two lists, which Flow never writes: custom.sell_regardless_warehouses
+    opens this product in one market as the warehouse tick opens a whole one;
+    custom.stop_selling_warehouses closes it once that market's orders reach the
+    admin's stock, and outranks every opening.
+  {% endcomment %}
+  window.productOpenAt = {{ product.metafields.custom.sell_regardless_warehouses.value | json }};
+  window.productStopAt = {{ product.metafields.custom.stop_selling_warehouses.value | json }};
+  window.variantOpenAt = {
+    {% for variant in product.variants %}
+      {{ variant.id }}: {{ variant.metafields.custom.sell_regardless_warehouses.value | json }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+  window.variantStopAt = {
+    {% for variant in product.variants %}
+      {{ variant.id }}: {{ variant.metafields.custom.stop_selling_warehouses.value | json }}{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  };
+
   // Returns true/false when the warehouse metafields decide availability,
   // or null when they can't (no warehouse mapping configured, or no
   // metafield set) so the caller falls back to native variant availability.
@@ -2365,16 +2384,21 @@
     const manualProduct = norm(window.productOOSManual);
     const manualVariant = norm(window.variantOOSManual[variantId]);
 
+    const both = function(product, byVariant) {
+      return (norm(product) || []).concat(norm((byVariant || {})[variantId]) || []);
+    };
+    if (window.currentWarehouse && both(window.productStopAt, window.variantStopAt).includes(window.currentWarehouse)) return false;
+
     const manual = (manualProduct || []).concat(manualVariant || []);
     if (manual.includes('all')) return false;
 
     if (!window.currentWarehouse) return null;
 
-    // "Sell regardless of stock" on this market's warehouse entry. Checked
-    // after 'all' and before the lists: 'all' is a deliberate stop
-    // everywhere and outranks it, but Flow's per-warehouse list does not —
-    // opening preorders means overruling exactly that list.
+    // "Sell regardless of stock" on this market's warehouse entry, or on this
+    // product for this market. Checked after 'all' and the admin's stop and
+    // before the lists: opening preorders means overruling Flow's list.
     if (window.openWarehouses && window.openWarehouses[window.currentWarehouse]) return true;
+    if (both(window.productOpenAt, window.variantOpenAt).includes(window.currentWarehouse)) return true;
 
     if (autoProduct === null && autoVariant === null && manualProduct === null && manualVariant === null) return null;
 

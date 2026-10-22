@@ -18,6 +18,11 @@
   the automatic list from live inventory, so a market opening preorders has
   to overrule it, but "all" is a person deliberately stopping sales
   everywhere and outranks a per-market switch.
+
+  The admin's custom.sell_regardless_warehouses opens this product in one
+  market the way wh_open opens a whole one; custom.stop_selling_warehouses
+  closes it once that market's orders reach the admin's stock, and outranks
+  every opening. Both read from product and variant, as stock-state does.
 {% endcomment %}
 
 {%- liquid
@@ -56,17 +61,50 @@
     endfor
   endif
 
-  if has_meta and current_wh != ''
-    assign wh_needle = '||' | append: current_wh | append: '||'
+  assign sel_open = '||'
+  assign sel_stop = '||'
+  for w in parent.metafields.custom.sell_regardless_warehouses.value
+    assign w_clean = w | strip | downcase
+    assign sel_open = sel_open | append: w_clean | append: '||'
+  endfor
+  for w in variant.metafields.custom.sell_regardless_warehouses.value
+    assign w_clean = w | strip | downcase
+    assign sel_open = sel_open | append: w_clean | append: '||'
+  endfor
+  for w in parent.metafields.custom.stop_selling_warehouses.value
+    assign w_clean = w | strip | downcase
+    assign sel_stop = sel_stop | append: w_clean | append: '||'
+  endfor
+  for w in variant.metafields.custom.stop_selling_warehouses.value
+    assign w_clean = w | strip | downcase
+    assign sel_stop = sel_stop | append: w_clean | append: '||'
+  endfor
+  assign wh_needle = '||' | append: current_wh | append: '||'
+  assign sel_opened = false
+  assign sel_stopped = false
+  if current_wh != ''
+    if sel_open contains wh_needle
+      assign sel_opened = true
+    endif
+    if sel_stop contains wh_needle
+      assign sel_stopped = true
+    endif
+  endif
+
+  if sel_stopped
+    echo ''
+  elsif has_meta and current_wh != ''
     if oos_str contains '||all||'
       echo ''
-    elsif wh_open
+    elsif wh_open or sel_opened
       echo 'true'
     elsif oos_str contains wh_needle
       echo ''
     else
       echo 'true'
     endif
+  elsif sel_opened
+    echo 'true'
   elsif has_meta
     if oos_str contains '||all||'
       echo ''
