@@ -82,8 +82,87 @@
     assign oos_l_mv = variant.metafields.custom.oos_warehouses_manual.value
   endif
 
+  # The admin's two lists, which Flow never writes. sell_regardless_warehouses
+  # opens one product in one market, as the warehouse tick opens a whole one;
+  # stop_selling_warehouses closes it once that market's orders reach the stock
+  # the admin set, and outranks every opening. They count only where they name
+  # this warehouse, so a list for another market leaves this one as it was.
+  assign sel_open_p = product.metafields.custom.sell_regardless_warehouses.value
+  assign sel_stop_p = product.metafields.custom.stop_selling_warehouses.value
+  if variant
+    assign sel_open_v = variant.metafields.custom.sell_regardless_warehouses.value
+    assign sel_stop_v = variant.metafields.custom.stop_selling_warehouses.value
+  endif
+  assign wh_pick = false
+  assign wh_stop = false
+  if wh_current != ''
+    for w in sel_open_p
+      assign wq = w | strip | downcase
+      if wq == wh_current
+        assign wh_pick = true
+      endif
+    endfor
+    for w in sel_open_v
+      assign wq = w | strip | downcase
+      if wq == wh_current
+        assign wh_pick = true
+      endif
+    endfor
+    for w in sel_stop_p
+      assign wq = w | strip | downcase
+      if wq == wh_current
+        assign wh_stop = true
+      endif
+    endfor
+    for w in sel_stop_v
+      assign wq = w | strip | downcase
+      if wq == wh_current
+        assign wh_stop = true
+      endif
+    endfor
+    # Product-scoped with the lists on the variants (where the admin writes
+    # them): a list decides only when every variant carries it.
+    unless variant
+      assign sv_total = 0
+      assign sv_open = 0
+      assign sv_stop = 0
+      for pv in product.variants
+        assign sv_total = sv_total | plus: 1
+        assign sv_is_open = false
+        assign sv_is_stop = false
+        for w in pv.metafields.custom.sell_regardless_warehouses.value
+          assign wq = w | strip | downcase
+          if wq == wh_current
+            assign sv_is_open = true
+          endif
+        endfor
+        for w in pv.metafields.custom.stop_selling_warehouses.value
+          assign wq = w | strip | downcase
+          if wq == wh_current
+            assign sv_is_stop = true
+          endif
+        endfor
+        if sv_is_open
+          assign sv_open = sv_open | plus: 1
+        endif
+        if sv_is_stop
+          assign sv_stop = sv_stop | plus: 1
+        endif
+      endfor
+      if sv_total > 0 and sv_open == sv_total
+        assign wh_pick = true
+      endif
+      if sv_total > 0 and sv_stop == sv_total
+        assign wh_stop = true
+      endif
+    endunless
+  endif
+
   assign wh_lists_set = false
   if oos_l_ap or oos_l_mp or oos_l_av or oos_l_mv
+    assign wh_lists_set = true
+  endif
+  if wh_pick or wh_stop
     assign wh_lists_set = true
   endif
 
@@ -172,6 +251,12 @@
   # tick comes off, the list is already correct and there is nothing to undo.
   if wh_open and wh_all == false
     assign wh_out = false
+  endif
+  if wh_pick and wh_all == false
+    assign wh_out = false
+  endif
+  if wh_stop
+    assign wh_out = true
   endif
 
   assign stock_state = ''
