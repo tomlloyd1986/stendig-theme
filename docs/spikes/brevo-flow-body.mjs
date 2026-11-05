@@ -108,6 +108,68 @@ async function sent(order) {
   check('the basket is what checkout said', ch.lang === 'fr' && ch.path === '/fr-ch', JSON.stringify(ch.json))
 }
 
+// 4b. The basket and the line name different MARKETS. The basket is the last
+//     store page seen; the line is where the item was added. Where the
+//     parcel goes settles it — ST39298, 5 Nov 2026.
+{
+  const st39298 = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'US' },
+    customAttributes: stamped('/en-hk', 'hk', 'en'),
+    lineItems: [{ customAttributes: stamped('/en-us', 'us', 'en') }],
+  })
+  check('ST39298: added on /en-us, last seen /en-hk, shipped to the US → us',
+    st39298.market === 'us' && st39298.path === '/en-us' && st39298.lang === 'en', JSON.stringify(st39298.json))
+
+  const twoLines = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'US' },
+    customAttributes: stamped('/en-hk', 'hk', 'en'),
+    lineItems: [{ customAttributes: stamped('/en-gb', 'gb', 'en') }, { customAttributes: stamped('/en-us', 'us', 'en') }],
+  })
+  check('the line that matches the parcel answers, not the last line', twoLines.market === 'us' && twoLines.path === '/en-us', JSON.stringify(twoLines.json))
+
+  const neither = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'FR' },
+    customAttributes: stamped('/en-hk', 'hk', 'en'),
+    lineItems: [{ customAttributes: stamped('/en-us', 'us', 'en') }],
+  })
+  check('where no line matches the parcel, the basket still wins', neither.market === 'hk' && neither.path === '/en-hk', JSON.stringify(neither.json))
+
+  const austria = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'AT' },
+    customAttributes: stamped('/de-de', 'de', 'de'),
+    lineItems: [{ customAttributes: stamped('/en-us', 'us', 'en') }],
+  })
+  check('a market of several countries keeps the basket', austria.market === 'de' && austria.lang === 'de', JSON.stringify(austria.json))
+
+  const sameMarket = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'CH' },
+    customAttributes: stamped('/fr-ch', 'ch', 'fr'),
+    lineItems: [{ customAttributes: stamped('/en-ch', 'ch', 'en') }],
+  })
+  check('a language change in one market still follows the basket', sameMarket.lang === 'fr' && sameMarket.path === '/fr-ch', JSON.stringify(sameMarket.json))
+
+  const pickup = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: null,
+    customAttributes: stamped('/en-hk', 'hk', 'en'),
+    lineItems: [{ customAttributes: stamped('/en-us', 'us', 'en') }],
+  })
+  check('no shipping address keeps the basket', pickup.market === 'hk', JSON.stringify(pickup.json))
+
+  const express = await sent({
+    email: 'h@x.co.uk',
+    shippingAddress: { countryCodeV2: 'GB' },
+    customAttributes: [],
+    lineItems: [{ customAttributes: stamped('/en-gb', 'gb', 'en') }],
+  })
+  check('an express order shipped home is unchanged', express.market === 'gb' && express.path === '/en-gb', JSON.stringify(express.json))
+}
+
 // 5. An order carrying nothing at all — a POS sale, a draft order, a basket
 //    built before this shipped. It must send an EMPTY attributes object:
 //    values would wipe the markers a signup put on the contact months ago.

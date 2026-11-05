@@ -68,7 +68,9 @@ branch are all already right.
 The basket is read FIRST and the line only as a fallback, in that order and not
 the other way round. The basket's attributes say where the shopper was when
 they checked out; a line's say where they were when they added THAT item, which
-stops being the same thing the moment somebody changes language mid-visit. The
+stops being the same thing the moment somebody changes language mid-visit.
+The one exception is a basket whose MARKET is not where the parcel goes while a
+line's is: see "The second block" below. The
 basket is also the only one of the two that a line the drawer's cross-sell
 added carries at all, because that add posts straight to the cart rather than
 through a product form.
@@ -98,6 +100,28 @@ and its `"attributes": {}` branch all stay as they are — an empty attributes
 object sets no keys, so an order carrying nothing already leaves the contact's
 existing markers alone, which is the right behaviour and was there before this.
 
+### The second block, 5 Nov 2026: when the basket and the line disagree
+
+Order ST39298 was a US order — shipped to Texas, paid in dollars, sent from the
+US 3PL — but the basket said `hk` and the line said `us`. The customer added
+the calendar on `/en-us`, then opened a page on `/en-hk` before checking out.
+Every page load rewrites the basket's stamp, so the basket said Hong Kong;
+Shopify moved the checkout back to the US once a US address went in. Brevo
+would have filed a Texas buyer under Hong Kong. One order in the 100 before it
+showed this.
+
+So, after the express-checkout block and before the JSON: where the basket's
+market is not the shipping country and a line's is, that line's market,
+language and path are sent instead. A market is compared with the shipping
+country by its code (`us` with `US`), which settles every market that is one
+country. A market of several countries — EU, Germany and Austria, France and
+Luxembourg, Singapore and Malaysia, International — never matches by code, so
+the basket wins there, as before. So does an order with no shipping address,
+and a language change within one market (`/fr-ch` against `/en-ch`): the
+markets agree, so nothing is compared.
+
+This is the second edit to the live workflow. The whole body below holds both.
+
 ### The whole body, after the insert
 
 This is what the action holds once the block is in. `brevo-flow-body.mjs`
@@ -119,6 +143,21 @@ renders THIS text, so what is proved is what is live.
 {% if a.key == "_st_path" %}{% assign path = a.value %}{% endif %}
 {% if a.key == "_st_lang" %}{% assign lang = a.value %}{% endif %}
 {% endfor %}
+{% endfor %}
+{% endif %}
+{% comment %} The basket is the last store page seen; a line is where its item was added.
+   Where they name different markets, the one that matches where the parcel goes is right. {% endcomment %}
+{% assign ship = order.shippingAddress.countryCodeV2 | downcase %}
+{% if ship != blank and mkt != ship %}
+{% assign found = "" %}
+{% for li in order.lineItems %}
+{% assign lm = "" %}{% assign lp = "" %}{% assign ll = "" %}
+{% for a in li.customAttributes %}
+{% if a.key == "_st_market" %}{% assign lm = a.value %}{% endif %}
+{% if a.key == "_st_path" %}{% assign lp = a.value %}{% endif %}
+{% if a.key == "_st_lang" %}{% assign ll = a.value %}{% endif %}
+{% endfor %}
+{% if found == "" and lm == ship %}{% assign mkt = lm %}{% assign path = lp %}{% assign lang = ll %}{% assign found = "yes" %}{% endif %}
 {% endfor %}
 {% endif %}
 {% if mkt != "" %}
@@ -150,7 +189,9 @@ renders THIS text, so what is proved is what is live.
 | **Express checkout, bare domain** | **nothing sent** | **`primary` / `en` / `""`** |
 | **Express, first line a bare cross-sell** | **nothing sent** | **read off the next line** |
 | POS sale, draft order, pre-change basket | nothing sent | unchanged |
-| Basket and line disagree | basket wins | unchanged |
+| Basket and line name the same market, different languages | basket wins | unchanged |
+| **Basket and line name different markets; a line's is the shipping country** | **basket wins** | **that line wins** |
+| Basket and line name different markets; no line is the shipping country | basket wins | unchanged |
 
 ### One weakness left, deliberately
 
