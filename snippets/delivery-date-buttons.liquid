@@ -371,6 +371,12 @@
 {% assign final_dates = final_list | split: '||' %}
 
 {% comment %}
+  `values_only: true` prints the stored values offered today ("ASAP||7 Dec||"),
+  no markup. The basket uses it to replace a date that is no longer offered.
+{% endcomment %}
+{% if values_only %}{{ final_list }}{% endif %}
+
+{% comment %}
   How many buttons there will actually be.
 
   Everything below — the wrapper, the LABEL and the required hidden input —
@@ -387,7 +393,7 @@
   {% if d != '' %}{% assign dd_shown = dd_shown | plus: 1 %}{% endif %}
 {% endfor %}
 
-{% if dd_shown > 0 %}
+{% if dd_shown > 0 and values_only != true %}
 <style>
   .delivery-date-options-custom {
     display: flex;

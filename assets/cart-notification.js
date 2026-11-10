@@ -58,6 +58,54 @@ class CartNotification extends HTMLElement {
       if (compareElement && option.dataset.compare) compareElement.textContent = option.dataset.compare;
       if (imageElement && option.dataset.image) imageElement.src = option.dataset.image;
     });
+
+    this.replaceLapsedDates();
+  }
+
+  // Swaps each basket line's withdrawn delivery date for the one the drawer
+  // worked out (cart-notification-content.liquid, `data-dd-fixes`).
+  async replaceLapsedDates() {
+    const data = this.querySelector('script[data-dd-fixes]');
+    if (!data) return;
+    let fixes;
+    try {
+      fixes = JSON.parse(data.textContent);
+    } catch (error) {
+      return;
+    }
+    if (!Array.isArray(fixes) || !fixes.length) return;
+
+    const changeUrl = window.routes && window.routes.cart_change_url ? window.routes.cart_change_url : '/cart/change';
+    const cartUrl = changeUrl.replace(/\/change$/, '');
+    try {
+      const cart = await (await fetch(`${cartUrl}.js`, { credentials: 'same-origin' })).json();
+      let state = null;
+      for (const fix of fixes) {
+        const item = cart.items.find((line) => line.key === fix.key);
+        if (!item) continue;
+        // Shopify replaces a line's properties whole, so the hidden ones are sent back too.
+        const properties = Object.assign({}, item.properties || {}, { 'Delivery Date': fix.date });
+        const response = await fetch(`${changeUrl}.js`, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: fix.key,
+            quantity: item.quantity,
+            properties,
+            sections: this.getSectionsToRender().map((section) => section.id),
+          }),
+        });
+        if (!response.ok) {
+          console.error(`Delivery date swap failed (${response.status})`);
+          continue;
+        }
+        state = await response.json();
+      }
+      if (state && state.sections) this.updateSections(state.sections);
+    } catch (error) {
+      console.error('Delivery date swap failed:', error);
+    }
   }
 
   async refreshAndOpen() {
