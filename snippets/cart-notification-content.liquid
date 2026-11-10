@@ -230,6 +230,57 @@
 <!-- cross-sell: source={{ cs_source }} rules={{ cs_pool | size }} [{% for r in cs_pool %}{{ r.system.handle }}{% if r.priority.value %}#{{ r.priority.value }}{% endif %},{% endfor %}] matched={% if cs_product %}{{ cs_product.handle }}{% else %}none{% endif %} warehouse={{ current_wh | default: 'unmapped' }} -->
 
 
+{%- comment -%}
+  A basket line keeps the date picked when it was added, so a basket filled
+  before a date was withdrawn still checks out with it (ST39600, 9 Nov 2026).
+  Each line is checked against the dates its product offers now; a lapsed one
+  takes the first on offer, as the product page would pick. A line whose
+  product offers no dates (an add-on that copied a calendar's date) follows
+  the calendar's new date. cart-notification.js makes the swaps on load.
+{%- endcomment -%}
+{%- assign dd_from = '' -%}
+{%- assign dd_to = '' -%}
+{%- assign dd_fixes = '' -%}
+{%- assign dd_orphans = '' -%}
+{%- for item in cart.items -%}
+  {%- assign dd_old = item.properties['Delivery Date'] | strip -%}
+  {%- if dd_old == blank -%}{%- continue -%}{%- endif -%}
+  {%- capture dd_raw -%}{%- render 'delivery-date-buttons', product: item.product, values_only: true -%}{%- endcapture -%}
+  {%- assign dd_first = '' -%}
+  {%- assign dd_still = false -%}
+  {%- assign dd_parts = dd_raw | split: '||' -%}
+  {%- for dd_p in dd_parts -%}
+    {%- assign dd_v = dd_p | strip -%}
+    {%- if dd_v == blank -%}{%- continue -%}{%- endif -%}
+    {%- if dd_first == '' -%}{%- assign dd_first = dd_v -%}{%- endif -%}
+    {%- if dd_v == dd_old -%}{%- assign dd_still = true -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if dd_first == '' -%}
+    {%- assign dd_orphans = dd_orphans | append: item.key | append: '::' | append: dd_old | append: '||' -%}
+  {%- elsif dd_still == false -%}
+    {%- assign dd_from = dd_from | append: dd_old | append: '||' -%}
+    {%- assign dd_to = dd_to | append: dd_first | append: '||' -%}
+    {%- capture dd_fix -%}{"key":{{ item.key | json }},"date":{{ dd_first | json }}}{%- endcapture -%}
+    {%- assign dd_fixes = dd_fixes | append: dd_fix | append: ',' -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign dd_from = dd_from | split: '||' -%}
+{%- assign dd_to = dd_to | split: '||' -%}
+{%- assign dd_orphans = dd_orphans | split: '||' -%}
+{%- for dd_o in dd_orphans -%}
+  {%- assign dd_bits = dd_o | split: '::' -%}
+  {%- for dd_f in dd_from -%}
+    {%- if dd_f == dd_bits[1] -%}
+      {%- capture dd_fix -%}{"key":{{ dd_bits[0] | json }},"date":{{ dd_to[forloop.index0] | json }}}{%- endcapture -%}
+      {%- assign dd_fixes = dd_fixes | append: dd_fix | append: ',' -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- if dd_fixes != '' -%}
+  <script type="application/json" data-dd-fixes>[{{ dd_fixes | remove_last: ',' }}]</script>
+{%- endif -%}
+
 <div class="cart-drawer__scroll">
   {%- if cart == empty -%}
     <div class="cart-drawer__empty">
