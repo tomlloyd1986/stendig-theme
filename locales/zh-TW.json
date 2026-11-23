@@ -1374,7 +1374,10 @@
         "open_media": "開啟圖庫檢視中的多媒體檔案 {{ index }}",
         "play_model": "播放 3D 檢視器",
         "play_video": "播放影片",
-        "gallery_viewer": "圖片瀏覽器"
+        "gallery_viewer": "圖片瀏覽器",
+        "load_image": "在圖片瀏覽器中顯示第 {{ index }} 張圖片",
+        "load_model": "在圖片瀏覽器中顯示第 {{ index }} 個立體模型",
+        "load_video": "在圖片瀏覽器中播放第 {{ index }} 部影片"
       },
       "quantity": {
         "label": "數量",

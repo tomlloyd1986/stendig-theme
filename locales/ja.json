@@ -166,7 +166,10 @@
         "open_media": "ギャラリービューで掲載されているメディア{{ index }}を開く",
         "play_model": "3Dビューアーの再生",
         "play_video": "ビデオを再生",
-        "gallery_viewer": "ギャラリー表示"
+        "gallery_viewer": "ギャラリー表示",
+        "load_image": "ギャラリーで{{ index }}番目の画像を表示します",
+        "load_model": "ギャラリーで{{ index }}番目の3Dモデルを表示します",
+        "load_video": "ギャラリーで{{ index }}番目の動画を再生します"
       },
       "view_full_details": "詳細を表示する",
       "include_taxes": "税込み。",

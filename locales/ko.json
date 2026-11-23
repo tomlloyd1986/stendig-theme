@@ -1374,7 +1374,10 @@
         "open_media": "갤러리 보기에서 미디어 {{ index }} 열기",
         "play_model": "3D 뷰어 재생",
         "play_video": "동영상 재생",
-        "gallery_viewer": "갤러리 보기"
+        "gallery_viewer": "갤러리 보기",
+        "load_image": "갤러리에서 {{ index }}번 이미지 보기",
+        "load_model": "갤러리에서 {{ index }}번 3D 모델 보기",
+        "load_video": "갤러리에서 {{ index }}번 영상 재생"
       },
       "quantity": {
         "label": "수량",
