@@ -1398,7 +1398,7 @@
         "unit_price": "단가"
       },
       "share": "이 제품 공유",
-      "sold_out": "품절",
+      "sold_out": "대기자 명단 참여",
       "unavailable": "사용할 수 없음",
       "vendor": "공급업체",
       "video_exit_message": "{{ title }}이(가) 동일한 창에서 전체 화면으로 열립니다.",

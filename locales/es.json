@@ -1401,7 +1401,7 @@
         "unit_price": "Precio unitario"
       },
       "share": "Compartir este producto",
-      "sold_out": "Agotado",
+      "sold_out": "Unirse a la lista de espera",
       "stock_sold_out": "Agotado",
       "stock_last_few": "Últimas unidades",
       "unavailable": "No disponible",
