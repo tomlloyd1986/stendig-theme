@@ -1384,7 +1384,9 @@
       "xr_button": "Visualizza nel tuo spazio",
       "xr_button_label": "Visualizza nel tuo spazio, carica l'articolo nella finestra della realtà aumentata",
       "include_taxes": "Imposte incluse.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione</a> calcolate al check-out."
+      "shipping_policy_html": "<a href=\"{{ link }}\">Spese di spedizione</a> calcolate al check-out.",
+      "stock_sold_out": "Esaurito",
+      "stock_last_few": "Ultimi pezzi"
     },
     "modal": {
       "label": "Galleria contenuti multimediali"

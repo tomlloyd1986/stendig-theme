@@ -45,7 +45,7 @@
         "autocomplete_title": "建議",
         "autocomplete_single_item": "可提供 1 項商品",
         "autocomplete_multi_item": "可提供 {{number}} 項商品",
-        "autocomplete_selection": "{{number}} \/ {{total}}",
+        "autocomplete_selection": "{{number}} / {{total}}",
         "autocomplete_close": "關閉建議",
         "forwarding_indicator": {
           "new_window": "在新視窗中開啟。",
@@ -78,8 +78,8 @@
         "address2_label": "公寓、套房等",
         "optional_address2_label": "公寓、套房等 (選填)",
         "city_label": "市",
-        "country_label": "國家\/地區",
-        "country_code": "國家\/地區代碼",
+        "country_label": "國家/地區",
+        "country_code": "國家/地區代碼",
         "province_label": "省",
         "province_placeholder": "省",
         "county_label": "郡",
@@ -95,8 +95,8 @@
         "governorate_placeholder": "省",
         "emirate_label": "大公國",
         "emirate_placeholder": "大公國",
-        "state_and_territory_label": "州\/地區",
-        "state_and_territory_placeholder": "州\/地區",
+        "state_and_territory_label": "州/地區",
+        "state_and_territory_placeholder": "州/地區",
         "phone_label": "電話",
         "optional_phone_label": "電話 (選填)",
         "phone_placeholder": "電話",
@@ -176,11 +176,11 @@
         "gift_card_has_been_removed": "禮品卡已移除",
         "gift_card_subscriptions_notice": "禮品卡僅會套用至您的第一筆付款",
         "discount_already_applied": "折扣已套用至此訂單。您無法新增其他折扣。",
-        "cart_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 不適用於您購物車中的商品",
-        "discount_requires_customer_notice": "輸入您的運送資訊，以套用折扣代碼 <strong style=\"text-transform:uppercase\">%{code}<\/strong>",
-        "customer_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 目前無法使用",
-        "shipping_information_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 不適用於您的運送地址",
-        "customer_already_used_once_per_customer_discount_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}<\/strong> 已被使用",
+        "cart_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}</strong> 不適用於您購物車中的商品",
+        "discount_requires_customer_notice": "輸入您的運送資訊，以套用折扣代碼 <strong style=\"text-transform:uppercase\">%{code}</strong>",
+        "customer_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}</strong> 目前無法使用",
+        "shipping_information_does_not_meet_discount_requirements_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}</strong> 不適用於您的運送地址",
+        "customer_already_used_once_per_customer_discount_notice": "折扣代碼 <strong style=\"text-transform:uppercase\">%{code}</strong> 已被使用",
         "subtotal_label": "小計",
         "shipping_label": "運送",
         "pickup_label": "已集貨",
@@ -338,8 +338,8 @@
         "name_on_card_label": "卡片上登載的姓名",
         "name_on_card_placeholder": "卡片上登載的姓名",
         "card_expired": "已到期",
-        "card_expiry_label": "到期日 (MM \/ YY)",
-        "card_expiry_placeholder": "到期日 (MM \/ YY)",
+        "card_expiry_label": "到期日 (MM / YY)",
+        "card_expiry_placeholder": "到期日 (MM / YY)",
         "credit_card_start_month": "開始月份",
         "credit_card_start_year": "開始年份",
         "delete_customer_mandate_modal_title": "是否要移除此卡片？",
@@ -355,8 +355,8 @@
         "card_verification_value_explanation": "3 位數安全碼通常位於卡片背面。美國運通卡的 4 位數安全碼位於卡片正面。",
         "card_verification_value_explanation_amex": "4 位數安全碼位於卡片正面",
         "card_verification_value_explanation_other": "3 位數安全碼位於卡片背面",
-        "card_start_label": "發卡日期 (MM \/ YY)",
-        "card_start_placeholder": "發卡日期 (MM \/ YY)",
+        "card_start_label": "發卡日期 (MM / YY)",
+        "card_start_placeholder": "發卡日期 (MM / YY)",
         "card_issue_number_label": "發卡號碼",
         "card_issue_number_placeholder": "發卡號碼",
         "card_change_label": "變更",
@@ -368,7 +368,7 @@
         "different_credit_card_label": "使用其他信用卡",
         "same_billing_address_label": "與運送地址相同",
         "different_billing_address_label": "使用其他帳單地址",
-        "free_order_notice_html": "您的訂單為<strong>免費<\/strong>。不須付款。",
+        "free_order_notice_html": "您的訂單為<strong>免費</strong>。不須付款。",
         "express_checkout_free_order": "您不需要為免費訂單支付任何費用。",
         "order_covered_by_gift_cards_notice": {
           "one": "您的禮品卡可涵蓋您的訂單。",
@@ -382,8 +382,8 @@
         "no_js_credit_card_fields_redirect_hint": "系統會將您重新導向，以新增您的付款資訊。",
         "card_fields_container_prefix": "欄位內容：",
         "card_fields_unavailable_html": {
-          "one": "信用卡和簽帳卡付款目前無法使用。<br>請<a href=\"%{current_url}\">重新整理此頁面<\/a>或稍後再試一次。",
-          "other": "信用卡和簽帳卡付款目前無法使用。<br>請<a href=\"%{current_url}\">重新整理此頁面<\/a>或改用其他付款方式。"
+          "one": "信用卡和簽帳卡付款目前無法使用。<br>請<a href=\"%{current_url}\">重新整理此頁面</a>或稍後再試一次。",
+          "other": "信用卡和簽帳卡付款目前無法使用。<br>請<a href=\"%{current_url}\">重新整理此頁面</a>或改用其他付款方式。"
         },
         "card_fields_processing_error": "處理付款時發生問題。請嘗試重新整理此頁面或檢查您的網路連線。",
         "technical_error": "由於發生技術問題，目前無法處理付款。請在幾分鐘後再試一次。",
@@ -403,7 +403,7 @@
         "subscription_card_update_agreement_label": "變更付款方式將會更新您的訂閱方案和未來的定期付款。",
         "subscription_agreement_label": "我瞭解我正在同意訂閱。這麼做會更新清單列出的價格與付款頻率，直到訂閱期滿或 %{cancelled} 為止。",
         "subscription_agreement_cancelled": "已取消",
-        "subscription_agreement_label_html": "我瞭解我正在同意訂閱。這麼做會更新所列出的價格與支付頻率，直到訂閱期滿或\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">取消訂閱<\/a>為止。\n",
+        "subscription_agreement_label_html": "我瞭解我正在同意訂閱。這麼做會更新所列出的價格與支付頻率，直到訂閱期滿或\n<a class=\"link--small\" data-modal=\"true\" data-title-text=\"%{subscription_policy}\" href=\"%{policy_href}\">取消訂閱</a>為止。\n",
         "change_currency_section_description": "選取幣別選項",
         "no_real_orders_dev_store": "此商店不能接受實際訂單，也無法處理實際付款。",
         "waiting_on_payment_methods": "正在取得可用的付款方式......",
@@ -431,7 +431,7 @@
       },
       "payment_summary": {
         "gift_card_current_balance_notice": "目前餘額：%{amount}",
-        "credit_card_expires_on_notice": "於 %{month}\/%{year} 到期",
+        "credit_card_expires_on_notice": "於 %{month}/%{year} 到期",
         "express_payment_gateway_label": "Express",
         "manual_payment_gateway_label": "手動",
         "billing_address_title": "帳單地址",
@@ -448,9 +448,9 @@
         "address_address1_blank": "輸入地址",
         "address_address2_blank": "輸入公寓、套房等。",
         "address_city_blank": "輸入城市",
-        "address_country_blank": "選擇一個國家\/地區",
-        "address_country_not_supported": "我們目前無法運送至此國家\/地區。請輸入新的運送地址，然後再試一次。",
-        "address_province_blank": "選擇州\/省",
+        "address_country_blank": "選擇一個國家/地區",
+        "address_country_not_supported": "我們目前無法運送至此國家/地區。請輸入新的運送地址，然後再試一次。",
+        "address_province_blank": "選擇州/省",
         "address_company_blank": "輸入公司名稱",
         "address_phone_blank": "輸入有效的電話號碼",
         "address_zip_blank": "輸入郵遞區號",
@@ -840,7 +840,7 @@
         "currency_not_supported_by_shop": "您所選的貨幣已無法使用。所有價格目前以 %{currency_code} 顯示。"
       },
       "change_country": {
-        "cart_updated_based_on_country": "系統已根據您的收件地國家\/地區更新了您的購物車。"
+        "cart_updated_based_on_country": "系統已根據您的收件地國家/地區更新了您的購物車。"
       },
       "tips": {
         "title": "加上小費",
@@ -934,7 +934,7 @@
       "prefecture": "縣",
       "province": "省",
       "state": "州",
-      "state_and_territory": "州\/地區",
+      "state_and_territory": "州/地區",
       "county": "郡",
       "emirate": "大公國",
       "governorate": "省",
@@ -992,7 +992,7 @@
       "expired": "已過期",
       "invalid_start_date_or_issue_number_for_debit": "必須提供有效的開始日期或發卡號碼",
       "invalid_expiry_year": "不是有效的到期年份",
-      "reset_password_html": "此電子郵件地址已與一個帳戶相關聯。如果您擁有此帳戶，可以<a href=\"\/account\/login#recover\">重設密碼<\/a>",
+      "reset_password_html": "此電子郵件地址已與一個帳戶相關聯。如果您擁有此帳戶，可以<a href=\"/account/login#recover\">重設密碼</a>",
       "verify_email": "我們已傳送電子郵件至 %{customer_email}，請按一下信中所附的連結以驗證您的電子郵件地址。"
     },
     "notices": {
@@ -1039,7 +1039,7 @@
           "declined": "付款遭拒",
           "inventory": "無法供貨",
           "fraud": "詐騙訂單",
-          "customer": "客戶已變更\/取消的訂單",
+          "customer": "客戶已變更/取消的訂單",
           "other": "其他"
         },
         "cash_on_delivery": "貨到付款 (COD)"
@@ -1054,7 +1054,7 @@
         "too_many_line_items_error": "您的購物車不能含有超過 %{max} 項商品。",
         "link_expired": "連結已失效",
         "link_no_longer_exists": "連結已不存在。",
-        "stock_problems_html": "一或多個商品已下架。我們已提供<a href='%{link}'>更新的購物車<\/a>。",
+        "stock_problems_html": "一或多個商品已下架。我們已提供<a href='%{link}'>更新的購物車</a>。",
         "changed": "購物車已變更",
         "items_changed": "一或多項商品已變更。",
         "product_sold_out": "產品「%{name}」已售罄。",
@@ -1087,29 +1087,29 @@
       },
       "open_tracking": {
         "opt_in": {
-          "opted_in_html": "<b>您已選擇加入電子郵件開啟追蹤。<\/b>",
+          "opted_in_html": "<b>您已選擇加入電子郵件開啟追蹤。</b>",
           "visibility": "系統會匿名顯示電子郵件開啟率報告。我們只會看到您在彙整的電子郵件開啟率中，是否有開啟電子郵件。",
-          "opt_out_html": "若您不想分享此資訊，可以<a style='text-decoration:underline;' href='%{link}'>退出<\/a>電子郵件開啟追蹤。",
+          "opt_out_html": "若您不想分享此資訊，可以<a style='text-decoration:underline;' href='%{link}'>退出</a>電子郵件開啟追蹤。",
           "preview_bar": "您正在預覽顧客選擇加入電子郵件開啟追蹤時會看到的內容。"
         },
         "opt_out": {
-          "opted_out_html": "<b>您已選擇退出電子郵件開啟追蹤。<\/b>",
+          "opted_out_html": "<b>您已選擇退出電子郵件開啟追蹤。</b>",
           "visibility": "我們不會看到您是否有開啟我們的電子郵件。",
-          "opt_in_html": "選擇<a style='text-decoration:underline;' href='%{link}'>加入<\/a>電子郵件開啟追蹤。",
+          "opt_in_html": "選擇<a style='text-decoration:underline;' href='%{link}'>加入</a>電子郵件開啟追蹤。",
           "preview_bar": "您正在預覽顧客選擇退出電子郵件開啟追蹤時會看到的內容。"
         },
         "no_longer_track": {
-          "status_html": "<b>我們不再追蹤電子郵件開啟次數。<\/b>",
+          "status_html": "<b>我們不再追蹤電子郵件開啟次數。</b>",
           "privacy_policy": "傳送此電子郵件後，我們已更新隱私權政策並不再追蹤開啟次數。"
         },
         "track": {
-          "status_html": "<b>系統會提供電子郵件開啟追蹤報告。<\/b>",
+          "status_html": "<b>系統會提供電子郵件開啟追蹤報告。</b>",
           "visibility": "我們只會看到您在電子郵件總開啟率中，是否有開啟電子郵件。"
         },
         "updated_policy": {
-          "status_html": "<b>系統會提供電子郵件開啟追蹤報告。<\/b>",
+          "status_html": "<b>系統會提供電子郵件開啟追蹤報告。</b>",
           "visibility": "我們已更新政策，目前已開始追蹤電子郵件開啟次數。系統會匿名顯示電子郵件開啟率報告。我們只會看到您在電子郵件總開啟率中，是否有開啟電子郵件。",
-          "opt_out_html": "若您不想分享此資訊，可以<a style='text-decoration:underline;' href='%{link}'>取消訂閱。<\/a>"
+          "opt_out_html": "若您不想分享此資訊，可以<a style='text-decoration:underline;' href='%{link}'>取消訂閱。</a>"
         }
       }
     },
@@ -1195,9 +1195,9 @@
       "empty": "您的購物車是空的",
       "cart_error": "更新購物車時發生錯誤。請再試一次。",
       "cart_quantity_error_html": "您只能將 [quantity] 個商品加入您的購物車。",
-      "taxes_and_shipping_policy_at_checkout_html": "結帳時計算稅金和<a href=\"{{ link }}\">運費<\/a>",
+      "taxes_and_shipping_policy_at_checkout_html": "結帳時計算稅金和<a href=\"{{ link }}\">運費</a>",
       "taxes_included_but_shipping_at_checkout": "內含稅金，結帳時計算運費",
-      "taxes_included_and_shipping_policy_html": "內含稅金。結帳時計算<a href=\"{{ link }}\">運費<\/a>。",
+      "taxes_included_and_shipping_policy_html": "內含稅金。結帳時計算<a href=\"{{ link }}\">運費</a>。",
       "taxes_and_shipping_at_checkout": "結帳時計算稅金和運費",
       "headings": {
         "product": "產品",
@@ -1208,7 +1208,7 @@
       "update": "更新",
       "login": {
         "title": "是否有帳號？",
-        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">登入<\/a>以加速結帳。"
+        "paragraph_html": "<a href=\"{{ link }}\" class=\"link underlined-link\">登入</a>以加速結帳。"
       }
     },
     "footer": {
@@ -1229,7 +1229,7 @@
     "collection_template": {
       "empty": "找不到任何產品",
       "title": "商品系列",
-      "use_fewer_filters_html": "使用較少篩選條件或<a class=\"{{ class }}\" href=\"{{ link }}\">清除全部<\/a>"
+      "use_fewer_filters_html": "使用較少篩選條件或<a class=\"{{ class }}\" href=\"{{ link }}\">清除全部</a>"
     },
     "video": {
       "load_video": "載入影片：{{ description }}"
@@ -1244,7 +1244,7 @@
       "login_form_error": "密碼錯誤！",
       "login_form_submit": "輸入",
       "modal": "密碼強制回應",
-      "admin_link_html": "您是商店擁有人嗎？<a href=\"\/admin\" class=\"link underlined-link\">請在此登入<\/a>",
+      "admin_link_html": "您是商店擁有人嗎？<a href=\"/admin\" class=\"link underlined-link\">請在此登入</a>",
       "powered_by_shopify_html": "本商店由 {{ shopify }} 提供技術支援"
     },
     "social": {
@@ -1364,8 +1364,8 @@
         "view_store_info": "檢視商店資訊",
         "check_other_stores": "查看其他商店的供貨情況",
         "pick_up_available": "可提供取貨服務",
-        "pick_up_available_at_html": "可提供 <span class=\"color-foreground\">{{ location_name }}<\/span> 的取貨服務",
-        "pick_up_unavailable_at_html": "目前無法提供 <span class=\"color-foreground\">{{ location_name }}<\/span> 的取貨服務",
+        "pick_up_available_at_html": "可提供 <span class=\"color-foreground\">{{ location_name }}</span> 的取貨服務",
+        "pick_up_unavailable_at_html": "目前無法提供 <span class=\"color-foreground\">{{ location_name }}</span> 的取貨服務",
         "unavailable": "無法載入取貨服務供應情況",
         "refresh": "重新整理"
       },
@@ -1384,7 +1384,9 @@
       "xr_button": "在您的空間中檢視",
       "xr_button_label": "在您的空間中檢視，可將商品載入擴增實境視窗",
       "include_taxes": "內含稅金。",
-      "shipping_policy_html": "結帳時計算<a href=\"{{ link }}\">運費<\/a>。"
+      "shipping_policy_html": "結帳時計算<a href=\"{{ link }}\">運費</a>。",
+      "stock_sold_out": "售罄",
+      "stock_last_few": "最後幾件"
     },
     "modal": {
       "label": "媒體庫"
@@ -1453,10 +1455,10 @@
     }
   },
   "localization": {
-    "country_label": "國家\/地區",
+    "country_label": "國家/地區",
     "language_label": "語言",
     "update_language": "更新語言",
-    "update_country": "更新國家\/地區"
+    "update_country": "更新國家/地區"
   },
   "customer": {
     "account": {
@@ -1485,9 +1487,9 @@
       "address1": "地址 1",
       "address2": "地址 2",
       "city": "市",
-      "country": "國家\/地區",
+      "country": "國家/地區",
       "province": "省",
-      "zip": "郵政\/郵遞區號",
+      "zip": "郵政/郵遞區號",
       "phone": "電話",
       "set_default": "設為預設地址",
       "add": "新增地址",

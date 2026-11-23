@@ -1384,7 +1384,9 @@
       "xr_button": "Afficher dans son espace",
       "xr_button_label": "Affichage dans votre espace, charge l'article dans une fenêtre de réalité augmentée",
       "include_taxes": "Taxes incluses.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Frais d'expédition</a> calculés à l'étape de paiement."
+      "shipping_policy_html": "<a href=\"{{ link }}\">Frais d'expédition</a> calculés à l'étape de paiement.",
+      "stock_sold_out": "Épuisé",
+      "stock_last_few": "Derniers exemplaires"
     },
     "modal": {
       "label": "Galerie de supports multimédias"

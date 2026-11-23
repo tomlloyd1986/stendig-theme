@@ -1384,7 +1384,9 @@
       "xr_button": "사용자 공간에서 보기",
       "xr_button_label": "사용자 공간에서 보기, 증강 현실 창에서 품목 로드",
       "include_taxes": "세금이 포함됩니다.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">배송료</a>는 결제 시 계산됩니다."
+      "shipping_policy_html": "<a href=\"{{ link }}\">배송료</a>는 결제 시 계산됩니다.",
+      "stock_sold_out": "품절",
+      "stock_last_few": "품절 임박"
     },
     "modal": {
       "label": "미디어 갤러리"
