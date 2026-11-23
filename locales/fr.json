@@ -1182,7 +1182,11 @@
       "cart_count": {
         "one": "{{ count }} article",
         "other": "{{ count }} articles"
-      }
+      },
+      "collection": "Collection",
+      "browse_collection": "Parcourir la collection",
+      "resources": "Ressources",
+      "browse_journal": "Parcourir le journal"
     },
     "cart": {
       "title": "Votre panier",
@@ -1233,6 +1237,12 @@
     },
     "video": {
       "load_video": "Charger la vidéo : {{ description }}"
+    },
+    "press": {
+      "eyebrow": "Dans la presse"
+    },
+    "grouped_grid": {
+      "view_all": "Tout voir"
     }
   },
   "general": {
@@ -1291,12 +1301,17 @@
       "copy_to_clipboard": "Copier le lien",
       "share_url": "Lien",
       "success_message": "Lien copié dans le presse-papiers"
+    },
+    "slider": {
+      "next_slide": "Faire défiler vers la droite",
+      "previous_slide": "Faire défiler vers la gauche"
     }
   },
   "newsletter": {
     "label": "E-mail",
     "success": "Merci de votre inscription",
-    "button_label": "S'inscrire"
+    "button_label": "S'inscrire",
+    "error": "Une erreur s’est produite — veuillez réessayer."
   },
   "accessibility": {
     "skip_to_text": "Ignorer et passer au contenu",
@@ -1315,7 +1330,8 @@
     "previous_slide": "Faire glisser vers la gauche",
     "loading": "Chargement en cours...",
     "total_reviews": "total des critiques",
-    "star_reviews_info": "{{ rating_value }} sur {{ rating_max }} étoiles"
+    "star_reviews_info": "{{ rating_value }} sur {{ rating_max }} étoiles",
+    "breadcrumb": "Fil d’Ariane"
   },
   "blogs": {
     "article": {
@@ -1334,7 +1350,12 @@
       "back_to_blog": "Retour au blog",
       "share": "Partager cet article",
       "success": "Votre commentaire a bien été publié ! Merci !",
-      "success_moderated": "Votre commentaire a bien été publié. Nous le publierons sous peu, conformément au processus de modération de notre blog."
+      "success_moderated": "Votre commentaire a bien été publié. Nous le publierons sous peu, conformément au processus de modération de notre blog.",
+      "video": "Vidéo"
+    },
+    "journal": {
+      "pinned": "Épinglé",
+      "older": "Articles plus anciens"
     }
   },
   "onboarding": {
@@ -1352,7 +1373,11 @@
         "open_featured_media": "Ouvrir les supports multimédia en vedette dans la vue de la galerie",
         "open_media": "Ouvrir {{ index }} des supports multimédia dans la vue de la galerie",
         "play_model": "Lire la visionneuse 3D",
-        "play_video": "Lire la vidéo"
+        "play_video": "Lire la vidéo",
+        "gallery_viewer": "Visionneuse de la galerie",
+        "load_image": "Afficher l’image {{ index }} dans la galerie",
+        "load_model": "Afficher le modèle 3D {{ index }} dans la galerie",
+        "load_video": "Lire la vidéo {{ index }} dans la galerie"
       },
       "quantity": {
         "label": "Quantité",
@@ -1458,7 +1483,13 @@
     "country_label": "Pays/région",
     "language_label": "Langue",
     "update_language": "Mettre à jour la langue",
-    "update_country": "Mettre à jour le pays/la région"
+    "update_country": "Mettre à jour le pays/la région",
+    "location": "Emplacement",
+    "change_location": "Changer d’emplacement",
+    "find_country": "Rechercher votre pays",
+    "no_match": "Aucun pays ne correspond",
+    "rest_of_world": "Reste du monde",
+    "all_locations": "Tous les emplacements"
   },
   "customer": {
     "account": {

@@ -1182,7 +1182,11 @@
       "cart_count": {
         "one": "{{ count }} articolo",
         "other": "{{ count }} articoli"
-      }
+      },
+      "collection": "Collezione",
+      "browse_collection": "Sfoglia la collezione",
+      "resources": "Risorse",
+      "browse_journal": "Sfoglia il journal"
     },
     "cart": {
       "title": "Il tuo carrello",
@@ -1233,6 +1237,12 @@
     },
     "video": {
       "load_video": "Carica il video: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "Dalla stampa"
+    },
+    "grouped_grid": {
+      "view_all": "Vedi tutto"
     }
   },
   "general": {
@@ -1291,12 +1301,17 @@
       "copy_to_clipboard": "Copia link",
       "share_url": "Link",
       "success_message": "Link copiato negli appunti"
+    },
+    "slider": {
+      "next_slide": "Scorri verso destra",
+      "previous_slide": "Scorri verso sinistra"
     }
   },
   "newsletter": {
     "label": "Indirizzo email",
     "success": "Grazie per l'iscrizione",
-    "button_label": "Iscriviti"
+    "button_label": "Iscriviti",
+    "error": "Si è verificato un errore: la preghiamo di riprovare."
   },
   "accessibility": {
     "skip_to_text": "Vai direttamente ai contenuti",
@@ -1315,7 +1330,8 @@
     "previous_slide": "Scorri verso sinistra",
     "loading": "Caricamento in corso...",
     "total_reviews": "recensioni totali",
-    "star_reviews_info": "{{ rating_value }} stelle su {{ rating_max }}"
+    "star_reviews_info": "{{ rating_value }} stelle su {{ rating_max }}",
+    "breadcrumb": "Percorso di navigazione"
   },
   "blogs": {
     "article": {
@@ -1334,7 +1350,12 @@
       "back_to_blog": "Torna al blog",
       "share": "Condividi questo articolo",
       "success": "Il tuo commento è stato pubblicato! Grazie!",
-      "success_moderated": "Il tuo commento è stato pubblicato. Lo pubblicheremo fra poco, il nostro blog è soggetto a moderazione."
+      "success_moderated": "Il tuo commento è stato pubblicato. Lo pubblicheremo fra poco, il nostro blog è soggetto a moderazione.",
+      "video": "Video"
+    },
+    "journal": {
+      "pinned": "In evidenza",
+      "older": "Articoli meno recenti"
     }
   },
   "onboarding": {
@@ -1352,7 +1373,11 @@
         "open_featured_media": "Apri i contenuti multimediali in evidenza nella modalità galleria",
         "open_media": "Apri {{ index }} dei contenuti multimediali nella modalità galleria",
         "play_model": "Riproduci visualizzatore 3D",
-        "play_video": "Riproduci video"
+        "play_video": "Riproduci video",
+        "gallery_viewer": "Visualizzatore della galleria",
+        "load_image": "Mostra l’immagine {{ index }} nella galleria",
+        "load_model": "Mostra il modello 3D {{ index }} nella galleria",
+        "load_video": "Riproduci il video {{ index }} nella galleria"
       },
       "quantity": {
         "label": "Quantità",
@@ -1458,7 +1483,13 @@
     "country_label": "Paese/Area geografica",
     "language_label": "Lingua",
     "update_language": "Aggiorna lingua",
-    "update_country": "Aggiorna paese/area geografica"
+    "update_country": "Aggiorna paese/area geografica",
+    "location": "Località",
+    "change_location": "Cambia località",
+    "find_country": "Cerchi il suo Paese",
+    "no_match": "Nessun Paese corrispondente",
+    "rest_of_world": "Resto del mondo",
+    "all_locations": "Tutte le località"
   },
   "customer": {
     "account": {

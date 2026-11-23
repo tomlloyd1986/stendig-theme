@@ -1182,7 +1182,11 @@
       "cart_count": {
         "one": "{{ count }} Artikel",
         "other": "{{ count }} Artikel"
-      }
+      },
+      "collection": "Kollektion",
+      "browse_collection": "Kollektion ansehen",
+      "resources": "Wissenswertes",
+      "browse_journal": "Journal lesen"
     },
     "cart": {
       "title": "Dein Warenkorb",
@@ -1233,6 +1237,12 @@
     },
     "video": {
       "load_video": "Video laden: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "Aus der Presse"
+    },
+    "grouped_grid": {
+      "view_all": "Alle ansehen"
     }
   },
   "general": {
@@ -1291,12 +1301,17 @@
       "copy_to_clipboard": "Link kopieren",
       "share_url": "Link",
       "success_message": "Link in die Zwischenablage kopiert"
+    },
+    "slider": {
+      "next_slide": "Nach rechts blättern",
+      "previous_slide": "Nach links blättern"
     }
   },
   "newsletter": {
     "label": "E-Mail",
     "success": "Danke für deine Anmeldung",
-    "button_label": "Abonnieren"
+    "button_label": "Abonnieren",
+    "error": "Es ist ein Fehler aufgetreten – bitte versuchen Sie es erneut."
   },
   "accessibility": {
     "skip_to_text": "Direkt zum Inhalt",
@@ -1315,7 +1330,8 @@
     "previous_slide": "Nach links schieben",
     "loading": "Wird geladen ...",
     "total_reviews": "Bewertungen insgesamt",
-    "star_reviews_info": "{{ rating_value }} von {{ rating_max }} Sternen"
+    "star_reviews_info": "{{ rating_value }} von {{ rating_max }} Sternen",
+    "breadcrumb": "Navigationspfad"
   },
   "blogs": {
     "article": {
@@ -1334,7 +1350,12 @@
       "back_to_blog": "Zurück zum Blog",
       "share": "Diesen Artikel teilen",
       "success": "Dein Kommentar wurde erfolgreich gepostet! Vielen Dank!",
-      "success_moderated": "Dein Kommentar wurde erfolgreich gepostet. Da unser Blog moderiert wird, werden wir ihn erst kurze Zeit später veröffentlichen."
+      "success_moderated": "Dein Kommentar wurde erfolgreich gepostet. Da unser Blog moderiert wird, werden wir ihn erst kurze Zeit später veröffentlichen.",
+      "video": "Video"
+    },
+    "journal": {
+      "pinned": "Angeheftet",
+      "older": "Ältere Beiträge"
     }
   },
   "onboarding": {
@@ -1352,7 +1373,11 @@
         "open_featured_media": "Dargestellte Medien in Galerieansicht öffnen",
         "open_media": "Medien {{ index }} in Galerieansicht öffnen",
         "play_model": "3D-Viewer abspielen",
-        "play_video": "Video abspielen"
+        "play_video": "Video abspielen",
+        "gallery_viewer": "Bildergalerie",
+        "load_image": "Bild {{ index }} in der Galerie anzeigen",
+        "load_model": "3D-Modell {{ index }} in der Galerie anzeigen",
+        "load_video": "Video {{ index }} in der Galerie abspielen"
       },
       "quantity": {
         "label": "Anzahl",
@@ -1458,7 +1483,13 @@
     "country_label": "Land/Region",
     "language_label": "Sprache",
     "update_language": "Sprache aktualisieren",
-    "update_country": "Land/Region aktualisieren"
+    "update_country": "Land/Region aktualisieren",
+    "location": "Standort",
+    "change_location": "Standort ändern",
+    "find_country": "Land suchen",
+    "no_match": "Kein Land gefunden",
+    "rest_of_world": "Übrige Welt",
+    "all_locations": "Alle Standorte"
   },
   "customer": {
     "account": {

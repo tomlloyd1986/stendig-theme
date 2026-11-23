@@ -1182,7 +1182,11 @@
       "cart_count": {
         "one": "{{ count }}개",
         "other": "{{ count }}개"
-      }
+      },
+      "collection": "컬렉션",
+      "browse_collection": "컬렉션 둘러보기",
+      "resources": "자료",
+      "browse_journal": "저널 둘러보기"
     },
     "cart": {
       "title": "카트",
@@ -1233,6 +1237,12 @@
     },
     "video": {
       "load_video": "동영상 로드: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "언론 보도"
+    },
+    "grouped_grid": {
+      "view_all": "전체 보기"
     }
   },
   "general": {
@@ -1291,12 +1301,17 @@
       "copy_to_clipboard": "링크 복사",
       "share_url": "링크",
       "success_message": "링크가 클립보드에 복사됨"
+    },
+    "slider": {
+      "next_slide": "오른쪽으로 이동",
+      "previous_slide": "왼쪽으로 이동"
     }
   },
   "newsletter": {
     "label": "이메일",
     "success": "가입해주셔서 감사합니다.",
-    "button_label": "가입하기"
+    "button_label": "가입하기",
+    "error": "오류가 발생했습니다. 다시 시도해 주세요."
   },
   "accessibility": {
     "skip_to_text": "콘텐츠로 건너뛰기",
@@ -1315,7 +1330,8 @@
     "previous_slide": "왼쪽으로 슬라이드",
     "loading": "로드하는 중...",
     "total_reviews": "총 리뷰",
-    "star_reviews_info": "별점: {{ rating_value }}/{{ rating_max }}"
+    "star_reviews_info": "별점: {{ rating_value }}/{{ rating_max }}",
+    "breadcrumb": "탐색 경로"
   },
   "blogs": {
     "article": {
@@ -1334,7 +1350,12 @@
       "back_to_blog": "블로그로 돌아가기",
       "share": "이 문서 공유하기",
       "success": "댓글이 성공적으로 게시되었습니다. 감사합니다!",
-      "success_moderated": "댓글이 성공적으로 게시되었습니다. 블로그를 조정 중이므로 잠시 후에 게시됩니다."
+      "success_moderated": "댓글이 성공적으로 게시되었습니다. 블로그를 조정 중이므로 잠시 후에 게시됩니다.",
+      "video": "영상"
+    },
+    "journal": {
+      "pinned": "고정됨",
+      "older": "이전 글"
     }
   },
   "onboarding": {
@@ -1352,7 +1373,8 @@
         "open_featured_media": "갤러리 보기에서 추천 미디어 열기",
         "open_media": "갤러리 보기에서 미디어 {{ index }} 열기",
         "play_model": "3D 뷰어 재생",
-        "play_video": "동영상 재생"
+        "play_video": "동영상 재생",
+        "gallery_viewer": "갤러리 보기"
       },
       "quantity": {
         "label": "수량",
@@ -1458,7 +1480,13 @@
     "country_label": "국가/지역",
     "language_label": "언어",
     "update_language": "언어 업데이트",
-    "update_country": "국가/지역 업데이트"
+    "update_country": "국가/지역 업데이트",
+    "location": "지역",
+    "change_location": "지역 변경",
+    "find_country": "국가 검색",
+    "no_match": "일치하는 국가가 없습니다",
+    "rest_of_world": "기타 지역",
+    "all_locations": "전체 지역"
   },
   "customer": {
     "account": {

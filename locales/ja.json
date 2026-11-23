@@ -65,12 +65,17 @@
       "share_url": "リンク",
       "success_message": "リンクがクリップボードにコピーされました",
       "close": "共有を閉じる"
+    },
+    "slider": {
+      "next_slide": "右へスクロール",
+      "previous_slide": "左へスクロール"
     }
   },
   "newsletter": {
     "label": "メール",
     "success": "ご登録ありがとうございます",
-    "button_label": "登録"
+    "button_label": "登録",
+    "error": "エラーが発生しました。もう一度お試しください。"
   },
   "accessibility": {
     "skip_to_text": "コンテンツに進む",
@@ -89,7 +94,8 @@
     "of": "/",
     "skip_to_product_info": "商品情報にスキップ",
     "total_reviews": "レビュー数の合計",
-    "star_reviews_info": "{{ rating_max }}つ星中{{ rating_value }}つ"
+    "star_reviews_info": "{{ rating_max }}つ星中{{ rating_value }}つ",
+    "breadcrumb": "パンくずリスト"
   },
   "blogs": {
     "article": {
@@ -109,7 +115,12 @@
       "back_to_blog": "ブログに戻る",
       "share": "この記事を共有する",
       "success": "コメントが投稿されました。ありがとうございます。",
-      "success_moderated": "コメントが投稿されました。ブログが管理されているため、しばらくしてから公開されます。"
+      "success_moderated": "コメントが投稿されました。ブログが管理されているため、しばらくしてから公開されます。",
+      "video": "動画"
+    },
+    "journal": {
+      "pinned": "固定表示",
+      "older": "過去の記事"
     }
   },
   "onboarding": {
@@ -154,13 +165,15 @@
         "open_featured_media": "ギャラリービューで掲載されているメディアを開く",
         "open_media": "ギャラリービューで掲載されているメディア{{ index }}を開く",
         "play_model": "3Dビューアーの再生",
-        "play_video": "ビデオを再生"
+        "play_video": "ビデオを再生",
+        "gallery_viewer": "ギャラリー表示"
       },
       "view_full_details": "詳細を表示する",
       "include_taxes": "税込み。",
       "shipping_policy_html": "<a href=\"{{ link }}\">配送料</a>はチェックアウト時に計算されます。",
       "stock_sold_out": "売り切れ",
-      "stock_last_few": "残りわずか"
+      "stock_last_few": "残りわずか",
+      "buy_it_now": "今すぐ購入"
     },
     "modal": {
       "label": "メディアギャラリー"
@@ -235,7 +248,11 @@
       "cart_count": {
         "one": "{{ count }} 点",
         "other": "{{ count }} 点"
-      }
+      },
+      "collection": "コレクション",
+      "browse_collection": "コレクションを見る",
+      "resources": "お役立ち情報",
+      "browse_journal": "ジャーナルを読む"
     },
     "cart": {
       "title": "あなたのカート",
@@ -287,13 +304,25 @@
     },
     "video": {
       "load_video": "動画を読み込む: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "メディア掲載"
+    },
+    "grouped_grid": {
+      "view_all": "すべて見る"
     }
   },
   "localization": {
     "country_label": "国/地域",
     "language_label": "言語",
     "update_language": "言語を更新する",
-    "update_country": "国/地域を更新する"
+    "update_country": "国/地域を更新する",
+    "location": "地域",
+    "change_location": "地域を変更",
+    "find_country": "国を検索",
+    "no_match": "該当する国がありません",
+    "rest_of_world": "その他の地域",
+    "all_locations": "すべての地域"
   },
   "customer": {
     "account": {

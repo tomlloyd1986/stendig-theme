@@ -1182,7 +1182,11 @@
       "cart_count": {
         "one": "{{ count }} artículo",
         "other": "{{ count }} artículos"
-      }
+      },
+      "collection": "Colección",
+      "browse_collection": "Ver la colección",
+      "resources": "Recursos",
+      "browse_journal": "Ver el journal"
     },
     "cart": {
       "title": "Tu carrito",
@@ -1233,6 +1237,12 @@
     },
     "video": {
       "load_video": "Cargar video: {{ description }}"
+    },
+    "press": {
+      "eyebrow": "En la prensa"
+    },
+    "grouped_grid": {
+      "view_all": "Ver todo"
     }
   },
   "general": {
@@ -1291,12 +1301,17 @@
       "copy_to_clipboard": "Copiar enlace",
       "share_url": "Enlace",
       "success_message": "Enlace copiado al portapapeles"
+    },
+    "slider": {
+      "next_slide": "Desplazar a la derecha",
+      "previous_slide": "Desplazar a la izquierda"
     }
   },
   "newsletter": {
     "label": "Correo electrónico",
     "success": "Gracias por suscribirte",
-    "button_label": "Suscribirse"
+    "button_label": "Suscribirse",
+    "error": "Se ha producido un error; inténtelo de nuevo."
   },
   "accessibility": {
     "skip_to_text": "Ir directamente al contenido",
@@ -1315,7 +1330,8 @@
     "previous_slide": "Diapositiva a la izquierda",
     "loading": "Cargando...",
     "total_reviews": "reseñas totales",
-    "star_reviews_info": "{{ rating_value }} de {{ rating_max }} estrellas"
+    "star_reviews_info": "{{ rating_value }} de {{ rating_max }} estrellas",
+    "breadcrumb": "Ruta de navegación"
   },
   "blogs": {
     "article": {
@@ -1334,7 +1350,12 @@
       "back_to_blog": "Regresar al blog",
       "share": "Compartir este artículo",
       "success": "Tu comentario se publicó correctamente. ¡Gracias!",
-      "success_moderated": "Tu comentario se publicó correctamente. Lo publicaremos en breve, cuando se modere nuestro blog."
+      "success_moderated": "Tu comentario se publicó correctamente. Lo publicaremos en breve, cuando se modere nuestro blog.",
+      "video": "Vídeo"
+    },
+    "journal": {
+      "pinned": "Destacado",
+      "older": "Artículos anteriores"
     }
   },
   "onboarding": {
@@ -1352,7 +1373,11 @@
         "open_featured_media": "Abrir elemento multimedia destacado en vista de galería",
         "open_media": "Abrir elemento multimedia {{ index }} en vista de galería",
         "play_model": "Reproducir el visor 3D",
-        "play_video": "Reproducir video"
+        "play_video": "Reproducir video",
+        "gallery_viewer": "Visor de la galería",
+        "load_image": "Mostrar la imagen {{ index }} en la galería",
+        "load_model": "Mostrar el modelo 3D {{ index }} en la galería",
+        "load_video": "Reproducir el vídeo {{ index }} en la galería"
       },
       "quantity": {
         "label": "Cantidad",
@@ -1458,7 +1483,13 @@
     "country_label": "País/región",
     "language_label": "Idioma",
     "update_language": "Actualizar idioma",
-    "update_country": "Actualizar país/región"
+    "update_country": "Actualizar país/región",
+    "location": "Ubicación",
+    "change_location": "Cambiar de ubicación",
+    "find_country": "Busque su país",
+    "no_match": "Ningún país coincide",
+    "rest_of_world": "Resto del mundo",
+    "all_locations": "Todas las ubicaciones"
   },
   "customer": {
     "account": {
